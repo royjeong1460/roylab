@@ -1,0 +1,73 @@
+import {FranceJourney,FranceRun} from '../france/journey.js';
+import {SettlingWorld} from './settling-world.js';
+import {STEP1_SITES,STEP1_BOSS,chooseStep1Site} from './sites.js';
+import {UPGRADES,UNLOCKS,LEGACY_PATTERNS,totalSpent,statsForProfile,offers} from './balance.js';
+
+import {crossPattern} from './cutter.js';
+
+export const STEP1_SAVE_KEYS=['pixel-demolition-free-step1-v2-a','pixel-demolition-free-step1-v2-b'];
+const LEGACY_SAVE_KEYS=['pixel-demolition-free-step1-v1-a','pixel-demolition-free-step1-v1-b'];
+const LOCK='pixel-demolition-free-step1-v1',clone=value=>JSON.parse(JSON.stringify(value));
+const fresh=()=>({version:2,patternRefund:0,campaign:'free-step1',revision:0,earned:0,spent:0,parts:0,owned:['cutter'],patterns:['dot'],upgrades:Object.fromEntries(Object.keys(UPGRADES).map(k=>[k,0])),bossCleared:false,lastSite:null,runCount:0,bossAttempts:0,workMs:0,firstClearMs:null,history:[],purchases:[]});
+const uint=n=>Number.isSafeInteger(n)&&n>=0;
+function valid(p,legacy=false){
+ if(!p||p.version!==(legacy?1:2)||(!legacy&&!uint(p.patternRefund))||p.campaign!=='free-step1'||!['revision','earned','spent','parts','runCount','bossAttempts','workMs'].every(k=>uint(p[k]))||p.earned-p.spent!==p.parts||typeof p.bossCleared!=='boolean'||p.bossAttempts>p.runCount)return false;
+ if(p.bossCleared?!(uint(p.firstClearMs)&&p.firstClearMs<=p.workMs):p.firstClearMs!==null)return false;
+ if(!Array.isArray(p.owned)||!Array.isArray(p.patterns)||!p.owned.includes('cutter')||!p.patterns.includes('dot')||new Set(p.owned).size!==p.owned.length||new Set(p.patterns).size!==p.patterns.length||p.owned.some(id=>!['cutter','bomb','blackhole'].includes(id))||p.patterns.some(id=>!(legacy?['dot','claw','ring','foot']:['dot']).includes(id)))return false;
+ if(legacy&&Object.hasOwn(p.upgrades||{},'cutter'))return false;
+ if(!Object.entries(UPGRADES).filter(([id])=>!legacy||id!=='cutter').every(([id,s])=>uint(p.upgrades?.[id])&&p.upgrades[id]<=s.max&&(!s.tool||p.upgrades[id]===0||p.owned.includes(s.tool))))return false;
+ const spent=legacy?totalSpent({...p,upgrades:{...p.upgrades,cutter:0}})+p.patterns.reduce((sum,id)=>sum+(LEGACY_PATTERNS[id]||0),0):totalSpent(p);
+ if(spent!==p.spent)return false;
+ const ids=[...STEP1_SITES,STEP1_BOSS].map(s=>s.id);
+ return (p.lastSite===null||ids.includes(p.lastSite))&&Array.isArray(p.history)&&p.history.length<=100&&p.history.every(r=>ids.includes(r.site)&&['random','retry','boss'].includes(r.mode)&&uint(r.workMs)&&uint(r.recovered)&&uint(r.total)&&r.recovered<=r.total&&Number.isFinite(r.batteryUsed)&&r.batteryUsed>=0&&Array.isArray(r.tools)&&r.tools.every(t=>['cutter','bomb','blackhole'].includes(t)))&&Array.isArray(p.purchases)&&p.purchases.length<=100&&p.purchases.every(r=>(Object.hasOwn(UPGRADES,r.id)||Object.hasOwn(UNLOCKS,r.id)||Object.hasOwn(LEGACY_PATTERNS,r.id))&&uint(r.cost)&&uint(r.workMs));
+}
+class Step1World extends SettlingWorld{
+ constructor(site,p){super(site.data,{capacity:statsForProfile(p).capacity});const s=statsForProfile(p);this.allowedTools=[...p.owned];this.allowedPatterns=['dot'];Object.defineProperty(this,'cutterLevel',{value:p.upgrades.cutter});this.suctionRate=s.suctionRate;this.suctionRadius=s.suctionRadius;this.usedTools=new Set();super.configure({bombRange:p.upgrades.bombRange,bombForce:p.upgrades.bombForce,gravityForce:p.upgrades.gravityForce});}
+ cutPattern(){return crossPattern(this.cutterLevel??0);}
+ canUseTool(){return this.toolEnabled&&!this.settled&&this.charge>1e-8&&(this.tool!=='blackhole'||this.wells.length===0);}
+ setTool(id){return this.allowedTools.includes(id)&&super.setTool(id);}
+ configure(patch){if(!patch||Object.entries(patch).some(([k,v])=>k==='pattern'?!this.allowedPatterns.includes(v):this.settings[k]!==v))return false;return super.configure(patch);}
+ activate(x,y){const ok=super.activate(x,y);if(ok)this.usedTools.add(this.tool);return ok;}
+}
+export class Step1Run extends FranceRun{
+ constructor(site,profile,mode='random'){super(site,profile,mode);this.world=new Step1World(site,this.profile);this.workMs=0;}
+ exhaust(){if(this.world.charge<=1e-8){this.phase='finishing';this.world.toolEnabled=false;}}
+ update(dt,input){if(!this.paused&&!this.finishReady&&this.state==='active'&&Number.isFinite(dt)&&dt>0)this.workMs+=dt*1000;super.update(dt,input);}
+}
+export class Step1Journey extends FranceJourney{
+ constructor(storage,locks=globalThis.navigator?.locks){super(storage,locks?.request?{request:(_name,fn)=>locks.request(LOCK,fn)}:null);if(!valid(this.profile))this.profile=fresh();else if(this.profile.patternRefund)this.notice=`기존 문양 구매액 ${this.profile.patternRefund} 부품을 반환했어요. 절단기를 강화해 보세요.`;}
+ read(){
+  let values=STEP1_SAVE_KEYS.map(k=>this.storage.getItem(k)).filter(v=>v!==null),legacy=false;
+  if(!values.length){values=LEGACY_SAVE_KEYS.map(k=>this.storage.getItem(k)).filter(v=>v!==null);legacy=true;}if(!values.length)return fresh();
+  const parsed=values.map(v=>JSON.parse(v));if(parsed.some(p=>!valid(p,legacy)))throw Error('corrupt');parsed.sort((a,b)=>b.revision-a.revision);
+  if(parsed.length===2&&parsed[0].revision===parsed[1].revision&&JSON.stringify(parsed[0])!==JSON.stringify(parsed[1]))throw Error('conflict');
+  const p=parsed[0];if(!legacy)return p;
+  const refund=p.patterns.reduce((sum,id)=>sum+(LEGACY_PATTERNS[id]||0),0);
+  return {...p,version:2,patternRefund:refund,parts:p.parts+refund,spent:p.spent-refund,patterns:['dot'],upgrades:{...p.upgrades,cutter:0}};
+ }
+ save(next){next.revision++;if(!valid(next))throw Error('invalid');this.storage.setItem(STEP1_SAVE_KEYS[next.revision%2],JSON.stringify(next));this.profile=next;}
+ stats(p=this.profile){return statsForProfile(p);}
+ offers(p=this.profile){return offers(p);}
+ async buy(id,expected){return this.transact(p=>{
+  if(this.currentRun)return {ok:false,reason:'active'};const offer=this.offers(p).find(o=>o.id===id);
+  if(!offer)return {ok:false,reason:'unknown'};if(expected&&(expected.level!==offer.level||expected.cost!==offer.cost))return {ok:false,reason:'stale'};if(!offer.available)return {ok:false,reason:'unavailable'};if(p.parts<offer.cost)return {ok:false,reason:'insufficient'};
+  const next=clone(p);next.parts-=offer.cost;next.spent+=offer.cost;if(Object.hasOwn(UPGRADES,id))next.upgrades[id]++;else next[UNLOCKS[id].kind].push(id);
+  next.purchases.push({id,cost:offer.cost,workMs:p.workMs});next.purchases=next.purchases.slice(-100);this.save(next);return {ok:true};
+ });}
+ async start(mode='random'){return this.transact(p=>{
+  if(this.currentRun)return {ok:false,reason:'active'};if(!['random','retry','boss'].includes(mode))return {ok:false,reason:'mode'};
+  const site=mode==='boss'?STEP1_BOSS:mode==='retry'?[...STEP1_SITES,STEP1_BOSS].find(s=>s.id===this.lastRunSite):chooseStep1Site(p.lastSite,p.earned);
+  if(!site)return {ok:false,reason:'no-previous-site'};const next=clone(p);next.lastSite=site.id;
+  const run=new Step1Run(site,next,site.id===STEP1_BOSS.id?'boss':mode);this.save(next);this.currentRun=run;this.lastRunSite=site.id;return {ok:true,run};
+ });}
+ async finish(){const run=this.currentRun;if(run){run.settling=true;run.pause(true);}return this.transact(p=>{
+  if(!run||run!==this.currentRun)return {ok:false,reason:'no-run'};const recovered=run.world.collected,workMs=Math.round(run.workMs);
+  if(!uint(recovered)||recovered>run.world.initial||!uint(workMs))return {ok:false,reason:'invalid-recovery'};
+  const qualified=run.qualified,first=run.mode==='boss'&&qualified&&!p.bossCleared,bonus=first?500:0,next=clone(p);
+  next.parts+=recovered+bonus;next.earned+=recovered+bonus;next.lastSite=run.site.id;next.workMs+=workMs;next.runCount++;if(run.mode==='boss')next.bossAttempts++;
+  if(first){next.bossCleared=true;next.firstClearMs=next.workMs;}
+  next.history.push({site:run.site.id,mode:run.mode,workMs,recovered,total:run.world.initial,batteryUsed:run.world.capacity-run.world.charge,tools:[...run.world.usedTools]});next.history=next.history.slice(-100);
+  this.save(next);run.state='finished';run.world.toolEnabled=false;this.currentRun=null;this.lastRunSite=run.site.id;
+  return {ok:true,recovered,bonus,qualified,bossCleared:next.bossCleared,firstClear:first,mode:run.mode,siteName:run.site.name,workMs};
+ });}
+}

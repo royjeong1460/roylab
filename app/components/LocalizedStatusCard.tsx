@@ -11,11 +11,11 @@ const statusCopy: Record<
   }
 > = {
   ko: {
-    title: "준비중",
-    description: "Roy의 실험, 제품, 작업들을 차분히 정리하고 있어요.",
+    title: "작은 실험실",
+    description: "직접 만져 보고, 플레이하며 만들어 가는 Roy의 실험실입니다.",
   },
   en: {
-    title: "Coming soon",
+    title: "Roy’s lab",
     description: "A portfolio for experiments, products, and work taking shape.",
   },
 };
@@ -54,6 +54,12 @@ export function LocalizedStatusCard() {
       <p className="status-eyebrow">roylab</p>
       <h1>{copy.title}</h1>
       <p className="status-subcopy">{copy.description}</p>
+      <a className="demo-card" href="/games/planet-patchup/">
+        <span className="demo-tag">PLAYABLE DEMO · 01</span>
+        <strong>Planet Patchup</strong>
+        <span>{locale === "ko" ? "무너뜨리고, 모으고, 더 강하게." : "Break it down. Collect. Upgrade."}</span>
+        <b>{locale === "ko" ? "무료 데모 플레이 →" : "Play the free demo →"}</b>
+      </a>
     </section>
   );
 }

@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/demos/**/node_modules/
+/demos/**/dist-demo/
+/demos/**/demo-sources.json
