@@ -1,6 +1,6 @@
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 
-export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,end,press,touchPressOnRelease=()=>false,onViewChange=()=>{}}) {
+export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,end,press,touchPressOnRelease=()=>false,touchMargin={right:0,bottom:0},onViewChange=()=>{}}) {
   const pointers=new Map();
   let working=false,touchBlocked=false,gesture=null,destroyed=false;
   const isArea=event=>event.target===surface||event.target===canvas;
@@ -13,10 +13,13 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
     const raw=screen(event);
     if(!raw)return null;
     const world=viewport.screenToWorld(raw.x,raw.y);
-    // Check the finger before offset/clamp so a captured off-board drag cannot cut an edge.
-    if(raw.x<0||raw.y<0||raw.x>viewport.viewWidth||raw.y>viewport.viewHeight||world.x<0||world.y<0||world.x>viewport.worldWidth||world.y>viewport.worldHeight)return null;
+    const rect=canvas.getBoundingClientRect(),touch=event.pointerType==='touch';
+    const right=touch?Math.max(0,touchMargin.right||0):0,bottom=touch?Math.max(0,touchMargin.bottom||0):0;
+    const extraX=right*viewport.viewWidth/rect.width,extraY=bottom*viewport.viewHeight/rect.height;
+    // Permit a bounded finger apron before applying the nozzle offset, including letterboxed map edges.
+    if(raw.x<0||raw.y<0||raw.x>viewport.viewWidth+extraX||raw.y>viewport.viewHeight+extraY||world.x<0||world.y<0||world.x>viewport.worldWidth+extraX/viewport.zoom||world.y>viewport.worldHeight+extraY/viewport.zoom)return null;
     if(event.pointerType!=='touch')return world;
-    const bounds=surface.getBoundingClientRect(),rect=canvas.getBoundingClientRect();
+    const bounds=surface.getBoundingClientRect();
     const offsetX=32*clamp((bounds.right-event.clientX)/64,0,1);
     const offsetY=64*clamp((bounds.bottom-event.clientY)/96,0,1);
     const nozzle=viewport.screenToWorld(raw.x-offsetX*viewport.viewWidth/rect.width,raw.y-offsetY*viewport.viewHeight/rect.height);

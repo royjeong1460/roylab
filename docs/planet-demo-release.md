@@ -12,3 +12,7 @@ Verification before deployment:
 - Next static export and standalone Vite build checked. Phaser retains bundle-size warning; inherited game source has six unused-variable lint warnings, no lint errors.
 
 Limitations: no physical iPhone test performed in this deployment task. Touch gestures, sustained FPS, heat, Safari storage and safe-area behavior need real-device validation. The 20–30 minute first-clear goal is not proven by the scripted boss test. No ads, payment, analytics, accounts or backend saves.
+
+## Touch apron update
+
+Free-step1 and its public demo now reserve a 32 CSS px right apron and 64 CSS px bottom apron on narrow/coarse-pointer screens. Touches can begin and continue there; map bounds are tested with this bounded allowance before nozzle offset. Tool buttons remain outside the capture surface. Mouse behavior and other prototype routes retain their previous bounds. Input regression: 23 cases passed, including letterbox edges, touch apron start/re-entry, out-of-range stop, and discrete-tool pinch cancellation. Physical iPhone retest remains required.
