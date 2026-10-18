@@ -43,3 +43,5 @@ next-env.d.ts
 /demos/**/node_modules/
 /demos/**/dist-demo/
 /demos/**/demo-sources.json
+
+/demos/**/dist-blast/

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build --config vite.demo.config.js",
-    "test": "node --test tests/demo-ui.mjs tests/free-step1-last-use.mjs tests/free-step1-rest.mjs tests/free-step1-cutter.mjs tests/free-step1-journey.mjs tests/free-step1-ui.mjs && node tests/battery-input.mjs"
+    "test": "node --test tests/blast-step1.mjs tests/demo-ui.mjs tests/free-step1-last-use.mjs tests/free-step1-rest.mjs tests/free-step1-cutter.mjs tests/free-step1-journey.mjs tests/free-step1-ui.mjs && node tests/battery-input.mjs && node tests/blast-step1-playthrough.mjs",
+    "build:blast": "vite build --config vite.blast.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"
