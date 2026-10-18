@@ -41,3 +41,7 @@ The reserved right/bottom touch apron has been removed from the free-step1 and p
 - Finishing a run now settles into the workshop with a receipt. Upgrade cards show levels, before/after values, use cases, price and shortage. Bomb upgrades and black-hole unlock appear first. Save keys and prices unchanged.
 - Verified: 50 portable tests, 27 input cases; max-upgrade boss replay recovered 3840/5480 with 13 shots and 24 battery remaining. Desktop browser at 390x844 and 320x568: full-width field, larger pixels, minimap toggle, visible mint debris, mouse blast, manual return, 10-second cleanup into workshop and same-site retry. Physical iPhone release/pinch/heat still needs device retest; these gesture paths have automated input coverage.
 - Only blast public assets are rebuilt. Original public demo remains unchanged.
+
+## Touch cursor correction — 2026-10-18
+
+The blast-2 release incorrectly bypassed the finger-occlusion offset when release aiming was enabled. Restore the 32px-left/64px-up cursor offset while keeping drag aiming and release firing. Both the displayed cursor and shot use the same corrected position; smooth right/bottom edge easing uses the visible map bounds without reserving margins. Mouse down and two-finger cancellation are unchanged. Regression reproduces the incorrect unshifted shot before the fix, then passes offset/release alignment, smooth edge reach in fitted and zoomed maps, and gesture cancellation (28 input cases). Physical iPhone feel remains to be retested.

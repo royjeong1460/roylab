@@ -18,10 +18,10 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
     const extraX=right*viewport.viewWidth/rect.width,extraY=bottom*viewport.viewHeight/rect.height;
     // Permit a bounded finger apron before applying the nozzle offset, including letterboxed map edges.
     if(raw.x<0||raw.y<0||raw.x>viewport.viewWidth+extraX||raw.y>viewport.viewHeight+extraY||world.x<0||world.y<0||world.x>viewport.worldWidth+extraX/viewport.zoom||world.y>viewport.worldHeight+extraY/viewport.zoom)return null;
-    if(event.pointerType!=='touch'||touchReleaseAtPointer)return world;
+    if(event.pointerType!=='touch')return world;
     const bounds=surface.getBoundingClientRect();
     let edgeX=bounds.right,edgeY=bounds.bottom;
-    const edgeFollow=right>0||bottom>0;
+    const edgeFollow=right>0||bottom>0||touchReleaseAtPointer;
     if(edgeFollow){
       // Fade at the visible map edge, not the outer surface: fitted maps may be letterboxed.
       const edge=viewport.worldToScreen(viewport.worldWidth,viewport.worldHeight);

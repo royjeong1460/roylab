@@ -211,11 +211,12 @@ test('zoomed touch reaches viewport right and bottom without an outside strip',(
  h.fire('pointerdown',{x:394,y:596});const q=h.calls.at(-1)[1],edge=h.view.screenToWorld(384,576);
  near(q.x,edge.x);near(q.y,edge.y);
 });
-test('direct mobile aim drags and fires once at release position, mouse still fires on down',()=>{
+test('mobile drag keeps offset and fires once at the released cursor, mouse stays immediate',()=>{
  const shots=[],h=harness(p=>shots.push(p),()=>true,{touchReleaseAtPointer:true});
  h.fire('pointerdown',{x:100,y:200});h.fire('pointermove',{x:220,y:350});assert.equal(shots.length,0);
  h.fire('pointerup',{x:240,y:370});assert.equal(shots.length,1);
- const q=h.view.screenToWorld(230,350);near(shots[0].x,q.x);near(shots[0].y,q.y);
+ const shown=h.calls.filter(c=>c[0]==='move').at(-1)[1];assert.deepEqual(shown,shots[0]);
+ const q=h.view.screenToWorld(230-32,350-64);near(shots[0].x,q.x);near(shots[0].y,q.y);
  h.fire('pointerup',{x:240,y:370});assert.equal(shots.length,1);
  h.fire('pointerdown',{pointerType:'mouse',x:150,y:240});assert.equal(shots.length,2);
  h.fire('pointermove',{pointerType:'mouse',x:200,y:280});h.fire('pointerup',{pointerType:'mouse'});assert.equal(shots.length,2);
@@ -228,6 +229,24 @@ test('direct touch camera gesture pans and zooms, neither finger release fires',
  h.fire('pointerup',{id:2});h.fire('pointermove',{x:200,y:300});h.fire('pointerup');assert.equal(shots.length,0);
  h.fire('pointerdown');h.fire('pointercancel');assert.equal(shots.length,0);
  h.fire('pointerdown');h.fire('pointerup',{x:600});assert.equal(shots.length,0);
+});
+test('release cursor eases to visible map edges with no outside touch apron',()=>{
+ for(const fit of [false,true]){
+  const shots=[],h=harness(p=>shots.push(p),()=>true,{touchReleaseAtPointer:true});
+  if(fit){h.view.setSize(500,576);h.view.fit();}else h.view.pan(-100,100);
+  const rect=h.canvas.getBoundingClientRect(),edge=h.view.worldToScreen(192,288);
+  const right=Math.min(rect.right,rect.left+edge.x*rect.width/h.view.viewWidth);
+  const bottom=Math.min(rect.bottom,rect.top+edge.y*rect.height/h.view.viewHeight);
+  let prev=-Infinity;
+  for(const d of [64,48,32,16,0]){
+   h.fire(d===64?'pointerdown':'pointermove',{x:right-d,y:bottom-96});
+   const q=h.calls.at(-1)[1],screen=h.view.worldToScreen(q.x,q.y),shown=rect.left+screen.x*rect.width/h.view.viewWidth,t=d/64;
+   near(right-d-shown,32*t*t*(3-2*t));assert(shown>prev);prev=shown;
+  }
+  h.fire('pointerup',{x:right,y:bottom});assert.equal(shots.length,1);
+  const target=h.view.screenToWorld((right-rect.left)*h.view.viewWidth/rect.width,(bottom-rect.top)*h.view.viewHeight/rect.height);
+  near(shots[0].x,target.x);near(shots[0].y,target.y);
+ }
 });
 console.log(`${passed} passed, ${failed} failed battery viewport/input cases`);
 if(failed)process.exitCode=1;
