@@ -2,9 +2,5 @@
 
 .stats{grid-template-columns:repeat(4,1fr)}.cutter-offer{border-color:#7a9678;background:#f0f4e9}.cutter-preview{display:flex;align-items:center;justify-content:center;gap:28px;margin:6px 0 12px}.cutter-preview figure{margin:0;text-align:center}.cutter-preview canvas{display:block;width:78px;height:78px;background:#e1e9d8;border-radius:8px;image-rendering:pixelated}.cutter-preview figcaption{font-size:11px;margin-top:4px}#cutter-shape{font-size:11px;color:#42633f;margin:10px 0 4px}@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
 
-/* The apron is a sibling of the canvas, never an overlay on tool buttons. */
-#touch-surface{position:relative;height:clamp(360px,58vh,680px);touch-action:none;background:#dbe2d0;overflow:hidden;border-radius:16px}
-#touch-surface #playfield{position:absolute;inset:0;height:auto;min-height:0}
-.touch-apron{display:none;pointer-events:none}
-@media(max-width:600px){#touch-surface{height:54dvh;min-height:300px}}
-@media(max-width:600px),(any-pointer:coarse){#touch-surface #playfield{right:32px;bottom:64px}.touch-apron{display:block;position:absolute;bottom:24px;left:0;right:32px;text-align:center;font-size:10px;color:#78826d}}
+/* During a mobile run the field uses the full viewport width. */
+@media(max-width:600px){body:has(#expedition:not([hidden])) main{padding-left:0;padding-right:0}body:has(#expedition:not([hidden])) #playfield{border-radius:0;border-left:0;border-right:0}}

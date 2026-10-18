@@ -194,5 +194,22 @@ test('extended deferred taps still cancel on pinch and release outside apron',()
  h.fire('pointerdown');h.fire('pointerdown',{id:2,x:250});h.fire('pointerup',{id:2});h.fire('pointerup');assert.equal(presses.length,0);
  h.fire('pointerdown');h.fire('pointerup',{x:500});assert.equal(presses.length,0);
 });
+test('full-width touch offset fades smoothly at the visible map edge, including letterboxing',()=>{
+ const h=harness(null,()=>false,{touchMargin:{right:32,bottom:64}});h.view.fit();h.view.setSize(500,576);h.view.fit();
+ const rect=h.canvas.getBoundingClientRect(),edge=h.view.worldToScreen(192,140);
+ const right=rect.left+edge.x*rect.width/h.view.viewWidth,y=rect.top+edge.y*rect.height/h.view.viewHeight;
+ let previous=-Infinity;
+ for(const distance of [80,64,48,32,16,8,0]){
+   const x=right-distance;h.fire(distance===80?'pointerdown':'pointermove',{x,y});const q=h.calls.at(-1)[1];
+   const shown=h.view.worldToScreen(q.x,q.y).x*rect.width/h.view.viewWidth+rect.left;
+   const t=Math.min(1,distance/64);near(x-shown,32*t*t*(3-2*t));assert(shown>previous);previous=shown;
+ }
+ near(h.calls.at(-1)[1].x,192);
+});
+test('zoomed touch reaches viewport right and bottom without an outside strip',()=>{
+ const h=harness(null,()=>false,{touchMargin:{right:32,bottom:64}});h.view.pan(-180,100);
+ h.fire('pointerdown',{x:394,y:596});const q=h.calls.at(-1)[1],edge=h.view.screenToWorld(384,576);
+ near(q.x,edge.x);near(q.y,edge.y);
+});
 console.log(`${passed} passed, ${failed} failed battery viewport/input cases`);
 if(failed)process.exitCode=1;

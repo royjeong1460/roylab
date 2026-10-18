@@ -20,8 +20,17 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
     if(raw.x<0||raw.y<0||raw.x>viewport.viewWidth+extraX||raw.y>viewport.viewHeight+extraY||world.x<0||world.y<0||world.x>viewport.worldWidth+extraX/viewport.zoom||world.y>viewport.worldHeight+extraY/viewport.zoom)return null;
     if(event.pointerType!=='touch')return world;
     const bounds=surface.getBoundingClientRect();
-    const offsetX=32*clamp((bounds.right-event.clientX)/64,0,1);
-    const offsetY=64*clamp((bounds.bottom-event.clientY)/96,0,1);
+    let edgeX=bounds.right,edgeY=bounds.bottom;
+    const edgeFollow=right>0||bottom>0;
+    if(edgeFollow){
+      // Fade at the visible map edge, not the outer surface: fitted maps may be letterboxed.
+      const edge=viewport.worldToScreen(viewport.worldWidth,viewport.worldHeight);
+      edgeX=Math.min(rect.right,rect.left+edge.x*rect.width/viewport.viewWidth);
+      edgeY=Math.min(rect.bottom,rect.top+edge.y*rect.height/viewport.viewHeight);
+    }
+    const fade=distance=>{const t=clamp(distance,0,1);return edgeFollow?t*t*(3-2*t):t;};
+    const offsetX=32*fade((edgeX-event.clientX)/64);
+    const offsetY=64*fade((edgeY-event.clientY)/96);
     const nozzle=viewport.screenToWorld(raw.x-offsetX*viewport.viewWidth/rect.width,raw.y-offsetY*viewport.viewHeight/rect.height);
     return {x:clamp(nozzle.x,0,viewport.worldWidth),y:clamp(nozzle.y,0,viewport.worldHeight)};
   };

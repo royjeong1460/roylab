@@ -11,3 +11,9 @@ test('demo provides every shared game control exactly once',()=>{
  assert.match(html,/data-tool="cutter"/);assert.match(html,/data-tool="bomb"/);assert.match(html,/data-tool="blackhole"/);
  assert(!html.includes('data-tool="hammer"'));
 });
+
+test('demo reserves no touch apron beside or below the field',()=>{
+ assert(!html.includes('touch-surface'));assert(!html.includes('touch-apron'));
+ const css=readFileSync(new URL('../src/demo/style.css',import.meta.url),'utf8');
+ assert(!css.includes('#touch-surface'));assert(!/right:32px|bottom:64px/.test(css));
+});
