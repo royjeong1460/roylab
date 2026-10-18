@@ -1,10 +1,10 @@
 import {BlastJourney,BlastRun} from '../src/blast-step1/journey.js';
-import {STEP1_BOSS} from '../src/free-step1/sites.js';
+import {BLAST_BOSS as STEP1_BOSS} from '../src/blast-step1/sites.js';
 const j=new BlastJourney({getItem:()=>null,setItem:()=>{}},{request:async(_,f)=>f()});
 const p=structuredClone(j.profile);p.owned.push('blackhole');Object.assign(p.upgrades,{capacity:24,suction:20,range:16,bombRange:5,bombForce:5,gravityForce:5});
 const r=new BlastRun(STEP1_BOSS,p,'boss'),w=r.world;let shots=0;
 function target(){
- if(shots===0)return{x:27,y:208};if(shots===1)return{x:133,y:208};
+ if(shots<2)return{...STEP1_BOSS.preview[shots],y:208};
  const b=w.bodies.reduce((a,b)=>!a||a.pixels.length<b.pixels.length?b:a,null);if(!b)return{x:w.width/2,y:w.floorY-8};
  const m=w.material(b);let best=m[0].q,count=-1;
  for(let i=0;i<m.length;i+=32){const q=m[i].q;if(!w.validPoint(q.x,q.y))continue;const score=m.reduce((s,p)=>s+(Math.hypot(q.x-p.q.x,q.y-p.q.y)<8),0);if(score>count){count=score;best=q;}}

@@ -10,7 +10,9 @@ body:has(#expedition:not([hidden])) .compare-link{display:none}
 #pause span{display:block;width:3px;height:16px;background:#4c5843}
 .field-wrap{position:relative;flex:1;min-height:160px;display:flex}
 #playfield{width:100%;height:auto;min-height:0;flex:1;border:0;border-radius:0;background:#d7c9a4}
-#minimap{display:none}
+#map-overview{position:absolute;right:8px;top:8px;width:84px;min-height:64px;padding:3px;border:1px solid #80917a;background:#eee4c3e6;z-index:3;box-shadow:1px 2px #73765b66;touch-action:manipulation}
+#minimap{display:block;position:static;width:76px;height:53px;opacity:1;pointer-events:none;border:0;background:transparent}
+#map-label{display:block;font-size:9px;line-height:14px;pointer-events:none}
 #feedback{flex:none;height:28px;min-height:28px;margin:0;padding:0 12px;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:15px;color:#4c5843;background:#d7d2b2;white-space:nowrap;overflow:hidden}
 .toolbox{padding:10px 0;background:transparent;border:0;border-radius:0}
 .dock-label{font-size:11px;margin:0 1px 6px}
@@ -27,3 +29,7 @@ body:has(#expedition:not([hidden])) .compare-link{display:none}
 #pause-dialog .tools{grid-template-columns:repeat(2,minmax(0,1fr))}
 #pause-dialog .tools button{display:flex;flex-direction:column;min-width:0;gap:3px}
 #pause-dialog .tools small{white-space:normal;line-height:1.3}
+
+#run-receipt{border:1px solid #9baa86;background:#e1e4c8;padding:12px;margin:12px 0}#run-receipt h2{font-size:17px;margin:0}#run-receipt p{font-size:11px;margin:5px 0}#upgrade-guide{font-size:13px;font-weight:700}.offer-help{color:#52684f}.workshop-actions{display:grid;gap:10px;margin-top:18px}.workshop-actions button{font-size:12px}#workshop .offers{margin-top:12px}
+
+#workshop h1{font-size:22px;margin:6px 0}#workshop h1 br{display:none}#workshop #result-bonus{font-weight:400}#workshop .fine{margin:5px 0}#workshop-back{padding:5px 10px;font-size:11px;min-height:36px}#workshop .offer{padding:12px}#workshop .offer h3{font-size:14px}

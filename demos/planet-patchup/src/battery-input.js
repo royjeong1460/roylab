@@ -1,6 +1,6 @@
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 
-export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,end,press,touchPressOnRelease=()=>false,touchMargin={right:0,bottom:0},onViewChange=()=>{}}) {
+export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,end,press,touchPressOnRelease=()=>false,touchMargin={right:0,bottom:0},touchReleaseAtPointer=false,onViewChange=()=>{}}) {
   const pointers=new Map();
   let working=false,touchBlocked=false,gesture=null,destroyed=false;
   const isArea=event=>event.target===surface||event.target===canvas;
@@ -18,7 +18,7 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
     const extraX=right*viewport.viewWidth/rect.width,extraY=bottom*viewport.viewHeight/rect.height;
     // Permit a bounded finger apron before applying the nozzle offset, including letterboxed map edges.
     if(raw.x<0||raw.y<0||raw.x>viewport.viewWidth+extraX||raw.y>viewport.viewHeight+extraY||world.x<0||world.y<0||world.x>viewport.worldWidth+extraX/viewport.zoom||world.y>viewport.worldHeight+extraY/viewport.zoom)return null;
-    if(event.pointerType!=='touch')return world;
+    if(event.pointerType!=='touch'||touchReleaseAtPointer)return world;
     const bounds=surface.getBoundingClientRect();
     let edgeX=bounds.right,edgeY=bounds.bottom;
     const edgeFollow=right>0||bottom>0;
@@ -97,7 +97,7 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
       }
       if(pointer.type!=='touch'&&(event.buttons&pointer.button)===0){remove(event.pointerId);return;}
       const point=screen(event);if(!point){stopWork();return;}
-      if(pointer.tap&&Math.hypot(event.clientX-pointer.tap.x,event.clientY-pointer.tap.y)>12)pointer.tap=null;
+      if(pointer.tap&&!touchReleaseAtPointer&&Math.hypot(event.clientX-pointer.tap.x,event.clientY-pointer.tap.y)>12)pointer.tap=null;
       event.preventDefault();const previous=pointer.screen;pointer.screen=point;
       if(touches().length>=2){
         const next=gestureState();
@@ -116,7 +116,8 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
     pointerup:event=>{
       if(destroyed)return;
       const tap=pointers.get(event.pointerId)?.tap;
-      if(tap&&!touchBlocked&&locate(event)&&canStart(tap.point))press?.(tap.point);
+      const point=locate(event),target=touchReleaseAtPointer?point:tap?.point;
+      if(tap&&!touchBlocked&&point&&canStart(target)){if(touchReleaseAtPointer)move(target);press?.(target);}
       remove(event.pointerId);
     },
     pointercancel:event=>{if(!destroyed)remove(event.pointerId);},

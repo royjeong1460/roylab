@@ -32,3 +32,12 @@ The reserved right/bottom touch apron has been removed from the free-step1 and p
 - Verified: 45 portable Node tests +25 input cases; original 35 tests and configured physical boss replay; actual bomb/black-hole physics preserve pixel accounting. Browser: 390x844 field 390x756, 320x568 field 320x480, no horizontal overflow; blast consumes energy, creates debris and collection; pause, return/result and shop render.
 - Max-upgrade boss reachability fixture: bomb-only 13 shots, 3837/5480 recovered, 24 battery remaining; this verifies reachability, not human pacing.
 - Not verified: physical iPhone touch/heat, first-3-minute enjoyment, or 20–30 minute pacing. Figma tool selection was unspecified; it is accessible through pause for this experiment.
+
+## Blast mobile collection and camera — 2026-10-18
+
+- Collectible loose sand and flying grains use a steady mint face/darker rim. Solid chunks retain their original surface. Rendering only: no physics or pixel-accounting changes.
+- Opt-in touch input aims while dragging and fires once at the actual release position. Mouse down stays immediate; a second touch cancels the pending shot before camera pan/pinch. Legacy input defaults are preserved.
+- Blast maps gain 50% width through symmetric side space, retaining building geometry, pixel count and IDs. Initial camera uses 6 CSS px/cell and shows the first support; upper-right minimap toggles overview/close view. Two-finger pan/pinch and PC right-drag/wheel remain available.
+- Finishing a run now settles into the workshop with a receipt. Upgrade cards show levels, before/after values, use cases, price and shortage. Bomb upgrades and black-hole unlock appear first. Save keys and prices unchanged.
+- Verified: 50 portable tests, 27 input cases; max-upgrade boss replay recovered 3840/5480 with 13 shots and 24 battery remaining. Desktop browser at 390x844 and 320x568: full-width field, larger pixels, minimap toggle, visible mint debris, mouse blast, manual return, 10-second cleanup into workshop and same-site retry. Physical iPhone release/pinch/heat still needs device retest; these gesture paths have automated input coverage.
+- Only blast public assets are rebuilt. Original public demo remains unchanged.

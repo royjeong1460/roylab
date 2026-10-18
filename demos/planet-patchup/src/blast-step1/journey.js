@@ -1,6 +1,6 @@
 import {FranceJourney,FranceRun} from '../france/journey.js';
 import {SettlingWorld} from '../free-step1/settling-world.js';
-import {STEP1_SITES,STEP1_BOSS,chooseStep1Site} from '../free-step1/sites.js';
+import {BLAST_SITES as STEP1_SITES,BLAST_BOSS as STEP1_BOSS,chooseBlastSite as chooseStep1Site} from './sites.js';
 import {UPGRADES,UNLOCKS,totalSpent,statsForProfile,offers} from './balance.js';
 
 

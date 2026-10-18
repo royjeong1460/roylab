@@ -4,9 +4,9 @@ import {createTrashSurface,trashPreviewEnabled} from './trash-surface.js';
 
 // Borrows world data for drawing only; never moves bodies or removes pixels.
 export class WorldRenderer {
-  constructor(scene, world, viewport, minimap, automaticSuction, {surface,createBackdrop=createBackdropPreview}={}) {
+  constructor(scene, world, viewport, minimap, automaticSuction, {surface,createBackdrop=createBackdropPreview,collectibleStyle=null}={}) {
     this.scene=scene;this.world=world;this.viewport=viewport;this.minimap=minimap;
-    this.automaticSuction=automaticSuction;
+    this.automaticSuction=automaticSuction;this.collectibleStyle=collectibleStyle;
     this.reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
     const w=world;
     this.surface=surface??(trashPreviewEnabled()?createTrashSurface(w.width,w.cells):null);
@@ -47,7 +47,7 @@ export class WorldRenderer {
     if(this.shownVersion!==w.version){
       const ctx=this.gridTexture.context;ctx.clearRect(0,0,w.width,w.height);
       for(let i=0;i<w.cells.length;i++){
-        const color=w.cells[i]||w.sand[i]||w.pending[i];if(!color)continue;
+        const color=w.cells[i]||(!this.collectibleStyle&&w.sand[i])||w.pending[i];if(!color)continue;
         const id=w.cells[i]||w.pending[i]?i:w.sandOrigins[i]-1;
         const x=i%w.width,y=Math.floor(i/w.width);ctx.fillStyle=this.surface?.css(id,color)||tones[color];ctx.fillRect(x,y,1,1);
         if(!this.surface&&(x*7+y*3)%11===0){ctx.fillStyle=worldTheme.grainHighlight;ctx.fillRect(x,y,1,1);}
@@ -62,7 +62,11 @@ export class WorldRenderer {
         }
         bodyCtx.restore();
       }
-      for(const grain of w.flying||[]){bodyCtx.fillStyle=this.surface?.css(grain.id,grain.color)||tones[grain.color];bodyCtx.fillRect((grain.x-.5)*4,(grain.y-.5)*4,4,4);}
+      if(this.collectibleStyle)for(let i=0;i<w.sand.length;i++)if(w.sand[i])this.drawCollectible(bodyCtx,i%w.width,Math.floor(i/w.width));
+      for(const grain of w.flying||[]){
+        if(this.collectibleStyle)this.drawCollectible(bodyCtx,grain.x-.5,grain.y-.5);
+        else{bodyCtx.fillStyle=this.surface?.css(grain.id,grain.color)||tones[grain.color];bodyCtx.fillRect((grain.x-.5)*4,(grain.y-.5)*4,4,4);}
+      }
       for(const crack of w.crackSegments?.()||[]){
         bodyCtx.strokeStyle=crack.broken?worldTheme.brokenCrack:worldTheme.scar;bodyCtx.lineWidth=crack.broken?2:1;
         bodyCtx.beginPath();bodyCtx.moveTo(crack.x*4,crack.y*4);bodyCtx.lineTo(crack.x2*4,crack.y2*4);bodyCtx.stroke();
@@ -75,7 +79,7 @@ export class WorldRenderer {
       if(e.kind==='tool-line'){fx.lineStyle(.5,0xffae5e,alpha);fx.lineBetween(e.x,e.y,e.x2,e.y2);}
       else if(e.kind==='tool-strike'){fx.lineStyle(.75,0xb16d49,alpha);fx.lineBetween(e.x,e.y,e.x+(e.direction||direction)*8,e.y);}
       else if(e.kind==='collect'){
-        const x=e.x+(aim.x-e.x)*t*t,y=e.y+(aim.y-e.y)*t*t;fx.fillStyle(this.surface?.color(e.id,e.color)||palette[e.color],alpha);fx.fillRect(x-.5,y-.5,1,1);
+        const x=e.x+(aim.x-e.x)*t*t,y=e.y+(aim.y-e.y)*t*t;fx.fillStyle(this.collectibleStyle?.color??(this.surface?.color(e.id,e.color)||palette[e.color]),alpha);fx.fillRect(x-.5,y-.5,1,1);
       }else{fx.lineStyle(.5,e.phase==='fuse'?0xd55635:0xffb766,alpha);fx.strokeCircle(e.x,e.y,e.phase==='fuse'?(e.radius||6):1+t*(e.radius||4));}
     }
     this.effects=this.effects.filter(e=>e.age<e.life);const n=this.nozzle;n.clear();
@@ -92,6 +96,11 @@ export class WorldRenderer {
     n.lineStyle(.6,working?0xf18a42:color,.9);n.strokeCircle(x,y,3);n.lineStyle(1,0x32524d);n.lineBetween(x,y+4,x,y+6.75);
     n.fillStyle(color);n.fillRoundedRect(x-1.75,y+5.5,3.5,4.25,1);n.fillStyle(0xeab572);n.fillRect(x-1,y+6.75,2,.75);
     if(!suctionOnly&&selectedTool!=='cutter'){n.lineStyle(.5,color,.8);n.lineBetween(x,y,x+direction*6,y);}
+  }
+  drawCollectible(ctx,x,y){
+    // A steady mint face and shaded edge remain readable without blinking or glow.
+    const px=x*4,py=y*4;ctx.fillStyle=this.collectibleStyle.fill;ctx.fillRect(px,py,4,4);
+    ctx.fillStyle=this.collectibleStyle.rim;ctx.fillRect(px+3,py,1,4);ctx.fillRect(px,py+3,3,1);
   }
   drawMinimap() {
     if(!this.gridTexture)return;

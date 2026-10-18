@@ -211,5 +211,23 @@ test('zoomed touch reaches viewport right and bottom without an outside strip',(
  h.fire('pointerdown',{x:394,y:596});const q=h.calls.at(-1)[1],edge=h.view.screenToWorld(384,576);
  near(q.x,edge.x);near(q.y,edge.y);
 });
+test('direct mobile aim drags and fires once at release position, mouse still fires on down',()=>{
+ const shots=[],h=harness(p=>shots.push(p),()=>true,{touchReleaseAtPointer:true});
+ h.fire('pointerdown',{x:100,y:200});h.fire('pointermove',{x:220,y:350});assert.equal(shots.length,0);
+ h.fire('pointerup',{x:240,y:370});assert.equal(shots.length,1);
+ const q=h.view.screenToWorld(230,350);near(shots[0].x,q.x);near(shots[0].y,q.y);
+ h.fire('pointerup',{x:240,y:370});assert.equal(shots.length,1);
+ h.fire('pointerdown',{pointerType:'mouse',x:150,y:240});assert.equal(shots.length,2);
+ h.fire('pointermove',{pointerType:'mouse',x:200,y:280});h.fire('pointerup',{pointerType:'mouse'});assert.equal(shots.length,2);
+});
+test('direct touch camera gesture pans and zooms, neither finger release fires',()=>{
+ const shots=[],h=harness(p=>shots.push(p),()=>true,{touchReleaseAtPointer:true});h.view.pan(-100,100);
+ const before=[h.view.x,h.view.y,h.view.zoom];h.fire('pointerdown',{x:100,y:300});h.fire('pointerdown',{x:250,y:300,id:2});
+ h.fire('pointermove',{x:120,y:330});h.fire('pointermove',{x:300,y:330,id:2});
+ assert.notDeepEqual([h.view.x,h.view.y,h.view.zoom],before);assert(h.view.zoom>before[2]);
+ h.fire('pointerup',{id:2});h.fire('pointermove',{x:200,y:300});h.fire('pointerup');assert.equal(shots.length,0);
+ h.fire('pointerdown');h.fire('pointercancel');assert.equal(shots.length,0);
+ h.fire('pointerdown');h.fire('pointerup',{x:600});assert.equal(shots.length,0);
+});
 console.log(`${passed} passed, ${failed} failed battery viewport/input cases`);
 if(failed)process.exitCode=1;
