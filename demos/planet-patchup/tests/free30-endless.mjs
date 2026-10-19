@@ -33,13 +33,17 @@ test('post-clear black-hole upgrades are applied beyond lab slider ceilings',()=
 });
 
 test('legacy spend migrates without losing parts or levels; new purchases use new prices',async()=>{
- const {j,storage,locks,m}=fixture(),p=structuredClone(j.profile);delete p.pricingVersion;delete p.legacyDiscount;
+ const {j,storage,locks,m}=fixture(),p=structuredClone(j.profile);p.version=1;delete p.pricingVersion;delete p.legacyDiscount;
  p.tutorial='done';p.upgrades.bombRange=5;p.spent=80*5+15*5*4/2;p.parts=5000;p.earned=p.parts+p.spent;
  for(const key of ['pixel-demolition-free30-v1-a','pixel-demolition-free30-v1-b'])m.set(key,JSON.stringify(p));
- const loaded=new FreeJourney(storage,locks);assert.equal(loaded.profile.parts,5000);assert.equal(loaded.profile.spent,p.spent);assert.equal(loaded.profile.upgrades.bombRange,5);assert.equal(loaded.profile.pricingVersion,2);
+ const loaded=new FreeJourney(storage,locks);assert.equal(loaded.profile.parts,5000);assert.equal(loaded.profile.spent,p.spent);assert.equal(loaded.profile.upgrades.bombRange,5);assert.equal(loaded.profile.pricingVersion,2);assert.equal(loaded.profile.version,2);
  const price=loaded.offers().find(o=>o.id==='bombRange').cost;assert.equal(price,80+15*5+60*16);assert((await loaded.buy('bombRange')).ok);
  const reloaded=new FreeJourney(storage,locks);assert.equal(reloaded.profile.parts,5000-price);assert.equal(reloaded.profile.spent,p.spent+price);assert.equal(reloaded.profile.upgrades.bombRange,6);assert.equal(totalSpent(reloaded.profile),reloaded.profile.spent);
 });
 test('first two upgrades keep quick onboarding while later levels grow in cost',()=>{
  const {j}=fixture();assert.equal(j.offers().find(o=>o.id==='bombRange').cost,80);j.profile.upgrades.bombRange=1;assert.equal(j.offers().find(o=>o.id==='bombRange').cost,95);j.profile.upgrades.bombRange=2;assert.equal(j.offers().find(o=>o.id==='bombRange').cost,170);
+});
+
+test('new saved schema is rejected by older tabs before they can write old prices',async()=>{
+ const {j,m}=fixture();await j.start();const written=[...m.values()].map(JSON.parse);assert(written.every(p=>p.version===2));
 });

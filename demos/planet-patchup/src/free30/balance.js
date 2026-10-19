@@ -24,8 +24,8 @@ export function totalSpent(p){
  },0)+Object.entries(UNLOCKS).reduce((sum,[id,s])=>sum+(p[s.kind].includes(id)?s.cost:0),0)-(p.pricingVersion===2?p.legacyDiscount||0:0);
 }
 export function migratePricing(p){
- if(p.pricingVersion===2)return p;
- const next={...p,pricingVersion:2,legacyDiscount:0};
+ if(p.pricingVersion===2)return {...p,version:2};
+ const next={...p,version:2,pricingVersion:2,legacyDiscount:0};
  // Preserve paid upgrades, remaining parts and historical spend; only future prices change.
  next.legacyDiscount=totalSpent(next)-p.spent;return next;
 }

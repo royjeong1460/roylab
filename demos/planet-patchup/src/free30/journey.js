@@ -6,13 +6,14 @@ import {UPGRADES,UNLOCKS,totalSpent,statsForProfile,offers,migratePricing} from 
 
 export const FREE_SAVE_KEYS=['pixel-demolition-free30-v1-a','pixel-demolition-free30-v1-b'];
 const LOCK='pixel-demolition-free30-v1',clone=value=>JSON.parse(JSON.stringify(value));
-const fresh=()=>({version:1,pricingVersion:2,legacyDiscount:0,campaign:'free30',tutorial:'intro',revision:0,earned:0,spent:0,parts:0,owned:['bomb'],patterns:['dot'],upgrades:Object.fromEntries(Object.keys(UPGRADES).map(k=>[k,0])),bossCleared:false,lastSite:null,runCount:0,bossAttempts:0,workMs:0,firstClearMs:null,history:[],purchases:[]});
+const fresh=()=>({version:2,pricingVersion:2,legacyDiscount:0,campaign:'free30',tutorial:'intro',revision:0,earned:0,spent:0,parts:0,owned:['bomb'],patterns:['dot'],upgrades:Object.fromEntries(Object.keys(UPGRADES).map(k=>[k,0])),bossCleared:false,lastSite:null,runCount:0,bossAttempts:0,workMs:0,firstClearMs:null,history:[],purchases:[]});
 const uint=n=>Number.isSafeInteger(n)&&n>=0;
 function valid(p){
+ if(p?.version===2&&p.pricingVersion!==2)return false;
  if(p?.pricingVersion!==undefined&&p.pricingVersion!==2)return false;
  if(p?.pricingVersion===2?!uint(p.legacyDiscount):p?.legacyDiscount!==undefined)return false;
  if(p?.tutorial!==undefined&&!['intro','upgrade','next','done'].includes(p.tutorial))return false;
- if(!p||p.version!==1||p.campaign!=='free30'||!['revision','earned','spent','parts','runCount','bossAttempts','workMs'].every(k=>uint(p[k]))||p.earned-p.spent!==p.parts||typeof p.bossCleared!=='boolean'||p.bossAttempts>p.runCount)return false;
+ if(!p||![1,2].includes(p.version)||p.campaign!=='free30'||!['revision','earned','spent','parts','runCount','bossAttempts','workMs'].every(k=>uint(p[k]))||p.earned-p.spent!==p.parts||typeof p.bossCleared!=='boolean'||p.bossAttempts>p.runCount)return false;
  if(p.bossCleared?!(uint(p.firstClearMs)&&p.firstClearMs<=p.workMs):p.firstClearMs!==null)return false;
  if(!Array.isArray(p.owned)||!p.owned.includes('bomb')||new Set(p.owned).size!==p.owned.length||p.owned.some(id=>!['bomb','blackhole'].includes(id))||!Array.isArray(p.patterns)||p.patterns.length!==1||p.patterns[0]!=='dot')return false;
  if(!p.upgrades||Object.keys(p.upgrades).length!==Object.keys(UPGRADES).length||!Object.entries(UPGRADES).every(([id,s])=>uint(p.upgrades[id])&&(p.bossCleared||p.upgrades[id]<=s.max)&&(!s.tool||p.upgrades[id]===0||p.owned.includes(s.tool))))return false;

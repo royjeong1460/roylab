@@ -6,8 +6,8 @@ Implementation:
 - [x] Test boss threshold, pause, failure, one-time award, post-clear purchases above previous caps, reload and pre-clear cap validation.
 - [x] End qualifying boss runs through the existing settlement path; show an explicit clear/continue-upgrading receipt.
 - [x] Remove gameplay level caps only for cleared profiles. Keep safe integer currency validation; apply purchased black-hole settings beyond the lab's old 100x UI normalization limit.
-- [x] Update upgrade cards, home copy and balance documentation; 85 tests and build passed. Browser QA verified boss threshold receipt and level 12 to 13 purchase beyond the old cap.
-- [ ] Deploy Roylab and confirm Cloudflare success.
+- [x] Update upgrade cards, home copy and balance documentation; 86 tests and build passed. Browser QA verified boss threshold receipt and level 12 to 13 purchase beyond the old cap.
+Deployment verification: check the final commit’s Cloudflare Pages result after pushing.
 
 Balance investigation: user reports 5–10 minutes; clarify whether this means tutorial or first boss. Existing estimator assumes 10-second attacks, 20-second shopping and checks bosses only every fifth run. Compare faster input and every-run boss probes before selecting numerical changes. No claim of validated 30-minute human playtime.
 
