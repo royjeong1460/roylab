@@ -1,0 +1,20 @@
+.first-guide{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.first-guide[hidden],.first-guide [hidden]{display:none}
+.guide-mask{position:absolute;inset:0}
+.guide-card{position:absolute;top:12px;left:12px;width:min(260px,calc(100% - 116px));padding:12px 14px;background:#f7f3dff2;color:#354e40;border:1px solid #6b836a66;border-radius:14px;box-shadow:0 3px 16px #18302118}
+.guide-card strong{font-size:13px;line-height:1.4}.guide-card p{font-size:13px;line-height:1.6;margin:7px 0}
+.guide-card button{pointer-events:auto;font-size:11px;padding:5px 8px;min-height:32px;background:transparent;color:#53664f;border:0;box-shadow:none;margin:0;text-decoration:underline}
+.guide-marker{position:absolute;width:46px;height:46px;transform:translate(-50%,-50%);border:2px solid #fff4ce;border-radius:50%;box-shadow:0 0 0 5px #db83394d,0 0 22px #fff0b5b3;animation:guide-breathe 1.8s ease-in-out infinite}
+.guide-marker span{position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);white-space:nowrap;background:#fff3d5;color:#61472b;font-size:11px;padding:3px 8px;border-radius:8px}
+@keyframes guide-breathe{50%{box-shadow:0 0 0 10px #db83392b,0 0 26px #fff0b5b3}}
+@media(prefers-reduced-motion:reduce){.guide-marker{animation:none}}
+#feedback{height:auto;min-height:36px;max-height:48px;white-space:normal;text-align:center;line-height:16px;padding:3px 12px}
+#feedback::before{content:'TIP';font-size:9px;letter-spacing:.08em;margin-right:8px;flex:none;opacity:.7}
+#tutorial-workshop{background:#e8edcf;border:1px solid #91a47c;border-radius:10px;padding:12px;margin:10px 0;font-size:13px;line-height:1.6}
+#tutorial-workshop[hidden]{display:none}
+#workshop .offer.first-upgrade{outline:2px solid #91a47c;background:#eef0d9}
+#workshop .offer.first-upgrade h3::before{content:'첫 강화 추천';display:block;font-size:10px;color:#657749;margin-bottom:7px}
+#workshop-random.next-map{outline:3px solid #c8d4a7;outline-offset:3px}
+#practice{min-height:40px;font-size:12px;margin-top:12px;background:transparent;box-shadow:none}
+#workshop-skip{font-size:11px;min-height:32px;padding:5px 9px;background:transparent;box-shadow:none}
+@media(max-height:500px){.guide-card{top:8px;padding:8px 10px}.guide-card p{margin:3px 0;font-size:12px}}

@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="ko" data-demo="planet"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#365646"><meta name="description" content="건물을 무너뜨리고 부품을 모아 장비를 키우세요. Planet Patchup 무료 첫 구역 데모."><title>Planet Patchup · 무료 첫 구역</title>  <script type="module" crossorigin src="./assets/free30-DWxVViyV.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/free30-B-re1NrO.css">
+<html lang="ko" data-demo="planet"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#365646"><meta name="description" content="건물을 무너뜨리고 부품을 모아 장비를 키우세요. Planet Patchup 무료 첫 구역 데모."><title>Planet Patchup · 무료 첫 구역</title>  <script type="module" crossorigin src="./assets/free30-k9sbTHUK.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/free30-BqpNS3ro.css">
 </head><body>
 <header><a class="brand" href="/">← roylab <span>PLANET PATCHUP</span></a><span class="wallet">부품 <strong id="parts">0</strong></span></header>
 <main>
@@ -13,12 +13,14 @@
  <p id="milestone" class="milestone"></p><dl id="stats" class="stats"></dl>
  <div class="base-actions"><button id="dispatch" class="primary">랜덤 현장 출동 <span>→</span></button><button id="workshop-open">작업장 · 장비 강화</button><button id="boss">쌍봉 철탑 도전 <small>한 번에 70% 회수 · 배터리 사용 · 시간제한 없음</small></button></div>
  <p id="boss-advice" class="fine"></p>
+ <button id="practice">조작 연습 다시 하기</button>
  <div class="next-region"><button id="next-region" disabled>다음 구역 · 본편 구매 후 진행</button><p class="fine">본편은 준비 중이에요. 이 체험판에서는 결제하지 않아요. 첫 구역은 계속 다시 플레이할 수 있어요.</p></div>
  <details class="playtest"><summary>플레이 기록</summary><p id="playtest-report"></p><button id="export-report">기록 내려받기</button><p class="fine">기록은 이 기기에만 저장해요. 다음 밸런스 조정 때 전달할 수 있어요.</p></details>
 </section>
 <section id="workshop" class="panel" hidden><div class="eyebrow">WORKSHOP</div><h1>정비하고 다시 출동!</h1>
  <section id="run-receipt" hidden aria-live="polite"><h2 id="result-title"></h2><p id="result-copy"></p><p id="result-bonus"></p></section>
- <p id="upgrade-guide"></p><p class="fine">강화는 다음 출동부터 적용돼요. 지금 구매하지 않고 부품을 모아도 좋아요.</p>
+ <p id="tutorial-workshop" role="status" hidden></p><button id="workshop-skip" hidden>첫 강화 안내 건너뛰기</button>
+ <p id="upgrade-guide"></p><p class="fine" id="workshop-note">강화는 다음 출동부터 적용돼요. 지금 구매하지 않고 부품을 모아도 좋아요.</p>
  <button id="workshop-back">← 기지로</button><div id="offers" class="offers"></div>
  <div class="workshop-actions"><button id="workshop-random" class="primary">강화 마치고 새 현장 →</button><button id="workshop-retry">같은 현장 재도전</button><button id="workshop-boss">쌍봉 철탑 도전</button></div>
 </section>
@@ -36,5 +38,5 @@
 <p class="compare-link"><a id="original-version" href="./demo.html">이전 폭파 데모</a></p>
 </main>
 <dialog id="pause-dialog"><p data-dialog-notice role="status" aria-live="polite"></p><div class="eyebrow">PAUSE</div><div class="eyebrow" id="run-mode"></div><h2 id="site-name"></h2><p>70% 회수가 목표예요. 메뉴에서는 시간과 배터리가 멈춰요.</p> <div class="toolbox"><div class="dock-label">도구 <span>● 자동 흡입 · 무료</span></div><div class="tools"><button data-tool="bomb"><span class="tool-glyph" aria-hidden="true">✹</span><b>폭파기</b></button><button data-tool="blackhole"><span class="tool-glyph" aria-hidden="true">◉</span><b>블랙홀</b><small id="blackhole-lock">600부품 · 작업장에서 해금</small></button></div><p id="tool-detail"></p></div>
-<p class="fine">손을 떼면 왼쪽 위 포인터에 도구 사용 · 민트색 잔해 자동 흡입<br>두 손가락 이동·확대 / PC는 우클릭 이동·휠 확대</p><button id="fit">맵 전체 보기</button><button id="resume" class="primary">청소 계속하기</button><button id="pause-return">지금까지 모으고 돌아가기</button></dialog>
+<p class="fine">PC: 클릭 즉시 사용 · 모바일: 손을 떼면 왼쪽 위 조준점에 사용<br>민트색 잔해 자동 흡입 · 두 손가락 이동·확대 / PC는 우클릭 이동·휠 확대</p><button id="fit">맵 전체 보기</button><button id="resume" class="primary">청소 계속하기</button><button id="pause-return">부품 챙겨 복귀 · 장비 강화</button></dialog>
 <noscript>게임을 실행하려면 JavaScript를 켜 주세요.</noscript></body></html>

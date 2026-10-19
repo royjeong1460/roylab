@@ -9,3 +9,12 @@ test('returned settlement failure keeps a visible retry control and frozen run',
  assert.equal(run.paused,true);assert.equal(get('pause-dialog').open,true);assert.equal(get('resume').hidden,true);assert.match(get('pause-return').textContent,/다시/);
  await context.settle();assert.equal(attempts,2);assert.equal(get('pause-dialog').open,false);assert.equal(scene.settled,true);assert.equal(get('resume').hidden,false);
 });
+test('finish during an awaited operation retries automatic settlement next frame',async()=>{
+ const start=main.indexOf('if(r.finishReady&&!this.settled'),end=main.indexOf('\n  }',start);
+ const condition=main.slice(start,end);
+ const scene={settled:false,settling:false};let calls=0;
+ const context={r:{finishReady:true},operating:true,guarded:async fn=>{if(!context.operating)await fn();},settle:async()=>{calls++;}};
+ vm.createContext(context);vm.runInContext(`function tick(){${condition}}`,context);
+ context.tick.call(scene);assert.equal(scene.settling,false);
+ context.operating=false;context.tick.call(scene);await Promise.resolve();assert.equal(calls,1);assert.equal(scene.settling,true);
+});
