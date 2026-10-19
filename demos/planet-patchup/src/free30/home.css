@@ -1,0 +1,38 @@
+/* Mobile home only. The field, balance, input and save system keep their own layout. */
+body:has(#base:not([hidden])){padding:0}
+body:has(#base:not([hidden]))>header,
+body:has(#base:not([hidden])) #test-label,
+body:has(#base:not([hidden])) .compare-link{display:none}
+body:has(#base:not([hidden])) main{padding:0;margin:0}
+.home-screen{position:relative;isolation:isolate;min-height:640px;height:100svh;overflow:hidden;background:#d7d2b2;color:#4c5843}
+#home-alley{position:absolute;inset:0;width:100%;height:100%;z-index:-1;image-rendering:pixelated;pointer-events:none}
+.home-options{position:absolute;right:20px;top:max(18px,env(safe-area-inset-top));min-width:64px;background:#d8d2afbd;border:2px solid #85866a;font-size:13px;padding:8px 12px}
+.home-title{position:absolute;top:14%;left:16px;right:16px;text-align:center}
+.home-title h1{margin:0;line-height:1;font-family:ui-monospace,monospace;font-weight:900;letter-spacing:-2px;color:#4c5843}
+.home-title h1 img{display:block;width:82%;max-width:300px;height:auto;margin:0 auto;image-rendering:pixelated}
+.home-title p{font-size:12px;font-weight:700;margin:12px 0;color:#596246}
+.home-menu{position:absolute;bottom:max(25px,env(safe-area-inset-bottom));left:14%;right:14%;text-align:center}
+.home-start{position:relative;width:100%;min-height:58px;border:2px solid #66704f;box-shadow:3px 4px #6e7553;background:#e1c37d;color:#374f3c;font-size:25px;font-weight:800;letter-spacing:1px}
+.home-start:hover:not(:disabled){background:#ead194}
+.home-start span{position:absolute;left:23px;top:50%;transform:translateY(-50%);font-size:16px}
+#start-caption{font-size:11px;font-weight:600;line-height:1.6;margin:12px -18px 14px;color:#4c5843}
+.home-secondary{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.home-secondary button{background:#d7c392bf;border:0;border-bottom:2px solid #8a8964;box-shadow:none;font-size:14px;padding:9px 5px;min-height:46px}
+.home-secondary span{font-size:21px;vertical-align:middle;margin-right:5px}
+.home-zone-label{font-size:10px;margin:13px 0 0;color:#555f45;letter-spacing:.05em}
+body:has(#base:not([hidden])) #notice:not(:empty){position:fixed;bottom:8px;left:50%;transform:translateX(-50%);width:min(460px,calc(100% - 20px));padding:10px;background:#fff0cc;border:2px solid #91603d;z-index:5}
+.home-dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.home-dialog-heading h2{margin:0;font-size:22px}
+.home-dialog-heading button{width:44px;min-width:44px;margin:0;padding:8px}
+.home-dialog .stats{grid-template-columns:1fr 1fr;margin:20px 0}
+.home-dialog .playtest{margin-top:24px;font-size:13px}
+.home-dialog .playtest summary{cursor:pointer;min-height:44px;padding:12px 0}
+.home-back-link{text-align:center;margin-bottom:0}.home-back-link a{color:inherit;font-size:12px}
+.home-zone-card{margin-top:24px;padding:18px 14px;background:#dfd6b2;border:1px solid #a29c77;text-align:center}
+.home-zone-card h3{font-size:16px;margin:10px 0}
+.home-zone-card .milestone{font-size:12px}
+.home-zone-card small{display:block;font-size:10px;font-weight:400;line-height:1.6;margin-top:5px}
+.home-tower{width:90px;height:110px;fill:none;stroke:#697254;stroke-width:3;stroke-linejoin:round}
+.home-dialog .next-region{margin-top:20px}
+@media(max-height:700px){.home-screen{min-height:600px}.home-title{top:12%}.home-menu{bottom:max(18px,env(safe-area-inset-bottom))}.home-title h1 img{max-width:260px}.home-title p{margin-top:8px}.home-zone-label{margin-top:8px}#start-caption{margin:10px -18px}}
+@media(prefers-reduced-motion:reduce){.home-screen button{transition:none}}

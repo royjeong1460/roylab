@@ -15,6 +15,8 @@ import '../france/style.css';
 import '../demo/style.css';
 import '../blast-step1/style.css';
 import './tutorial.css';
+import './home.css';
+import {initHome} from './home.js';
 
 export function bindSceneTeardown(events,cleanup){
   let cleaned=false;
@@ -52,12 +54,12 @@ export function showStep1Notice(doc,message){
 }
 const notice=message=>showStep1Notice(document,message);
 function release(){scene?.pointer?.release();scene?.run?.release();if(scene)scene.working=false;}
-function closeDialogs(){for(const id of ['pause-dialog'])if($(id).open)$(id).close();}
+function closeDialogs(){for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();}
 function dispose(){release();if(game){scene?.teardown();game.destroy(true);game=null;scene=null;}}
 function screen(id){release();for(const key of ['base','workshop','expedition'])$(key).hidden=key!==id;}
 function profile(){
   const p=journey.profile,stats=journey.stats();$('parts').textContent=p.parts.toLocaleString();
-  $('dispatch').textContent=p.tutorial==='intro'?'첫 청소 시작 · 조작 배우기 →':['upgrade','next'].includes(p.tutorial)?'첫 강화 이어서 하기 →':'랜덤 현장 출동 →';
+  $('start-caption').textContent=p.tutorial==='intro'?'첫 청소 · 폭파부터 배워 볼까요?':['upgrade','next'].includes(p.tutorial)?'첫 강화하고, 다음 현장으로!':p.bossCleared?'첫 구역 청소 완료 · 다시 출동하기':'랜덤 현장 · 모으고, 강화하고, 도전!';
   $('country-status').textContent=p.bossCleared?'✓ 고물 바람골 · 청소 완료':'● 고물 바람골 · 무료 1단계';
   $('boss-advice').textContent=bossAdvice(p);
   $('milestone').textContent=p.bossCleared?'첫 구역 완료 → 다음 행성 구역은 본편에서':p.owned.includes('blackhole')?'폭파 + 블랙홀 → 쌍봉 철탑 도전':p.earned?'폭파 강화 · 블랙홀 해금 600부품':'첫 폭파 → 부품 수집 → 장비 강화';
@@ -177,6 +179,7 @@ document.addEventListener('keydown',event=>{
   if(dx||dy){event.preventDefault();scene.aim=clampToolAim(scene.run.world,{x:scene.aim.x+dx,y:scene.aim.y+dy});}
 });
 document.addEventListener('keyup',event=>{if(event.code==='Space')release();});
+initHome();
 profile();notice(journey.notice||(!journey.persistent?'저장소를 사용할 수 없어요. 저장 안내를 확인해 주세요.':''));
 
 $('export-report').onclick=()=>{const blob=new Blob([JSON.stringify({campaign:'free30',balanceVersion:BALANCE_VERSION,exportedAt:new Date().toISOString(),profile:journey.profile},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='free30-playtest.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
