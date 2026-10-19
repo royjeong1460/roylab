@@ -16,6 +16,7 @@ import '../demo/style.css';
 import '../blast-step1/style.css';
 import './tutorial.css';
 import './home.css';
+import './play-tools.css';
 import {initHome} from './home.js';
 
 export function bindSceneTeardown(events,cleanup){
