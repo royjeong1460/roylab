@@ -1,5 +1,3 @@
-import {drawPuffRobot} from './robot-puff-art.js';
-
 const W=130;
 const trash=[
   ['#bd986c','#dfc399','#9d7e59'],
@@ -11,7 +9,7 @@ const trash=[
 export function drawPixelAlley(canvas,menuTop){
   const {width,height}=canvas.getBoundingClientRect();
   if(!width||!height)return;
-  // World and robot share roughly 3 CSS pixels per source pixel on a phone.
+  // Roughly 3 CSS pixels per source pixel on a phone.
   const H=Math.round(height*W/width),c=canvas.getContext('2d');
   canvas.width=W;canvas.height=H;c.imageSmoothingEnabled=false;
   const rect=(x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
@@ -22,8 +20,7 @@ export function drawPixelAlley(canvas,menuTop){
       const e=error*2;if(e>=dy){error+=dy;x+=sx;}if(e<=dx){error+=dx;y+=sy;}}
   };
   const horizon=Math.round(H*.47);
-  const robotY=Math.round(menuTop*H/height)-12;
-  const base=robotY-8;
+  const base=Math.round(menuTop*H/height)-20;
 
   rect(0,0,W,H,'#e4d7b6');
   rect(0,0,W,Math.round(H*.22),'#d7d2b2');
@@ -100,6 +97,4 @@ export function drawPixelAlley(canvas,menuTop){
   for(const [x,y] of [[50,horizon+24],[79,base-8],[15,H-24],[114,H-17],[44,H-11]]){
     rect(x,y,3,1,'#baa071');rect(x+4,y+1,1,1,'#baa071');
   }
-  rect(56,robotY-1,25,2,'#b39c71');rect(60,robotY+1,17,1,'#bda579');
-  c.save();c.translate(69,robotY);c.scale(.5,.5);drawPuffRobot(c);c.restore();
 }
