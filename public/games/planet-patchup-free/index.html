@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="ko" data-demo="planet"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#365646"><meta name="description" content="건물을 무너뜨리고 부품을 모아 장비를 키우세요. Planet Patchup 무료 첫 구역 데모."><title>Planet Patchup · 무료 첫 구역</title>  <script type="module" crossorigin src="./assets/free30-B10pws2v.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/free30-CmTPbrjd.css">
+<html lang="ko" data-demo="planet"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#365646"><meta name="description" content="건물을 무너뜨리고 부품을 모아 장비를 키우세요. Planet Patchup 무료 첫 구역 데모."><title>Planet Patchup · 무료 첫 구역</title>  <script type="module" crossorigin src="./assets/free30-CpD2naux.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/free30-DUf3rE8_.css">
 </head><body>
 <header><a class="brand" href="/">← roylab <span>PLANET PATCHUP</span></a><span class="wallet">부품 <strong id="parts">0</strong></span></header>
 <main>
@@ -28,8 +28,9 @@
   <div class="meters"><label>회수율 <strong id="recovered"></strong><progress id="recovery" aria-label="회수율" max="100" value="0"></progress></label><label>배터리 <strong id="charge"></strong><progress id="energy" aria-label="배터리" max="60" value="60"></progress></label></div>
   <button id="pause" aria-label="일시정지" title="일시정지"><span></span><span></span></button>
  </div>
- <div class="tools play-tools" role="group" aria-label="사용할 도구 선택"><button data-tool="bomb"><span class="tool-glyph" aria-hidden="true">✹</span><b>폭파기</b></button><button data-tool="blackhole"><span class="tool-glyph" aria-hidden="true">◉</span><b>블랙홀</b><small id="blackhole-lock">잠김 · 강화에서 해금</small></button></div>
+
  <div class="field-wrap">
+ <div id="play-tools" class="tools play-tools" hidden role="group" aria-label="사용할 도구 선택"><button data-tool="bomb"><span class="tool-glyph" aria-hidden="true">✹</span><b>폭파</b></button><button data-tool="blackhole"><span class="tool-glyph" aria-hidden="true">◉</span><b>블랙홀</b></button></div>
   <div id="playfield" tabindex="0"><button id="map-overview" aria-label="미니맵 · 전체 보기와 가까이 보기 전환"><canvas id="minimap" width="144" height="100" aria-label="전체 맵과 현재 화면 위치"></canvas><span id="map-label">전체 보기</span></button></div>
  </div>
  <p id="feedback" role="status">손 떼면 폭파 · 민트색 잔해 자동 수집</p>

@@ -139,7 +139,7 @@ class FreeScene extends Phaser.Scene{
   resize(){const f=$('playfield');if(!f.clientWidth||!f.clientHeight)return;release();const fit=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001;this.scale.resize(f.clientWidth,f.clientHeight);this.viewport.setSize(f.clientWidth,f.clientHeight);if(fit)this.viewport.fit();this.view.transform();this.mapLabel();}
   attack(){const accepted=this.run.press(this.aim);this.guide?.attack(this.aim,accepted);if(!accepted)$('feedback').textContent='건물 위를 조준하거나 남은 배터리를 확인해 주세요.';this.hud();return accepted;}
   hud(){
-    const r=this.run,w=r.world,s=w.stats();$('blackhole-lock').hidden=journey.profile.owned.includes('blackhole');$('charge').textContent=`${Math.ceil(w.charge/w.capacity*100)}%`;$('energy').max=w.capacity;$('energy').value=w.charge;
+    const r=this.run,w=r.world,s=w.stats();$('play-tools').hidden=!journey.profile.owned.includes('blackhole');$('charge').textContent=`${Math.ceil(w.charge/w.capacity*100)}%`;$('energy').max=w.capacity;$('energy').value=w.charge;
     $('recovered').textContent=`${(r.ratio*100).toFixed(1)}%`;$('recovery').value=r.ratio*100;
     for(const b of tools){b.disabled=!journey.profile.owned.includes(b.dataset.tool)||r.finishReady;b.setAttribute('aria-pressed',String(w.tool===b.dataset.tool));b.title=journey.profile.owned.includes(b.dataset.tool)?TOOL_LABELS[b.dataset.tool]:'작업장에서 구매하세요';}
     $('tool-detail').textContent=w.tool==='bomb'?`${inputDevice==='touch'?'조준 후 손 떼기':'클릭 즉시 폭파'} · 반경 ${s.bombRadius} · ${s.bombCost} 에너지`:`${s.gravityDuration}초 · ${s.gravityCost} 에너지 · 휘젓기 ${s.coreMix}배 · 마모 1→${s.wearSpeed}배`;
