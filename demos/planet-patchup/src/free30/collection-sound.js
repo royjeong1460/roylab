@@ -11,7 +11,7 @@ export class CollectionSound {
   if(!gained||this.cooldown>0||this.manager.locked)return;
   const voice=this.voices[this.next];this.next=(this.next+1)%this.voices.length;
   if(voice.isPlaying)voice.stop();
-  voice.play({volume:.15,rate:.96+Math.random()*.08});this.cooldown=.075;
+  voice.play({volume:.15,rate:.96+Math.random()*.08});this.cooldown=.04;
  }
  stop(){for(const voice of this.voices)if(voice.isPlaying)voice.stop();this.cooldown=0;}
  setEnabled(enabled){this.enabled=enabled;if(!enabled)this.stop();}
