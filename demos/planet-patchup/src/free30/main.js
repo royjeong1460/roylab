@@ -70,10 +70,10 @@ function dispose(){release();if(game){scene?.teardown();game.destroy(true);game=
 function screen(id){release();for(const key of ['base','workshop','expedition'])$(key).hidden=key!==id;}
 function profile(){
   const p=journey.profile,stats=journey.stats();$('parts').textContent=p.parts.toLocaleString();
-  $('start-caption').textContent=p.tutorial==='intro'?'첫 청소 · 폭파부터 배워 볼까요?':['upgrade','next'].includes(p.tutorial)?'첫 강화하고, 다음 현장으로!':p.bossCleared?'첫 구역 청소 완료 · 다시 출동하기':'랜덤 현장 · 모으고, 강화하고, 도전!';
+  $('start-caption').textContent=p.tutorial==='intro'?'첫 청소 · 폭파부터 배워 볼까요?':['upgrade','next'].includes(p.tutorial)?'첫 강화하고, 다음 현장으로!':p.bossCleared?'첫 구역 클리어 · 제한 없이 계속 강화하기':'랜덤 현장 · 모으고, 강화하고, 도전!';
   $('country-status').textContent=p.bossCleared?'✓ 고물 바람골 · 청소 완료':'● 고물 바람골 · 무료 1단계';
   $('boss-advice').textContent=bossAdvice(p);
-  $('milestone').textContent=p.bossCleared?'첫 구역 완료 → 다음 행성 구역은 본편에서':p.owned.includes('blackhole')?'폭파 + 블랙홀 → 쌍봉 철탑 도전':p.earned?'폭파 강화 · 블랙홀 해금 600부품':'첫 폭파 → 부품 수집 → 장비 강화';
+  $('milestone').textContent=p.bossCleared?'첫 구역 완료 → 강화 레벨 제한 해제 · 계속 업그레이드해 보세요':p.owned.includes('blackhole')?'폭파 + 블랙홀 → 쌍봉 철탑 도전':p.earned?'폭파 강화 · 블랙홀 해금 600부품':'첫 폭파 → 부품 수집 → 장비 강화';
   $('playtest-report').textContent=`출동 ${p.runCount}회 · 누적 작업 ${duration(p.workMs)} · 보스 ${p.bossAttempts}회${p.firstClearMs!==null?` · 첫 완료 작업 ${duration(p.firstClearMs)}`:''} (정산한 출동만 · 메뉴·일시정지 제외)`;
   $('stats').replaceChildren(...[['폭파 반경',`${stats.bombRadius}칸`],['배터리',`${stats.capacity}`],['흡입량',`${stats.suctionRate}/초`],['흡입 반경',`${stats.suctionRadius}칸`]].map(([name,value])=>{const div=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=name;dd.textContent=value;div.append(dt,dd);return div;}));
 }
@@ -99,9 +99,9 @@ function renderOffers(){
   $('offers').replaceChildren(...visible.map(offer=>{
     const card=document.createElement('article');card.className='offer';
     if(first)card.classList.add('first-upgrade');
-    const title=document.createElement('h3');title.textContent=`${offer.name} · ${offer.level}/${offer.max}`;
+    const title=document.createElement('h3');title.textContent=`${offer.name} · ${offer.level}/${offer.max===null?'∞':offer.max}`;
     const description=document.createElement('p');description.textContent=offer.description;
-    const help=document.createElement('p');help.className='offer-help';help.textContent=offer.help||'새 도구를 해금한 뒤 Ⅱ 메뉴에서 선택할 수 있어요.';
+    const help=document.createElement('p');help.className='offer-help';help.textContent=offer.help||'새 도구를 해금한 뒤 게임 화면 왼쪽 아래에서 선택할 수 있어요.';
     const button=document.createElement('button');button.textContent=offer.available?`${offer.cost.toLocaleString()} 부품 · ${journey.profile.parts>=offer.cost?'구매':`${offer.cost-journey.profile.parts} 부족`}`:offer.max&&offer.level>=offer.max?'최대 성장 / 보유 중':'도구 해금 후 강화 가능';
     button.disabled=!offer.available||journey.profile.parts<offer.cost;
     button.onclick=()=>guarded(async()=>{const result=await journey.buy(offer.id,{level:offer.level,cost:offer.cost});if(!result.ok)notice(failureMessage(result.reason));else notice(`${offer.name} 구매 완료`);profile();renderOffers();});
@@ -124,9 +124,9 @@ async function settle(){
   }
   $('resume').hidden=false;$('pause-return').textContent='지금까지 모으고 돌아가기';
   profile();if(scene)scene.settled=true;
-  $('result-title').textContent=`쓰레기 ${result.recovered.toLocaleString()}개를 수거했어요!`;
+  $('result-title').textContent=result.mode==='boss'&&result.qualified?'쌍봉 철탑 클리어!':`쓰레기 ${result.recovered.toLocaleString()}개를 수거했어요!`;
   $('result-copy').textContent=`${result.siteName} · ${result.mode==='boss'&&result.qualified?'무료 1단계 완료!':result.qualified?'70% 회수 목표 달성!':'모은 부품은 그대로 남아요.'} 부품 ${result.recovered.toLocaleString()}개로 장비를 강화해 보세요.`;
-  $('result-bonus').textContent=result.firstClear?`쌍봉 철탑 첫 성공 +${result.bonus} 부품! 다음 구역은 본편 구매 후 이어져요. 현재 체험판에서는 결제 없이 여기까지예요.`:`이번 작업 ${duration(result.workMs)} · 모은 부품은 작업장에서 사용할 수 있어요.`;
+  $('result-bonus').textContent=result.mode==='boss'&&result.qualified?`${result.firstClear?`첫 성공 +${result.bonus} 부품! `:''}강화 레벨 제한이 해제됐어요. 계속 업그레이드해 보세요. 새 현장과 보스에 다시 도전할 수 있어요.`:`이번 작업 ${duration(result.workMs)} · 모은 부품은 작업장에서 사용할 수 있어요.`;
   $('run-receipt').hidden=false;workshop();
 }
 class FreeScene extends Phaser.Scene{

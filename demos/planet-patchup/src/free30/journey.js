@@ -1,20 +1,22 @@
 import {FranceJourney,FranceRun} from '../france/journey.js';
 import {FreeWorld} from './world.js';
 import {FREE_SITES as STEP1_SITES,FREE_BOSS as STEP1_BOSS,FREE_TUTORIAL,chooseFreeSite as chooseStep1Site} from './sites.js';
-import {UPGRADES,UNLOCKS,totalSpent,statsForProfile,offers} from './balance.js';
+import {UPGRADES,UNLOCKS,totalSpent,statsForProfile,offers,migratePricing} from './balance.js';
 
 
 export const FREE_SAVE_KEYS=['pixel-demolition-free30-v1-a','pixel-demolition-free30-v1-b'];
 const LOCK='pixel-demolition-free30-v1',clone=value=>JSON.parse(JSON.stringify(value));
-const fresh=()=>({version:1,campaign:'free30',tutorial:'intro',revision:0,earned:0,spent:0,parts:0,owned:['bomb'],patterns:['dot'],upgrades:Object.fromEntries(Object.keys(UPGRADES).map(k=>[k,0])),bossCleared:false,lastSite:null,runCount:0,bossAttempts:0,workMs:0,firstClearMs:null,history:[],purchases:[]});
+const fresh=()=>({version:1,pricingVersion:2,legacyDiscount:0,campaign:'free30',tutorial:'intro',revision:0,earned:0,spent:0,parts:0,owned:['bomb'],patterns:['dot'],upgrades:Object.fromEntries(Object.keys(UPGRADES).map(k=>[k,0])),bossCleared:false,lastSite:null,runCount:0,bossAttempts:0,workMs:0,firstClearMs:null,history:[],purchases:[]});
 const uint=n=>Number.isSafeInteger(n)&&n>=0;
 function valid(p){
+ if(p?.pricingVersion!==undefined&&p.pricingVersion!==2)return false;
+ if(p?.pricingVersion===2?!uint(p.legacyDiscount):p?.legacyDiscount!==undefined)return false;
  if(p?.tutorial!==undefined&&!['intro','upgrade','next','done'].includes(p.tutorial))return false;
  if(!p||p.version!==1||p.campaign!=='free30'||!['revision','earned','spent','parts','runCount','bossAttempts','workMs'].every(k=>uint(p[k]))||p.earned-p.spent!==p.parts||typeof p.bossCleared!=='boolean'||p.bossAttempts>p.runCount)return false;
  if(p.bossCleared?!(uint(p.firstClearMs)&&p.firstClearMs<=p.workMs):p.firstClearMs!==null)return false;
  if(!Array.isArray(p.owned)||!p.owned.includes('bomb')||new Set(p.owned).size!==p.owned.length||p.owned.some(id=>!['bomb','blackhole'].includes(id))||!Array.isArray(p.patterns)||p.patterns.length!==1||p.patterns[0]!=='dot')return false;
- if(!p.upgrades||Object.keys(p.upgrades).length!==Object.keys(UPGRADES).length||!Object.entries(UPGRADES).every(([id,s])=>uint(p.upgrades[id])&&p.upgrades[id]<=s.max&&(!s.tool||p.upgrades[id]===0||p.owned.includes(s.tool))))return false;
- if(totalSpent(p)!==p.spent)return false;
+ if(!p.upgrades||Object.keys(p.upgrades).length!==Object.keys(UPGRADES).length||!Object.entries(UPGRADES).every(([id,s])=>uint(p.upgrades[id])&&(p.bossCleared||p.upgrades[id]<=s.max)&&(!s.tool||p.upgrades[id]===0||p.owned.includes(s.tool))))return false;
+ if(!Number.isSafeInteger(totalSpent(p))||totalSpent(p)!==p.spent)return false;
  const ids=[...STEP1_SITES,STEP1_BOSS,FREE_TUTORIAL].map(s=>s.id);
  return (p.lastSite===null||ids.includes(p.lastSite))&&Array.isArray(p.history)&&p.history.length<=100&&p.history.every(r=>ids.includes(r.site)&&['random','retry','boss'].includes(r.mode)&&uint(r.workMs)&&uint(r.recovered)&&uint(r.total)&&r.recovered<=r.total&&Number.isFinite(r.batteryUsed)&&r.batteryUsed>=0&&Array.isArray(r.tools)&&r.tools.every(t=>['bomb','blackhole'].includes(t)))&&Array.isArray(p.purchases)&&p.purchases.length<=100&&p.purchases.every(r=>(Object.hasOwn(UPGRADES,r.id)||Object.hasOwn(UNLOCKS,r.id))&&uint(r.cost)&&uint(r.workMs));
 }
@@ -22,7 +24,11 @@ export class FreeRun extends FranceRun{
  constructor(site,profile,mode='random'){super(site,profile,mode);this.world=new FreeWorld(site,this.profile);this.workMs=0;}
  selectTool(id){if(this.finishReady||this.state!=='active')return false;this.release();return this.world.setTool(id);}
  exhaust(){if(this.world.charge<=1e-8){this.phase='finishing';this.world.toolEnabled=false;}}
- update(dt,input){if(!this.paused&&!this.finishReady&&this.state==='active'&&Number.isFinite(dt)&&dt>0)this.workMs+=dt*1000;super.update(dt,input);}
+ update(dt,input){
+  if(this.paused||this.finishReady||this.state!=='active'||!Number.isFinite(dt)||dt<=0)return;
+  this.workMs+=dt*1000;super.update(dt,input);
+  if(this.mode==='boss'&&this.qualified){this.finishReady=true;this.finishReason='boss-clear';this.world.toolEnabled=false;this.release();this.accumulator=0;}
+ }
 }
 export class FreeJourney extends FranceJourney{
  constructor(storage,locks=globalThis.navigator?.locks){super(storage,locks?.request?{request:(_name,fn)=>locks.request(LOCK,fn)}:null);if(!valid(this.profile))this.profile=fresh();}
@@ -30,7 +36,7 @@ export class FreeJourney extends FranceJourney{
   const values=FREE_SAVE_KEYS.map(k=>this.storage.getItem(k)).filter(v=>v!==null);if(!values.length)return fresh();
   const parsed=values.map(v=>JSON.parse(v));if(parsed.some(p=>!valid(p)))throw Error('corrupt');parsed.sort((a,b)=>b.revision-a.revision);
   if(parsed.length===2&&parsed[0].revision===parsed[1].revision&&JSON.stringify(parsed[0])!==JSON.stringify(parsed[1]))throw Error('conflict');
-  return {...parsed[0],tutorial:parsed[0].tutorial??'done'};
+  return migratePricing({...parsed[0],tutorial:parsed[0].tutorial??'done'});
  }
  save(next){next.revision++;if(!valid(next))throw Error('invalid');this.storage.setItem(FREE_SAVE_KEYS[next.revision%2],JSON.stringify(next));this.profile=next;}
  stats(p=this.profile){return statsForProfile(p);}

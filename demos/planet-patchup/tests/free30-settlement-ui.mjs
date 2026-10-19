@@ -18,3 +18,9 @@ test('finish during an awaited operation retries automatic settlement next frame
  context.tick.call(scene);assert.equal(scene.settling,false);
  context.operating=false;context.tick.call(scene);await Promise.resolve();assert.equal(calls,1);assert.equal(scene.settling,true);
 });
+
+test('successful boss receipt explicitly offers continued uncapped upgrades',async()=>{
+ const nodes=new Map(),get=id=>{if(!nodes.has(id))nodes.set(id,{open:false,hidden:true,textContent:'',close(){},showModal(){}});return nodes.get(id);};
+ const context={scene:{run:{pause(){}}},$:get,release(){},profile(){},workshop(){},duration:()=>'',journey:{finish:async()=>({ok:true,recovered:1598,qualified:true,mode:'boss',firstClear:true,bonus:500,siteName:'쌍봉 철탑',workMs:1000})}};
+ vm.createContext(context);vm.runInContext(code,context);await context.settle();assert.match(get('result-title').textContent,/클리어/);assert.match(get('result-bonus').textContent,/계속 업그레이드/);assert.match(get('result-bonus').textContent,/제한이 해제/);assert.equal(get('run-receipt').hidden,false);
+});

@@ -6,6 +6,8 @@ export class FreeWorld extends BlackHoleWearWorld {
  constructor(site,profile){
   const stats=statsForProfile(profile);
   super(site.data,{coreMix:stats.coreMix,wearSpeed:stats.wearSpeed});
+  // Purchased growth is not limited by the lab slider range. Existing velocity/body budgets remain.
+  this.blackholeSettings.coreMix=stats.coreMix;this.wearSettings.wearSpeed=stats.wearSpeed;
   this.gameStats=stats;this.unlimited=false;this.capacity=stats.capacity;this.charge=this.capacity;
   this.suctionRate=stats.suctionRate;this.suctionRadius=stats.suctionRadius;
   this.allowedTools=[...profile.owned];this.usedTools=new Set();this.setTool('bomb');
