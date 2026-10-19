@@ -6,11 +6,11 @@ export function initHome(doc=document){
     doc.getElementById(`home-${name}`).onclick=()=>dialog.showModal();
     dialog.querySelector('[data-home-close]').onclick=()=>dialog.close();
   }
+  doc.getElementById('home-zone-link').onclick=()=>doc.getElementById('home-zones-dialog').showModal();
   const home=doc.getElementById('base'),canvas=doc.getElementById('home-alley');
   // ResizeObserver also redraws after returning from the workshop or a run.
   const observer=new ResizeObserver(()=>{
-    const top=doc.getElementById('dispatch').getBoundingClientRect().top-home.getBoundingClientRect().top;
-    drawPixelAlley(canvas,top);
+    drawPixelAlley(canvas);
   });
   observer.observe(home);
   return ()=>observer.disconnect();

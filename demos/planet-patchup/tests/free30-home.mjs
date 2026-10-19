@@ -14,7 +14,8 @@ test('home dialogs open, close, and release before changing to the workshop',()=
   const destroy=initHome(doc);assert(observed);
   get('home-options').onclick();assert(get('home-options-dialog').open);
   get('home-options-dialog').closeButton.onclick();assert(!get('home-options-dialog').open);
-  get('home-zones').onclick();assert(get('home-zones-dialog').open);
+  get('home-zone-link').onclick();assert(get('home-zones-dialog').open);
+  get('home-zones-dialog').closeButton.onclick();get('home-zones').onclick();assert(get('home-zones-dialog').open);
   const context={document:doc,dispose:()=>{},screen:id=>{assert(!get('home-zones-dialog').open);assert.equal(id,'workshop')},profile:()=>{},renderOffers:()=>{}};
   vm.createContext(context);
   const close=main.match(/function closeDialogs\(\)\{[^\n]+/)[0];
