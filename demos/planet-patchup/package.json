@@ -8,7 +8,7 @@
     "test": "node --test tests/blast-step1.mjs tests/blast-mobile.mjs tests/demo-ui.mjs tests/free-step1-last-use.mjs tests/free-step1-rest.mjs tests/free-step1-cutter.mjs tests/free-step1-journey.mjs tests/free-step1-ui.mjs && node tests/battery-input.mjs && node tests/blast-step1-playthrough.mjs",
     "build:blast": "vite build --config vite.blast.config.js",
     "build:free": "vite build --config vite.free.config.js",
-    "test:free": "node --test tests/free30.mjs tests/free30-reachability.mjs tests/free30-settlement-ui.mjs tests/free30-tutorial.mjs tests/free30-guide.mjs tests/free30-home.mjs"
+    "test:free": "node --test tests/free30.mjs tests/free30-reachability.mjs tests/free30-settlement-ui.mjs tests/free30-tutorial.mjs tests/free30-guide.mjs tests/free30-home.mjs tests/free30-audio.mjs"
   },
   "dependencies": {
     "phaser": "3.90.0"

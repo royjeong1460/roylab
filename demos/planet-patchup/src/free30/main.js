@@ -18,6 +18,8 @@ import './tutorial.css';
 import './home.css';
 import './play-tools.css';
 import {initHome} from './home.js';
+import {CollectionSound} from './collection-sound.js';
+import collectionSoundUrl from './audio/pixel-metal-chak.wav?url';
 
 export function bindSceneTeardown(events,cleanup){
   let cleaned=false;
@@ -36,6 +38,12 @@ $('original-version').href=import.meta.env.DEV?'./blast-step1.html':'../planet-p
 const qa=new URLSearchParams(location.search).get('qa')==='1';
 const scopedStorage=qa?{getItem:k=>storage.getItem('qa:'+k),setItem:(k,v)=>storage.setItem('qa:'+k,v)}:storage;
 const journey=new FreeJourney(scopedStorage);
+const soundButtons=[...document.querySelectorAll('[data-collection-sound]')];
+let collectionSoundEnabled=true;
+try{collectionSoundEnabled=scopedStorage.getItem('free30-collection-sound')!=='off';}catch{}
+function soundSettings(){for(const button of soundButtons){button.setAttribute('aria-pressed',String(collectionSoundEnabled));button.textContent=`수집 소리 ${collectionSoundEnabled?'켜짐':'꺼짐'}`;}}
+for(const button of soundButtons)button.onclick=()=>{collectionSoundEnabled=!collectionSoundEnabled;scene?.collectionSound?.setEnabled(collectionSoundEnabled);try{scopedStorage.setItem('free30-collection-sound',collectionSoundEnabled?'on':'off');}catch{}soundSettings();};
+soundSettings();
 const duration=ms=>`${Math.floor(ms/60000)}분 ${Math.floor(ms/1000)%60}초`;
 if(qa)$('test-label').textContent='검증용 별도 진행 · 실제 체험 저장과 분리';
 let game,scene,operating=false;
@@ -120,10 +128,12 @@ async function settle(){
   $('run-receipt').hidden=false;workshop();
 }
 class FreeScene extends Phaser.Scene{
+  preload(){this.load.audio('pixel-collect',collectionSoundUrl);}
   create(){
     scene=this;this.run=journey.currentRun;const r=this.run,w=r.world,f=$('playfield');this.aim={...r.aim};this.working=false;this.settled=false;this.settling=false;this.lastHUD=0;this.lastClock=performance.now();
     this.viewport=new MapViewport({worldWidth:w.width,worldHeight:w.height,viewWidth:f.clientWidth,viewHeight:f.clientHeight});closeView(this.viewport,r.site.preview[0]?.x);this.aim={x:r.site.preview[0]?.x??w.width/2,y:w.floorY-10};
     this.view=new WorldRenderer(this,w,this.viewport,$('minimap'),true,document.documentElement.dataset.demo==='planet'?{surface:createTrashSurface(w.width,w.cells,'earth'),createBackdrop:createDustBackdrop,collectibleStyle:COLLECTIBLE_STYLE}:{});this.view.transform();this.overlay=new ThreeToolsOverlay(this,this.view);
+    this.collectionSound=this.cache.audio.exists('pixel-collect')?new CollectionSound(this.sound,collectionSoundEnabled):null;
     this.tipSeconds=0;
     if(r.site.id===FREE_TUTORIAL.id){
       this.aim={...r.site.preview[0]};this.guide=new FirstRunGuide(r.site.preview[0]);
@@ -133,7 +143,7 @@ class FreeScene extends Phaser.Scene{
     this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label','청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
     $('site-name').textContent=r.site.name;$('run-mode').textContent=r.mode==='boss'?'쌍봉 철탑 보스':'고물 바람골';
     this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(f);
-    this.teardown=bindSceneTeardown(this.events,()=>{this.observer.disconnect();this.pointer.destroy();this.guideView?.destroy();this.view.destroy();});this.hud();this.mapLabel();
+    this.teardown=bindSceneTeardown(this.events,()=>{this.observer.disconnect();this.pointer.destroy();this.collectionSound?.destroy();this.guideView?.destroy();this.view.destroy();});this.hud();this.mapLabel();
   }
   mapLabel(){$('map-label').textContent=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001?'가까이 보기':'전체 보기';}
   resize(){const f=$('playfield');if(!f.clientWidth||!f.clientHeight)return;release();const fit=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001;this.scale.resize(f.clientWidth,f.clientHeight);this.viewport.setSize(f.clientWidth,f.clientHeight);if(fit)this.viewport.fit();this.view.transform();this.mapLabel();}
@@ -148,6 +158,7 @@ class FreeScene extends Phaser.Scene{
   }
   update(time){
     const r=this.run;if(!r)return;const now=performance.now(),elapsed=Math.max(0,(now-this.lastClock)/1000);this.lastClock=now;const dt=r.paused||r.finishReady?0:Math.min(.1,elapsed);r.update(r.paused||r.finishReady?0:elapsed,{working:this.working,...this.aim});
+    this.collectionSound?.update(dt,r.world.collected,!r.paused&&!r.finishReady);
     this.tipSeconds+=dt;this.guide?.update(dt,r.world.collected,this.guide.pending&&(r.world.bodies.length>0||r.looseCount>0||r.world.collected>0));
     this.guideView?.render(this.viewport,this.aim,r.world,inputDevice,r.paused||r.phase==='finishing');
     for(const event of r.world.events.splice(0))this.view.addEffect(event);
@@ -156,7 +167,7 @@ class FreeScene extends Phaser.Scene{
     if(r.finishReady&&!this.settled&&!this.settling&&!operating){this.settling=true;guarded(async()=>{await settle();});}
   }
 }
-function pause(){if(!scene||scene.settled||scene.run.finishReady)return;release();scene.run.pause(true);scene.hud();if(!$('pause-dialog').open)$('pause-dialog').showModal();}
+function pause(){if(!scene||scene.settled||scene.run.finishReady)return;release();scene.collectionSound?.stop();scene.run.pause(true);scene.hud();if(!$('pause-dialog').open)$('pause-dialog').showModal();}
 $('dispatch').onclick=()=>['upgrade','next'].includes(journey.profile.tutorial)?workshop():guarded(()=>dispatch('random'));$('boss').onclick=()=>guarded(()=>dispatch('boss'));$('workshop-open').onclick=workshop;$('workshop-back').onclick=home;
 $('practice').onclick=()=>guarded(()=>dispatch('tutorial'));
 $('workshop-skip').onclick=()=>guarded(async()=>{const result=await journey.skipTutorial();if(!result.ok)notice(failureMessage(result.reason));renderOffers();});
