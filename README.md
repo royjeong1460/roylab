@@ -33,10 +33,12 @@ emits static files into `out`.
 
 ## Planet Patchup playable demo
 
-- Open `/games/planet-patchup/`; the home page links to it. Portrait phones are the primary target.
+- Open `/games/planet-patchup-free/`; the home page links to the free first-zone balance build. Previous `/games/planet-patchup/` and `/games/planet-patchup-blast/` remain available. Portrait phones are the primary target.
 - `demos/planet-patchup/` holds the standalone Vite/Phaser source; `public/games/planet-patchup/` holds its checked-in static release.
-- After editing game source, run `npm run build:game`, then `npm run build`. Commit both source and public game assets. The normal Cloudflare build uses the checked-in release.
+- For the new free zone run `npm run build:game -- --free`, then `npm run build`. For the original demo use `npm run build:game`. Commit both source and public game assets. The normal Cloudflare build uses the checked-in release.
 - Game appearance: `demos/planet-patchup/src/demo/style.css` and `demo.html`. Rules and persistence: `src/free-step1/`. Physics remains shared within the standalone source tree.
 - The Figma reference is the dust-alley play UI, node `6:11` in file `dEvvNjaFdv03v2MvzaU88r`. Actual procedural background/surface rendering is reused, not a flattened screenshot.
 - No payments, ads, analytics, login, or server saves. Progress stays in this browser's local storage. QA uses `?qa=1`, with separate keys.
 - Tests: `npm test --prefix demos/planet-patchup`. Responsive desktop-browser QA does not establish real iPhone heat, touch, or sustained performance.
+
+Free-zone balance, assumptions and isolated physics: [docs/free30-balance.md](docs/free30-balance.md).

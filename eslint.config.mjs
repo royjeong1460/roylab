@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     "public/games/**",
     "demos/**/dist-demo/**",
     "demos/**/dist-blast/**",
+    "demos/**/dist-free/**",
     "next-env.d.ts",
   ]),
 ]);
