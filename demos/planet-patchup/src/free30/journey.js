@@ -69,6 +69,12 @@ export class FreeJourney extends FranceJourney{
   if(p.tutorial==='next')next.tutorial='done';
   const run=new FreeRun(site,next,site.id===STEP1_BOSS.id?'boss':site.id===FREE_TUTORIAL.id?'random':mode==='retry'?'retry':'stage');this.save(next);this.currentRun=run;this.lastRunSite=site.id;return {ok:true,run};
  });}
+ async checkpointStage(){const run=this.currentRun;return this.transact(p=>{
+  if(!run||run!==this.currentRun||run.settling)return {ok:false,reason:'no-run'};
+  if((run.profile.resetCount||0)!==(p.resetCount||0))return {ok:false,reason:'reset'};
+  if(!run.qualified||!FREE_STAGES.some(s=>s.id===run.site.id))return {ok:false,reason:'not-qualified'};
+  const next=clone(p);rememberStage(next.stageRecords,run.site.id,run.world.collected,run.world.initial);this.save(next);return {ok:true};
+ });}
  async finish(){const run=this.currentRun;if(run){run.settling=true;run.pause(true);}return this.transact(p=>{
   if(!run||run!==this.currentRun)return {ok:false,reason:'no-run'};
   if((run.profile.resetCount||0)!==(p.resetCount||0)){run.state='finished';run.world.toolEnabled=false;this.currentRun=null;this.lastRunSite=p.lastSite;return {ok:false,reason:'reset'};}

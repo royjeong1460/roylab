@@ -28,3 +28,18 @@ test('schema 3 migration preserves money and restores best historical map record
 test('failed settlement preserves old highest and current run for retry',async()=>{
  const {j,storage}=fixture();await j.skipTutorial();const {run}=await j.start('stage',FREE_STAGES[0].id);run.world.collected=run.world.initial;storage.setItem=()=>{throw Error('quota')};assert.equal((await j.finish()).reason,'storage');assert.equal(stageBest(j.profile,FREE_STAGES[0].id),0);assert.equal(j.currentRun,run);
 });
+test('70 percent checkpoint unlocks immediately while run remains active and awards no parts yet',async()=>{
+ const {j,storage,locks}=fixture();await j.skipTutorial();const {run}=await j.start('stage',FREE_STAGES[0].id);
+ run.world.collected=Math.ceil(run.world.initial*.7)-1;assert.equal((await j.checkpointStage()).ok,false);
+ run.world.collected++;assert((await j.checkpointStage()).ok);assert(stageOpen(new FreeJourney(storage,locks).profile,1));assert.equal(j.profile.parts,0);assert.equal(j.currentRun,run);assert(!run.finishReady);
+ run.world.collected=run.world.initial;await j.finish();assert.equal(stageBest(j.profile,run.site.id),1);assert.equal(j.profile.parts,run.world.initial);
+});
+test('checkpoint cannot save progress from a run predating reset',async()=>{
+ const {j,storage,locks}=fixture();await j.skipTutorial();const {run}=await j.start('stage',FREE_STAGES[0].id);run.world.collected=run.world.initial;
+ const other=new FreeJourney(storage,locks);await other.resetProgress(other.profile.revision);assert.equal((await j.checkpointStage()).reason,'reset');assert.equal(stageBest(new FreeJourney(storage,locks).profile,run.site.id),0);
+});
+test('failed checkpoint leaves the run playable and can retry without rewards',async()=>{
+ const {j,storage}=fixture();await j.skipTutorial();const {run}=await j.start('stage',FREE_STAGES[0].id);run.world.collected=Math.ceil(run.world.initial*.7);
+ const write=storage.setItem;storage.setItem=()=>{throw Error('quota')};assert.equal((await j.checkpointStage()).reason,'storage');assert(!run.paused);assert(!run.finishReady);assert.equal(stageBest(j.profile,run.site.id),0);
+ storage.setItem=write;assert((await j.checkpointStage()).ok);assert.equal(j.profile.parts,0);
+});

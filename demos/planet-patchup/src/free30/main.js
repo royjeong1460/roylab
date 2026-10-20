@@ -179,6 +179,10 @@ class FreeScene extends Phaser.Scene{
     for(const event of events)this.view.addEffect(event);
     this.view.render(dt,{aim:this.aim,working:this.working,selectedTool:r.world.tool,direction:0,suctionOnly:r.phase==='finishing'});this.overlay.draw(this.view.reducedMotion.matches?0:dt,r.world,this.aim);
     if(time-this.lastHUD>100){this.hud();this.lastHUD=time;}
+    if(!previewId&&!r.finishReady&&r.qualified&&r.site.id!==FREE_TUTORIAL.id&&!r.milestoneSaved&&!operating&&now>=(this.nextMilestoneSave||0)){
+      this.nextMilestoneSave=now+1000;
+      guarded(async()=>{const result=await journey.checkpointStage();if(result.ok)r.milestoneSaved=true;else if(result.reason==='reset'){home();notice('다른 탭에서 진행을 초기화했어요.');}else notice('해금 기록을 저장하지 못했어요. 다시 시도 중이에요.');});
+    }
     if(r.finishReady&&previewId&&!this.settled){this.settled=true;release();$('feedback').textContent='테스트 회수 완료 · 아래 링크로 편집기에 돌아가세요.';return;}
     if(r.finishReady&&!this.settled&&!this.settling&&!operating){this.settling=true;guarded(async()=>{await settle();});}
   }
