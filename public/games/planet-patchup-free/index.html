@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="ko" data-demo="planet"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#365646"><meta name="description" content="건물을 무너뜨리고 부품을 모아 장비를 키우세요. Planet Patchup 무료 첫 구역 데모."><title>Planet Patchup · 무료 첫 구역</title>  <script type="module" crossorigin src="./assets/free30-CAQx5R7e.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/free30-DUf3rE8_.css">
+<html lang="ko" data-demo="planet"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#365646"><meta name="description" content="건물을 무너뜨리고 부품을 모아 장비를 키우세요. Planet Patchup 무료 첫 구역 데모."><title>Planet Patchup · 무료 첫 구역</title>  <script type="module" crossorigin src="./assets/free30-ngqCqVBN.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/free30-up7MmI6Z.css">
 </head><body>
 <header><a class="brand" href="/">← roylab <span>PLANET PATCHUP</span></a><span class="wallet">부품 <strong id="parts">0</strong></span></header>
 <main>
@@ -45,8 +45,17 @@
  <p class="fine">PC는 클릭 즉시 폭파 · 모바일은 조준 후 손 떼기<br>두 손가락 이동·확대 / PC 우클릭 이동·휠 확대</p>
  <button type="button" data-game-sound aria-pressed="true">소리 켜짐</button>
  <button id="practice">조작 연습 다시 하기</button>
+ <button id="reset-open" class="reset-progress" aria-haspopup="dialog">진행 초기화</button>
  <details class="playtest"><summary>플레이 기록</summary><p id="playtest-report"></p><button id="export-report">기록 내려받기</button><p class="fine">이 기기에만 저장되는 기록이에요.</p></details>
  <p class="home-back-link"><a href="/">← roylab</a></p>
+</dialog>
+<dialog id="reset-dialog" class="home-dialog" aria-labelledby="reset-title" aria-describedby="reset-description">
+ <h2 id="reset-title">처음부터 다시 시작할까요?</h2>
+ <p id="reset-description">이 브라우저의 무료 첫 구역 진행을 초기화해요. 부품, 강화, 블랙홀 해금, 보스 클리어, 플레이 기록이 사라지고 첫 튜토리얼부터 다시 시작해요. 되돌릴 수 없어요.</p>
+ <p class="fine">소리 설정과 다른 게임의 진행은 유지돼요.</p>
+ <p data-dialog-notice role="status" aria-live="polite"></p>
+ <button id="reset-cancel" type="button" autofocus>취소 · 계속 플레이</button>
+ <button id="reset-confirm" type="button" class="reset-progress">진행 초기화하고 처음부터</button>
 </dialog>
 <dialog id="home-zones-dialog" class="home-dialog" aria-labelledby="home-zones-title">
  <div class="home-dialog-heading"><h2 id="home-zones-title">청소 구역</h2><button data-home-close aria-label="구역 닫기">✕</button></div>

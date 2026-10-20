@@ -36,3 +36,5 @@ body:has(#base:not([hidden])) #notice:not(:empty){position:fixed;bottom:8px;left
 .home-dialog .next-region{margin-top:20px}
 @media(max-height:700px){.home-options{top:max(12px,env(safe-area-inset-top));width:80px;font-size:14px}.home-title h1 img{width:180px}.home-menu{top:auto;bottom:max(24px,env(safe-area-inset-bottom))}.home-current-zone{height:44px}.home-secondary{gap:16px}.home-secondary button{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.home-screen button{transition:none}}
+
+.home-dialog .reset-progress{color:#883e2a;border-color:#a77759;background:#f0ddc4;margin-top:12px;}

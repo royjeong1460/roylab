@@ -118,6 +118,7 @@ async function settle(){
   release();scene?.run.pause(true);if($('pause-dialog').open)$('pause-dialog').close();
   const result=await journey.finish();
   if(!result.ok){
+    if(result.reason==='reset'){$('run-receipt').hidden=true;home();notice('다른 탭에서 진행이 초기화됐어요. 처음부터 다시 시작할 수 있어요.');return;}
     $('resume').hidden=true;$('pause-return').textContent='정산 저장 다시 시도';
     if(!$('pause-dialog').open)$('pause-dialog').showModal();
     notice(failureMessage(result.reason));return;
@@ -171,6 +172,20 @@ class FreeScene extends Phaser.Scene{
   }
 }
 function pause(){if(!scene||scene.settled||scene.run.finishReady)return;release();scene.gameSound?.stop();scene.run.pause(true);scene.hud();if(!$('pause-dialog').open)$('pause-dialog').showModal();}
+let resetRevision=null;
+$('reset-open').onclick=()=>{
+  if(operating)return;
+  resetRevision=journey.profile.revision;notice('');
+  $('home-options-dialog').close();$('reset-dialog').showModal();$('reset-cancel').focus();
+};
+function cancelReset(){if(operating)return;$('reset-dialog').close();$('home-options-dialog').showModal();$('reset-open').focus();}
+$('reset-cancel').onclick=cancelReset;
+$('reset-dialog').addEventListener('cancel',event=>{event.preventDefault();cancelReset();});
+$('reset-confirm').onclick=()=>guarded(async()=>{
+  const result=await journey.resetProgress(resetRevision);
+  if(!result.ok){notice(result.reason==='stale'?'다른 탭에서 진행이 바뀌었어요. 취소 후 최신 진행을 확인하고 다시 눌러 주세요.':failureMessage(result.reason));return;}
+  $('run-receipt').hidden=true;home();notice('진행을 초기화했어요. 시작을 누르면 첫 튜토리얼부터 다시 플레이해요.');
+});
 $('dispatch').onclick=()=>['upgrade','next'].includes(journey.profile.tutorial)?workshop():guarded(()=>dispatch('random'));$('boss').onclick=()=>guarded(()=>dispatch('boss'));$('workshop-open').onclick=workshop;$('workshop-back').onclick=home;
 $('practice').onclick=()=>guarded(()=>dispatch('tutorial'));
 $('workshop-skip').onclick=()=>guarded(async()=>{const result=await journey.skipTutorial();if(!result.ok)notice(failureMessage(result.reason));renderOffers();});
