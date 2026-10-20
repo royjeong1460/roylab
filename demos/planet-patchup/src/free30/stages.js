@@ -1,7 +1,7 @@
 import {FREE_SITES,FREE_BOSS} from './sites.js';
 export const FREE_STAGES=[...FREE_SITES,FREE_BOSS].map((site,index)=>({...site,name:`고물 바람골 - ${index===6?'Boss':index+1}`,subtitle:site.name,boss:index===6}));
 export const stageBest=(profile,id)=>{const r=profile.stageRecords?.[id];return r?r.recovered/r.total:0;};
-export function stageOpen(profile,index){return Number.isInteger(index)&&index>=0&&index<FREE_STAGES.length&&FREE_STAGES.slice(0,index).every(s=>stageBest(profile,s.id)>=.7);}
+export function stageOpen(profile,index){return Number.isInteger(index)&&index>=0&&index<FREE_STAGES.length&&(!FREE_STAGES[index].boss||FREE_STAGES.filter(s=>!s.boss).every(s=>stageBest(profile,s.id)>=.7));}
 export const nextStage=profile=>FREE_STAGES.find((s,i)=>stageOpen(profile,i)&&stageBest(profile,s.id)<.7)||FREE_STAGES[0];
 export function rememberStage(records,id,recovered,total){
  if(!FREE_STAGES.some(s=>s.id===id)||!Number.isSafeInteger(recovered)||!Number.isSafeInteger(total)||total<1||recovered<0||recovered>total)return;

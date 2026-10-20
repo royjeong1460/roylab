@@ -87,6 +87,6 @@ export class FreeJourney extends FranceJourney{
   if(first){next.bossCleared=true;next.firstClearMs=next.workMs;}
   next.history.push({site:run.site.id,mode:run.mode,workMs,recovered,total:run.world.initial,batteryUsed:run.world.capacity-run.world.charge,tools:[...run.world.usedTools]});next.history=next.history.slice(-100);
   this.save(next);run.state='finished';run.world.toolEnabled=false;this.currentRun=null;this.lastRunSite=run.site.id;
-  return {ok:true,recovered,bonus,qualified,bossCleared:next.bossCleared,firstClear:first,mode:run.mode,siteName:run.site.name,nextStage:qualified&&run.site.id!==FREE_TUTORIAL.id?FREE_STAGES[FREE_STAGES.findIndex(s=>s.id===run.site.id)+1]?.name:null,allClear:recovered===run.world.initial,ratio:recovered/run.world.initial,workMs};
+  return {ok:true,recovered,bonus,qualified,bossCleared:next.bossCleared,firstClear:first,mode:run.mode,siteName:run.site.name,nextStage:!stageOpen(run.profile,6)&&stageOpen(next,6)?FREE_STAGES[6].name:null,allClear:recovered===run.world.initial,ratio:recovered/run.world.initial,workMs};
  });}
 }

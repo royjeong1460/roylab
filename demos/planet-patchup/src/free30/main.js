@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import {stageOpen} from './stages.js';
+import {stageOpen,stageBest,FREE_STAGES} from './stages.js';
 import {renderStageList} from './stage-menu.js';
 import './stage-menu.css';
 import {loadDraft,editorMessage} from './editor/model.js';
@@ -60,7 +60,7 @@ document.addEventListener('pointerdown',e=>{inputDevice=e.pointerType==='touch'?
 export function failureMessage(reason){
   if(reason==='tutorial-next')return '첫 강화 완료! 다음 현장으로 출동해 달라진 장비를 써 보세요.';
   if(reason==='tutorial-upgrade')return '모은 부품으로 장비를 한 번 강화한 뒤 출동해 보세요. 안내는 건너뛸 수도 있어요.';
-  return ({locked:'이전 맵을 한 번에 70% 이상 회수하면 열려요.',busy:'다른 작업을 마치는 중이에요. 잠시 후 다시 눌러 주세요.',storage:'진행을 저장하지 못했어요. 현재 화면에서 다시 시도해 주세요.',stale:'다른 탭에서 진행이 바뀌었어요. 최신 진행을 확인한 후 다시 시도해 주세요.',active:'진행 중인 청소를 먼저 마쳐 주세요.',mode:'출동할 현장을 확인하지 못했어요. 기지에서 다시 선택해 주세요.','no-previous-site':'아직 다시 도전할 현장이 없어요. 새 동네 청소를 선택해 주세요.','no-run':'저장할 청소가 없어요. 현재 결과를 확인해 주세요.','invalid-recovery':'수집 결과를 확인하지 못했어요. 현재 화면을 유지하고 다시 시도해 주세요.',unknown:'선택한 장비를 확인하지 못했어요.',unavailable:'이미 보유했거나 아직 구매할 수 없는 장비예요.',insufficient:'부품이 부족해요. 동네 청소에서 조금 더 모아 주세요.'})[reason]||'작업을 완료하지 못했어요. 현재 화면에서 다시 시도해 주세요.';
+  return ({locked:'일반 현장 6곳을 각각 한 번에 70% 이상 회수하면 보스가 열려요.',busy:'다른 작업을 마치는 중이에요. 잠시 후 다시 눌러 주세요.',storage:'진행을 저장하지 못했어요. 현재 화면에서 다시 시도해 주세요.',stale:'다른 탭에서 진행이 바뀌었어요. 최신 진행을 확인한 후 다시 시도해 주세요.',active:'진행 중인 청소를 먼저 마쳐 주세요.',mode:'출동할 현장을 확인하지 못했어요. 기지에서 다시 선택해 주세요.','no-previous-site':'아직 다시 도전할 현장이 없어요. 새 동네 청소를 선택해 주세요.','no-run':'저장할 청소가 없어요. 현재 결과를 확인해 주세요.','invalid-recovery':'수집 결과를 확인하지 못했어요. 현재 화면을 유지하고 다시 시도해 주세요.',unknown:'선택한 장비를 확인하지 못했어요.',unavailable:'이미 보유했거나 아직 구매할 수 없는 장비예요.',insufficient:'부품이 부족해요. 동네 청소에서 조금 더 모아 주세요.'})[reason]||'작업을 완료하지 못했어요. 현재 화면에서 다시 시도해 주세요.';
 }
 export function showStep1Notice(doc,message){
   doc.getElementById('notice').textContent=message||'';
@@ -76,10 +76,10 @@ function dispose(){release();if(game){scene?.teardown();game.destroy(true);game=
 function screen(id){release();for(const key of ['base','workshop','expedition'])$(key).hidden=key!==id;}
 function profile(){
   const p=journey.profile,stats=journey.stats();$('parts').textContent=p.parts.toLocaleString();
-  $('start-caption').textContent=p.tutorial==='intro'?'첫 청소 · 폭파부터 배워 볼까요?':['upgrade','next'].includes(p.tutorial)?'첫 강화하고, 다음 현장으로!':p.bossCleared?'첫 구역 클리어 · 제한 없이 계속 강화하기':'맵 선택 · 70%로 다음 맵, 100%로 올클리어';
+  $('start-caption').textContent=p.tutorial==='intro'?'첫 청소 · 폭파부터 배워 볼까요?':['upgrade','next'].includes(p.tutorial)?'첫 강화하고, 다음 현장으로!':p.bossCleared?'첫 구역 클리어 · 제한 없이 계속 강화하기':'일반 현장 자유 선택 · 6곳 모두 70%면 보스 도전';
   $('country-status').textContent=p.bossCleared?'✓ 고물 바람골 · 청소 완료':'● 고물 바람골 · 무료 1단계';
-  $('boss-advice').textContent='한 판에서 70% 이상 회수하면 다음 맵이 열려요. 이미 연 맵은 반복해서 부품을 모을 수 있어요.';
-  $('milestone').textContent=p.bossCleared?'첫 구역 완료 → 강화 레벨 제한 해제 · 계속 업그레이드해 보세요':'현장 1 → 2 → 3 → 4 → 5 → 6 → Boss';
+  $('boss-advice').textContent='일반 현장 6곳은 자유롭게 선택할 수 있어요. 각 현장의 최고 회수율이 모두 70% 이상이면 보스가 열려요.';
+  $('milestone').textContent=p.bossCleared?'첫 구역 완료 → 강화 레벨 제한 해제 · 계속 업그레이드해 보세요':`70% 달성 현장 ${FREE_STAGES.slice(0,6).filter(s=>stageBest(p,s.id)>=.7).length}/6곳 · 모두 달성하면 Boss 해금`;
   $('playtest-report').textContent=`출동 ${p.runCount}회 · 누적 작업 ${duration(p.workMs)} · 보스 ${p.bossAttempts}회${p.firstClearMs!==null?` · 첫 완료 작업 ${duration(p.firstClearMs)}`:''} (정산한 출동만 · 메뉴·일시정지 제외)`;
   $('stats').replaceChildren(...[['폭파 반경',`${stats.bombRadius}칸`],['배터리',`${stats.capacity}`],['흡입량',`${stats.suctionRate}/초`],['흡입 반경',`${stats.suctionRadius}칸`]].map(([name,value])=>{const div=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=name;dd.textContent=value;div.append(dt,dd);return div;}));
 }
@@ -167,7 +167,7 @@ class FreeScene extends Phaser.Scene{
     $('recovered').textContent=`${(Math.floor(r.ratio*1000)/10).toFixed(1)}%`;$('recovery').value=r.ratio*100;
     for(const b of tools){b.disabled=!journey.profile.owned.includes(b.dataset.tool)||r.finishReady;b.setAttribute('aria-pressed',String(w.tool===b.dataset.tool));b.title=journey.profile.owned.includes(b.dataset.tool)?TOOL_LABELS[b.dataset.tool]:'작업장에서 구매하세요';}
     $('tool-detail').textContent=w.tool==='bomb'?`${inputDevice==='touch'?'조준 후 손 떼기':'클릭 즉시 폭파'} · 반경 ${s.bombRadius} · ${s.bombCost} 에너지`:`${s.gravityDuration}초 · ${s.gravityCost} 에너지 · 휘젓기 ${s.coreMix}배 · 마모 1→${s.wearSpeed}배`;
-    $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?r.mode==='boss'?'보스 70% 성공! 계속해서 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':'70% 성공! 다음 맵 해금 · 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice);
+    $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?r.mode==='boss'?'보스 70% 성공! 계속해서 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':'70% 성공! 100%에 도전하거나 Ⅱ 메뉴에서 정산하고 다른 현장을 골라보세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice);
     this.guideView?.render(this.viewport,this.aim,w,inputDevice,r.paused||r.phase==='finishing');
   }
   update(time){
