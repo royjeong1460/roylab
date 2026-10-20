@@ -1,6 +1,10 @@
 import Phaser from 'phaser';
-import {FreeJourney} from './journey.js';
-import {BALANCE_VERSION,bossAdvice,upgradeGuide} from './balance.js';
+import {stageOpen} from './stages.js';
+import {renderStageList} from './stage-menu.js';
+import './stage-menu.css';
+import {loadDraft,editorMessage} from './editor/model.js';
+import {FreeJourney,FreeRun} from './journey.js';
+import {BALANCE_VERSION,upgradeGuide} from './balance.js';
 import {FREE_TUTORIAL} from './sites.js';
 import {FirstRunGuide,TutorialOverlay,gameTip} from './tutorial.js';
 import {clampToolAim} from '../three-tool-run.js';
@@ -38,7 +42,9 @@ const $=id=>document.getElementById(id),tools=[...document.querySelectorAll('[da
 let storage;try{storage=globalThis.localStorage;}catch{storage={getItem:()=>null,setItem:()=>{throw Error('저장소 접근 불가');}};}
 $('original-version').href=import.meta.env.DEV?'./blast-step1.html':'../planet-patchup-blast/';
 const qa=new URLSearchParams(location.search).get('qa')==='1';
-const scopedStorage=qa?{getItem:k=>storage.getItem('qa:'+k),setItem:(k,v)=>storage.setItem('qa:'+k,v)}:storage;
+const previewId=new URLSearchParams(location.search).get('mapPreview');
+const previewMemory=new Map();
+const scopedStorage=previewId?{getItem:k=>previewMemory.get(k)??null,setItem:(k,v)=>previewMemory.set(k,v)}:qa?{getItem:k=>storage.getItem('qa:'+k),setItem:(k,v)=>storage.setItem('qa:'+k,v)}:storage;
 const journey=new FreeJourney(scopedStorage);
 const soundButtons=[...document.querySelectorAll('[data-game-sound]')];
 let soundEnabled=true;
@@ -54,7 +60,7 @@ document.addEventListener('pointerdown',e=>{inputDevice=e.pointerType==='touch'?
 export function failureMessage(reason){
   if(reason==='tutorial-next')return '첫 강화 완료! 다음 현장으로 출동해 달라진 장비를 써 보세요.';
   if(reason==='tutorial-upgrade')return '모은 부품으로 장비를 한 번 강화한 뒤 출동해 보세요. 안내는 건너뛸 수도 있어요.';
-  return ({busy:'다른 작업을 마치는 중이에요. 잠시 후 다시 눌러 주세요.',storage:'진행을 저장하지 못했어요. 현재 화면에서 다시 시도해 주세요.',stale:'다른 탭에서 진행이 바뀌었어요. 최신 진행을 확인한 후 다시 시도해 주세요.',active:'진행 중인 청소를 먼저 마쳐 주세요.',mode:'출동할 현장을 확인하지 못했어요. 기지에서 다시 선택해 주세요.','no-previous-site':'아직 다시 도전할 현장이 없어요. 새 동네 청소를 선택해 주세요.','no-run':'저장할 청소가 없어요. 현재 결과를 확인해 주세요.','invalid-recovery':'수집 결과를 확인하지 못했어요. 현재 화면을 유지하고 다시 시도해 주세요.',unknown:'선택한 장비를 확인하지 못했어요.',unavailable:'이미 보유했거나 아직 구매할 수 없는 장비예요.',insufficient:'부품이 부족해요. 동네 청소에서 조금 더 모아 주세요.'})[reason]||'작업을 완료하지 못했어요. 현재 화면에서 다시 시도해 주세요.';
+  return ({locked:'이전 맵을 한 번에 70% 이상 회수하면 열려요.',busy:'다른 작업을 마치는 중이에요. 잠시 후 다시 눌러 주세요.',storage:'진행을 저장하지 못했어요. 현재 화면에서 다시 시도해 주세요.',stale:'다른 탭에서 진행이 바뀌었어요. 최신 진행을 확인한 후 다시 시도해 주세요.',active:'진행 중인 청소를 먼저 마쳐 주세요.',mode:'출동할 현장을 확인하지 못했어요. 기지에서 다시 선택해 주세요.','no-previous-site':'아직 다시 도전할 현장이 없어요. 새 동네 청소를 선택해 주세요.','no-run':'저장할 청소가 없어요. 현재 결과를 확인해 주세요.','invalid-recovery':'수집 결과를 확인하지 못했어요. 현재 화면을 유지하고 다시 시도해 주세요.',unknown:'선택한 장비를 확인하지 못했어요.',unavailable:'이미 보유했거나 아직 구매할 수 없는 장비예요.',insufficient:'부품이 부족해요. 동네 청소에서 조금 더 모아 주세요.'})[reason]||'작업을 완료하지 못했어요. 현재 화면에서 다시 시도해 주세요.';
 }
 export function showStep1Notice(doc,message){
   doc.getElementById('notice').textContent=message||'';
@@ -70,10 +76,10 @@ function dispose(){release();if(game){scene?.teardown();game.destroy(true);game=
 function screen(id){release();for(const key of ['base','workshop','expedition'])$(key).hidden=key!==id;}
 function profile(){
   const p=journey.profile,stats=journey.stats();$('parts').textContent=p.parts.toLocaleString();
-  $('start-caption').textContent=p.tutorial==='intro'?'첫 청소 · 폭파부터 배워 볼까요?':['upgrade','next'].includes(p.tutorial)?'첫 강화하고, 다음 현장으로!':p.bossCleared?'첫 구역 클리어 · 제한 없이 계속 강화하기':'랜덤 현장 · 모으고, 강화하고, 도전!';
+  $('start-caption').textContent=p.tutorial==='intro'?'첫 청소 · 폭파부터 배워 볼까요?':['upgrade','next'].includes(p.tutorial)?'첫 강화하고, 다음 현장으로!':p.bossCleared?'첫 구역 클리어 · 제한 없이 계속 강화하기':'맵 선택 · 70%로 다음 맵, 100%로 올클리어';
   $('country-status').textContent=p.bossCleared?'✓ 고물 바람골 · 청소 완료':'● 고물 바람골 · 무료 1단계';
-  $('boss-advice').textContent=bossAdvice(p);
-  $('milestone').textContent=p.bossCleared?'첫 구역 완료 → 강화 레벨 제한 해제 · 계속 업그레이드해 보세요':p.owned.includes('blackhole')?'폭파 + 블랙홀 → 쌍봉 철탑 도전':p.earned?'폭파 강화 · 블랙홀 해금 600부품':'첫 폭파 → 부품 수집 → 장비 강화';
+  $('boss-advice').textContent='한 판에서 70% 이상 회수하면 다음 맵이 열려요. 이미 연 맵은 반복해서 부품을 모을 수 있어요.';
+  $('milestone').textContent=p.bossCleared?'첫 구역 완료 → 강화 레벨 제한 해제 · 계속 업그레이드해 보세요':'현장 1 → 2 → 3 → 4 → 5 → 6 → Boss';
   $('playtest-report').textContent=`출동 ${p.runCount}회 · 누적 작업 ${duration(p.workMs)} · 보스 ${p.bossAttempts}회${p.firstClearMs!==null?` · 첫 완료 작업 ${duration(p.firstClearMs)}`:''} (정산한 출동만 · 메뉴·일시정지 제외)`;
   $('stats').replaceChildren(...[['폭파 반경',`${stats.bombRadius}칸`],['배터리',`${stats.capacity}`],['흡입량',`${stats.suctionRate}/초`],['흡입 반경',`${stats.suctionRadius}칸`]].map(([name,value])=>{const div=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=name;dd.textContent=value;div.append(dt,dd);return div;}));
 }
@@ -93,8 +99,9 @@ function renderOffers(){
   $('tutorial-workshop').textContent=first?'수거한 쓰레기가 강화에 쓰는 부품이에요. 폭파 반경을 한 번 키워 보세요.':next?'첫 강화 완료! 폭파 반경이 넓어졌어요. 다음 현장에서 사용해 보세요.':'첫 강화에는 80부품이 필요해요. 연습 현장에서 조금 더 모아 보세요. 모은 부품은 그대로 남아요.';
   $('workshop-skip').hidden=phase==='done';
   $('workshop-random').disabled=first;$('workshop-random').classList.toggle('next-map',next);
-  $('workshop-random').textContent=next?'다음 현장 · 강화한 폭파기 써 보기 →':phase==='intro'?'연습 현장에서 더 모으기 →':'강화 마치고 새 현장 →';
+  $('workshop-random').textContent=next?'다음 현장 · 강화한 폭파기 써 보기 →':phase==='intro'?'연습 현장에서 더 모으기 →':'강화 마치고 맵 선택 →';
   $('workshop-retry').hidden||=first||next;$('workshop-boss').hidden=first||next;
+  $('workshop-boss').disabled=!stageOpen(journey.profile,6);
   const visible=next?[]:first?journey.offers().filter(o=>o.id==='bombRange'):journey.offers();
   $('offers').replaceChildren(...visible.map(offer=>{
     const card=document.createElement('article');card.className='offer';
@@ -109,9 +116,13 @@ function renderOffers(){
     card.append(button);return card;
   }));
 }
-async function dispatch(mode){
-  const result=await journey.start(mode);if(!result.ok){notice(failureMessage(result.reason));return;}
+function maps(){closeDialogs();profile();renderStageList($('stage-list'),journey.profile,id=>guarded(()=>dispatch('stage',id)));$('home-zones-dialog').showModal();}
+async function dispatch(mode,stageId){
+  const result=await journey.start(mode,stageId);if(!result.ok){notice(failureMessage(result.reason));return;}
   closeDialogs();dispose();screen('expedition');notice('');profile();
+  launchGame();
+}
+function launchGame(){
   game=new Phaser.Game({type:Phaser.AUTO,parent:'playfield',width:$('playfield').clientWidth,height:$('playfield').clientHeight,backgroundColor:document.documentElement.dataset.demo==='planet'?'#d8c59a':'#e4ebdc',pixelArt:true,antialias:false,scene:FreeScene,scale:{mode:Phaser.Scale.NONE}});
 }
 async function settle(){
@@ -125,9 +136,9 @@ async function settle(){
   }
   $('resume').hidden=false;$('pause-return').textContent='지금까지 모으고 돌아가기';
   profile();if(scene)scene.settled=true;
-  $('result-title').textContent=result.mode==='boss'&&result.qualified?'쌍봉 철탑 클리어!':`쓰레기 ${result.recovered.toLocaleString()}개를 수거했어요!`;
-  $('result-copy').textContent=`${result.siteName} · ${result.mode==='boss'&&result.qualified?'무료 1단계 완료!':result.qualified?'70% 회수 목표 달성!':'모은 부품은 그대로 남아요.'} 부품 ${result.recovered.toLocaleString()}개로 장비를 강화해 보세요.`;
-  $('result-bonus').textContent=result.mode==='boss'&&result.qualified?`${result.firstClear?`첫 성공 +${result.bonus} 부품! `:''}강화 레벨 제한이 해제됐어요. 계속 업그레이드해 보세요. 새 현장과 보스에 다시 도전할 수 있어요.`:`이번 작업 ${duration(result.workMs)} · 모은 부품은 작업장에서 사용할 수 있어요.`;
+  $('result-title').textContent=result.allClear?`${result.siteName} · 올클리어!`:result.qualified?`${result.siteName} · 클리어!`:`쓰레기 ${result.recovered.toLocaleString()}개를 수거했어요!`;
+  $('result-copy').textContent=`${result.siteName} · ${result.mode==='boss'&&result.qualified?'무료 1단계 완료!':result.nextStage?`${result.nextStage} 해금!`:result.qualified?'70% 회수 목표 달성!':'모은 부품은 그대로 남아요.'} 부품 ${result.recovered.toLocaleString()}개로 장비를 강화해 보세요.`;
+  $('result-bonus').textContent=result.mode==='boss'&&result.qualified?`${result.firstClear?`첫 성공 +${result.bonus} 부품! `:''}강화 레벨 제한이 해제됐어요. 계속 업그레이드해 보세요. 맵을 다시 골라 100% 올클리어에 도전할 수 있어요.`:`이번 작업 ${duration(result.workMs)} · 모은 부품은 작업장에서 사용할 수 있어요.`;
   $('run-receipt').hidden=false;workshop();
 }
 class FreeScene extends Phaser.Scene{
@@ -152,11 +163,11 @@ class FreeScene extends Phaser.Scene{
   resize(){const f=$('playfield');if(!f.clientWidth||!f.clientHeight)return;release();const fit=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001;this.scale.resize(f.clientWidth,f.clientHeight);this.viewport.setSize(f.clientWidth,f.clientHeight);if(fit)this.viewport.fit();this.view.transform();this.mapLabel();}
   attack(){const accepted=this.run.press(this.aim);this.guide?.attack(this.aim,accepted);if(!accepted)$('feedback').textContent='건물 위를 조준하거나 남은 배터리를 확인해 주세요.';this.hud();return accepted;}
   hud(){
-    const r=this.run,w=r.world,s=w.stats();$('play-tools').hidden=!journey.profile.owned.includes('blackhole');$('charge').textContent=`${Math.ceil(w.charge/w.capacity*100)}%`;$('energy').max=w.capacity;$('energy').value=w.charge;
-    $('recovered').textContent=`${(r.ratio*100).toFixed(1)}%`;$('recovery').value=r.ratio*100;
+    const r=this.run,w=r.world,s=w.stats();$('play-tools').hidden=!journey.profile.owned.includes('blackhole');$('charge').textContent=w.unlimited?'∞':`${Math.ceil(w.charge/w.capacity*100)}%`;$('energy').max=w.capacity;$('energy').value=w.charge;
+    $('recovered').textContent=`${(Math.floor(r.ratio*1000)/10).toFixed(1)}%`;$('recovery').value=r.ratio*100;
     for(const b of tools){b.disabled=!journey.profile.owned.includes(b.dataset.tool)||r.finishReady;b.setAttribute('aria-pressed',String(w.tool===b.dataset.tool));b.title=journey.profile.owned.includes(b.dataset.tool)?TOOL_LABELS[b.dataset.tool]:'작업장에서 구매하세요';}
     $('tool-detail').textContent=w.tool==='bomb'?`${inputDevice==='touch'?'조준 후 손 떼기':'클릭 즉시 폭파'} · 반경 ${s.bombRadius} · ${s.bombCost} 에너지`:`${s.gravityDuration}초 · ${s.gravityCost} 에너지 · 휘젓기 ${s.coreMix}배 · 마모 1→${s.wearSpeed}배`;
-    $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?'70% 달성 · Ⅱ 메뉴에서 정산하고 강화하세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice);
+    $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?r.mode==='boss'?'보스 70% 성공! 계속해서 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':'70% 성공! 다음 맵 해금 · 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice);
     this.guideView?.render(this.viewport,this.aim,w,inputDevice,r.paused||r.phase==='finishing');
   }
   update(time){
@@ -168,6 +179,7 @@ class FreeScene extends Phaser.Scene{
     for(const event of events)this.view.addEffect(event);
     this.view.render(dt,{aim:this.aim,working:this.working,selectedTool:r.world.tool,direction:0,suctionOnly:r.phase==='finishing'});this.overlay.draw(this.view.reducedMotion.matches?0:dt,r.world,this.aim);
     if(time-this.lastHUD>100){this.hud();this.lastHUD=time;}
+    if(r.finishReady&&previewId&&!this.settled){this.settled=true;release();$('feedback').textContent='테스트 회수 완료 · 아래 링크로 편집기에 돌아가세요.';return;}
     if(r.finishReady&&!this.settled&&!this.settling&&!operating){this.settling=true;guarded(async()=>{await settle();});}
   }
 }
@@ -186,13 +198,13 @@ $('reset-confirm').onclick=()=>guarded(async()=>{
   if(!result.ok){notice(result.reason==='stale'?'다른 탭에서 진행이 바뀌었어요. 취소 후 최신 진행을 확인하고 다시 눌러 주세요.':failureMessage(result.reason));return;}
   $('run-receipt').hidden=true;home();notice('진행을 초기화했어요. 시작을 누르면 첫 튜토리얼부터 다시 플레이해요.');
 });
-$('dispatch').onclick=()=>['upgrade','next'].includes(journey.profile.tutorial)?workshop():guarded(()=>dispatch('random'));$('boss').onclick=()=>guarded(()=>dispatch('boss'));$('workshop-open').onclick=workshop;$('workshop-back').onclick=home;
+$('dispatch').onclick=()=>journey.profile.tutorial==='upgrade'?workshop():maps();$('workshop-open').onclick=workshop;$('workshop-back').onclick=home;
 $('practice').onclick=()=>guarded(()=>dispatch('tutorial'));
 $('workshop-skip').onclick=()=>guarded(async()=>{const result=await journey.skipTutorial();if(!result.ok)notice(failureMessage(result.reason));renderOffers();});
 $('pause-return').onclick=()=>guarded(settle);$('pause').onclick=pause;
 $('resume').onclick=()=>{if(document.hidden)return;$('pause-dialog').close();release();if(scene)scene.lastClock=performance.now();scene?.run.pause(false);};
 $('pause-dialog').addEventListener('cancel',event=>event.preventDefault());
-$('workshop-retry').onclick=()=>guarded(()=>dispatch('retry'));$('workshop-random').onclick=()=>guarded(()=>dispatch('random'));$('workshop-boss').onclick=()=>guarded(()=>dispatch('boss'));
+$('workshop-retry').onclick=()=>guarded(()=>dispatch('retry'));$('workshop-random').onclick=maps;$('workshop-boss').onclick=()=>guarded(()=>dispatch('boss'));
 $('fit').onclick=()=>{release();scene?.viewport.fit();scene?.view.transform();scene?.mapLabel();};
 $('map-overview').onclick=()=>{if(!scene||scene.run.paused)return;release();const v=scene.viewport;if(Math.abs(v.zoom-v.minZoom)<.001)closeView(v,scene.run.site.preview[0]?.x);else v.fit();scene.view.transform();scene.mapLabel();};
 for(const b of tools)b.onclick=()=>{release();scene?.run.selectTool(b.dataset.tool);scene?.hud();};
@@ -210,6 +222,22 @@ document.addEventListener('keydown',event=>{
 });
 document.addEventListener('keyup',event=>{if(event.code==='Space')release();});
 initHome();
+$('home-zones').onclick=maps;$('home-zone-link').onclick=maps;
 profile();notice(journey.notice||(!journey.persistent?'저장소를 사용할 수 없어요. 저장 안내를 확인해 주세요.':''));
 
 $('export-report').onclick=()=>{const blob=new Blob([JSON.stringify({campaign:'free30',balanceVersion:BALANCE_VERSION,exportedAt:new Date().toISOString(),profile:journey.profile},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='free30-playtest.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+
+if(previewId){
+ try{
+  const site=loadDraft(storage,previewId);if(!site)throw Error('missing draft');
+  const p={...journey.profile,tutorial:'done',owned:['bomb','blackhole']};
+  const banner=document.createElement('aside');banner.className='preview-banner';banner.textContent='맵 초안 테스트 · 배터리 무제한 · 진행 저장 없음 ';
+  const back=document.createElement('a');back.href='./free30-map-editor.html?stage='+encodeURIComponent(previewId);back.textContent='편집기로 돌아가기';banner.append(back);document.body.append(banner);
+  // Preview owns an ephemeral run: no real progression read or written.
+  const run=new FreeRun(site,p,'stage');run.world.unlimited=true;journey.profile=p;journey.currentRun=run;
+  closeDialogs();screen('expedition');$('test-label').textContent='맵 초안 테스트 · 배터리 무제한 · 실제 진행 저장 없음';
+  $('pause-return').textContent='맵 편집기로 돌아가기';$('pause-return').onclick=()=>{location.href='./free30-map-editor.html?stage='+encodeURIComponent(previewId);};
+  $('original-version').href='./free30-map-editor.html';$('original-version').textContent='← 맵 편집기로';
+  launchGame();
+ }catch(error){notice(`맵 테스트를 열지 못했어요. ${editorMessage(error)}`);}
+}

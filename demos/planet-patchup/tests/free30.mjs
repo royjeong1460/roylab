@@ -1,3 +1,5 @@
+import {FREE_STAGES} from '../src/free30/stages.js';
+const openBoss=j=>{const p=structuredClone(j.profile);p.stageRecords=Object.fromEntries(FREE_STAGES.slice(0,6).map(s=>[s.id,{recovered:7,total:10}]));j.save(p);};
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {FreeJourney,FreeRun,FREE_SAVE_KEYS} from '../src/free30/journey.js';
@@ -25,11 +27,11 @@ test('rubbing ramps only to purchased ceiling; physics stays finite and conserve
  r.press(r.site.preview[0]);r.release();for(let i=0;i<90;i++)r.update(1/30,{...r.aim,working:false});
  const d=w.diagnostics();assert(d.finite);assert(d.balanced);assert(w.charge<w.capacity);
 });
-test('boss is immediately available; 70% qualifies and pays once',async()=>{
- const {j}=fixture();const {run:r}=await j.start('boss');assert.equal(r.site.id,FREE_BOSS.id);assert(!r.qualified);
+test('unlocked boss qualifies at 70% and pays once',async()=>{
+ const {j}=fixture();const {run:r}=await (openBoss(j),j.start('boss'));assert.equal(r.site.id,FREE_BOSS.id);assert(!r.qualified);
  r.world.collected=Math.ceil(r.world.initial*.7);assert(r.qualified);r.workMs=2000;
  const result=await j.finish();assert(result.firstClear);assert.equal(result.bonus,500);assert.equal(j.profile.firstClearMs,2000);
- const r2=(await j.start('boss')).run;r2.world.collected=Math.ceil(r2.world.initial*.7);assert.equal((await j.finish()).bonus,0);
+ const r2=(await (openBoss(j),j.start('boss'))).run;r2.world.collected=Math.ceil(r2.world.initial*.7);assert.equal((await j.finish()).bonus,0);
 });
 test('free upgrades have bounded incremental stats and finite costs',()=>{
  const {j}=fixture();j.profile.owned.push('blackhole');for(const [id,s] of Object.entries(UPGRADES)){j.profile.upgrades[id]=s.max;}

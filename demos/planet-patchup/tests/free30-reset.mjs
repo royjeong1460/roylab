@@ -17,8 +17,8 @@ test('failed reset write leaves previous progress intact',async()=>{
  assert.equal((await j.resetProgress(before.revision)).reason,'storage');assert.deepEqual(j.profile,before);assert.deepEqual(m,disk);assert.deepEqual(new FreeJourney(storage,locks).profile,before);
 });
 test('other tab cannot settle old-run rewards after reset',async()=>{
- const {j,storage,locks}=setup();const {run}=await j.start('boss');run.world.collected=Math.ceil(run.world.initial*.7);
+ const {j,storage,locks}=setup();const {run}=await j.start();run.world.collected=Math.ceil(run.world.initial*.7);
  const other=new FreeJourney(storage,locks);assert((await other.resetProgress(other.profile.revision)).ok);
  assert.equal((await j.finish()).reason,'reset');assert.equal(j.currentRun,null);assert.equal(new FreeJourney(storage,locks).profile.parts,0);assert(!j.profile.bossCleared);
- assert([...FREE_SAVE_KEYS.map(k=>storage.getItem(k))].filter(Boolean).some(v=>JSON.parse(v).version===3));
+ assert([...FREE_SAVE_KEYS.map(k=>storage.getItem(k))].filter(Boolean).some(v=>JSON.parse(v).version===4));
 });
