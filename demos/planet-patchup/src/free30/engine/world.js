@@ -15,7 +15,7 @@ export class World {
     this.mode=mode;this.randomState=301;this.pieces=[];this.nextPieceId=1;
     const {width, height, floorY, shapes} = data;
     if (![width,height,floorY].every(Number.isInteger) || width < 1 || height < 1 ||
-        width > 256 || height > 256 || floorY < 1 || floorY >= height || !Array.isArray(shapes)) throw new Error('Invalid grid');
+        width > 1024 || height > 1024 || floorY < 1 || floorY >= height || !Array.isArray(shapes)) throw new Error('Invalid grid');
     Object.assign(this, {width,height,floorY});
     this.cells = new Uint8Array(width*height);
     this.sand = new Uint8Array(width*height);

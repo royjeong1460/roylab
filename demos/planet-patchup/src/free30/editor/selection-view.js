@@ -6,7 +6,7 @@ export class SelectionView {
   document.getElementById('selection-apply').onclick=()=>{if(!this.selected)return;const d=getDraft(),bounds=Object.fromEntries(Object.entries(this.fields).map(([k,input])=>[k,input.value===''?NaN:Number(input.value)]));this.commit(transformSelection(d.cells,d.width,d.height,this.selected,bounds));};
   document.getElementById('selection-clear').onclick=()=>{this.clear();render();};
  }
- clear(){this.selected=null;this.gesture=null;this.preview=null;this.panel.hidden=true;}
+ clear(){this.selected=null;this.gesture=null;this.preview=null;this.displayedSelection=null;this.panel.hidden=true;}
  begin(point,tool,zoom){
   const d=this.getDraft();this.preview=null;
   if(tool==='area'){this.gesture={kind:'area',start:point,last:point};return;}
@@ -39,7 +39,7 @@ export class SelectionView {
  draw(ctx,zoom){
   const s=this.preview?.ok?this.preview.selection:this.selected;
   this.panel.hidden=!s;
-  if(s){for(const [k,input] of Object.entries(this.fields))input.value=s[k];ctx.strokeStyle=this.preview&&!this.preview.ok?'#bb4133':'#f5b331';ctx.lineWidth=2;ctx.setLineDash([5,3]);ctx.strokeRect(s.x*zoom,s.y*zoom,s.width*zoom,s.height*zoom);ctx.setLineDash([]);ctx.fillStyle='#f5b331';ctx.fillRect((s.x+s.width)*zoom-6,(s.y+s.height)*zoom-6,12,12);}
+  if(s){if(this.displayedSelection!==s){for(const [k,input] of Object.entries(this.fields))input.value=s[k];this.displayedSelection=s;}ctx.strokeStyle=this.preview&&!this.preview.ok?'#bb4133':'#f5b331';ctx.lineWidth=2;ctx.setLineDash([5,3]);ctx.strokeRect(s.x*zoom,s.y*zoom,s.width*zoom,s.height*zoom);ctx.setLineDash([]);ctx.fillStyle='#f5b331';ctx.fillRect((s.x+s.width)*zoom-6,(s.y+s.height)*zoom-6,12,12);}
   if(this.gesture?.kind==='area'){const {start:a,last:b}=this.gesture;ctx.strokeStyle='#288baa';ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.strokeRect(Math.min(a.x,b.x)*zoom,Math.min(a.y,b.y)*zoom,(Math.abs(a.x-b.x)+1)*zoom,(Math.abs(a.y-b.y)+1)*zoom);ctx.setLineDash([]);}
  }
 }

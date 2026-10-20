@@ -19,6 +19,9 @@ body:has(#base:not([hidden])) main{padding:0;margin:0}
 .home-current-zone button{margin:0;padding:8px 0;min-height:44px;background:transparent;border:0;box-shadow:none;font-size:12px;font-weight:500}
 .home-secondary{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .home-secondary button{height:clamp(44px,7.58svh,64px);padding:8px;background:#d7c798;border:1px solid #8e9270;box-shadow:none;border-radius:0;font-size:18px;font-weight:600}
+.home-map-maker:not([hidden]){display:flex;align-items:center;justify-content:center;min-height:44px;margin-top:10px;border:1px solid #8e9270;background:#d7d2b2;color:#374f3c;font-size:15px;font-weight:600;text-decoration:none}
+.home-map-maker:focus-visible{outline:3px solid #374f3c;outline-offset:3px}
+.home-menu:has(.home-map-maker:not([hidden])){top:auto;bottom:max(20px,env(safe-area-inset-bottom))}
 .home-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 body:has(#base:not([hidden])) #notice:not(:empty){position:fixed;bottom:8px;left:50%;transform:translateX(-50%);width:min(370px,calc(100% - 20px));padding:10px;background:#fff0cc;border:2px solid #91603d;z-index:5}
 .home-dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}

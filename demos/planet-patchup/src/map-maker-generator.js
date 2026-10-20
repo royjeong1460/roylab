@@ -13,9 +13,9 @@ function options(value,allowMixed=false,strict=false){
   return {seed:seedText(value.seed===undefined?'workshop':value.seed),family:enumValue(value.family===undefined?(allowMixed?'mixed':'column'):value.family,allowMixed?[...familyIds,'mixed']:familyIds,'family'),size:enumValue(value.size===undefined?'medium':value.size,sizeIds,'size'),index:integer(value.index===undefined?0:value.index,0,999999,'index')};
 }
 function text(value,max,label){if(typeof value!=='string'||value.length>max||/[<>\u0000-\u001f\u007f]/u.test(value))fail(label);return value;}
-function readData(value){
+function readData(value,maxDimension=256){
   object(value,'data');
-  const width=integer(value.width,64,256,'width'),height=integer(value.height,96,256,'height'),floorY=integer(value.floorY,32,height-4,'floorY');
+  const width=integer(value.width,64,maxDimension,'width'),height=integer(value.height,96,maxDimension,'height'),floorY=integer(value.floorY,32,height-4,'floorY');
   if(!Array.isArray(value.shapes)||value.shapes.length>240)fail('shapes');
   const shapes=value.shapes.map(shape=>{
     object(shape,'shape');if(!Array.isArray(shape.rect)||shape.rect.length!==4)fail('rectangle');
@@ -27,11 +27,11 @@ function readData(value){
 }
 function occupancy(data){const cells=new Uint8Array(data.width*data.floorY);let count=0;for(const {rect:[x,y,w,h]} of data.shapes)for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++){const id=yy*data.width+xx;if(!cells[id]){cells[id]=1;count++;}}return {cells,count};}
 export function pixelCount(data){return occupancy(readData(data)).count;}
-export function validateSite(value){
+export function validateSite(value,{maxDimension=256}={}){
   object(value,'site');const generator=object(value.generator,'generator');
   if(generator.version!==MAP_MAKER_VERSION)fail('generator version');
   for(const key of ['seed','family','size','index'])if(!Object.hasOwn(generator,key)||generator[key]===undefined)fail(`generator ${key}`);
-  const metadata=options(generator),data=readData(value.data),{cells,count}=occupancy(data);
+  const metadata=options(generator),data=readData(value.data,maxDimension),{cells,count}=occupancy(data);
   if(count<1||count>20000)fail('occupied pixels');
   const paintedArea=data.shapes.reduce((sum,shape)=>sum+shape.rect[2]*shape.rect[3],0);
   if(paintedArea!==count)fail('overlapping rectangles');
