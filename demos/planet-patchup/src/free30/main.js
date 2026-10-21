@@ -204,6 +204,7 @@ $('reset-confirm').onclick=()=>guarded(async()=>{
 });
 $('dispatch').onclick=()=>journey.profile.tutorial==='upgrade'?workshop():maps();$('workshop-open').onclick=workshop;$('workshop-back').onclick=home;
 $('practice').onclick=()=>guarded(()=>dispatch('tutorial'));
+$('tutorial-replay').onclick=()=>guarded(()=>dispatch('tutorial'));
 $('workshop-skip').onclick=()=>guarded(async()=>{const result=await journey.skipTutorial();if(!result.ok)notice(failureMessage(result.reason));renderOffers();});
 $('pause-return').onclick=()=>guarded(settle);$('pause').onclick=pause;
 $('resume').onclick=()=>{if(document.hidden)return;$('pause-dialog').close();release();if(scene)scene.lastClock=performance.now();scene?.run.pause(false);};

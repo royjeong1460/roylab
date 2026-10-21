@@ -4,6 +4,19 @@ import {FreeJourney,FREE_SAVE_KEYS} from '../src/free30/journey.js';
 import * as sites from '../src/free30/sites.js';
 import {play} from '../simulation/free30-probe.mjs';
 const fixture=()=>{const m=new Map();const storage={getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v)},locks={request:async(_,f)=>f()};return {m,storage,locks,j:new FreeJourney(storage,locks)};};
+test('completed tutorial can be replayed repeatedly without losing upgrades or stage records',async()=>{
+ const {j}=fixture();
+ const {run}=await j.start();run.world.collected=100;await j.finish();
+ await j.buy('bombRange');await j.skipTutorial();
+ const normal=await j.start('stage',sites.FREE_SITES[0].id);
+ assert(normal.ok);normal.run.world.collected=Math.ceil(normal.run.world.initial*.7);await j.finish();
+ const before=structuredClone(j.profile);
+ for(let i=0;i<2;i++){
+  const replay=await j.start('tutorial');assert(replay.ok);assert.equal(replay.run.site.id,sites.FREE_TUTORIAL.id);
+  await j.finish();assert.equal(j.profile.tutorial,'done');
+  assert.deepEqual(j.profile.upgrades,before.upgrades);assert.deepEqual(j.profile.stageRecords,before.stageRecords);assert.equal(j.profile.parts,before.parts);
+ }
+});
 test('first visit uses a tutorial, one real upgrade leads into a normal map',async()=>{
  const {j,storage,locks}=fixture();assert.equal(j.profile.tutorial,'intro');
  const {run}=await j.start();assert.equal(run.site.id,sites.FREE_TUTORIAL.id);
