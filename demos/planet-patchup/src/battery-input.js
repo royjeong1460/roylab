@@ -1,8 +1,10 @@
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 
-export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,end,press,touchPressOnRelease=()=>false,touchMargin={right:0,bottom:0},touchReleaseAtPointer=false,onViewChange=()=>{}}) {
+export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,end,press,touchPressOnRelease=()=>false,touchMargin={right:0,bottom:0},touchReleaseAtPointer=false,touchEdgePan=false,onViewChange=()=>{}}) {
   const pointers=new Map();
   let working=false,touchBlocked=false,gesture=null,destroyed=false;
+  let edgeElapsed=0;
+  const touchPosition=event=>({clientX:event.clientX,clientY:event.clientY,pointerType:event.pointerType});
   const isArea=event=>event.target===surface||event.target===canvas;
   const screen=event=>{
     const rect=canvas.getBoundingClientRect();
@@ -56,13 +58,13 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
   const uncapture=id=>{if(surface.hasPointerCapture(id))surface.releasePointerCapture(id);};
   const remove=id=>{
     const pointer=pointers.get(id);if(!pointer)return;
-    pointers.delete(id);stopWork();uncapture(id);
+    pointers.delete(id);edgeElapsed=0;stopWork();uncapture(id);
     gesture=gestureState();
     if(pointers.size===0)touchBlocked=false;
   };
   const release=()=>{
     if(destroyed)return;
-    const ids=[...pointers.keys()];pointers.clear();gesture=null;touchBlocked=false;
+    const ids=[...pointers.keys()];pointers.clear();gesture=null;touchBlocked=false;edgeElapsed=0;
     stopWork();for(const id of ids)uncapture(id);
   };
   const handlers={
@@ -75,7 +77,7 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
       if(pointers.size&&(!touch||touches().length!==pointers.size))return;
       if(!pointers.size&&!canStart(locate(event)))return;
       event.preventDefault();
-      pointers.set(event.pointerId,{type:event.pointerType,mode:pan?'pan':'work',button:pan&&event.button===2?2:1,screen:point});capture(event.pointerId);
+      pointers.set(event.pointerId,{type:event.pointerType,mode:pan?'pan':'work',button:pan&&event.button===2?2:1,screen:point,event:touchPosition(event)});capture(event.pointerId);
       if(touches().length>=2){touchBlocked=true;for(const pointer of pointers.values())pointer.tap=null;stopWork();gesture=gestureState();return;}
       if(!pan&&!touchBlocked){
         workAt(event);
@@ -98,7 +100,7 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
       if(pointer.type!=='touch'&&(event.buttons&pointer.button)===0){remove(event.pointerId);return;}
       const point=screen(event);if(!point){stopWork();return;}
       if(pointer.tap&&!touchReleaseAtPointer&&Math.hypot(event.clientX-pointer.tap.x,event.clientY-pointer.tap.y)>12)pointer.tap=null;
-      event.preventDefault();const previous=pointer.screen;pointer.screen=point;
+      event.preventDefault();const previous=pointer.screen;pointer.screen=point;pointer.event=touchPosition(event);
       if(touches().length>=2){
         const next=gestureState();
         if(gesture&&canStart()){
@@ -134,5 +136,23 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
     contextmenu:event=>{if(!destroyed&&isArea(event))event.preventDefault();},
   };
   for(const [name,handler] of Object.entries(handlers))surface.addEventListener(name,handler,{passive:false});
-  return {release,destroy(){if(destroyed)return;release();destroyed=true;for(const [name,handler] of Object.entries(handlers))surface.removeEventListener(name,handler);}};
+  // Called by the scene clock so pause/teardown cannot leave a second animation loop running.
+  const update=dt=>{
+    if(!Number.isFinite(dt)||dt<=0)return;
+    const pointer=pointers.size===1?[...pointers.values()][0]:null;
+    if(!touchEdgePan||destroyed||touchBlocked||pointer?.type!=='touch'||!working||!canStart()||viewport.zoom<=viewport.minZoom+.001){edgeElapsed=0;return;}
+    const rect=canvas.getBoundingClientRect(),e=pointer.event;
+    const x=e.clientX-rect.left,y=e.clientY-rect.top;
+    if(!(rect.width>0&&rect.height>0)||x<0||y<0||x>rect.width||y>rect.height){edgeElapsed=0;return;}
+    const axis=(p,size)=>{const band=Math.min(48,size/4);return p<band?-Math.pow(1-p/band,2):p>size-band?Math.pow(1-(size-p)/band,2):0;};
+    const dx=axis(x,rect.width),dy=axis(y,rect.height);
+    if(!dx&&!dy){edgeElapsed=0;return;}
+    const step=Math.min(dt,.05);edgeElapsed+=step;if(edgeElapsed<=.25)return;
+    const speed=120*step/Math.max(1,Math.hypot(dx,dy)),before=cameraState();
+    viewport.pan(-dx*speed*viewport.viewWidth/rect.width,-dy*speed*viewport.viewHeight/rect.height);
+    if(before[0]===viewport.x&&before[1]===viewport.y)return;
+    // Recompute the offset cursor in the moved world; release must hit that visible cursor.
+    workAt(e);notifyChange(before);
+  };
+  return {release,update,destroy(){if(destroyed)return;release();destroyed=true;for(const [name,handler] of Object.entries(handlers))surface.removeEventListener(name,handler);}};
 }

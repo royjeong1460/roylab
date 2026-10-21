@@ -248,5 +248,41 @@ test('release cursor eases to visible map edges with no outside touch apron',()=
   near(shots[0].x,target.x);near(shots[0].y,target.y);
  }
 });
+test('opt-in touch edge pan dwells then moves all four ways and updates aim without firing',()=>{
+ for(const [x,y,axis,sign] of [[390,300,'x',1],[14,300,'x',-1],[200,24,'y',-1],[200,592,'y',1]]){
+  const shots=[],h=harness(p=>shots.push(p),()=>true,{touchReleaseAtPointer:true,touchEdgePan:true});
+  h.view.pan(-160,240);const before=h.view[axis];h.fire('pointerdown',{x,y});
+  h.control.update(.1);h.control.update(.1);near(h.view[axis],before);
+  for(let i=0;i<20;i++)h.control.update(.05);
+  assert((h.view[axis]-before)*sign>0);assert.equal(shots.length,0);
+  const aim=h.calls.filter(c=>c[0]==='move').at(-1)[1];
+  h.fire('pointerup',{x,y});assert.equal(shots.length,1);near(shots[0].x,aim.x);near(shots[0].y,aim.y);
+  const stopped=[h.view.x,h.view.y];h.control.update(.1);assert.deepEqual([h.view.x,h.view.y],stopped);
+ }
+});
+test('edge pan stops in center, outside, on pinch, cancel, pause and fit; mouse and defaults unchanged',()=>{
+ for(const stop of ['center','outside','pinch','cancel','pause','fit','release','destroy']){
+  const h=harness(null,()=>true,{touchReleaseAtPointer:true,touchEdgePan:true});h.view.pan(-160,240);
+  h.fire('pointerdown',{x:390,y:300});for(let i=0;i<20;i++)h.control.update(.05);
+  if(stop==='center')h.fire('pointermove',{x:200});
+  if(stop==='outside')h.fire('pointermove',{x:410});
+  if(stop==='pinch'){h.fire('pointerdown',{id:2,x:200});h.fire('pointerup',{id:2});}
+  if(stop==='cancel')h.fire('pointercancel');
+  if(stop==='pause')h.setAllowed(false);
+  if(stop==='fit')h.view.fit();
+  if(stop==='release')h.control.release();
+  if(stop==='destroy')h.control.destroy();
+  const before=[h.view.x,h.view.y];for(let i=0;i<20;i++)h.control.update(.05);assert.deepEqual([h.view.x,h.view.y],before,stop);
+ }
+ for(const opts of [{pointerType:'mouse',enabled:true},{pointerType:'touch',enabled:false}]){
+  const h=harness(null,()=>true,{touchReleaseAtPointer:true,touchEdgePan:opts.enabled});h.fire('pointerdown',{x:390,pointerType:opts.pointerType});
+  const before=[h.view.x,h.view.y];for(let i=0;i<20;i++)h.control.update(.05);assert.deepEqual([h.view.x,h.view.y],before);
+ }
+});
+test('edge pan stays within bounds and rejects invalid time without camera jumps',()=>{
+ const h=harness(null,()=>true,{touchReleaseAtPointer:true,touchEdgePan:true});h.fire('pointerdown',{x:394,y:596});
+ for(const dt of [NaN,Infinity,-1,0])h.control.update(dt);near(h.view.x,0);
+ for(let i=0;i<300;i++)h.control.update(.05);near(h.view.x,96);near(h.view.y,144);
+});
 console.log(`${passed} passed, ${failed} failed battery viewport/input cases`);
 if(failed)process.exitCode=1;

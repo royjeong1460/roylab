@@ -153,7 +153,7 @@ class FreeScene extends Phaser.Scene{
       this.aim={...r.site.preview[0]};this.guide=new FirstRunGuide(r.site.preview[0]);
       this.guideView=new TutorialOverlay(f,this.guide,()=>guarded(async()=>{const result=await journey.skipTutorial();if(result.ok)this.guide.skip();else notice(failureMessage(result.reason));}));
     }
-    this.pointer=bindBatteryInput(f,this.game.canvas,this.viewport,{touchReleaseAtPointer:true,canStart:()=>!r.paused&&!r.finishReady&&!operating,start:q=>{r.release();this.working=true;this.aim=clampToolAim(w,q);},move:q=>{this.aim=clampToolAim(w,q);},press:q=>{this.aim=clampToolAim(w,q);return this.attack();},end:()=>{this.working=false;r.release();},touchPressOnRelease:()=>true,onViewChange:()=>{this.view.transform();this.mapLabel();}});
+    this.pointer=bindBatteryInput(f,this.game.canvas,this.viewport,{touchReleaseAtPointer:true,touchEdgePan:true,canStart:()=>!r.paused&&!r.finishReady&&!operating,start:q=>{r.release();this.working=true;this.aim=clampToolAim(w,q);},move:q=>{this.aim=clampToolAim(w,q);},press:q=>{this.aim=clampToolAim(w,q);return this.attack();},end:()=>{this.working=false;r.release();},touchPressOnRelease:()=>true,onViewChange:()=>{this.view.transform();this.mapLabel();}});
     this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label','청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
     $('site-name').textContent=r.site.name;$('run-mode').textContent=r.mode==='boss'?'쌍봉 철탑 보스':'고물 바람골';
     this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(f);
@@ -171,7 +171,7 @@ class FreeScene extends Phaser.Scene{
     this.guideView?.render(this.viewport,this.aim,w,inputDevice,r.paused||r.phase==='finishing');
   }
   update(time){
-    const r=this.run;if(!r)return;const now=performance.now(),elapsed=Math.max(0,(now-this.lastClock)/1000);this.lastClock=now;const dt=r.paused||r.finishReady?0:Math.min(.1,elapsed);r.update(r.paused||r.finishReady?0:elapsed,{working:this.working,...this.aim});
+    const r=this.run;if(!r)return;const now=performance.now(),elapsed=Math.max(0,(now-this.lastClock)/1000);this.lastClock=now;const dt=r.paused||r.finishReady?0:Math.min(.1,elapsed);this.pointer?.update(dt);r.update(r.paused||r.finishReady?0:elapsed,{working:this.working,...this.aim});
     const events=r.world.events.splice(0);
     this.gameSound?.update(dt,r.world.collected,events,!r.paused&&!r.finishReady);
     this.tipSeconds+=dt;this.guide?.update(dt,r.world.collected,this.guide.pending&&(r.world.bodies.length>0||r.looseCount>0||r.world.collected>0));

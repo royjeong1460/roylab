@@ -14,5 +14,6 @@ test('accepted near-miss without debris cannot claim collapse or collection',()=
 test('tips distinguish device input and rotate during each run',()=>{
  assert.match(gameTip(0,'mouse'),/클릭/);assert.match(gameTip(0,'touch'),/손을 떼/);
  assert.match(gameTip(9,'touch'),/두 손가락/);assert.match(gameTip(9,'mouse'),/우클릭/);
+ assert.match(gameTip(63,'touch'),/가장자리/);assert.match(gameTip(63,'mouse'),/클릭/);
  assert.match(gameTip(18,'touch'),/수집/);assert.notEqual(gameTip(27,'mouse'),gameTip(36,'mouse'));
 });
