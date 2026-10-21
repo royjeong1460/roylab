@@ -6,7 +6,8 @@ import {loadDraft,editorMessage} from './editor/model.js';
 import {FreeJourney,FreeRun} from './journey.js';
 import {BALANCE_VERSION,upgradeGuide} from './balance.js';
 import {FREE_TUTORIAL} from './sites.js';
-import {TILE_YARD} from './culture/tile-yard.js';
+import {findCultureMap} from './culture/maps.js';
+import {mountCulturePreview} from './culture/preview-ui.js';
 import {createYardSurface,createYardBackdrop} from './culture/art.js';
 import './culture/style.css';
 import {FirstRunGuide,TutorialOverlay,gameTip} from './tutorial.js';
@@ -45,8 +46,8 @@ const $=id=>document.getElementById(id),tools=[...document.querySelectorAll('[da
 let storage;try{storage=globalThis.localStorage;}catch{storage={getItem:()=>null,setItem:()=>{throw Error('저장소 접근 불가');}};}
 $('original-version').href=import.meta.env.DEV?'./blast-step1.html':'../planet-patchup-blast/';
 const qa=new URLSearchParams(location.search).get('qa')==='1';
-const artMap=new URLSearchParams(location.search).get('artMap')==='tile-yard';
-const previewId=artMap?'culture-tile-yard-v1':new URLSearchParams(location.search).get('mapPreview');
+const artMap=findCultureMap(new URLSearchParams(location.search).get('artMap'));
+const previewId=artMap?artMap.site.id:new URLSearchParams(location.search).get('mapPreview');
 const previewMemory=new Map();
 const scopedStorage=previewId?{getItem:k=>previewMemory.get(k)??null,setItem:(k,v)=>previewMemory.set(k,v)}:qa?{getItem:k=>storage.getItem('qa:'+k),setItem:(k,v)=>storage.setItem('qa:'+k,v)}:storage;
 const journey=new FreeJourney(scopedStorage);
@@ -238,16 +239,12 @@ $('export-report').onclick=()=>{const blob=new Blob([JSON.stringify({campaign:'f
 
 if(previewId){
  try{
-  const site=artMap?TILE_YARD:loadDraft(storage,previewId);if(!site)throw Error('missing draft');
+  const site=artMap?artMap.site:loadDraft(storage,previewId);if(!site)throw Error('missing draft');
   const p={...journey.profile,tutorial:'done',owned:['bomb','blackhole']};
   const banner=document.createElement('aside');banner.className='preview-banner';banner.textContent='맵 초안 테스트 · 배터리 무제한 · 진행 저장 없음 ';
   const back=document.createElement('a');back.href=artMap?'?':'./free30-map-editor.html?stage='+encodeURIComponent(previewId);back.textContent=artMap?'기존 맵으로':'편집기로 돌아가기';banner.append(back);document.body.append(banner);
   if(artMap){
-   document.body.classList.add('culture-preview');
-   const caption=document.createElement('span');caption.className='culture-caption';caption.textContent='기와 바람땅 · 7,859픽셀 · 무제한 배터리 · 진행 저장 없음';banner.firstChild.replaceWith(caption);
-   const download=document.createElement('button');download.textContent='맵 JSON 저장';
-   download.onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(TILE_YARD,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='tile-yard-v1.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
-   const retry=document.createElement('button');retry.textContent='다시 테스트';retry.onclick=()=>location.reload();banner.append(download,retry);
+   mountCulturePreview(banner,artMap,{pause:()=>{release();scene?.gameSound?.stop();scene?.run.pause(true);},resume:()=>{release();if(scene)scene.lastClock=performance.now();if(!document.hidden&&!$('pause-dialog').open)scene?.run.pause(false);}});
   }
   // Preview owns an ephemeral run: no real progression read or written.
   const run=new FreeRun(site,p,'stage');run.world.unlimited=true;journey.profile=p;journey.currentRun=run;

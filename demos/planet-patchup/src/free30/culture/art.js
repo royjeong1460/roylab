@@ -19,17 +19,17 @@ export function createYardBackdrop(scene,world,layer){
  function draw(){
   g.clear();g.fillStyle(0xe9dfc9);g.fillRect(0,0,w,world.height);
   // Flat, dusty skyline; the distant roofs have much less contrast than physical tiles.
-  g.fillStyle(0xf4ebd5);g.fillRect(0,0,w,42);
-  g.fillStyle(0xf8efd8);g.fillRect(143,17,14,14);
+  g.fillStyle(0xf4ebd5);g.fillRect(0,0,w,f*.3);
+  g.fillStyle(0xf8efd8);g.fillRect(w*143/192,f*17/140,14,14);
   g.fillStyle(0xd6cbb5);
   for(const [x,y,ww] of [[-8,71,42],[34,91,38],[125,64,47],[169,86,34]]){
-   g.fillRect(x+6,y,ww-12,f-y);g.fillRect(x,y,ww,3);g.fillRect(x+5,y-3,ww-10,3);g.fillRect(x+11,y-6,ww-22,3);
+   const xx=x*w/192,yy=y*f/140;g.fillRect(xx+6,yy,ww-12,f-yy);g.fillRect(xx,yy,ww,3);g.fillRect(xx+5,yy-3,ww-10,3);g.fillRect(xx+11,yy-6,ww-22,3);
   }
-  g.fillStyle(0xded1b8);g.fillRect(0,117,w,23);
+  const courtyard=f-23;g.fillStyle(0xded1b8);g.fillRect(0,courtyard,w,23);
   // Quiet background courtyard joints terminate at the true fixed collision floor.
   g.lineStyle(.35,0xc9c0af,.5);
-  for(let y=121;y<f;y+=6)g.lineBetween(0,y,w,y);
-  for(let x=0;x<w;x+=24)g.lineBetween(x,117,x,f);
+  for(let y=courtyard+4;y<f;y+=6)g.lineBetween(0,y,w,y);
+  for(let x=0;x<w;x+=24)g.lineBetween(x,courtyard,x,f);
   g.fillStyle(0x666d69);g.fillRect(0,f,w,2);
   g.fillStyle(0xb2b2a5);g.fillRect(0,f+2,w,world.height-f-2);
   g.fillStyle(0xd8d2bf);g.fillRect(0,f+2,w,1);

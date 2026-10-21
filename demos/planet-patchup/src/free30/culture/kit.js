@@ -13,6 +13,11 @@ export class YardKit {
   this.rect(x,y+12,width,3,2);this.rect(x,y+11,3,1,2);this.rect(x+width-3,y+11,3,1,2);
   this.rect(x+4,y+15,width-8,3,1);
  }
+ jointedRoof(x,y,width){
+  this.roof(x,y,width);
+  // Separated tile packs share a one-cell wooden lintel, so impact can break the joins.
+  for(let offset=9;offset<width-7;offset+=9)this.rect(x+offset,y,1,17,0);
+ }
  wall(x,y,w,h){
   this.rect(x,y,w,h,3);
   if(w>=12&&h>=12){this.rect(x+3,y+4,w-6,7,0);this.rect(x+Math.floor(w/2),y+4,1,7,1);this.rect(x+2,y+11,w-4,2,1);}
