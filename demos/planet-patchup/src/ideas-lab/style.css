@@ -14,3 +14,44 @@
 .ideas-dialog footer{position:sticky;bottom:-14px;padding:8px 0 max(8px,env(safe-area-inset-bottom));background:#f2e9d6}.ideas-dialog footer button{width:100%;margin:0}.ideas-dialog .ideas-status{font-size:12px;margin:0 0 8px}.ideas-dialog .ideas-download{width:100%;margin:0;background:#e9dfc9;color:#39443e}
 .ideas-dialog::backdrop{background:#172b32a6}.ideas-preview .culture-map-picker button{min-height:44px}.ideas-preview .paid-field input[type=range]{height:44px}
 @media(max-width:420px){.ideas-dialog form{padding:10px}.ideas-dialog header{top:-10px}.ideas-dialog footer{bottom:-10px}.ideas-dialog h2{font-size:18px}}
+
+/* Desktop lab: use the previously empty gutters without changing the mobile game. */
+@media(min-width:1180px){
+ body.ideas-preview.ideas-desktop:has(#expedition:not([hidden])){--ideas-left:280px;--ideas-right:300px;max-width:none;width:100%;margin:0;padding:8px calc(var(--ideas-right) + 16px) 8px calc(var(--ideas-left) + 16px);box-shadow:none;background:#bdbca5}
+ .ideas-desktop .ideas-docked[open]{position:fixed;top:8px;bottom:8px;margin:0;width:var(--ideas-left);height:calc(100dvh - 16px);max-height:none;border-radius:8px;box-shadow:none;z-index:6;overflow:auto}
+ .ideas-desktop .ideas-dialog{left:8px;right:auto}
+ .ideas-desktop .paid-settings.ideas-docked[open]{right:8px;left:auto;width:var(--ideas-right)}
+ .ideas-desktop .ideas-docked header button,.ideas-desktop .preview-banner .ideas-open,.ideas-desktop .preview-banner .paid-settings-open{display:none}
+ .ideas-desktop .ideas-docked form{padding:10px}
+ .ideas-desktop .ideas-docked header{top:-10px;min-height:36px;padding:8px 0;gap:0}
+ .ideas-desktop .ideas-docked h2{font-size:17px}
+ .ideas-desktop .ideas-docked header+p{font-size:11px;margin:6px 0}
+ .ideas-desktop .ideas-dialog fieldset{margin:12px 0}
+ .ideas-desktop .ideas-dialog legend{font-size:13px;margin-bottom:5px}
+ .ideas-desktop .ideas-choices{gap:4px}
+ .ideas-desktop .ideas-dialog .ideas-choice{min-height:45px;padding:6px;gap:7px}
+ .ideas-desktop .ideas-choice strong{font-size:12px}
+ .ideas-desktop .ideas-choice small{font-size:10px}
+ .ideas-desktop .ideas-choice input{width:16px;height:16px}
+ .ideas-desktop .ideas-dialog .ideas-level .ideas-choice{min-height:64px}
+ .ideas-desktop .ideas-level .ideas-choice strong{font-size:11px}
+ .ideas-desktop .ideas-docked footer{bottom:-10px;padding:6px 0}
+ .ideas-desktop .ideas-docked footer button{font-size:12px;min-height:40px}
+ .ideas-desktop .ideas-dialog .ideas-download{font-size:11px;min-height:36px}
+ .ideas-desktop .paid-settings fieldset{padding:9px;margin:10px 0}
+ .ideas-desktop .paid-settings legend{font-size:13px}
+ .ideas-desktop .paid-presets{gap:4px}
+ .ideas-desktop .paid-presets button{font-size:12px;padding:6px;min-height:36px}
+ .ideas-desktop .paid-status{font-size:11px}
+ .ideas-desktop .paid-battery{font-size:11px}
+ .ideas-desktop .paid-field{grid-template-columns:minmax(0,1fr) 76px;margin-bottom:9px;gap:0 6px}
+ .ideas-desktop .paid-field label{font-size:12px}
+ .ideas-desktop .paid-field input[type=number]{height:32px;font-size:13px}
+ .ideas-desktop .paid-field input[type=range]{height:25px}
+ .ideas-desktop .preview-banner{border-radius:0 0 8px 8px}
+ .ideas-desktop .preview-banner .culture-caption{font-size:12px}
+ .ideas-desktop #feedback{height:auto;min-height:32px;white-space:normal;font-size:12px;text-align:center}
+ .ideas-desktop .compact-hud{border-radius:8px 8px 0 0}
+}
+@media(min-width:1700px){body.ideas-preview.ideas-desktop:has(#expedition:not([hidden])){--ideas-left:310px;--ideas-right:330px}}
+@media(min-width:768px) and (max-width:1179px){body.ideas-preview:has(#expedition:not([hidden])){max-width:none;width:100%;box-shadow:none}}
