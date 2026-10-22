@@ -9,10 +9,13 @@ export const BLASTS=[
  {id:'relay',name:'충돌 전달',description:'표시된 파편이 부딪치면 충격을 한 번 전달해요.'},
  {id:'slam',name:'띄우고 내리찍기',description:'주변 파편을 띄운 뒤 아래로 내리쳐요.'},
  {id:'expand',name:'팽창 압력',description:'커지는 압력장이 파편을 바깥으로 밀어요.'},
- {id:'spin',name:'회전 폭파',description:'파편을 옆으로 비틀어 회전을 만들어요.'},
  {id:'wave',name:'지면 파동',description:'표시된 조각이 바닥에 떨어지면 좌우 받침을 흔들어요.'},
 ];
 export const WELLS=[
+ {id:'pulse',name:'맥동 블랙홀',description:'당김과 풀림을 반복한 뒤 마지막에 압축해요.'},
+ {id:'twin',name:'쌍핵 블랙홀',description:'좌우로 벌려 당긴 뒤 두 중심을 합쳐 충돌시켜요.'},
+ {id:'travel',name:'이동 블랙홀',description:'가까운 안쪽 방향으로 이동하며 잔해를 끌고 가요.'},
+ {id:'hold',name:'공중 고정',description:'떨어지는 조각을 잠깐 붙잡아요. 그동안 아래를 폭파하세요.'},
  {id:'grind',name:'모아 갈기',description:'중심으로 당기고 비벼서 파편을 잘게 갈아요.'},
  {id:'release',name:'모았다 방출',description:'끌어모은 파편을 종료 순간 바깥으로 밀어요.'},
  {id:'drop',name:'들었다 떨어뜨리기',description:'파편을 위로 모은 뒤 아래로 떨어뜨려요.'},

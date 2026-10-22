@@ -1,14 +1,13 @@
-import Body from 'phaser/src/physics/matter-js/lib/body/Body.js';
-import Sleeping from 'phaser/src/physics/matter-js/lib/core/Sleeping.js';
 import {FreeWorld} from '../free30/world.js';
-const BLASTS=['normal','aftershock','relay','slam','expand','spin','wave'];
+import {EXTRA_WELLS,prepareWell,wellFrame,pullTwin,holdPieces} from './blackholes.js';
+const BLASTS=['normal','aftershock','relay','slam','expand','wave'];
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 
 // Experimental impulses/pressure only. The shared collision solver and pixel ledger stay intact.
 export class IdeaWorld extends FreeWorld {
  constructor(site,profile,options={}){
   super(site,profile);
-  this.ideas={blast:BLASTS.includes(options.blast)?options.blast:'aftershock',well:['grind','release','drop'].includes(options.well)?options.well:'grind',level:[1,2,3].includes(options.level)?options.level:1};
+  this.ideas={blast:BLASTS.includes(options.blast)?options.blast:'aftershock',well:['grind','release','drop',...EXTRA_WELLS].includes(options.well)?options.well:'grind',level:[1,2,3].includes(options.level)?options.level:1};
   this.ideaPending=[];this.ideaFields=[];this.ideaMarks=[];this.ideaVisuals=[];this.ideaCounts={};this.ideaClock=0;this.ideaStatus='받침이나 벽면을 눌러 효과를 비교해 보세요.';this.unlimited=true;
  }
  get ideaGain(){return 1+(this.ideas.level-1)*.4;}
@@ -19,9 +18,10 @@ export class IdeaWorld extends FreeWorld {
  activate(x,y){
   const ok=super.activate(x,y);if(!ok)return false;
   if(this.tool==='blackhole'){
-   const w=this.wells.at(-1);w.ideaMode=this.ideas.well;w.originY=y;
+   const w=this.wells.at(-1);w.ideaMode=this.ideas.well;prepareWell(this,w);
    if(w.ideaMode!=='grind'){w.coreMix=0;if(w.ideaMode==='drop')w.y=Math.max(5,y-(10+5*this.ideas.level));}
    this.ideaStatus=w.ideaMode==='release'?'압축 중 → 끝나면 바깥으로 방출':w.ideaMode==='drop'?'조각을 들어 올리는 중 → 끝나면 아래로 낙하':'중심에서 충돌·마찰로 분쇄 중';
+   if(EXTRA_WELLS.includes(w.ideaMode))this.ideaStatus=wellFrame(this,w).phase;
   }
   return true;
  }
@@ -48,9 +48,6 @@ export class IdeaWorld extends FreeWorld {
    for(const p of this.flying)if(Math.hypot(p.x-bomb.x,p.y-bomb.y)<=radius)ids.add(p.id);
    this.kick(bomb.x,bomb.y,radius,'up',1.5*gain);this.schedule('slam',.8,{x:bomb.x,y:bomb.y,radius:radius+12,ids});
    this.visual('up',bomb.x,bomb.y,radius,.8);this.ideaStatus='위로 띄우고 → 아래로 내려찍기';
-  }else if(mode==='spin'){
-   for(const p of near){Sleeping.set(p.body,false);Body.setAngularVelocity(p.body,clamp(p.body.angularVelocity+.025*gain/(.5+p.body.mass),-.08,.08));this.limitMotion(p);}
-   this.visual('spin',bomb.x,bomb.y,radius,1.1);this.ideaStatus='시계 방향 회전 · 긴 조각으로 옆 건물을 때려보세요';
   }else if(mode==='wave'){
    const chosen=near.filter(p=>p.pixels.length>=8).sort((a,b)=>b.pixels.length-a.pixels.length)[0];
    if(chosen)this.ideaMarks.push({kind:'wave',ids:new Set(chosen.pixels.map(p=>p.id)),remaining:12,armedAt:this.ideaClock+.18});
@@ -98,11 +95,30 @@ export class IdeaWorld extends FreeWorld {
   if(this.ideas?.well!=='grind'){if(this.bodies)for(const p of this.bodies)p.rubbingTime=0;return;}
   super.sampleWear(pairs,dt);
  }
+ displayWells(){
+  return this.wells.flatMap(w=>w.ideaMode==='twin'?wellFrame(this,w).cores.map(q=>({...w,...q,radius:w.radius*.65})):w);
+ }
+ strainSupported(well,strength){
+  const mode=well.ideaMode??this.ideas?.well;
+  if(mode==='hold')return;
+  if(EXTRA_WELLS.includes(mode)){
+   const frame=wellFrame(this,{...well,ideaMode:mode});
+   if(!frame.power)return;
+   for(const q of frame.cores)super.strainSupported({...well,...q,radius:mode==='twin'?well.radius*.65:well.radius,power:well.power*frame.power/frame.cores.length},strength);
+  }else super.strainSupported(well,strength);
+ }
  pull(well,dt){
-  if(well.ideaMode==='drop'){
-   // Upward-biased attraction retains normal gravity; ending the field releases the load.
-   super.pull({...well,power:well.power*(1+.3*this.ideas.level)},dt);
-  }else super.pull(well,dt);
+  if(EXTRA_WELLS.includes(well.ideaMode)){
+   const frame=wellFrame(this,well);this.ideaStatus=frame.phase;
+   if(well.ideaMode==='hold'){
+    const n=holdPieces(this,well,dt);this.ideaStatus=n?`공중 고정 · ${n}개 붙잡는 중 · 아래를 폭파해 보세요`:'공중 고정 대기 · 범위 안의 떨어지는 조각을 붙잡아요';
+   }else if(well.ideaMode==='twin')pullTwin(this,well,frame,dt);
+   else{
+    if(well.ideaMode==='travel')Object.assign(well,frame.cores[0]);
+    if(frame.power)super.pull({...well,power:well.power*frame.power},dt);
+   }
+  }else if(well.ideaMode==='drop')super.pull({...well,power:well.power*(1+.3*this.ideas.level)},dt);
+  else super.pull(well,dt);
  }
  execute(action){
   const g=this.ideaGain;
@@ -134,6 +150,11 @@ export class IdeaWorld extends FreeWorld {
    const ending=this.wells.filter(w=>w.remaining<=h+1e-8&&w.ideaMode!=='grind');
    super.step(h);
    for(const well of ending){
+    if(EXTRA_WELLS.includes(well.ideaMode)){
+     this.count(well.ideaMode);well.held?.clear();
+     this.ideaStatus={pulse:'맥동 종료 · 마지막 압축 후 중력으로 낙하',twin:'두 중심 합체 완료 · 충돌한 조각들이 떨어져요',travel:'이동 종료 · 끌려온 잔해가 떨어져요',hold:'공중 고정 해제 · 다시 중력으로 떨어져요'}[well.ideaMode];
+     this.visual('down',well.x,well.y,well.radius,.7);continue;
+    }
     const drop=well.ideaMode==='drop';this.count(drop?'drop':'release');
     this.kick(well.x,well.y,well.radius,drop?'down':'out',(drop?1.4:1.1)*this.ideaGain);
     this.visual(drop?'down':'burst',well.x,well.y,well.radius,.9);this.ideaStatus=drop?'블랙홀 해제 · 모인 조각을 아래로 떨어뜨려요':'압축 해제 · 남은 덩어리를 주변으로 방출해요';

@@ -6,7 +6,7 @@ import {SETTINGS_KEY,saveSettings} from '../src/paid-lab/settings.js';
 const memory=entries=>{const values=new Map(entries);return {values,getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value)};};
 test('fresh experiments start with aftershock, grinding and strength one',()=>{
  assert.deepEqual(loadOptions(memory()).options,{blast:'aftershock',well:'grind',level:1});
- assert.equal(BLASTS.length,7);assert.equal(WELLS.length,3);
+ assert.equal(BLASTS.length,6);assert.equal(WELLS.length,7);
 });
 test('only listed modes and the three strength levels survive normalization',()=>{
  for(const blast of BLASTS)for(const well of WELLS)for(const level of [1,2,3])assert.deepEqual(normalizeOptions({blast:blast.id,well:well.id,level}),{blast:blast.id,well:well.id,level});
@@ -14,13 +14,13 @@ test('only listed modes and the three strength levels survive normalization',()=
 });
 test('options round trip touches only its experiment key',()=>{
  const storage=memory([[SETTINGS_KEY,'paid original'],['free30-progress','free original']]);
- assert.equal(saveOptions(storage,{blast:'spin',well:'drop',level:3}).ok,true);
- assert.deepEqual(loadOptions(storage).options,{blast:'spin',well:'drop',level:3});
+ assert.equal(saveOptions(storage,{blast:'wave',well:'drop',level:3}).ok,true);
+ assert.deepEqual(loadOptions(storage).options,{blast:'wave',well:'drop',level:3});
  assert.deepEqual([...storage.values.keys()].sort(),[SETTINGS_KEY,'free30-progress',OPTIONS_KEY].sort());
  assert.equal(storage.getItem(SETTINGS_KEY),'paid original');assert.equal(storage.getItem('free30-progress'),'free original');
 });
 test('malformed or unavailable options fall back and failed writes are reported',()=>{
- for(const raw of ['{','null',JSON.stringify({version:2,options:{blast:'spin'}})]){
+ for(const raw of ['{','null',JSON.stringify({version:2,options:{blast:'wave'}})]){
   const result=loadOptions(memory([[OPTIONS_KEY,raw]]));assert.deepEqual(result.options,DEFAULT_OPTIONS);assert.ok(result.warning);
  }
  const unavailable={getItem(){throw Error('blocked');},setItem(){throw Error('blocked');}};

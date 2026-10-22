@@ -8,7 +8,7 @@ export class ThreeToolsOverlay{
   constructor(scene,renderer){this.graphics=scene.add.graphics();renderer.layer.add(this.graphics);this.time=0;}
   draw(dt,world,aim){
     this.time+=dt;const g=this.graphics;g.clear();const stats=world.stats();
-    for(const well of world.wells){
+    for(const well of world.displayWells?.()??world.wells){
       g.fillStyle(0x705387,.04);g.fillCircle(well.x,well.y,well.radius);
       g.lineStyle(.35,0x8b6ca2,.4);g.strokeCircle(well.x,well.y,well.radius);
       g.fillStyle(0x48364f,.85);g.fillCircle(well.x,well.y,1.3);
