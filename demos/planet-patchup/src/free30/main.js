@@ -148,7 +148,7 @@ class FreeScene extends Phaser.Scene{
   create(){
     scene=this;this.run=journey.currentRun;const r=this.run,w=r.world,f=$('playfield');this.aim={...r.aim};this.working=false;this.settled=false;this.settling=false;this.lastHUD=0;this.lastClock=performance.now();
     this.viewport=new MapViewport({worldWidth:w.width,worldHeight:w.height,viewWidth:f.clientWidth,viewHeight:f.clientHeight});closeView(this.viewport,r.site.preview[0]?.x);this.aim={x:r.site.preview[0]?.x??w.width/2,y:w.floorY-10};
-    this.view=new WorldRenderer(this,w,this.viewport,$('minimap'),true,document.documentElement.dataset.demo==='planet'?{surface:artMap?testEdition.surface(w.width,w.cells):createTrashSurface(w.width,w.cells,'earth'),createBackdrop:artMap?testEdition.createBackdrop:createDustBackdrop,collectibleStyle:COLLECTIBLE_STYLE}:{});if(artMap)this.viewport.fit();this.view.transform();this.overlay=new ThreeToolsOverlay(this,this.view);
+    this.view=new WorldRenderer(this,w,this.viewport,$('minimap'),true,document.documentElement.dataset.demo==='planet'?{surface:artMap?testEdition.surface(w.width,w.cells):createTrashSurface(w.width,w.cells,'earth'),createBackdrop:artMap?testEdition.createBackdrop:createDustBackdrop,collectibleStyle:COLLECTIBLE_STYLE}:{});if(artMap)this.viewport.fit();this.view.transform();this.overlay=new ThreeToolsOverlay(this,this.view);this.editionOverlay=testEdition?.createOverlay?.(this,this.view);
     this.gameSound=new GameSound(this.sound,soundEnabled,key=>this.cache.audio.exists(key));
     this.tipSeconds=0;
     if(r.site.id===FREE_TUTORIAL.id){
@@ -157,7 +157,7 @@ class FreeScene extends Phaser.Scene{
     }
     this.pointer=bindBatteryInput(f,this.game.canvas,this.viewport,{touchReleaseAtPointer:true,touchEdgePan:true,canStart:()=>!r.paused&&!r.finishReady&&!operating,start:q=>{r.release();this.working=true;this.aim=clampToolAim(w,q);},move:q=>{this.aim=clampToolAim(w,q);},press:q=>{this.aim=clampToolAim(w,q);return this.attack();},end:()=>{this.working=false;r.release();},touchPressOnRelease:()=>true,onViewChange:()=>{this.view.transform();this.mapLabel();}});
     this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label','청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
-    $('site-name').textContent=r.site.name;$('run-mode').textContent=artMap?'유료판 테스트':r.mode==='boss'?'쌍봉 철탑 보스':'고물 바람골';
+    $('site-name').textContent=r.site.name;$('run-mode').textContent=artMap?(testEdition.runLabel||'유료판 테스트'):r.mode==='boss'?'쌍봉 철탑 보스':'고물 바람골';
     this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(f);
     this.teardown=bindSceneTeardown(this.events,()=>{this.observer.disconnect();this.pointer.destroy();this.gameSound?.destroy();this.guideView?.destroy();this.view.destroy();});this.hud();this.mapLabel();
   }
@@ -171,6 +171,7 @@ class FreeScene extends Phaser.Scene{
     $('tool-detail').textContent=w.tool==='bomb'?`${inputDevice==='touch'?'조준 후 손 떼기':'클릭 즉시 폭파'} · 반경 ${s.bombRadius} · ${s.bombCost} 에너지`:`${s.gravityDuration}초 · ${s.gravityCost} 에너지 · 휘젓기 ${s.coreMix}배 · 마모 1→${s.wearSpeed}배`;
     $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?r.mode==='boss'?'보스 70% 성공! 계속해서 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':'70% 성공! 100%에 도전하거나 Ⅱ 메뉴에서 정산하고 다른 현장을 골라보세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice);
     if(artMap)$('feedback').textContent=r.finishReady?`테스트 종료 · ${(r.ratio*100).toFixed(1)}% 회수 · 화력을 바꾸거나 다시 테스트하세요.`:r.paused?'테스트 일시정지':r.phase==='finishing'?`배터리 소진 · 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:'폭파로 받침·벽면을 깨고 블랙홀로 모아 보세요. 하단에서 화력을 조절할 수 있어요.';
+    if(artMap&&!r.paused&&!r.finishReady&&r.phase!=='finishing'&&testEdition.status)$('feedback').textContent=testEdition.status(w);
     this.guideView?.render(this.viewport,this.aim,w,inputDevice,r.paused||r.phase==='finishing');
   }
   update(time){
@@ -180,7 +181,7 @@ class FreeScene extends Phaser.Scene{
     this.tipSeconds+=dt;this.guide?.update(dt,r.world.collected,this.guide.pending&&(r.world.bodies.length>0||r.looseCount>0||r.world.collected>0));
     this.guideView?.render(this.viewport,this.aim,r.world,inputDevice,r.paused||r.phase==='finishing');
     for(const event of events)this.view.addEffect(event);
-    this.view.render(dt,{aim:this.aim,working:this.working,selectedTool:r.world.tool,direction:0,suctionOnly:r.phase==='finishing'});this.overlay.draw(this.view.reducedMotion.matches?0:dt,r.world,this.aim);
+    this.view.render(dt,{aim:this.aim,working:this.working,selectedTool:r.world.tool,direction:0,suctionOnly:r.phase==='finishing'});this.overlay.draw(this.view.reducedMotion.matches?0:dt,r.world,this.aim);this.editionOverlay?.draw(dt,r.world);
     if(time-this.lastHUD>100){this.hud();this.lastHUD=time;}
     if(!previewId&&!r.finishReady&&r.qualified&&r.site.id!==FREE_TUTORIAL.id&&!r.milestoneSaved&&!operating&&now>=(this.nextMilestoneSave||0)){
       this.nextMilestoneSave=now+1000;
@@ -245,7 +246,7 @@ if(previewId){
    testEdition.mount(banner,artMap,{pause:()=>{release();scene?.gameSound?.stop();scene?.run.pause(true);},resume:()=>{release();if(scene)scene.lastClock=performance.now();if(!document.hidden&&!$('pause-dialog').open&&!testEdition?.modalOpen())scene?.run.pause(false);}});
   }
   // Preview owns an ephemeral run: no real progression read or written.
-  const run=new FreeRun(site,p,'stage');run.world.unlimited=true;if(artMap)testEdition.configure(run.world);journey.profile=p;journey.currentRun=run;
+  const run=new FreeRun(site,p,'stage');run.world.unlimited=true;if(artMap)testEdition.configure(run.world,run);journey.profile=p;journey.currentRun=run;
   closeDialogs();screen('expedition');$('test-label').textContent=artMap?testEdition.label:'맵 초안 테스트 · 배터리 무제한 · 실제 진행 저장 없음';
   $('pause-return').textContent=artMap?'기존 맵으로 돌아가기':'맵 편집기로 돌아가기';$('pause-return').onclick=()=>{location.href=back.href;};
   $('original-version').href=back.href;$('original-version').textContent=artMap?'← 무료판':'← 맵 편집기로';

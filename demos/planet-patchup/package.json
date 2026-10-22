@@ -10,7 +10,9 @@
     "build:free": "vite build --config vite.free.config.js",
     "test:free": "node --test tests/free30.mjs tests/free30-reachability.mjs tests/free30-settlement-ui.mjs tests/free30-tutorial.mjs tests/free30-guide.mjs tests/free30-home.mjs tests/free30-audio.mjs tests/free30-mix.mjs tests/free30-endless.mjs tests/free30-reset.mjs tests/free30-stages.mjs tests/free30-editor.mjs tests/free30-selection.mjs",
     "test:paid": "node --test tests/free30-culture.mjs tests/culture-pack.mjs tests/paid-lab.mjs",
-    "build:paid": "vite build --config vite.paid.config.js"
+    "build:paid": "vite build --config vite.paid.config.js",
+    "test:ideas": "node --test tests/ideas-lab.mjs tests/ideas-options.mjs",
+    "build:ideas": "vite build --config vite.ideas.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"

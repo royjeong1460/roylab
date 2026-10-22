@@ -49,3 +49,5 @@ next-env.d.ts
 /demos/**/dist-free/
 
 /demos/**/dist-paid/
+
+/demos/**/dist-ideas/
