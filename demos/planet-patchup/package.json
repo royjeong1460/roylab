@@ -8,7 +8,9 @@
     "test": "node --test tests/blast-step1.mjs tests/blast-mobile.mjs tests/demo-ui.mjs tests/free-step1-last-use.mjs tests/free-step1-rest.mjs tests/free-step1-cutter.mjs tests/free-step1-journey.mjs tests/free-step1-ui.mjs && node tests/battery-input.mjs && node tests/blast-step1-playthrough.mjs",
     "build:blast": "vite build --config vite.blast.config.js",
     "build:free": "vite build --config vite.free.config.js",
-    "test:free": "node --test tests/free30.mjs tests/free30-reachability.mjs tests/free30-settlement-ui.mjs tests/free30-tutorial.mjs tests/free30-guide.mjs tests/free30-home.mjs tests/free30-audio.mjs tests/free30-mix.mjs tests/free30-endless.mjs tests/free30-reset.mjs tests/free30-stages.mjs tests/free30-editor.mjs tests/free30-selection.mjs tests/free30-culture.mjs tests/culture-pack.mjs"
+    "test:free": "node --test tests/free30.mjs tests/free30-reachability.mjs tests/free30-settlement-ui.mjs tests/free30-tutorial.mjs tests/free30-guide.mjs tests/free30-home.mjs tests/free30-audio.mjs tests/free30-mix.mjs tests/free30-endless.mjs tests/free30-reset.mjs tests/free30-stages.mjs tests/free30-editor.mjs tests/free30-selection.mjs",
+    "test:paid": "node --test tests/free30-culture.mjs tests/culture-pack.mjs tests/paid-lab.mjs",
+    "build:paid": "vite build --config vite.paid.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"

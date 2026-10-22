@@ -1,6 +1,6 @@
 import {CULTURE_MAPS,ORIGINAL_YARD} from './maps.js';
 import {createYardSurface} from './art.js';
-import {MapDraft} from '../editor/model.js';
+import {MapDraft} from '../../free30/editor/model.js';
 
 function thumbnail(map){
  const draft=new MapDraft(map.site),surface=createYardSurface(draft.width,draft.cells),canvas=document.createElement('canvas');
@@ -9,9 +9,9 @@ function thumbnail(map){
  for(let id=0;id<draft.cells.length;id++)if(draft.cells[id]){ctx.fillStyle=surface.css(id,draft.cells[id]);ctx.fillRect(id%draft.width,Math.floor(id/draft.width),1,1);}
  ctx.fillStyle='#777e77';ctx.fillRect(0,map.site.data.floorY,canvas.width,16);return canvas;
 }
-export function mountCulturePreview(banner,active,{pause,resume}){
+export function mountCulturePreview(banner,active,{pause,resume,label,backURL}){
  document.body.classList.add('culture-preview');banner.replaceChildren();
- const caption=document.createElement('span');caption.className='culture-caption';caption.textContent=`${active.title} · ${active.pixels.toLocaleString()}픽셀 · 기본 화력 / 무제한 배터리`;
+ const caption=document.createElement('span');caption.className='culture-caption';caption.textContent=`${active.title} · ${active.pixels.toLocaleString()}픽셀 · ${label}`;
  const choose=document.createElement('button');choose.textContent='맵 선택';choose.setAttribute('aria-haspopup','dialog');
  const retry=document.createElement('button');retry.textContent='다시 테스트';retry.onclick=()=>location.reload();
  const download=document.createElement('button');download.textContent='JSON 저장';
@@ -31,7 +31,7 @@ export function mountCulturePreview(banner,active,{pause,resume}){
   const hint=document.createElement('span');hint.textContent=map.site.hint;
   link.append(thumbnail(map),label,count,hint);grid.append(link);
  }
- const back=document.createElement('a');back.href='?';back.textContent='기존 게임으로 돌아가기';back.className='culture-back';
+ const back=document.createElement('a');back.href=backURL;back.textContent='무료판으로 돌아가기';back.className='culture-back';
  dialog.append(header,note,grid,back);document.body.append(dialog);
  choose.onclick=()=>{pause();dialog.showModal();};dialog.addEventListener('close',resume);
  return dialog;

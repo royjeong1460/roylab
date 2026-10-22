@@ -1,0 +1,16 @@
+.culture-preview .preview-banner{padding-bottom:max(6px,env(safe-area-inset-bottom));gap:6px}
+.culture-preview .preview-banner button{min-height:44px;flex:1;max-width:160px;margin:0;white-space:nowrap}
+.culture-preview .preview-banner .paid-settings-open{background:#f1be72;font-weight:800}
+.paid-settings{box-sizing:border-box;width:min(580px,96vw);max-height:92dvh;padding:0;border:2px solid #8b8f7c;border-radius:12px;overflow:auto;background:#f2e9d6;color:#39443e;overscroll-behavior:contain}
+.paid-settings form{padding:14px}.paid-settings header{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-14px;background:#f2e9d6;z-index:1;padding:8px 0}
+.paid-settings h2{font-size:21px;margin:0}.paid-settings header button{width:auto;min-width:64px;margin:0}
+.paid-settings p{font-size:13px;line-height:1.5;margin:10px 0}.paid-settings button{min-height:44px;touch-action:manipulation}
+.paid-presets{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.paid-presets button{margin:0;font-size:14px}
+.paid-presets button[aria-pressed=true]{background:#4b665d;color:#fff}
+.paid-battery{display:flex;align-items:center;gap:8px;font-size:14px;min-height:44px}.paid-battery input{width:24px;height:24px;flex:none;accent-color:#4b665d}
+.paid-settings fieldset{min-width:0;border:1px solid #c3bda7;border-radius:8px;margin:14px 0;padding:12px}.paid-settings legend{font-weight:800;padding:0 6px}
+.paid-field{display:grid;grid-template-columns:minmax(0,1fr) 95px;align-items:center;gap:4px 8px;margin-bottom:14px}.paid-field label{font-size:14px}
+.paid-field input[type=number]{box-sizing:border-box;width:100%;height:44px;font-size:16px;color:#243f36;background:#fffaf0;border:1px solid #a5a995;border-radius:5px;padding:6px}
+.paid-field input[type=range]{grid-column:1/-1;width:100%;height:32px;accent-color:#536e63;margin:0}
+.paid-settings footer{position:sticky;bottom:-14px;background:#f2e9d6;padding:8px 0 max(8px,env(safe-area-inset-bottom))}.paid-settings footer button{width:100%;margin:0}
+@media(max-width:420px){.culture-preview .preview-banner{gap:4px}.culture-preview .preview-banner button{padding:4px 5px;font-size:12px}.paid-settings form{padding:10px}.paid-settings header{top:-10px}.paid-settings footer{bottom:-10px}}

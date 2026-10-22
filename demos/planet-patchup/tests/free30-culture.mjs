@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {TILE_YARD} from '../src/free30/culture/tile-yard.js';
-import {YardKit} from '../src/free30/culture/kit.js';
-import {createYardSurface} from '../src/free30/culture/art.js';
+import {TILE_YARD} from '../src/paid-lab/culture/tile-yard.js';
+import {YardKit} from '../src/paid-lab/culture/kit.js';
+import {createYardSurface} from '../src/paid-lab/culture/art.js';
 import {validateSite,pixelCount} from '../src/map-maker-generator.js';
 import {MapDraft} from '../src/free30/editor/model.js';
 import {FreeJourney,FreeRun} from '../src/free30/journey.js';
