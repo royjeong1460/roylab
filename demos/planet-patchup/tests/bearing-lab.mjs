@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import {bearingStrength} from '../src/bearing-lab/strength.js';
 import {BearingWorld} from '../src/bearing-lab/world.js';
 import {BEARING_MAPS} from '../src/bearing-lab/maps.js';
+import {extendWorksite} from '../src/ideas-lab/space.js';
+import {applySettings} from '../src/paid-lab/settings.js';
+import {loadIdeaTuning} from '../src/ideas-lab/options.js';
 import {FreeJourney} from '../src/free30/journey.js';
 import {applyMotion,DEFAULTS} from '../src/motion-lab/settings.js';
 const profile=()=>new FreeJourney({getItem:()=>null,setItem:()=>{}}).profile;
@@ -48,8 +51,10 @@ test('centered load stays while centered overload crushes support',()=>{
 });
 
 test('paired specimens do not knock each other down during the unforced comparison',()=>{
- const w=make('bearing-pair');w.detach();
- const rightStart=120;
+ const {site,bounds}=extendWorksite(BEARING_MAPS[0].site);
+ const w=new BearingWorld(site,profile(),{blast:'normal'});
+ applySettings(w,loadIdeaTuning({getItem:()=>null}).settings);applyMotion(w,DEFAULTS);w.detach();
+ const rightStart=bounds.x+160;
  for(let i=0;i<1200;i++){w.step(1/60);assert(w.diagnostics().finite&&w.diagnostics().balanced);w.events=[];}
  const right=w.bearingReadings().find(r=>r.center>rightStart);
  assert(right);assert.equal(right.width,2);assert.equal(right.load,814);

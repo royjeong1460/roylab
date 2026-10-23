@@ -1,9 +1,9 @@
 import {YardKit} from '../paid-lab/culture/kit.js';
 import {packMapCells,pixelCount,validateSite} from '../map-maker-generator.js';
 function make(key,title,columns,{centered=false,heavy=false}={}){
- const width=columns.length===2?200:80,height=128,floorY=112,k=new YardKit(width,floorY);
+ const width=columns.length===2?240:80,height=128,floorY=112,k=new YardKit(width,floorY);
  for(let i=0;i<columns.length;i++){
-  const dx=i*120,roofX=dx+(centered?7:14),roofW=centered?39:40,top=heavy?18:30;
+  const dx=i*160,roofX=dx+(centered?7:14),roofW=centered?39:40,top=heavy?18:30;
   k.rect(roofX,top,roofW,48-top,2);k.rect(roofX,44,roofW,4,1);
   for(let x=roofX+4;x<roofX+roofW-4;x+=8)k.rect(x,top+4,3,6,3);
   k.rect(dx+27-columns[i],48,columns[i],47,1);
