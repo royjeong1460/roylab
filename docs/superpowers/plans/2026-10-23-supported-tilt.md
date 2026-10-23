@@ -10,3 +10,5 @@ Architecture: add TiltWorld extending BearingWorld, not RampWorld. Apply an extr
 - [ ] Run focused new and old regression tests, build, desktop/mobile layout and browser gameplay checks. Publish separate URL and verify deployed build. Record limits: real iPhone play feel needs user replay.
 
 Verification: 24 focused tests pass (6 new, 18 previous). Build succeeds with existing Phaser chunk-size warning. Local browser load comparison ramps while hinged and returns to1x after settling; no console errors. Review caught cached Matter support points: use supportCount, with a failing-then-passing regression. iPhone feel remains unverified.
+
+Follow-up: user requested a1x-to10x ramp over10 active seconds. Default/cap/UI changed to10, older saved default5 migrates to10; custom other values and gravity/speed remain intact. All7 tilt tests pass, including5s=5.5x,10s=10x, cap and saved-setting migration.

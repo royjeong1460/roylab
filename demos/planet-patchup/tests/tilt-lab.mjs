@@ -16,10 +16,11 @@ const make=()=>{
 const moving=w=>{const p=w.bodies.find(p=>p.hinge);assert(p);Body.setAngularVelocity(p.body,.01);return p;};
 test('supported torque ramps without changing mass or inertia, and follows COM lever arm',()=>{
  const w=make(),p=moving(w),{mass,inertia}=p.body;
- for(let i=0;i<300;i++){p.body.torque=0;w.assistTilt(1/60);}
- assert(Math.abs(p.rotationGain-5)<1e-9);
+ w.assistTilt(5);assert.equal(p.rotationGain,5.5);
+ p.body.torque=0;w.assistTilt(5);assert.equal(p.rotationGain,10);
+ p.body.torque=0;w.assistTilt(5);assert.equal(p.rotationGain,10);
  const g=w.engine.gravity,dx=p.body.position.x-p.hinge.pointA.x;
- assert(Math.abs(p.body.torque-4*dx*mass*g.y*g.scale)<1e-9);
+ assert(Math.abs(p.body.torque-9*dx*mass*g.y*g.scale)<1e-9);
  assert.equal(p.body.mass,mass);assert.equal(p.body.inertia,inertia);
 });
 test('upward swing and stationary bodies receive no extra torque',()=>{
@@ -69,9 +70,15 @@ test('isolated settings preserve base inertia when reapplied and never touch ram
  const {tiltStorage}=await import('../src/tilt-lab/storage.js');
  const w=make(),p=moving(w),inertia=p.body.inertia;
  applyTiltMotion(w,DEFAULTS);w.assistTilt(4);applyTiltMotion(w,DEFAULTS);
- assert.equal(p.body.inertia,inertia);assert.equal(w.rotationLimit,5);
+ assert.equal(p.body.inertia,inertia);assert.equal(w.rotationLimit,10);
  const data=new Map([['planet-patchup-ramp-planet','keep']]);
  const store=tiltStorage({getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)});
- assert(saveMotion(store,DEFAULTS).ok);assert.equal(loadMotion(store).settings.rotation,5);
+ assert(saveMotion(store,DEFAULTS).ok);assert.equal(loadMotion(store).settings.rotation,10);
  assert.equal(data.get('planet-patchup-ramp-planet'),'keep');assert.equal(data.size,2);
+});
+
+test('old default fivefold saves upgrade to tenfold without changing other settings',async()=>{
+ const {loadMotion}=await import('../src/tilt-lab/settings.js');let saved;
+ const store={getItem:()=>JSON.stringify({version:2,settings:{gravity:1.5,rotation:5,speed:1.2}}),setItem:(_key,value)=>saved=JSON.parse(value)};
+ assert.deepEqual(loadMotion(store).settings,{gravity:1.5,rotation:10,speed:1.2});assert.equal(saved.version,3);
 });

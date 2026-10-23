@@ -4,7 +4,7 @@ export function mountMotion(banner,current,storage,{pause,resume},warning){
  const open=el('button','낙하·받침 보정');open.className='motion-open';open.setAttribute('aria-haspopup','dialog');banner.insertBefore(open,banner.children[1]);
  const dialog=el('dialog');dialog.className='motion-dialog';dialog.setAttribute('aria-labelledby','motion-title');
  const form=el('form'),header=el('header'),title=el('h2','낙하·받침 보정 테스트'),close=el('button','닫기');title.id='motion-title';close.type='button';close.onclick=()=>dialog.close();header.append(title,close);
- const note=el('p','받침에 연결되어 아래로 기울 때만 보정이 1→5배로 늘어요. 질량·회전 관성은 유지해요. 떨어지거나 다른 면에 부딪히면 종료하고, 파편에는 보정을 물려주지 않아요. 기존 회전 운동 자체를 강제로 멈추지는 않아요.');
+ const note=el('p','받침에 연결되어 아래로 기울 때만 보정이 1→10배로 늘어요. 질량·회전 관성은 유지해요. 떨어지거나 다른 면에 부딪히면 종료하고, 파편에는 보정을 물려주지 않아요. 기존 회전 운동 자체를 강제로 멈추지는 않아요.');
  const presets=el('div');presets.className='motion-presets';const controls=new Map();let draft={...current};
  const sync=()=>{for(const [key,{number,range}] of controls){number.value=draft[key];range.value=draft[key];}};
  for(const preset of PRESETS){const b=el('button',preset.label);b.type='button';b.onclick=()=>{draft=normalizeMotion(preset.values);sync();status.textContent='선택한 값이에요. 아래 적용 버튼을 누르면 같은 맵을 다시 시작해요.';};presets.append(b);}
@@ -17,7 +17,7 @@ export function mountMotion(banner,current,storage,{pause,resume},warning){
   range.oninput=()=>{draft[f.key]=Number(range.value);number.value=range.value;};
   row.append(legend,label,number,range,el('small',f.help));form.append(row);controls.set(f.key,{number,range});
  }
- const status=el('p',warning||'기본값: 중력 1배 · 받침 보정 1→5배 (5초) · 최고 속도 1배.');status.setAttribute('role','status');
+ const status=el('p',warning||'기본값: 중력 1배 · 받침 보정 1→10배 (10초) · 최고 속도 1배.');status.setAttribute('role','status');
  const caution=el('p','속도가 커지면 충돌 파괴도 강해져요. 최고 속도를 높이면 얇은 구조물을 통과할 수 있으니 제한 횟수가 늘어날 때만 비교하세요.');caution.className='motion-caution';
  const footer=el('footer'),apply=el('button','적용하고 같은 맵 다시 시작');apply.type='submit';footer.append(apply);form.append(caution,status,footer);dialog.append(form);document.body.append(dialog);
  form.onsubmit=e=>{e.preventDefault();if(!form.reportValidity())return;if(!saveMotion(storage,draft).ok){status.textContent='저장하지 못했어요. 사이트 저장 허용 여부를 확인해 주세요.';return;}location.reload();};

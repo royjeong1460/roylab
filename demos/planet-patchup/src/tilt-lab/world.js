@@ -4,7 +4,7 @@ import {BearingWorld} from '../bearing-lab/world.js';
 // Extra toppling torque is local to a live hinge; collision inertia never changes.
 export class TiltWorld extends BearingWorld {
  constructor(...args){
-  super(...args);this.rotationLimit=5;
+  super(...args);this.rotationLimit=10;
   Events.on(this.engine,'beforeUpdate',event=>{
    this.stopContactAssist(this.engine.pairs.list);
    this.assistTilt(event.delta/1000);
@@ -43,8 +43,8 @@ export class TiltWorld extends BearingWorld {
    const torque=b.mass*g.scale*((b.position.x-pivot.x)*g.y-(b.position.y-pivot.y)*g.x);
    // No motor-like drive through rest or the upward half of a rebound.
    if(Math.abs(b.angularVelocity)<.00001||b.angularVelocity*torque<=0)continue;
-   piece.tiltSeconds=Math.min(5,piece.tiltSeconds+dt);
-   piece.rotationGain=1+(this.rotationLimit-1)*piece.tiltSeconds/5;
+   piece.tiltSeconds=Math.min(10,piece.tiltSeconds+dt);
+   piece.rotationGain=1+(this.rotationLimit-1)*piece.tiltSeconds/10;
    b.torque+=(piece.rotationGain-1)*torque;
   }
  }
