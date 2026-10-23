@@ -1,6 +1,6 @@
 // Tutorial observes the real run; it never creates debris or awards currency.
 export class FirstRunGuide{
- constructor(target){this.target=target;this.stage='aim';this.elapsed=0;}
+ constructor(target,{touchTap=false}={}){this.touchTap=touchTap;this.target=target;this.stage='aim';this.elapsed=0;}
  attack(point,accepted){if(this.stage==='aim'&&accepted&&point){this.pending=true;this.elapsed=0;}}
  update(dt,collected,hasDebris=false){
   this.elapsed+=dt;
@@ -13,22 +13,22 @@ export class FirstRunGuide{
  }
  skip(){this.stage='done';this.pending=false;}
  copy(device){return {
-  aim:device==='touch'?'왼쪽 위 조준점을 표시된 기둥에 맞추고 손을 떼세요.':'표시된 기둥을 클릭해 폭파해 보세요.',
+  aim:device==='touch'&&this.touchTap?'표시된 기둥을 한 손가락으로 톡 터치해 보세요. 두 손가락은 화면 이동·확대예요.':device==='touch'?'왼쪽 위 조준점을 표시된 기둥에 맞추고 손을 떼세요.':'표시된 기둥을 클릭해 폭파해 보세요.',
   collapse:'기둥이 약해지면 위쪽 무게를 못 버티고 끊어져요.',
-  collect:device==='touch'?'누른 채 흡입 원을 민트색 잔해에 가까이 대 보세요. 손을 떼면 폭파돼요.':'흡입 원을 민트색 잔해에 가까이 대 보세요. 클릭하지 않아도 수집돼요.',
+  collect:device==='touch'&&this.touchTap?'손가락을 끌어 흡입 원을 민트색 잔해에 대 보세요. 끌 때는 수집만 해요.':device==='touch'?'누른 채 흡입 원을 민트색 잔해에 가까이 대 보세요. 손을 떼면 폭파돼요.':'흡입 원을 민트색 잔해에 가까이 대 보세요. 클릭하지 않아도 수집돼요.',
   work:'남은 조각도 폭파해 보세요. 배터리를 다 쓰면 모은 부품으로 강화할 수 있어요.',
  }[this.stage]||'';}
 }
-export function gameTip(seconds,device){
+export function gameTip(seconds,device,touchTap=false){
  const touch=device==='touch',tips=[
-  touch?'누른 채 조준 → 손을 떼면 폭파. 왼쪽 위 조준점을 확인하세요.':'마우스 클릭으로 폭파해요. 기둥이 얇아지면 몸체·지붕의 무게를 못 버텨요.',
+  touch&&touchTap?'한 손가락으로 톡 터치하면 그 자리에 폭파돼요. 두 손가락이 닿으면 폭파는 취소돼요.':touch?'누른 채 조준 → 손을 떼면 폭파. 왼쪽 위 조준점을 확인하세요.':'마우스 클릭으로 폭파해요. 기둥이 얇아지면 몸체·지붕의 무게를 못 버텨요.',
   touch?'두 손가락으로 맵을 이동하고, 벌리거나 오므려 확대·축소해요.':'우클릭 드래그로 맵 이동 · 마우스 휠로 확대·축소해요.',
   '민트색 쓰레기는 흡입 원 가까이에서 자동 수집돼요. 수집은 배터리를 쓰지 않아요.',
   '회수한 쓰레기로 장비를 강화하세요. 강화는 다음 출동부터 적용돼요.',
   '배터리가 소진돼도 10초 동안 더 수집할 수 있어요. 모은 부품은 남아요.',
   '블랙홀 해금 후 왼쪽 아래에서 도구를 바꿔요. Ⅱ 메뉴에서 부품을 챙겨 복귀해요.',
   '일반 현장은 자유 선택! 6곳 모두 70% 이상 회수하면 보스가 열려요. 100%는 올클리어!',
-  ...(touch?['가까이 보기에서 손가락을 화면 가장자리에 유지하면 그 방향으로 천천히 이동해요.']:[]),
+  ...(touch&&touchTap?['한 손가락으로 끌면 잔해 수집만 해요. 화면 이동·확대는 두 손가락으로 하세요.']:touch?['가까이 보기에서 손가락을 화면 가장자리에 유지하면 그 방향으로 천천히 이동해요.']:[]),
  ];
  return tips[Math.floor(Math.max(0,seconds)/9)%tips.length];
 }

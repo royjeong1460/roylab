@@ -42,7 +42,7 @@ export class WorldRenderer {
       if(this.effects.length>60)this.effects.shift();
     }
   }
-  render(dt, {aim, working, selectedTool, direction, suctionOnly}) {
+  render(dt, {aim, working, selectedTool, direction, suctionOnly, hideCursor=false}) {
     const w=this.world, automaticSuction=this.automaticSuction;
     if(this.shownVersion!==w.version){
       const ctx=this.gridTexture.context;ctx.clearRect(0,0,w.width,w.height);
@@ -93,6 +93,7 @@ export class WorldRenderer {
         n.lineStyle(.35,color,.15+.4*Math.sin(phase*Math.PI));n.beginPath();n.arc(x,y,radius,angle,angle+.7);n.strokePath();
       }
     }
+    if(hideCursor)return;
     n.lineStyle(.6,working?0xf18a42:color,.9);n.strokeCircle(x,y,3);n.lineStyle(1,0x32524d);n.lineBetween(x,y+4,x,y+6.75);
     n.fillStyle(color);n.fillRoundedRect(x-1.75,y+5.5,3.5,4.25,1);n.fillStyle(0xeab572);n.fillRect(x-1,y+6.75,2,.75);
     if(!suctionOnly&&selectedTool!=='cutter'){n.lineStyle(.5,color,.8);n.lineBetween(x,y,x+direction*6,y);}

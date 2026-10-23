@@ -1,6 +1,6 @@
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 
-export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,end,press,touchPressOnRelease=()=>false,touchMargin={right:0,bottom:0},touchReleaseAtPointer=false,touchEdgePan=false,onViewChange=()=>{}}) {
+export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,end,press,touchPressOnRelease=()=>false,touchMargin={right:0,bottom:0},touchReleaseAtPointer=false,touchAtContact=false,touchEdgePan=false,onViewChange=()=>{}}) {
   const pointers=new Map();
   let working=false,touchBlocked=false,gesture=null,destroyed=false;
   let edgeElapsed=0;
@@ -20,7 +20,7 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
     const extraX=right*viewport.viewWidth/rect.width,extraY=bottom*viewport.viewHeight/rect.height;
     // Permit a bounded finger apron before applying the nozzle offset, including letterboxed map edges.
     if(raw.x<0||raw.y<0||raw.x>viewport.viewWidth+extraX||raw.y>viewport.viewHeight+extraY||world.x<0||world.y<0||world.x>viewport.worldWidth+extraX/viewport.zoom||world.y>viewport.worldHeight+extraY/viewport.zoom)return null;
-    if(event.pointerType!=='touch')return world;
+    if(event.pointerType!=='touch'||touchAtContact)return world;
     const bounds=surface.getBoundingClientRect();
     let edgeX=bounds.right,edgeY=bounds.bottom;
     const edgeFollow=right>0||bottom>0||touchReleaseAtPointer;
@@ -119,7 +119,8 @@ export function bindBatteryInput(surface,canvas,viewport,{canStart,start,move,en
       if(destroyed)return;
       const tap=pointers.get(event.pointerId)?.tap;
       const point=locate(event),target=touchReleaseAtPointer?point:tap?.point;
-      if(tap&&!touchBlocked&&point&&canStart(target)){if(touchReleaseAtPointer)move(target);press?.(target);}
+      const contactDragged=touchAtContact&&tap&&Math.hypot(event.clientX-tap.x,event.clientY-tap.y)>12;
+      if(tap&&!contactDragged&&!touchBlocked&&point&&canStart(target)){if(touchReleaseAtPointer)move(target);press?.(target);}
       remove(event.pointerId);
     },
     pointercancel:event=>{if(!destroyed)remove(event.pointerId);},

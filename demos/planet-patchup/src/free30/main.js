@@ -7,6 +7,8 @@ import {FreeJourney,FreeRun} from './journey.js';
 import {BALANCE_VERSION,upgradeGuide} from './balance.js';
 import {FREE_TUTORIAL} from './sites.js';
 import {testEdition} from './edition.js';
+import {contactStorage,pressContact} from '../mobile-tutorial2/controls.js';
+const touchTap=Boolean(testEdition?.touchTap);
 import {FirstRunGuide,TutorialOverlay,gameTip} from './tutorial.js';
 import {clampToolAim} from '../three-tool-run.js';
 import {MapViewport} from '../map-viewport.js';
@@ -41,6 +43,7 @@ export function bindSceneTeardown(events,cleanup){
 }
 const $=id=>document.getElementById(id),tools=[...document.querySelectorAll('[data-tool]')];
 let storage;try{storage=globalThis.localStorage;}catch{storage={getItem:()=>null,setItem:()=>{throw Error('저장소 접근 불가');}};}
+if(touchTap)storage=contactStorage(storage);
 $('original-version').href=import.meta.env.DEV?'./blast-step1.html':'../planet-patchup-blast/';
 const qa=new URLSearchParams(location.search).get('qa')==='1';
 const artMap=testEdition?.findMap(new URLSearchParams(location.search).get('artMap'));
@@ -152,24 +155,24 @@ class FreeScene extends Phaser.Scene{
     this.gameSound=new GameSound(this.sound,soundEnabled,key=>this.cache.audio.exists(key));
     this.tipSeconds=0;
     if(r.site.id===FREE_TUTORIAL.id){
-      this.aim={...r.site.preview[0]};this.guide=new FirstRunGuide(r.site.preview[0]);
+      this.aim={...r.site.preview[0]};this.guide=new FirstRunGuide(r.site.preview[0],{touchTap});
       this.guideView=new TutorialOverlay(f,this.guide,()=>guarded(async()=>{const result=await journey.skipTutorial();if(result.ok)this.guide.skip();else notice(failureMessage(result.reason));}));
     }
-    this.pointer=bindBatteryInput(f,this.game.canvas,this.viewport,{touchReleaseAtPointer:true,touchEdgePan:true,canStart:()=>!r.paused&&!r.finishReady&&!operating,start:q=>{r.release();this.working=true;this.aim=clampToolAim(w,q);},move:q=>{this.aim=clampToolAim(w,q);},press:q=>{this.aim=clampToolAim(w,q);return this.attack();},end:()=>{this.working=false;r.release();},touchPressOnRelease:()=>true,onViewChange:()=>{this.view.transform();this.mapLabel();}});
-    this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label','청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
+    this.pointer=bindBatteryInput(f,this.game.canvas,this.viewport,{touchReleaseAtPointer:!touchTap,touchAtContact:touchTap,touchEdgePan:!touchTap,canStart:()=>!r.paused&&!r.finishReady&&!operating,start:q=>{r.release();this.working=true;this.aim=clampToolAim(w,q);},move:q=>{this.aim=clampToolAim(w,q);},press:q=>{this.aim=clampToolAim(w,q);return this.attack();},end:()=>{this.working=false;r.release();},touchPressOnRelease:()=>true,onViewChange:()=>{this.view.transform();this.mapLabel();}});
+    this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label',touchTap?'청소 현장. 모바일은 한 손가락으로 톡 터치한 위치에서 폭파. 두 손가락은 폭파 없이 이동·확대. 끌면 수집만 해요. PC는 클릭 즉시 사용.':'청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
     $('site-name').textContent=r.site.name;$('run-mode').textContent=artMap?(testEdition.runLabel||'유료판 테스트'):r.mode==='boss'?'쌍봉 철탑 보스':'고물 바람골';
     this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(f);
     this.teardown=bindSceneTeardown(this.events,()=>{this.observer.disconnect();this.pointer.destroy();this.gameSound?.destroy();this.guideView?.destroy();this.view.destroy();});this.hud();this.mapLabel();
   }
   mapLabel(){$('map-label').textContent=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001?'가까이 보기':'전체 보기';}
   resize(){const f=$('playfield');if(!f.clientWidth||!f.clientHeight)return;release();const fit=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001;this.scale.resize(f.clientWidth,f.clientHeight);this.viewport.setSize(f.clientWidth,f.clientHeight);if(fit)this.viewport.fit();this.view.transform();this.mapLabel();}
-  attack(){const accepted=this.run.press(this.aim);this.guide?.attack(this.aim,accepted);if(!accepted)$('feedback').textContent='건물 위를 조준하거나 남은 배터리를 확인해 주세요.';this.hud();return accepted;}
+  attack(){const accepted=touchTap&&inputDevice==='touch'?pressContact(this.run,this.aim):this.run.press(this.aim);this.guide?.attack(this.aim,accepted);if(!accepted)$('feedback').textContent='건물 위를 조준하거나 남은 배터리를 확인해 주세요.';this.hud();return accepted;}
   hud(){
     const r=this.run,w=r.world,s=w.stats();$('play-tools').hidden=!journey.profile.owned.includes('blackhole');$('charge').textContent=w.unlimited?'∞':`${Math.ceil(w.charge/w.capacity*100)}%`;$('energy').max=w.capacity;$('energy').value=w.charge;
     $('recovered').textContent=`${(Math.floor(r.ratio*1000)/10).toFixed(1)}%`;$('recovery').value=r.ratio*100;
     for(const b of tools){b.disabled=!journey.profile.owned.includes(b.dataset.tool)||r.finishReady;b.setAttribute('aria-pressed',String(w.tool===b.dataset.tool));b.title=journey.profile.owned.includes(b.dataset.tool)?TOOL_LABELS[b.dataset.tool]:'작업장에서 구매하세요';}
-    $('tool-detail').textContent=w.tool==='bomb'?`${inputDevice==='touch'?'조준 후 손 떼기':'클릭 즉시 폭파'} · 반경 ${s.bombRadius} · ${s.bombCost} 에너지`:`${s.gravityDuration}초 · ${s.gravityCost} 에너지 · 휘젓기 ${s.coreMix}배 · 마모 1→${s.wearSpeed}배`;
-    $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?r.mode==='boss'?'보스 70% 성공! 계속해서 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':'70% 성공! 100%에 도전하거나 Ⅱ 메뉴에서 정산하고 다른 현장을 골라보세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice);
+    $('tool-detail').textContent=w.tool==='bomb'?`${inputDevice==='touch'?(touchTap?'톡 터치로 폭파':'조준 후 손 떼기'):'클릭 즉시 폭파'} · 반경 ${s.bombRadius} · ${s.bombCost} 에너지`:`${s.gravityDuration}초 · ${s.gravityCost} 에너지 · 휘젓기 ${s.coreMix}배 · 마모 1→${s.wearSpeed}배`;
+    $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?r.mode==='boss'?'보스 70% 성공! 계속해서 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':'70% 성공! 100%에 도전하거나 Ⅱ 메뉴에서 정산하고 다른 현장을 골라보세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice,touchTap);
     if(artMap)$('feedback').textContent=r.finishReady?`테스트 종료 · ${(r.ratio*100).toFixed(1)}% 회수 · 화력을 바꾸거나 다시 테스트하세요.`:r.paused?'테스트 일시정지':r.phase==='finishing'?`배터리 소진 · 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:'폭파로 받침·벽면을 깨고 블랙홀로 모아 보세요. 하단에서 화력을 조절할 수 있어요.';
     if(artMap&&!r.paused&&!r.finishReady&&r.phase!=='finishing'&&testEdition.status)$('feedback').textContent=testEdition.status(w);
     this.guideView?.render(this.viewport,this.aim,w,inputDevice,r.paused||r.phase==='finishing');
@@ -181,7 +184,7 @@ class FreeScene extends Phaser.Scene{
     this.tipSeconds+=dt;this.guide?.update(dt,r.world.collected,this.guide.pending&&(r.world.bodies.length>0||r.looseCount>0||r.world.collected>0));
     this.guideView?.render(this.viewport,this.aim,r.world,inputDevice,r.paused||r.phase==='finishing');
     for(const event of events)this.view.addEffect(event);
-    this.view.render(dt,{aim:this.aim,working:this.working,selectedTool:r.world.tool,direction:0,suctionOnly:r.phase==='finishing'});this.overlay.draw(this.view.reducedMotion.matches?0:dt,r.world,this.aim);this.editionOverlay?.draw(dt,r.world);
+    this.view.render(dt,{aim:this.aim,working:this.working,selectedTool:r.world.tool,direction:0,suctionOnly:r.phase==='finishing',hideCursor:touchTap&&inputDevice==='touch'});this.overlay.draw(this.view.reducedMotion.matches?0:dt,r.world,this.aim,!(touchTap&&inputDevice==='touch'));this.editionOverlay?.draw(dt,r.world);
     if(time-this.lastHUD>100){this.hud();this.lastHUD=time;}
     if(!previewId&&!r.finishReady&&r.qualified&&r.site.id!==FREE_TUTORIAL.id&&!r.milestoneSaved&&!operating&&now>=(this.nextMilestoneSave||0)){
       this.nextMilestoneSave=now+1000;
@@ -225,9 +228,9 @@ window.addEventListener('pagehide',event=>handleStep1PageHide(event,pause,dispos
 document.addEventListener('keydown',event=>{
   if(!scene||scene.run.paused||scene.run.finishReady||operating)return;if(event.key==='Escape'){event.preventDefault();pause();return;}
   if(document.activeElement!==game.canvas&&document.activeElement!==$('playfield'))return;
-  if(event.code==='Space'){event.preventDefault();if(!event.repeat){scene.attack();scene.run.release();}}
+  if(event.code==='Space'){event.preventDefault();if(!event.repeat){inputDevice='mouse';scene.attack();scene.run.release();}}
   const dx=event.key==='ArrowLeft'?-1:event.key==='ArrowRight'?1:0,dy=event.key==='ArrowUp'?-1:event.key==='ArrowDown'?1:0;
-  if(dx||dy){event.preventDefault();scene.aim=clampToolAim(scene.run.world,{x:scene.aim.x+dx,y:scene.aim.y+dy});}
+  if(dx||dy){event.preventDefault();inputDevice='mouse';scene.aim=clampToolAim(scene.run.world,{x:scene.aim.x+dx,y:scene.aim.y+dy});}
 });
 document.addEventListener('keyup',event=>{if(event.code==='Space')release();});
 initHome();

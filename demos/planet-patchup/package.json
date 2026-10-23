@@ -24,7 +24,9 @@
     "test:tilt": "node --test tests/tilt-lab.mjs",
     "build:tilt": "vite build --config vite.tilt.config.js",
     "test:structure": "node --test tests/structure-lab.mjs tests/structure-maps.mjs",
-    "build:structure": "vite build --config vite.structure.config.js"
+    "build:structure": "vite build --config vite.structure.config.js",
+    "test:tutorial2": "node tests/battery-input.mjs && node --test tests/mobile-tutorial2.mjs",
+    "build:tutorial2": "vite build --config vite.tutorial2.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"

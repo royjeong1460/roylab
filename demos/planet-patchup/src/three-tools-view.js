@@ -6,7 +6,7 @@ export function drawPatternPreview(canvas,pattern){
 }
 export class ThreeToolsOverlay{
   constructor(scene,renderer){this.graphics=scene.add.graphics();renderer.layer.add(this.graphics);this.time=0;}
-  draw(dt,world,aim){
+  draw(dt,world,aim,showAim=true){
     this.time+=dt;const g=this.graphics;g.clear();const stats=world.stats();
     for(const well of world.displayWells?.()??world.wells){
       g.fillStyle(0x705387,.04);g.fillCircle(well.x,well.y,well.radius);
@@ -18,7 +18,7 @@ export class ThreeToolsOverlay{
         g.lineStyle(.4,0x876396,.25+.35*phase);g.lineBetween(well.x+Math.cos(angle)*tail,well.y+Math.sin(angle)*tail,well.x+Math.cos(angle)*radius,well.y+Math.sin(angle)*radius);
       }
     }
-    if(!world.toolEnabled)return;
+    if(!world.toolEnabled||!showAim)return;
     if(world.tool==='cutter'){
       const pattern=world.cutPattern();
       g.fillStyle(0x256346,.3);g.lineStyle(.12,0x22513b,.8);

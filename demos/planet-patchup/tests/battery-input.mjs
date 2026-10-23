@@ -284,5 +284,25 @@ test('edge pan stays within bounds and rejects invalid time without camera jumps
  for(const dt of [NaN,Infinity,-1,0])h.control.update(dt);near(h.view.x,0);
  for(let i=0;i<300;i++)h.control.update(.05);near(h.view.x,96);near(h.view.y,144);
 });
+test('contact taps target the actual finger, once on lift; dragging only collects',()=>{
+ const shots=[],h=harness(p=>shots.push(p),()=>true,{touchAtContact:true});h.view.pan(-100,100);
+ h.fire('pointerdown',{x:200,y:300});assert.equal(shots.length,0);
+ const target=h.view.screenToWorld(190,280);assert.deepEqual(h.calls.at(-1)[1],target);
+ h.control.update(1);assert.equal(shots.length,0);
+ h.fire('pointerup',{x:203,y:302});assert.deepEqual(shots,[target]);
+ h.fire('pointerup');assert.equal(shots.length,1);
+ h.fire('pointerdown');h.fire('pointermove',{x:240});h.fire('pointermove',{x:200});h.fire('pointerup');assert.equal(shots.length,1);
+ h.fire('pointerdown',{x:100});h.fire('pointermove',{x:110});h.fire('pointerup',{x:180});assert.equal(shots.length,1,'final release displacement also cancels a swipe');
+ h.fire('pointerdown',{pointerType:'mouse'});assert.equal(shots.length,2,'PC still fires on down');
+});
+test('contact tap is canceled by multi-touch until all fingers lift, with camera preserved',()=>{
+ const shots=[],h=harness(p=>shots.push(p),()=>true,{touchAtContact:true});h.view.pan(-100,100);
+ const before=[h.view.x,h.view.y,h.view.zoom];
+ h.fire('pointerdown',{x:100});h.fire('pointerdown',{id:2,x:250});h.fire('pointermove',{id:2,x:320,y:340});
+ assert.notDeepEqual([h.view.x,h.view.y,h.view.zoom],before);
+ h.fire('pointerdown',{id:3,x:200});h.fire('pointerup',{id:2});h.fire('pointerup',{id:3});h.fire('pointermove',{x:180});h.fire('pointerup');assert.equal(shots.length,0);
+ for(const type of ['pointercancel','lostpointercapture']){h.fire('pointerdown');h.fire(type);h.fire('pointerup');}assert.equal(shots.length,0);
+ h.fire('pointerdown');h.fire('pointerup');assert.equal(shots.length,1);
+});
 console.log(`${passed} passed, ${failed} failed battery viewport/input cases`);
 if(failed)process.exitCode=1;
