@@ -1,0 +1,3 @@
+.ideas-preview .preview-banner .bearing-start{background:#f4cb84;flex:1 1 100%;max-width:none;font-weight:800}
+.bearing-readout{flex:1 1 100%;margin:2px 0;color:#fff2d5;font-size:12px;text-align:center;line-height:1.5}
+@media(max-width:600px){.bearing-readout{font-size:10px}.ideas-preview .preview-banner .culture-caption{font-size:10px}}
