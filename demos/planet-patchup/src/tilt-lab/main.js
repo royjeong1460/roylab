@@ -1,5 +1,7 @@
 import {installTestEdition} from '../free30/edition.js';
 import {RAMP_MAPS} from '../ramp-lab/maps.js';
+import {LAYOUT_MAPS} from '../ideas-lab/maps.js';
+const TILT_MAPS=[...RAMP_MAPS,...LAYOUT_MAPS.filter(map=>map.key==='layout-tall')];
 import {createYardSurface,createYardBackdrop} from '../paid-lab/culture/art.js';
 import {mountCulturePreview} from '../paid-lab/culture/preview-ui.js';
 import {applySettings} from '../paid-lab/settings.js';
@@ -29,7 +31,7 @@ const loaded=loadOptions(storage),options=loaded.options,tuning=loadIdeaTuning(s
 const label=`${optionsLabel(options)} · ${settings.unlimited?'배터리 무제한':`배터리 ${settings.capacity}`}`;
 installTestEdition({
  runLabel:'1·3·5칸 · 받침 회전 보정',
- findMap:key=>RAMP_MAPS.find(map=>map.key===key)||RAMP_MAPS[0],surface:createYardSurface,createBackdrop:createYardBackdrop,backURL:FREE_URL,
+ findMap:key=>TILT_MAPS.find(map=>map.key===key)||RAMP_MAPS[0],surface:createYardSurface,createBackdrop:createYardBackdrop,backURL:FREE_URL,
  modalOpen:()=>Boolean(document.querySelector('.ideas-dialog[open]:not(.ideas-docked),.paid-settings[open]:not(.ideas-docked),.culture-map-picker[open],.motion-dialog[open]')),
  label:`1·3·5칸 · 받침 회전 보정 · ${label} · 실제 진행 저장 없음`,
  configure(_world,run){
@@ -42,7 +44,7 @@ installTestEdition({
  createOverlay:(scene,view)=>new IdeaOverlay(scene,view),
  status:world=>`현재 받침 보정 ${Math.max(1,...world.bodies.map(p=>p.rotationGain||1)).toFixed(2)}배 · 조각 최대 이동 ${Math.max(0,...world.bodies.map(p=>Math.hypot(p.body.velocity.x,p.body.velocity.y)*60)).toFixed(0)}칸/s · 속도 제한 ${world.motionLimits||0}회`,
  mount(banner,map,hooks){
-  mountCulturePreview(banner,map,{...hooks,label:`${label} · 중력 ${motion.settings.gravity}배 / 받침 보정 1→${motion.settings.rotation}배 (5초) / 최고 속도 ${motion.settings.speed}배`,backURL:FREE_URL,maps:RAMP_MAPS,pickerTitle:'기둥 두께 · 무게 · 무게중심 비교',pickerNote:'첫 맵은 같은 건물을 왼쪽 1칸·가운데 3칸·오른쪽 5칸 기둥에 올렸어요. 하중 비교 시작으로 외력 없이 관찰하고, 폭파로 남은 두께를 줄여 보세요. 질량·회전 관성은 고정이며, 받침 분리·착지 후에는 보정하지 않아요. 중앙 하중과 무거운 중앙 하중도 비교할 수 있어요.'});
+  mountCulturePreview(banner,map,{...hooks,label:`${label} · 중력 ${motion.settings.gravity}배 / 받침 보정 1→${motion.settings.rotation}배 (5초) / 최고 속도 ${motion.settings.speed}배`,backURL:FREE_URL,maps:TILT_MAPS,pickerTitle:'기둥 비교 · 세로 적재탑',pickerNote:'첫 맵은 같은 건물을 왼쪽 1칸·가운데 3칸·오른쪽 5칸 기둥에 올렸어요. 하중 비교 시작으로 외력 없이 관찰하고, 폭파로 남은 두께를 줄여 보세요. 질량·회전 관성은 고정이며, 받침 분리·착지 후에는 보정하지 않아요. 세로형 겹처마 적재탑에서는 아래 기둥과 중간층을 폭파하며 낙하를 비교해 보세요.'});
   const original=document.createElement('a');original.className='culture-back';original.textContent='기존 관성 감소 버전';original.href='/games/planet-patchup-ramp/';banner.append(original);
   startButton=document.createElement('button');startButton.className='bearing-start';startButton.textContent='하중 비교 시작';
   startButton.onclick=()=>{if(!activeWorld)return;activeWorld.detach();startButton.disabled=true;startButton.textContent='관찰 중 · 폭파도 가능';};
