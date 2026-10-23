@@ -9,6 +9,7 @@ import {mountIdeas} from './ui.js';
 import {mountDesktopPanels} from './desktop.js';
 import {IdeaWorld} from './world.js';
 import {IdeaOverlay} from './overlay.js';
+import {extendWorksite,frameWorksite} from './space.js';
 import '../paid-lab/culture/style.css';
 import '../paid-lab/style.css';
 import './style.css';
@@ -22,11 +23,16 @@ installTestEdition({
  findMap:key=>findIdeaMap(key)||LAYOUT_MAPS[0],surface:createYardSurface,createBackdrop:createYardBackdrop,backURL:FREE_URL,
  modalOpen:()=>Boolean(document.querySelector('.ideas-dialog[open]:not(.ideas-docked),.paid-settings[open]:not(.ideas-docked),.culture-map-picker[open]')),
  label:`파괴 아이디어 실험실 · ${label} · 실제 진행 저장 없음`,
- configure(_world,run){run.world=new IdeaWorld(run.site,run.profile,options);applySettings(run.world,settings);},
+ configure(_world,run){
+  const {site,bounds}=extendWorksite(run.site);
+  run.site=site;run.aim={...site.preview[0]};run.previous={...run.aim};
+  run.world=new IdeaWorld(site,run.profile,options);run.world.worksiteBounds=bounds;applySettings(run.world,settings);
+ },
+ initialView:(viewport,run)=>frameWorksite(viewport,run.world.worksiteBounds),
  createOverlay:(scene,view)=>new IdeaOverlay(scene,view),
  status:world=>world.ideaStatus||`${optionsLabel(options)} · 조준 후 손을 떼면 사용해요.`,
  mount(banner,map,hooks){
-  mountCulturePreview(banner,map,{...hooks,label,backURL:FREE_URL,maps:IDEA_MAPS,pickerTitle:'맵 구조 비교 · 가로 / 세로 / 확장',pickerNote:'위의 새 맵 3개를 같은 화력으로 비교해 보세요. 아래 기존 맵도 그대로 남아 있어요. 맵 변경 시 현장만 리셋되고 실험 화력은 유지돼요.'});
+  mountCulturePreview(banner,map,{...hooks,label:`${label} · 좌우 낙하 공간 확장`,backURL:FREE_URL,maps:IDEA_MAPS,pickerTitle:'맵 구조 비교 · 가로 / 세로 / 확장',pickerNote:'기존 맵 끝의 벽을 바깥으로 옮겼어요. 좌우 여유 공간까지 이동해 잔해를 회수할 수 있어요. 맵 변경 시 현장만 리셋되고 실험 화력은 유지돼요.'});
   mountSettings(banner,settings,createTuningStorage(storage),hooks,tuning.warning);
   mountIdeas(banner,options,storage,hooks,loaded.warning);
   const title=document.getElementById('paid-settings-title');if(title)title.textContent='실험 세부 화력';

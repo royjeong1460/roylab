@@ -148,7 +148,7 @@ class FreeScene extends Phaser.Scene{
   create(){
     scene=this;this.run=journey.currentRun;const r=this.run,w=r.world,f=$('playfield');this.aim={...r.aim};this.working=false;this.settled=false;this.settling=false;this.lastHUD=0;this.lastClock=performance.now();
     this.viewport=new MapViewport({worldWidth:w.width,worldHeight:w.height,viewWidth:f.clientWidth,viewHeight:f.clientHeight});closeView(this.viewport,r.site.preview[0]?.x);this.aim={x:r.site.preview[0]?.x??w.width/2,y:w.floorY-10};
-    this.view=new WorldRenderer(this,w,this.viewport,$('minimap'),true,document.documentElement.dataset.demo==='planet'?{surface:artMap?testEdition.surface(w.width,w.cells):createTrashSurface(w.width,w.cells,'earth'),createBackdrop:artMap?testEdition.createBackdrop:createDustBackdrop,collectibleStyle:COLLECTIBLE_STYLE}:{});if(artMap)this.viewport.fit();this.view.transform();this.overlay=new ThreeToolsOverlay(this,this.view);this.editionOverlay=testEdition?.createOverlay?.(this,this.view);
+    this.view=new WorldRenderer(this,w,this.viewport,$('minimap'),true,document.documentElement.dataset.demo==='planet'?{surface:artMap?testEdition.surface(w.width,w.cells):createTrashSurface(w.width,w.cells,'earth'),createBackdrop:artMap?testEdition.createBackdrop:createDustBackdrop,collectibleStyle:COLLECTIBLE_STYLE}:{});if(artMap){this.viewport.fit();testEdition.initialView?.(this.viewport,r);}this.view.transform();this.overlay=new ThreeToolsOverlay(this,this.view);this.editionOverlay=testEdition?.createOverlay?.(this,this.view);
     this.gameSound=new GameSound(this.sound,soundEnabled,key=>this.cache.audio.exists(key));
     this.tipSeconds=0;
     if(r.site.id===FREE_TUTORIAL.id){
