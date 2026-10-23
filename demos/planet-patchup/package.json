@@ -12,7 +12,9 @@
     "test:paid": "node --test tests/free30-culture.mjs tests/culture-pack.mjs tests/paid-lab.mjs",
     "build:paid": "vite build --config vite.paid.config.js",
     "test:ideas": "node --test tests/ideas-lab.mjs tests/ideas-options.mjs tests/ideas-blackholes.mjs tests/ideas-maps.mjs tests/ideas-boundaries.mjs",
-    "build:ideas": "vite build --config vite.ideas.config.js"
+    "build:ideas": "vite build --config vite.ideas.config.js",
+    "test:support": "node --test tests/support-release.mjs tests/support-storage.mjs",
+    "build:support": "vite build --config vite.support.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"
