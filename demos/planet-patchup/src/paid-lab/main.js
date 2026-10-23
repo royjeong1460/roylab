@@ -13,7 +13,7 @@ const label=`${settingsLabel(settings)} · ${settings.unlimited?'배터리 무�
 installTestEdition({
  findMap:key=>findCultureMap(key)||CULTURE_MAPS[0],surface:createYardSurface,createBackdrop:createYardBackdrop,backURL:FREE_URL,
  modalOpen:()=>Boolean(document.querySelector('.paid-settings[open],.culture-map-picker[open]')),
- label:`유료판 화력 테스트 · ${label} · 실제 진행 저장 없음`,
+ label:`유료판 구조·화력 테스트 · ${label} · 실제 진행 저장 없음`,
  configure:world=>applySettings(world,settings),
  mount(banner,map,hooks){
   mountCulturePreview(banner,map,{...hooks,label,backURL:FREE_URL});

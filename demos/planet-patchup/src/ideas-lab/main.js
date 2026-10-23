@@ -7,8 +7,8 @@ import {mountSettings} from '../paid-lab/settings-ui.js';
 import {loadOptions,optionsLabel,loadIdeaTuning,createTuningStorage} from './options.js';
 import {mountIdeas} from './ui.js';
 import {mountDesktopPanels} from './desktop.js';
-import {IdeaWorld} from './world.js';
-import {IdeaOverlay} from './overlay.js';
+import {StructuralIdeaWorld as IdeaWorld} from '../structure/idea-world.js';
+import {StructureOverlay as IdeaOverlay} from '../structure-lab/overlay.js';
 import {extendWorksite,frameWorksite} from './space.js';
 import '../paid-lab/culture/style.css';
 import '../paid-lab/style.css';
@@ -19,10 +19,10 @@ let storage;try{storage=window.localStorage;}catch{storage={getItem(){throw Erro
 const loaded=loadOptions(storage),options=loaded.options,tuning=loadIdeaTuning(storage),settings=tuning.settings;
 const label=`${optionsLabel(options)} · ${settings.unlimited?'배터리 무제한':`배터리 ${settings.capacity}`}`;
 installTestEdition({
- runLabel:'파괴 아이디어 실험실',
+ runLabel:'구조 파단 · 파괴 실험실',
  findMap:key=>findIdeaMap(key)||LAYOUT_MAPS[0],surface:createYardSurface,createBackdrop:createYardBackdrop,backURL:FREE_URL,
  modalOpen:()=>Boolean(document.querySelector('.ideas-dialog[open]:not(.ideas-docked),.paid-settings[open]:not(.ideas-docked),.culture-map-picker[open]')),
- label:`파괴 아이디어 실험실 · ${label} · 실제 진행 저장 없음`,
+ label:`구조 파단 · 파괴 실험실 · ${label} · 실제 진행 저장 없음`,
  configure(_world,run){
   const {site,bounds}=extendWorksite(run.site);
   run.site=site;run.aim={...site.preview[0]};run.previous={...run.aim};
@@ -42,5 +42,5 @@ installTestEdition({
 });
 await import('../free30/main.js');
 mountDesktopPanels();
-document.title='Planet Patchup · 파괴 아이디어 실험실';
-document.getElementById('run-mode').textContent='파괴 아이디어 실험실';
+document.title='Planet Patchup · 구조 파단 · 파괴 실험실';
+document.getElementById('run-mode').textContent='구조 파단 · 파괴 실험실';

@@ -1,5 +1,5 @@
 import {FranceJourney,FranceRun} from '../france/journey.js';
-import {FreeWorld} from './world.js';
+import {StructuralFreeWorld as FreeWorld} from '../structure/free-world.js';
 import {FREE_SITES as STEP1_SITES,FREE_BOSS as STEP1_BOSS,FREE_TUTORIAL} from './sites.js';
 import {FREE_STAGES,stageOpen,nextStage,rememberStage,migrateStages,validStageRecords} from './stages.js';
 import {UPGRADES,UNLOCKS,totalSpent,statsForProfile,offers,migratePricing} from './balance.js';

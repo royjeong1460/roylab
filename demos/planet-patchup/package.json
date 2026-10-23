@@ -23,7 +23,7 @@
     "build:ramp": "vite build --config vite.ramp.config.js",
     "test:tilt": "node --test tests/tilt-lab.mjs",
     "build:tilt": "vite build --config vite.tilt.config.js",
-    "test:structure": "node --test tests/structure-lab.mjs",
+    "test:structure": "node --test tests/structure-lab.mjs tests/structure-maps.mjs",
     "build:structure": "vite build --config vite.structure.config.js"
   },
   "dependencies": {

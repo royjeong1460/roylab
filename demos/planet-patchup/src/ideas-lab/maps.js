@@ -8,6 +8,7 @@ function make(key,title,hint,width,height,paint,preview){
   generator:{version:1,seed:key,family:'cascade',size:'large',index:0},
   data:{width,height,floorY,shapes:packMapCells(k.cells,width,floorY)},
  });
+ site.structure={version:1,roles:packMapCells(k.roles,k.width,k.floorY)};
  return {key,title:`${title} · ${width}×${height}`,site,pixels:pixelCount(site.data)};
 }
 // Narrow exposed supports carry broad roof loads; infill stops above the cut line.
@@ -30,7 +31,7 @@ export const LAYOUT_MAPS=[
    k.jointedRoof(x,y,w);k.rect(33,y+18,46,2,1);
    k.crate(40,y+20,12,12);k.rect(33,y+32,46,2,1);
   }
-  k.rect(31,f-3,6,3,5);k.rect(75,f-3,6,3,5);
+  k.paintAs(1,()=>{k.rect(31,f-3,6,3,5);k.rect(75,f-3,6,3,5);});
  },[{x:34,y:221},{x:78,y:221},{x:34,y:133}]),
  make('layout-open','확장형 · 높낮이 고물 마당','높은 공방과 낮은 가판대 중 먼저 부술 곳을 골라 보세요. 확대 후 두 손가락으로 가로·세로를 이동할 수 있어요.',240,240,(k,f)=>{
   hut(k,12,40,44,f);hut(k,65,120,44,f,true);

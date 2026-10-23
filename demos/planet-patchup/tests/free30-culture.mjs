@@ -21,9 +21,11 @@ test('reusable kit rejects out of bounds; surface follows original pixels withou
 test('both tools break the art map with finite physics and conserved pixels',()=>{
  for(const tool of ['bomb','blackhole']){
   const p=new FreeJourney({getItem:()=>null,setItem:()=>{}}).profile;p.owned=['bomb','blackhole'];
+  // This dense paid map needs a developed black hole; the starter may only strain a support.
+  if(tool==='blackhole')Object.assign(p.upgrades,{gravityForce:3,coreMix:3,wearSpeed:3});
   const r=new FreeRun(TILE_YARD,p,'stage'),w=r.world;w.unlimited=true;r.selectTool(tool);
   const target=TILE_YARD.preview[0];assert(r.press(target));r.release();
   for(let i=0;i<240;i++){r.update(1/30,{...target,working:false});w.events=[];}
-  const d=w.diagnostics();assert(d.finite);assert(d.balanced);assert(w.bodies.length+w.flying.length+w.collected>0);
+  const d=w.diagnostics();assert(d.finite);assert(d.balanced);assert(w.targetReleased>0);
  }
 });

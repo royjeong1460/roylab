@@ -17,10 +17,15 @@ export class MapDraft {
   const value=JSON.parse(text);
   if(value?.format!=='planet-patchup-map')return new MapDraft(value);
   if(value.version!==1||!Number.isInteger(value.width)||!Number.isInteger(value.height)||!Number.isInteger(value.worldHeight)||!Array.isArray(value.cells)||value.cells.length!==value.width*value.height||!value.cells.every(c=>Number.isInteger(c)&&c>=0&&c<=5))throw Error('Invalid map: local document');
-  const draft=MapDraft.create(value);draft.cells.set(value.cells);return draft;
+  const draft=MapDraft.create(value);draft.cells.set(value.cells);
+  if(value.structure){
+   draft.site=validateEditorSite({...draft.site,structure:value.structure,data:{...draft.site.data,shapes:packMapCells(draft.cells,draft.width,draft.height)}});
+   draft.originalCells=draft.cells.slice();
+  }return draft;
  }
- serialize(){return JSON.stringify({format:'planet-patchup-map',version:1,name:this.site.name,width:this.width,height:this.height,worldHeight:this.site.data.height,cells:Array.from(this.cells)});}
- constructor(site){this.site=structuredClone(validateEditorSite(site));const {width,floorY}=this.site.data;this.cells=new Uint8Array(width*floorY);for(const {rect:[x,y,w,h],color} of this.site.data.shapes)for(let yy=y;yy<y+h;yy++)this.cells.fill(color,yy*width+x,yy*width+x+w);this.history=[];}
+ preservedStructure(){return this.cells.length===this.originalCells.length&&!this.cells.some((v,i)=>v!==this.originalCells[i])?this.site.structure:undefined;}
+ serialize(){return JSON.stringify({structure:this.preservedStructure(),format:'planet-patchup-map',version:1,name:this.site.name,width:this.width,height:this.height,worldHeight:this.site.data.height,cells:Array.from(this.cells)});}
+ constructor(site){this.site=structuredClone(validateEditorSite(site));const {width,floorY}=this.site.data;this.cells=new Uint8Array(width*floorY);for(const {rect:[x,y,w,h],color} of this.site.data.shapes)for(let yy=y;yy<y+h;yy++)this.cells.fill(color,yy*width+x,yy*width+x+w);this.originalCells=this.cells.slice();this.history=[];}
  get width(){return this.site.data.width;}
  get height(){return this.site.data.floorY;}
  checkpoint(){this.history.push(this.cells.slice());if(this.history.length>40)this.history.shift();}
@@ -64,7 +69,7 @@ export class MapDraft {
   const visit=id=>{if(this.cells[id]===old){this.cells[id]=color;queue.push(id);}};
   for(let head=0;head<queue.length;head++){const id=queue[head],xx=id%this.width;if(xx>0)visit(id-1);if(xx<this.width-1)visit(id+1);if(id>=this.width)visit(id-this.width);if(id<this.cells.length-this.width)visit(id+this.width);}
  }
- export(){return validateEditorSite({...this.site,data:{...this.site.data,shapes:packMapCells(this.cells,this.width,this.height)}});}
+ export(){const site={...this.site};if(!this.preservedStructure())delete site.structure;return validateEditorSite({...site,data:{...this.site.data,shapes:packMapCells(this.cells,this.width,this.height)}});}
 }
 export function parseDraft(text,stageId){
  if(typeof text!=='string'||text.length>MAX_MAP_FILE_BYTES)throw Error('맵 파일은 4MB 이하만 불러올 수 있어요.');

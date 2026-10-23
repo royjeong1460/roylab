@@ -26,3 +26,5 @@ export const TILE_YARD=validateSite({
  preview:[{x:57,y:129},{x:87,y:129},{x:117,y:129},{x:13,y:128},{x:33,y:128}],
  data:{width:192,height:156,floorY:140,shapes:packMapCells(k.cells,k.width,k.floorY)},
 });
+
+TILE_YARD.structure={version:1,roles:packMapCells(k.roles,k.width,k.floorY)};

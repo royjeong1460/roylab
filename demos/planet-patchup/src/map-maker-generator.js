@@ -42,7 +42,18 @@ export function validateSite(value,{maxDimension=256}={}){
   const visit=id=>{if(cells[id]===1){cells[id]=2;queue[tail++]=id;}};
   for(let head=0;head<tail;head++){const id=queue[head],x=id%data.width;if(x>0)visit(id-1);if(x<data.width-1)visit(id+1);if(id>=data.width)visit(id-data.width);if(id<data.width*(data.floorY-1))visit(id+data.width);}
   if(tail!==count)fail('floating component');
-  return {id:text(value.id,100,'id'),name:text(value.name,100,'name'),description:text(value.description,300,'description'),hint:text(value.hint,300,'hint'),preview,generator:{version:MAP_MAKER_VERSION,...metadata},data};
+  let structure;
+  if(value.structure!==undefined){
+    object(value.structure,'structure');if(value.structure.version!==1)fail('structure version');
+    const roles=readData({...data,shapes:value.structure.roles},maxDimension).shapes;
+    const seen=new Uint8Array(data.width*data.floorY);
+    for(const {rect:[x,y,w,h],color} of roles){if(color>3)fail('structure role');for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++){
+      const id=yy*data.width+xx;if(!cells[id]||seen[id])fail('structure coverage');seen[id]=1;
+    }}
+    if(seen.reduce((sum,n)=>sum+n,0)!==count)fail('structure missing pixels');
+    structure={version:1,roles};
+  }
+  return {id:text(value.id,100,'id'),name:text(value.name,100,'name'),description:text(value.description,300,'description'),hint:text(value.hint,300,'hint'),preview,generator:{version:MAP_MAKER_VERSION,...metadata},data,...(structure?{structure}:{})};
 }
 function hash(text){let value=2166136261;for(let n=0;n<text.length;n++){value^=text.charCodeAt(n);value=Math.imul(value,16777619);}return value>>>0;}
 function random(seed){let state=hash(seed);return (min,max)=>{state=(state+0x6d2b79f5)|0;let n=Math.imul(state^state>>>15,1|state);n^=n+Math.imul(n^n>>>7,61|n);return min+Math.floor(((n^n>>>14)>>>0)/4294967296*(max-min+1));};}
