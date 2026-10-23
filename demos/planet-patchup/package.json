@@ -14,7 +14,9 @@
     "test:ideas": "node --test tests/ideas-lab.mjs tests/ideas-options.mjs tests/ideas-blackholes.mjs tests/ideas-maps.mjs tests/ideas-boundaries.mjs",
     "build:ideas": "vite build --config vite.ideas.config.js",
     "test:support": "node --test tests/support-release.mjs tests/support-storage.mjs",
-    "build:support": "vite build --config vite.support.config.js"
+    "build:support": "vite build --config vite.support.config.js",
+    "test:motion": "node --test tests/motion-lab.mjs",
+    "build:motion": "vite build --config vite.motion.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"

@@ -53,3 +53,5 @@ next-env.d.ts
 /demos/**/dist-ideas/
 
 /demos/**/dist-support/
+
+/demos/**/dist-motion/
