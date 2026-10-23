@@ -18,7 +18,9 @@
     "test:motion": "node --test tests/motion-lab.mjs",
     "build:motion": "vite build --config vite.motion.config.js",
     "test:bearing": "node --test tests/bearing-lab.mjs",
-    "build:bearing": "vite build --config vite.bearing.config.js"
+    "build:bearing": "vite build --config vite.bearing.config.js",
+    "test:ramp": "node --test tests/ramp-lab.mjs",
+    "build:ramp": "vite build --config vite.ramp.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"

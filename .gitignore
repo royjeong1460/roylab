@@ -57,3 +57,5 @@ next-env.d.ts
 /demos/**/dist-motion/
 
 /demos/**/dist-bearing/
+
+/demos/**/dist-ramp/

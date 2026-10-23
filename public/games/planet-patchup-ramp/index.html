@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko" data-demo="planet"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#365646"><meta name="description" content="건물을 무너뜨리고 부품을 모아 장비를 키우세요. Planet Patchup 무료 첫 구역 데모."><title>Planet Patchup · 1·3·5칸 · 점진 회전 비교</title>  <script type="module" crossorigin src="./assets/free30-C1Es1ec3.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/world-Cl_MHW05.js">
+  <link rel="stylesheet" crossorigin href="./assets/free30-D_7nF-u3.css">
+</head><body>
+<header><a class="brand" href="/">← roylab <span>PLANET PATCHUP</span></a><span class="wallet">부품 <strong id="parts">0</strong></span></header>
+<main>
+<p class="fine" id="test-label">고물 바람골 · 일반 현장 자유 선택 · 6곳 모두 70% 달성하면 보스 해금</p>
+<section id="base" class="home-screen" aria-label="Planet Patchup 시작 화면">
+ <canvas id="home-alley" aria-hidden="true"></canvas>
+ <button id="home-options" class="home-options" aria-haspopup="dialog">옵션</button>
+ <div class="home-title"><h1 aria-label="Planet Patchup"><img src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20164%2045'%3e%3cpath%20stroke='%234c5843'%20stroke-width='0.6'%20stroke-linejoin='miter'%20fill='%234c5843'%20d='M57.5,0h1.4v1.4h-1.4z%20M58.9,0h1.4v1.4h-1.4z%20M60.3,0h1.4v1.4h-1.4z%20M61.7,0h1.4v1.4h-1.4z%20M57.5,1.4h1.4v1.4h-1.4z%20M63.1,1.4h1.4v1.4h-1.4z%20M57.5,2.8h1.4v1.4h-1.4z%20M63.1,2.8h1.4v1.4h-1.4z%20M57.5,4.2h1.4v1.4h-1.4z%20M58.9,4.2h1.4v1.4h-1.4z%20M60.3,4.2h1.4v1.4h-1.4z%20M61.7,4.2h1.4v1.4h-1.4z%20M57.5,5.6h1.4v1.4h-1.4z%20M57.5,7h1.4v1.4h-1.4z%20M57.5,8.4h1.4v1.4h-1.4z%20M65.9,0h1.4v1.4h-1.4z%20M65.9,1.4h1.4v1.4h-1.4z%20M65.9,2.8h1.4v1.4h-1.4z%20M65.9,4.2h1.4v1.4h-1.4z%20M65.9,5.6h1.4v1.4h-1.4z%20M65.9,7h1.4v1.4h-1.4z%20M65.9,8.4h1.4v1.4h-1.4z%20M67.3,8.4h1.4v1.4h-1.4z%20M68.7,8.4h1.4v1.4h-1.4z%20M70.1,8.4h1.4v1.4h-1.4z%20M71.5,8.4h1.4v1.4h-1.4z%20M75.7,0h1.4v1.4h-1.4z%20M77.1,0h1.4v1.4h-1.4z%20M78.5,0h1.4v1.4h-1.4z%20M74.3,1.4h1.4v1.4h-1.4z%20M79.9,1.4h1.4v1.4h-1.4z%20M74.3,2.8h1.4v1.4h-1.4z%20M79.9,2.8h1.4v1.4h-1.4z%20M74.3,4.2h1.4v1.4h-1.4z%20M75.7,4.2h1.4v1.4h-1.4z%20M77.1,4.2h1.4v1.4h-1.4z%20M78.5,4.2h1.4v1.4h-1.4z%20M79.9,4.2h1.4v1.4h-1.4z%20M74.3,5.6h1.4v1.4h-1.4z%20M79.9,5.6h1.4v1.4h-1.4z%20M74.3,7h1.4v1.4h-1.4z%20M79.9,7h1.4v1.4h-1.4z%20M74.3,8.4h1.4v1.4h-1.4z%20M79.9,8.4h1.4v1.4h-1.4z%20M82.7,0h1.4v1.4h-1.4z%20M88.3,0h1.4v1.4h-1.4z%20M82.7,1.4h1.4v1.4h-1.4z%20M84.1,1.4h1.4v1.4h-1.4z%20M88.3,1.4h1.4v1.4h-1.4z%20M82.7,2.8h1.4v1.4h-1.4z%20M84.1,2.8h1.4v1.4h-1.4z%20M88.3,2.8h1.4v1.4h-1.4z%20M82.7,4.2h1.4v1.4h-1.4z%20M85.5,4.2h1.4v1.4h-1.4z%20M88.3,4.2h1.4v1.4h-1.4z%20M82.7,5.6h1.4v1.4h-1.4z%20M86.9,5.6h1.4v1.4h-1.4z%20M88.3,5.6h1.4v1.4h-1.4z%20M82.7,7h1.4v1.4h-1.4z%20M86.9,7h1.4v1.4h-1.4z%20M88.3,7h1.4v1.4h-1.4z%20M82.7,8.4h1.4v1.4h-1.4z%20M88.3,8.4h1.4v1.4h-1.4z%20M91.1,0h1.4v1.4h-1.4z%20M92.5,0h1.4v1.4h-1.4z%20M93.9,0h1.4v1.4h-1.4z%20M95.3,0h1.4v1.4h-1.4z%20M96.7,0h1.4v1.4h-1.4z%20M91.1,1.4h1.4v1.4h-1.4z%20M91.1,2.8h1.4v1.4h-1.4z%20M91.1,4.2h1.4v1.4h-1.4z%20M92.5,4.2h1.4v1.4h-1.4z%20M93.9,4.2h1.4v1.4h-1.4z%20M95.3,4.2h1.4v1.4h-1.4z%20M91.1,5.6h1.4v1.4h-1.4z%20M91.1,7h1.4v1.4h-1.4z%20M91.1,8.4h1.4v1.4h-1.4z%20M92.5,8.4h1.4v1.4h-1.4z%20M93.9,8.4h1.4v1.4h-1.4z%20M95.3,8.4h1.4v1.4h-1.4z%20M96.7,8.4h1.4v1.4h-1.4z%20M99.5,0h1.4v1.4h-1.4z%20M100.9,0h1.4v1.4h-1.4z%20M102.3,0h1.4v1.4h-1.4z%20M103.7,0h1.4v1.4h-1.4z%20M105.1,0h1.4v1.4h-1.4z%20M102.3,1.4h1.4v1.4h-1.4z%20M102.3,2.8h1.4v1.4h-1.4z%20M102.3,4.2h1.4v1.4h-1.4z%20M102.3,5.6h1.4v1.4h-1.4z%20M102.3,7h1.4v1.4h-1.4z%20M102.3,8.4h1.4v1.4h-1.4z%20M0,17h4v4h-4z%20M4,17h4v4h-4z%20M8,17h4v4h-4z%20M12,17h4v4h-4z%20M0,21h4v4h-4z%20M16,21h4v4h-4z%20M0,25h4v4h-4z%20M16,25h4v4h-4z%20M0,29h4v4h-4z%20M4,29h4v4h-4z%20M8,29h4v4h-4z%20M12,29h4v4h-4z%20M0,33h4v4h-4z%20M0,37h4v4h-4z%20M0,41h4v4h-4z%20M28,17h4v4h-4z%20M32,17h4v4h-4z%20M36,17h4v4h-4z%20M24,21h4v4h-4z%20M40,21h4v4h-4z%20M24,25h4v4h-4z%20M40,25h4v4h-4z%20M24,29h4v4h-4z%20M28,29h4v4h-4z%20M32,29h4v4h-4z%20M36,29h4v4h-4z%20M40,29h4v4h-4z%20M24,33h4v4h-4z%20M40,33h4v4h-4z%20M24,37h4v4h-4z%20M40,37h4v4h-4z%20M24,41h4v4h-4z%20M40,41h4v4h-4z%20M48,17h4v4h-4z%20M52,17h4v4h-4z%20M56,17h4v4h-4z%20M60,17h4v4h-4z%20M64,17h4v4h-4z%20M56,21h4v4h-4z%20M56,25h4v4h-4z%20M56,29h4v4h-4z%20M56,33h4v4h-4z%20M56,37h4v4h-4z%20M56,41h4v4h-4z%20M76,17h4v4h-4z%20M80,17h4v4h-4z%20M84,17h4v4h-4z%20M88,17h4v4h-4z%20M72,21h4v4h-4z%20M72,25h4v4h-4z%20M72,29h4v4h-4z%20M72,33h4v4h-4z%20M72,37h4v4h-4z%20M76,41h4v4h-4z%20M80,41h4v4h-4z%20M84,41h4v4h-4z%20M88,41h4v4h-4z%20M96,17h4v4h-4z%20M112,17h4v4h-4z%20M96,21h4v4h-4z%20M112,21h4v4h-4z%20M96,25h4v4h-4z%20M112,25h4v4h-4z%20M96,29h4v4h-4z%20M100,29h4v4h-4z%20M104,29h4v4h-4z%20M108,29h4v4h-4z%20M112,29h4v4h-4z%20M96,33h4v4h-4z%20M112,33h4v4h-4z%20M96,37h4v4h-4z%20M112,37h4v4h-4z%20M96,41h4v4h-4z%20M112,41h4v4h-4z%20M120,17h4v4h-4z%20M136,17h4v4h-4z%20M120,21h4v4h-4z%20M136,21h4v4h-4z%20M120,25h4v4h-4z%20M136,25h4v4h-4z%20M120,29h4v4h-4z%20M136,29h4v4h-4z%20M120,33h4v4h-4z%20M136,33h4v4h-4z%20M120,37h4v4h-4z%20M136,37h4v4h-4z%20M124,41h4v4h-4z%20M128,41h4v4h-4z%20M132,41h4v4h-4z%20M144,17h4v4h-4z%20M148,17h4v4h-4z%20M152,17h4v4h-4z%20M156,17h4v4h-4z%20M144,21h4v4h-4z%20M160,21h4v4h-4z%20M144,25h4v4h-4z%20M160,25h4v4h-4z%20M144,29h4v4h-4z%20M148,29h4v4h-4z%20M152,29h4v4h-4z%20M156,29h4v4h-4z%20M144,33h4v4h-4z%20M144,37h4v4h-4z%20M144,41h4v4h-4z'/%3e%3c/svg%3e" alt="" aria-hidden="true" width="164" height="45"></h1><p>행성을 지켜줘!</p></div>
+ <nav class="home-menu" aria-label="시작 메뉴">
+  <button id="dispatch" class="home-start" aria-describedby="start-caption">시작</button>
+  <p id="start-caption" class="home-sr-only">첫 청소 · 폭파부터 배워 볼까요?</p>
+  <div class="home-current-zone"><span>고물 바람골</span><button id="home-zone-link" aria-haspopup="dialog">맵 선택 ›</button></div>
+  <div class="home-secondary"><button id="workshop-open">강화</button><button id="home-zones" aria-haspopup="dialog">맵</button></div>
+  <a id="home-map-maker" class="home-map-maker" href="./free30-map-editor.html">맵 제작 ↗</a>
+ </nav>
+</section>
+<section id="workshop" class="panel" hidden><div class="eyebrow">WORKSHOP</div><h1>정비하고 다시 출동!</h1>
+ <section id="run-receipt" hidden aria-live="polite"><h2 id="result-title"></h2><p id="result-copy"></p><p id="result-bonus"></p></section>
+ <p id="tutorial-workshop" role="status" hidden></p><button id="workshop-skip" hidden>첫 강화 안내 건너뛰기</button>
+ <p id="upgrade-guide"></p><p class="fine" id="workshop-note">강화는 다음 출동부터 적용돼요. 지금 구매하지 않고 부품을 모아도 좋아요.</p>
+ <button id="workshop-back">← 기지로</button><div id="offers" class="offers"></div>
+ <div class="workshop-actions"><button id="workshop-random" class="primary">강화 마치고 새 현장 →</button><button id="workshop-retry">같은 현장 재도전</button><button id="workshop-boss">고물 바람골 - Boss</button></div>
+</section>
+<section id="expedition" hidden>
+ <div class="compact-hud">
+  <div class="meters"><label>회수율 <strong id="recovered"></strong><progress id="recovery" aria-label="회수율" max="100" value="0"></progress></label><label>배터리 <strong id="charge"></strong><progress id="energy" aria-label="배터리" max="60" value="60"></progress></label></div>
+  <button id="pause" aria-label="일시정지" title="일시정지"><span></span><span></span></button>
+ </div>
+
+ <div class="field-wrap">
+ <div id="play-tools" class="tools play-tools" hidden role="group" aria-label="사용할 도구 선택"><button data-tool="bomb"><span class="tool-glyph" aria-hidden="true">✹</span><b>폭파</b></button><button data-tool="blackhole"><span class="tool-glyph" aria-hidden="true">◉</span><b>블랙홀</b></button></div>
+  <div id="playfield" tabindex="0"><button id="map-overview" aria-label="미니맵 · 전체 보기와 가까이 보기 전환"><canvas id="minimap" width="144" height="100" aria-label="전체 맵과 현재 화면 위치"></canvas><span id="map-label">전체 보기</span></button></div>
+ </div>
+ <p id="feedback" role="status">손 떼면 폭파 · 민트색 잔해 자동 수집</p>
+</section>
+<p id="notice" role="status" aria-live="polite"></p>
+<p class="compare-link"><a id="original-version" href="./demo.html">이전 폭파 데모</a></p>
+</main>
+<dialog id="home-options-dialog" class="home-dialog" aria-labelledby="home-options-title">
+ <div class="home-dialog-heading"><h2 id="home-options-title">옵션 · 내 장비</h2><button data-home-close aria-label="옵션 닫기">✕</button></div>
+ <p data-dialog-notice role="status" aria-live="polite"></p>
+ <dl id="stats" class="stats"></dl>
+ <p class="fine">PC는 클릭 즉시 폭파 · 모바일은 조준 후 손 떼기<br>두 손가락 이동·확대 / PC 우클릭 이동·휠 확대</p>
+ <button type="button" data-game-sound aria-pressed="true">소리 켜짐</button>
+ <button id="practice">조작 연습 다시 하기</button>
+ <button id="reset-open" class="reset-progress" aria-haspopup="dialog">진행 초기화</button>
+ <details class="playtest"><summary>플레이 기록</summary><p id="playtest-report"></p><button id="export-report">기록 내려받기</button><p class="fine">이 기기에만 저장되는 기록이에요.</p></details>
+ <p class="home-back-link"><a href="/">← roylab</a></p>
+</dialog>
+<dialog id="reset-dialog" class="home-dialog" aria-labelledby="reset-title" aria-describedby="reset-description">
+ <h2 id="reset-title">처음부터 다시 시작할까요?</h2>
+ <p id="reset-description">이 브라우저의 무료 첫 구역 진행을 초기화해요. 부품, 강화, 블랙홀 해금, 보스 클리어, 플레이 기록이 사라지고 첫 튜토리얼부터 다시 시작해요. 되돌릴 수 없어요.</p>
+ <p class="fine">소리 설정과 다른 게임의 진행은 유지돼요.</p>
+ <p data-dialog-notice role="status" aria-live="polite"></p>
+ <button id="reset-cancel" type="button" autofocus>취소 · 계속 플레이</button>
+ <button id="reset-confirm" type="button" class="reset-progress">진행 초기화하고 처음부터</button>
+</dialog>
+<dialog id="home-zones-dialog" class="home-dialog" aria-labelledby="home-zones-title">
+ <div class="home-dialog-heading"><h2 id="home-zones-title">맵 선택</h2><button data-home-close aria-label="맵 목록 닫기">✕</button></div>
+ <p data-dialog-notice role="status" aria-live="polite"></p>
+ <p id="country-status"></p><p id="milestone" class="fine"></p><p id="boss-advice" class="stage-hint"></p>
+ <button id="tutorial-replay" class="stage-row" type="button"><span><strong>튜토리얼</strong><small>폭파 · 자동 수집 · 강화 흐름 익히기</small></span><span class="stage-best">언제든 연습</span></button>
+ <div id="stage-list" class="stage-list" aria-label="고물 바람골 맵 목록"></div>
+ <p class="fine">일반 현장 6곳을 각각 70% 이상 회수하면 보스가 열려요. 70% 달성 기록은 즉시, 최종 최고 기록은 정산할 때 저장돼요. 100%는 올클리어!</p>
+ <a class="map-editor-link" href="./free30-map-editor.html">제작용 맵 메이커 열기 ↗</a>
+</dialog>
+<dialog id="pause-dialog"><p data-dialog-notice role="status" aria-live="polite"></p><div class="eyebrow">PAUSE</div><div class="eyebrow" id="run-mode"></div><h2 id="site-name"></h2><p>70% 회수가 목표예요. 메뉴에서는 시간과 배터리가 멈춰요.</p> <div class="toolbox"><div class="dock-label">도구 <span>● 자동 흡입 · 무료</span></div><p id="tool-detail"></p></div>
+<p class="fine">PC: 클릭 즉시 사용 · 모바일: 손을 떼면 왼쪽 위 조준점에 사용<br>민트색 잔해 자동 흡입 · 두 손가락 이동·확대 / PC는 우클릭 이동·휠 확대</p><button type="button" data-game-sound aria-pressed="true">소리 켜짐</button><button id="fit">맵 전체 보기</button><button id="resume" class="primary">청소 계속하기</button><button id="pause-return">부품 챙겨 복귀 · 장비 강화</button></dialog>
+<noscript>게임을 실행하려면 JavaScript를 켜 주세요.</noscript></body></html>
