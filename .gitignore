@@ -61,3 +61,5 @@ next-env.d.ts
 /demos/**/dist-ramp/
 
 /demos/planet-patchup/dist-tilt/
+
+/demos/planet-patchup/dist-structure/

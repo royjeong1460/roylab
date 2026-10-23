@@ -22,7 +22,9 @@
     "test:ramp": "node --test tests/ramp-lab.mjs",
     "build:ramp": "vite build --config vite.ramp.config.js",
     "test:tilt": "node --test tests/tilt-lab.mjs",
-    "build:tilt": "vite build --config vite.tilt.config.js"
+    "build:tilt": "vite build --config vite.tilt.config.js",
+    "test:structure": "node --test tests/structure-lab.mjs",
+    "build:structure": "vite build --config vite.structure.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"
