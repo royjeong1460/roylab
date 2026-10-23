@@ -59,3 +59,5 @@ next-env.d.ts
 /demos/**/dist-bearing/
 
 /demos/**/dist-ramp/
+
+/demos/planet-patchup/dist-tilt/

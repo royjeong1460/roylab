@@ -20,7 +20,9 @@
     "test:bearing": "node --test tests/bearing-lab.mjs",
     "build:bearing": "vite build --config vite.bearing.config.js",
     "test:ramp": "node --test tests/ramp-lab.mjs",
-    "build:ramp": "vite build --config vite.ramp.config.js"
+    "build:ramp": "vite build --config vite.ramp.config.js",
+    "test:tilt": "node --test tests/tilt-lab.mjs",
+    "build:tilt": "vite build --config vite.tilt.config.js"
   },
   "dependencies": {
     "phaser": "3.90.0"
