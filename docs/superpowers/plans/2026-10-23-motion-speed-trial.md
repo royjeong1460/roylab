@@ -24,3 +24,10 @@ Combined maxima remain finite and conserve pixels, but can produce a different
 contact/support configuration (still hinged at 8s); no universal faster-collapse
 claim. Code review found no actionable issue. Desktop apply/reload, mobile-size
 390x844 modal layout checked. Real iPhone touch feel/performance not checked.
+
+2026-10-23 follow-up: user selected rotation response 3 as default. New defaults
+are gravity1/rotation3/speed1. Preserve all-1 baseline as a separate preset and
+keep one-variable comparison presets explicit. Migrate v1 motion saves once to
+rotation3, preserving gravity/speed; v2 later edits remain user-controlled.
+Eight motion tests and production build pass; review found no actionable issue.
+Column thickness/strength discussed only; no support algorithm change.

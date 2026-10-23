@@ -2,19 +2,19 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import Body from 'phaser/src/physics/matter-js/lib/body/Body.js';
 import {SupportWorld} from '../src/support-lab/world.js';
 import {FreeJourney} from '../src/free30/journey.js';
-import {applyMotion,normalizeMotion,loadMotion,saveMotion,KEY} from '../src/motion-lab/settings.js';
+import {applyMotion,normalizeMotion,loadMotion,saveMotion,KEY,BASELINE} from '../src/motion-lab/settings.js';
 const make=()=>{const p=new FreeJourney({getItem:()=>null,setItem:()=>{}}).profile;p.owned=['bomb','blackhole'];return new SupportWorld({data:{width:180,height:240,floorY:224,shapes:[{rect:[80,30,8,8],color:1}]}},p,{blast:'normal'});};
 test('defaults preserve physics; applying a preset twice does not compound and reset restores it',()=>{
  const w=make(),base={...w.labParameters},g=w.engine.gravity.scale;w.detach();const inertia=w.bodies[0].body.inertia;
- applyMotion(w,{});assert.deepEqual(w.labParameters,base);assert.equal(w.engine.gravity.scale,g);
+ applyMotion(w,BASELINE);assert.deepEqual(w.labParameters,base);assert.equal(w.engine.gravity.scale,g);
  applyMotion(w,{gravity:1.5,rotation:2,speed:1.5});applyMotion(w,{gravity:1.5,rotation:2,speed:1.5});
  assert.equal(w.engine.gravity.scale,g*1.5);assert.equal(w.labParameters.inertia,base.inertia/2);assert.equal(w.labParameters.motionCap,base.motionCap*1.5);
  assert.equal(w.bodies[0].body.inertia,inertia/2);assert.equal(w.labParameters.grainGravity,base.grainGravity*1.5);
- applyMotion(w,{});assert.deepEqual(w.labParameters,base);assert.equal(w.bodies[0].body.inertia,inertia);
+ applyMotion(w,BASELINE);assert.deepEqual(w.labParameters,base);assert.equal(w.bodies[0].body.inertia,inertia);
 });
 test('gravity alone increases free fall while rotation alone leaves translation unchanged',()=>{
  const speeds=[];
- for(const setting of [{},{gravity:1.5},{rotation:2}]){const w=make();applyMotion(w,setting);w.detach();for(let i=0;i<30;i++)w.step(1/60);speeds.push(w.bodies[0].body.velocity.y);assert(w.diagnostics().balanced);}
+ for(const setting of [BASELINE,{...BASELINE,gravity:1.5},{...BASELINE,rotation:2}]){const w=make();applyMotion(w,setting);w.detach();for(let i=0;i<30;i++)w.step(1/60);speeds.push(w.bodies[0].body.velocity.y);assert(w.diagnostics().balanced);}
  assert(speeds[1]>speeds[0]*1.45);assert.equal(speeds[2],speeds[0]);
 });
 test('rotation response lowers inertia on newly detached pieces and increases angular response',()=>{
@@ -43,12 +43,21 @@ test('tall-map single-variable presets release sooner; upper settings remain fin
  const {LAYOUT_MAPS}=await import('../src/ideas-lab/maps.js'),{extendWorksite}=await import('../src/ideas-lab/space.js');
  const {applySettings}=await import('../src/paid-lab/settings.js'),{loadIdeaTuning}=await import('../src/ideas-lab/options.js');
  const {site}=extendWorksite(LAYOUT_MAPS.find(m=>m.key==='layout-tall').site),results=[];
- for(const setting of [{},{gravity:1.5},{rotation:2},{gravity:3,rotation:4,speed:2}]){
+ for(const setting of [BASELINE,{...BASELINE,gravity:1.5},{...BASELINE,rotation:2},{gravity:3,rotation:4,speed:2}]){
   const p=new FreeJourney({getItem:()=>null,setItem:()=>{}}).profile;p.owned=['bomb','blackhole'];
   const w=new SupportWorld(site,p,{blast:'normal'});applySettings(w,loadIdeaTuning({getItem:()=>null}).settings);applyMotion(w,setting);
   w.activate(site.preview[0].x,site.preview[0].y);let seen=false,release=null;
   for(let i=0;i<480;i++){w.step(1/60);const held=w.bodies.some(p=>p.hinge);seen ||= held;if(seen&&!held&&release===null)release=(i+1)/60;assert(w.diagnostics().finite);assert(w.diagnostics().balanced);w.events=[];}
-  if(!setting.speed)assert(release!==null,JSON.stringify({setting,seen}));results.push({setting,release});
+  if(setting.speed===1)assert(release!==null,JSON.stringify({setting,seen}));results.push({setting,release});
  }
  assert(results[1].release<results[0].release);assert(results[2].release<results[0].release);console.log('release comparison',JSON.stringify(results));
 });
+
+ test('default rotation is three; old saves migrate once without changing gravity or speed',()=>{
+ const data=new Map(),storage={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)};
+ assert.deepEqual(loadMotion(storage).settings,{gravity:1,rotation:3,speed:1});
+ data.set(KEY,JSON.stringify({version:1,settings:{gravity:1.5,rotation:1,speed:1.5}}));
+ assert.deepEqual(loadMotion(storage).settings,{gravity:1.5,rotation:3,speed:1.5});
+ assert.equal(JSON.parse(data.get(KEY)).version,2);
+ saveMotion(storage,{gravity:1.5,rotation:2,speed:1});assert.equal(loadMotion(storage).settings.rotation,2);
+ });
