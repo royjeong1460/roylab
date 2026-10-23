@@ -9,7 +9,7 @@ function thumbnail(map){
  for(let id=0;id<draft.cells.length;id++)if(draft.cells[id]){ctx.fillStyle=surface.css(id,draft.cells[id]);ctx.fillRect(id%draft.width,Math.floor(id/draft.width),1,1);}
  ctx.fillStyle='#777e77';ctx.fillRect(0,map.site.data.floorY,canvas.width,16);return canvas;
 }
-export function mountCulturePreview(banner,active,{pause,resume,label,backURL}){
+export function mountCulturePreview(banner,active,{pause,resume,label,backURL,maps=[...CULTURE_MAPS,ORIGINAL_YARD],pickerTitle='기와 바람땅',pickerNote='일반 6개 + 보스 1개 · 모두 바로 테스트할 수 있어요. 맵을 바꾸면 현재 현장은 리셋되며 실제 진행은 저장하지 않아요.'}){
  document.body.classList.add('culture-preview');banner.replaceChildren();
  const caption=document.createElement('span');caption.className='culture-caption';caption.textContent=`${active.title} · ${active.pixels.toLocaleString()}픽셀 · ${label}`;
  const choose=document.createElement('button');choose.textContent='맵 선택';choose.setAttribute('aria-haspopup','dialog');
@@ -19,11 +19,11 @@ export function mountCulturePreview(banner,active,{pause,resume,label,backURL}){
  banner.append(caption,choose,retry,download);
  const dialog=document.createElement('dialog');dialog.className='culture-map-picker';dialog.setAttribute('aria-labelledby','culture-picker-title');
  const header=document.createElement('div');header.className='culture-picker-header';
- const title=document.createElement('h2');title.id='culture-picker-title';title.textContent='기와 바람땅';
+ const title=document.createElement('h2');title.id='culture-picker-title';title.textContent=pickerTitle;
  const close=document.createElement('button');close.textContent='닫기';close.onclick=()=>dialog.close();header.append(title,close);
- const note=document.createElement('p');note.textContent='일반 6개 + 보스 1개 · 모두 바로 테스트할 수 있어요. 맵을 바꾸면 현재 현장은 리셋되며 실제 진행은 저장하지 않아요.';
+ const note=document.createElement('p');note.textContent=pickerNote;
  const grid=document.createElement('div');grid.className='culture-map-grid';
- for(const map of [...CULTURE_MAPS,ORIGINAL_YARD]){
+ for(const map of maps){
   const link=document.createElement('a');link.href=`?artMap=${map.key}`;link.className='culture-map-card';
   if(active.key===map.key)link.setAttribute('aria-current','page');
   const label=document.createElement('strong');label.textContent=map.title;
