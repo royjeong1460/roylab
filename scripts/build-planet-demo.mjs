@@ -1,3 +1,4 @@
+import {syncPlanetRoutes} from './sync-planet-routes.mjs';
 import {execFileSync} from 'node:child_process';
 import {cpSync,rmSync,mkdirSync,existsSync,lstatSync,unlinkSync} from 'node:fs';
 const tutorial2=process.argv.includes('--tutorial2'),structure=process.argv.includes('--structure');
@@ -25,3 +26,5 @@ rmSync(out,{recursive:true,force:true});mkdirSync(out,{recursive:true});cpSync(n
 mkdirSync(new URL("licenses/",out),{recursive:true});
 cpSync(new URL("node_modules/phaser/LICENSE.md",demo),new URL("licenses/Phaser-MIT.txt",out));
 cpSync(new URL("node_modules/phaser/src/physics/matter-js/lib/license.js",demo),new URL("licenses/Matter-MIT.txt",out));
+
+syncPlanetRoutes();

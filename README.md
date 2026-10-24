@@ -33,7 +33,7 @@ emits static files into `out`.
 
 ## Planet Patchup playable demo
 
-- Open `/games/planet-patchup-free/`; the home page links to the free first-zone balance build. Previous `/games/planet-patchup/` and `/games/planet-patchup-blast/` remain available. Portrait phones are the primary target.
+- Open `/planet-patchup/play/`; the home page links to the free first-zone balance build. All versions are listed at `/planet-patchup/`. Older shared links redirect to their canonical entries; see `docs/planet-addresses.md`. Portrait phones are the primary target.
 - `demos/planet-patchup/` holds the standalone Vite/Phaser source; `public/games/planet-patchup/` holds its checked-in static release.
 - For the new free zone run `npm run build:game -- --free`, then `npm run build`. For the original demo use `npm run build:game`. Commit both source and public game assets. The normal Cloudflare build uses the checked-in release.
 - Game appearance: `demos/planet-patchup/src/demo/style.css` and `demo.html`. Rules and persistence: `src/free-step1/`. Physics remains shared within the standalone source tree.

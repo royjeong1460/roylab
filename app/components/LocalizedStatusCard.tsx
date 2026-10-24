@@ -54,12 +54,13 @@ export function LocalizedStatusCard() {
       <p className="status-eyebrow">roylab</p>
       <h1>{copy.title}</h1>
       <p className="status-subcopy">{copy.description}</p>
-      <a className="demo-card" href="/games/planet-patchup-free/">
+      <a className="demo-card" href="/planet-patchup/play/">
         <span className="demo-tag">FREE ZONE · 01</span>
         <strong>Planet Patchup</strong>
         <span>{locale === "ko" ? "폭파하고, 블랙홀로 모으고. 첫 구역을 청소해 보세요." : "Blast. Pull. Upgrade. Clean up the first zone."}</span>
         <b>{locale === "ko" ? "무료 데모 플레이 →" : "Play the free demo →"}</b>
       </a>
+      <a href="/planet-patchup/">{locale === "ko" ? "모든 버전 · 테스트 목록 →" : "All versions & experiments →"}</a>
     </section>
   );
 }
