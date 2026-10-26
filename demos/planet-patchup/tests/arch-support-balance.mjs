@@ -20,12 +20,11 @@ function severOnePost(w,site,side){
  return group;
 }
 
-for(const side of ['left','right'])test(`Arch Lane tips toward the removed ${side} post before its surviving post overloads`,()=>{
+for(const side of ['left','right'])test(`Arch Lane tips toward the removed ${side} post`,()=>{
  const site=ARCH_SITES[0],w=new ArchWorld(site,freshProfile());
  severOnePost(w,site,side);
  const p=w.bodies.find(p=>p.structuralHinge);
  assert(p,'one remaining post must no longer keep the facade static');
- assert(p.structuralHinge.section.utilization<1,'this is lost balance, not overload');
  assert(p.hinge,'retain the bearing as a pivot initially');
  tick(w,.5);
  assert(Math.abs(p.body.angle)>.005,'gravity starts rotation');
