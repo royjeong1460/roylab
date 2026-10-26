@@ -30,13 +30,14 @@ installTestEdition({
   liveRun=run;
   const {site,bounds}=extendWorksite(run.site);
   run.site=site;run.aim={...site.preview[0]};run.previous={...run.aim};
-  run.world=new IdeaWorld(site,run.profile,options);run.world.worksiteBounds=bounds;applySettings(run.world,settings);
+  const looseBodies=IDEA_MAPS.find(map=>map.site.id===site.id)?.looseBodies===true;
+  run.world=new IdeaWorld(site,run.profile,{...options,looseBodies});run.world.worksiteBounds=bounds;applySettings(run.world,settings);
  },
  initialView:(viewport,run)=>frameWorksite(viewport,run.world.worksiteBounds),
  createOverlay:(scene,view)=>new IdeaOverlay(scene,view,()=>activeUI?.update()),
  status:world=>world.activeDevice?world.deviceStatus:world.ideaStatus||`${optionsLabel(options)} · 조준 후 손을 떼면 사용해요.`,
  mount(banner,map,hooks){
-  mountCulturePreview(banner,map,{...hooks,label:`${label} · 좌우 낙하 공간 확장`,backURL:FREE_URL,maps:IDEA_MAPS,pickerTitle:'맵 구조 비교 · 가로 / 세로 / 확장',pickerNote:'기존 맵 끝의 벽을 바깥으로 옮겼어요. 좌우 여유 공간까지 이동해 잔해를 회수할 수 있어요. 맵 변경 시 현장만 리셋되고 실험 화력은 유지돼요.'});
+  mountCulturePreview(banner,map,{...hooks,label:`${label} · 좌우 낙하 공간 확장`,backURL:FREE_URL,maps:IDEA_MAPS,pickerTitle:'Structure Comparison',pickerNote:'Compare columns, Staggered Stack and Bridged Bodies. Stacked rooms rest on independent contacts. Changing the map resets the site and keeps your test settings.'});
   mountSettings(banner,settings,createTuningStorage(storage),hooks,tuning.warning);
   mountIdeas(banner,options,storage,hooks,loaded.warning);
   activeUI=mountActiveDevices(banner,()=>liveRun,hooks);

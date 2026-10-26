@@ -27,7 +27,7 @@ function readData(value,maxDimension=256){
 }
 function occupancy(data){const cells=new Uint8Array(data.width*data.floorY);let count=0;for(const {rect:[x,y,w,h]} of data.shapes)for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++){const id=yy*data.width+xx;if(!cells[id]){cells[id]=1;count++;}}return {cells,count};}
 export function pixelCount(data){return occupancy(readData(data)).count;}
-export function validateSite(value,{maxDimension=256}={}){
+export function validateSite(value,{maxDimension=256,allowFloating=false}={}){
   object(value,'site');const generator=object(value.generator,'generator');
   if(generator.version!==MAP_MAKER_VERSION)fail('generator version');
   for(const key of ['seed','family','size','index'])if(!Object.hasOwn(generator,key)||generator[key]===undefined)fail(`generator ${key}`);
@@ -41,7 +41,7 @@ export function validateSite(value,{maxDimension=256}={}){
   for(let x=0;x<data.width;x++){const id=(data.floorY-1)*data.width+x;if(cells[id]){cells[id]=2;queue[tail++]=id;}}
   const visit=id=>{if(cells[id]===1){cells[id]=2;queue[tail++]=id;}};
   for(let head=0;head<tail;head++){const id=queue[head],x=id%data.width;if(x>0)visit(id-1);if(x<data.width-1)visit(id+1);if(id>=data.width)visit(id-data.width);if(id<data.width*(data.floorY-1))visit(id+data.width);}
-  if(tail!==count)fail('floating component');
+  if(tail!==count&&!allowFloating)fail('floating component');
   let structure;
   if(value.structure!==undefined){
     object(value.structure,'structure');if(value.structure.version!==1)fail('structure version');

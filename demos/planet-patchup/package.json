@@ -11,7 +11,7 @@
     "test:free": "node --test tests/free30-touch-settings.mjs tests/free30.mjs tests/free30-reachability.mjs tests/free30-settlement-ui.mjs tests/free30-tutorial.mjs tests/free30-guide.mjs tests/free30-home.mjs tests/free30-audio.mjs tests/free30-mix.mjs tests/free30-endless.mjs tests/free30-reset.mjs tests/free30-stages.mjs tests/free30-editor.mjs tests/free30-selection.mjs",
     "test:paid": "node --test tests/free30-culture.mjs tests/culture-pack.mjs tests/paid-lab.mjs",
     "build:paid": "vite build --config vite.paid.config.js",
-    "test:ideas": "node --test tests/ideas-lab.mjs tests/ideas-options.mjs tests/ideas-blackholes.mjs tests/ideas-maps.mjs tests/ideas-boundaries.mjs tests/active-devices.mjs",
+    "test:ideas": "node --test tests/ideas-lab.mjs tests/ideas-options.mjs tests/ideas-blackholes.mjs tests/ideas-maps.mjs tests/ideas-boundaries.mjs tests/active-devices.mjs tests/ideas-contact-maps.mjs",
     "build:ideas": "vite build --config vite.ideas.config.js",
     "test:support": "node --test tests/support-release.mjs tests/support-storage.mjs",
     "build:support": "vite build --config vite.support.config.js",

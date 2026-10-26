@@ -2,12 +2,12 @@ import {YardKit} from '../paid-lab/culture/kit.js';
 import {CULTURE_MAPS,ORIGINAL_YARD} from '../paid-lab/culture/maps.js';
 import {packMapCells,pixelCount,validateSite} from '../map-maker-generator.js';
 
-function make(key,title,hint,width,height,paint,preview){
+function make(key,title,hint,width,height,paint,preview,looseBodies=false){
  const floorY=height-16,k=new YardKit(width,floorY);paint(k,floorY);
  const site=validateSite({id:`ideas-${key}-v1`,name:title,description:'같은 화력으로 화면 방향과 붕괴 구조를 비교하는 실험 맵. 시멘트·돌 바닥과 실제로 부서지는 기와·고물.',hint,preview,
   generator:{version:1,seed:key,family:'cascade',size:'large',index:0},
   data:{width,height,floorY,shapes:packMapCells(k.cells,width,floorY)},
- });
+ },{allowFloating:looseBodies});
  site.structure={version:1,roles:packMapCells(k.roles,k.width,k.floorY)};
  return {key,title:`${title} · ${width}×${height}`,site,pixels:pixelCount(site.data)};
 }
@@ -42,5 +42,34 @@ export const LAYOUT_MAPS=[
   k.rubble(74,f,27);k.rubble(139,f,24);
  },[{x:20,y:209},{x:216,y:209},{x:129,y:209}]),
 ];
-export const IDEA_MAPS=[...LAYOUT_MAPS,...CULTURE_MAPS,ORIGINAL_YARD];
+// Wall-faced body modules with window openings. Separate assemblies keep a one-cell
+// gap in the authored grid, then settle together as independent rigid bodies.
+function room(k,x,y,w,h,color=3){
+ k.paintAs(2,()=>{
+  const windowTop=Math.ceil(h*.45);
+  k.rect(x,y,w,h,color);k.rect(x+3,y+windowTop,w-6,h-windowTop-3,0);
+  k.rect(x,y,w,3,1);k.rect(x,y+h-3,w,3,5);
+ });
+}
+export const CONTACT_MAPS=[
+ make('layout-stacked','Staggered Stack','Offset bodies rest on each other. Break a lower corner and watch the upper rooms slide and tumble.',256,160,(k,f)=>{
+  for(const [base,direction] of [[30,1],[174,-1]]){
+   room(k,base,f-24,48,24,5);
+   for(let level=1;level<=3;level++){
+    const x=base+direction*(level%2?12:0),y=f-24-level*25;
+    room(k,x,y,48,24,level%2?3:4);
+    if(level===3)k.roof(x-4,y-18,56);
+   }
+  }
+ },[{x:34,y:134},{x:215,y:134}],true),
+ make('layout-bridged','Bridged Bodies','A long body spans two stacks. Break one support to tip the bridge and drop the rooms above it.',256,160,(k,f)=>{
+  room(k,25,f-28,56,28,5);room(k,172,f-28,56,28,5);
+  room(k,37,88,40,27,3);room(k,176,88,40,27,4);
+  room(k,29,69,198,18,4);
+  for(const [x,w] of [[42,45],[112,45],[181,38]]){
+   room(k,x,43,w,25,3);k.roof(x-3,25,w+6);
+  }
+ },[{x:29,y:133},{x:224,y:133}],true),
+].map(map=>({...map,looseBodies:true}));
+export const IDEA_MAPS=[...LAYOUT_MAPS,...CONTACT_MAPS,...CULTURE_MAPS,ORIGINAL_YARD];
 export const findIdeaMap=key=>IDEA_MAPS.find(map=>map.key===key);

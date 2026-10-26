@@ -18,7 +18,7 @@ test('three distinct layout maps are grounded, editable and comparable in pixel 
   const d=new MapDraft(m.site);assert.deepEqual(MapDraft.open(d.serialize()).cells,d.cells);
   assert.equal(findIdeaMap(m.key),m);
  }
- assert.equal(IDEA_MAPS.length,11);
+ assert.equal(IDEA_MAPS.length,13);
  for(const m of [...CULTURE_MAPS,ORIGINAL_YARD])assert.equal(findIdeaMap(m.key),m);
  assert.equal(findIdeaMap('missing'),undefined);
 });

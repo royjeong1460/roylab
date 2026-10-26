@@ -8,7 +8,10 @@ export const DEVICES=[
 ];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 export class ActiveIdeaWorld extends StructuralIdeaWorld{
- constructor(...args){super(...args);this.activeDevice=null;this.activeHistory=[];this.deviceVisuals=[];this.deviceStatus='Choose a device. No energy cost in this lab.';}
+ constructor(site,profile,options={}){
+  super(site,profile,options);this.activeDevice=null;this.activeHistory=[];this.deviceVisuals=[];this.deviceStatus='Choose a device. No energy cost in this lab.';
+  if(options.looseBodies)this.detach();
+ }
  structureMaterial(){return [null,...this.bodies].flatMap(piece=>this.material(piece).map(v=>({...v,piece})));}
  activateDevice(id,level=1){
   if(this.settled||this.activeDevice||!DEVICES.some(d=>d.id===id)||![1,2,3].includes(level))return false;

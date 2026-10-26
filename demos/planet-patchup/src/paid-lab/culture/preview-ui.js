@@ -1,13 +1,14 @@
 import {CULTURE_MAPS,ORIGINAL_YARD} from './maps.js';
 import {createYardSurface} from './art.js';
-import {MapDraft} from '../../free30/editor/model.js';
 
 function thumbnail(map){
- const draft=new MapDraft(map.site),surface=createYardSurface(draft.width,draft.cells),canvas=document.createElement('canvas');
- canvas.width=draft.width;canvas.height=map.site.data.height;canvas.setAttribute('aria-hidden','true');
+ const {width,height,floorY,shapes}=map.site.data,cells=new Uint8Array(width*floorY);
+ for(const {rect:[x,y,w,h],color} of shapes)for(let yy=y;yy<y+h;yy++)cells.fill(color,yy*width+x,yy*width+x+w);
+ const surface=createYardSurface(width,cells),canvas=document.createElement('canvas');
+ canvas.width=width;canvas.height=height;canvas.setAttribute('aria-hidden','true');
  const ctx=canvas.getContext('2d');ctx.fillStyle='#e9dfc9';ctx.fillRect(0,0,canvas.width,canvas.height);
- for(let id=0;id<draft.cells.length;id++)if(draft.cells[id]){ctx.fillStyle=surface.css(id,draft.cells[id]);ctx.fillRect(id%draft.width,Math.floor(id/draft.width),1,1);}
- ctx.fillStyle='#777e77';ctx.fillRect(0,map.site.data.floorY,canvas.width,16);return canvas;
+ for(let id=0;id<cells.length;id++)if(cells[id]){ctx.fillStyle=surface.css(id,cells[id]);ctx.fillRect(id%width,Math.floor(id/width),1,1);}
+ ctx.fillStyle='#777e77';ctx.fillRect(0,floorY,canvas.width,16);return canvas;
 }
 export function mountCulturePreview(banner,active,{pause,resume,label,backURL,maps=[...CULTURE_MAPS,ORIGINAL_YARD],pickerTitle='기와 바람땅',pickerNote='일반 6개 + 보스 1개 · 모두 바로 테스트할 수 있어요. 맵을 바꾸면 현재 현장은 리셋되며 실제 진행은 저장하지 않아요.'}){
  document.body.classList.add('culture-preview');banner.replaceChildren();
