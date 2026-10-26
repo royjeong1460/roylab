@@ -13,6 +13,18 @@ Battery skill decision: restore 25% of maximum capacity instantly, capped at cap
 - [x] Add failing tests for opposed Sonic impulses, ramped gravity and supported-only compression.
 - [x] Implement world behavior and matching overlay/copy.
 - [x] Verify 45 ideas tests and 5 route tests, local screenshots, and 121 unrelated public files unchanged.
-- [ ] Review, build and publish ideas lab; verify public UI.
+- [x] Review, build and publish ideas lab; verify public UI.
 
-Verification: all 10 active-device tests passed independently in code review; no blocker found. Local browser showed opposed Sonic fronts, Gravity charging/pressure visuals, and support collapse on layout-wide at strength 2. No browser errors observed. Actual iPhone gameplay was not tested. Production publication is pending.
+Verification: all 10 active-device tests passed independently in code review; no blocker found. Local browser showed opposed Sonic fronts, Gravity charging/pressure visuals, and support collapse on layout-wide at strength 2. No browser errors observed. Actual iPhone gameplay was not tested. Published in commit 721ac93; Cloudflare Pages completed successfully and the public lab UI was verified.
+
+## Accepted checkpoint — 2026-10-26
+
+The user accepted the current skill behavior as the working baseline. Preserve implementation commit `721ac93` for later comparisons.
+
+- Sonic Sweep: opposing inward fronts, centered collision-driven destruction.
+- Gravity Press: ramped downward pressure, weak-support failure and local contact fatigue.
+- Other active devices remain available as implemented.
+- Battery recharge: 25% of maximum capacity, capped at capacity; decision recorded only. Campaign integration and charging animation are pending.
+- Performance optimization and numerical balance tuning are explicitly deferred. This acceptance does not establish final balance or real-device performance validation.
+
+Public lab: https://roylab.pages.dev/planet-patchup/lab/maps/?artMap=layout-wide
