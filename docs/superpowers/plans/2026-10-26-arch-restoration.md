@@ -10,6 +10,6 @@ User-approved correction: preserve free proximity suction; global Auto Collect i
 - [x] Reuse planet-home-v3-2026-10-26 drawing and four-direction control, minimal HUD, and icons-v1-2026-10-26. Arch Quarter is the actual free region. Five other regions remain locked previews. Real boss progress clears its pollution.
 - [x] Display one tool-switch button, compact battery/recovery/pause row, ready passive icon, equipped active button. No unimplemented skill slots or cooldowns shown.
 - [x] Run source tests, build and browser smoke tests; prepare only free route assets for publishing.
-- [ ] Verify production and capture current UI. iPhone playtest remains user-side.
+- [x] Cloudflare deployed 75f53e0 successfully; verified live planet home and separate tutorial/site list. Captured live-home.png locally. iPhone playtest remains user-side.
 
 Presentation sources remain in variants/demolition-mvp/design-board for future design work. Game-owned adapters live under demos/planet-patchup/src/arch. Other comparison builds are preserved. No physical engine or attack damage tuning in this correction.
