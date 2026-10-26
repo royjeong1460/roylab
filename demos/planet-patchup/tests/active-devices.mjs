@@ -14,12 +14,12 @@ test('all devices complete, preserve ledger/finite physics and do not retrigger 
 test('orbital drop targets both sides of the whole map and actually destroys material',()=>{const w=make();w.activateDevice('orbital',2);const xs=w.activeDevice.targets.map(p=>p.x);assert(Math.min(...xs)<40);assert(Math.max(...xs)>130);advance(w);assert(w.activeHistory.some(h=>h.kind==='impact'&&h.x<40));assert(w.activeHistory.some(h=>h.kind==='impact'&&h.x>130));assert(w.ledger().pending+w.ledger().sand+w.collected>0);});
 test('no tick means no progress; invalid steps do not advance devices; new run is clean',()=>{const w=make();w.activateDevice('seismic',1);const state=JSON.stringify(w.activeDevice);for(const dt of [0,-1,NaN,Infinity])w.step(dt);assert.equal(JSON.stringify(w.activeDevice),state);assert.equal(make().activeDevice,null);});
 test('gravity is temporary, and settling cannot leave gravity modified',()=>{const w=make(),g=w.engine.gravity.scale;w.activateDevice('gravity',3);advance(w,40);assert.equal(w.engine.gravity.scale,g);w.settled=true;w.step(1/60);assert.equal(w.engine.gravity.scale,g);});
-test('seismic driver damages foundations and sonic sweep imparts rightward impulse',()=>{
- for(const id of ['seismic','sonic']){
+test('seismic driver damages foundations and imparts upward impulse',()=>{
+ for(const id of ['seismic']){
   const w=make(),vectors=[],impulse=w.impulse.bind(w);
   w.impulse=(piece,point,v)=>{vectors.push(v);return impulse(piece,point,v);};
   w.activateDevice(id,2);advance(w,160);
-  assert(vectors.some(v=>id==='seismic'?v.y<0:v.x>0),`${id} must deliver its directional impulse`);
+  assert(vectors.some(v=>v.y<0),`${id} must deliver its directional impulse`);
   assert(w.cells.filter(Boolean).length<w.initial,`${id} releases real structural material`);
  }
 });
@@ -31,7 +31,38 @@ test('gravity press increases solver gravity then restores it and accelerates fa
  const eventCallback=()=>{peak=Math.max(peak,w.engine.gravity.scale);};
  // Observe the actual solver event, not merely the restored property between frames.
  Events.on(w.engine,'beforeUpdate',eventCallback);
- w.activateDevice('gravity',2);advance(w,40);advance(control,40);
+ w.activateDevice('gravity',2);advance(w,75);advance(control,75);
  assert(peak>=base*5);assert(w.bodies[0].body.position.y>control.bodies[0].body.position.y);
  advance(w);assert.equal(w.engine.gravity.scale,base);
+});
+test('sonic fronts push left and right assemblies toward their common center',()=>{
+ const data={data:{width:180,height:180,floorY:170,shapes:[{rect:[20,20,8,8],color:1},{rect:[150,20,8,8],color:1}]}};
+ const w=new ActiveIdeaWorld(data,new FreeJourney({getItem:()=>null,setItem:()=>{}}).profile,{looseBodies:true});
+ const impulse=w.impulse.bind(w);
+ const shots=[];w.impulse=(piece,q,v)=>{shots.push({origin:piece.body.position.x,force:v.x});return impulse(piece,q,v);};
+ w.activateDevice('sonic',1);advance(w,180);
+ assert(shots.some(s=>s.origin<90&&s.force>0));assert(shots.some(s=>s.origin>90&&s.force<0));
+ assert.equal(w.activeDevice,null);assert(w.diagnostics().balanced&&w.diagnostics().finite);
+});
+test('gravity load ramps up and can snap a weak supported column',async()=>{
+ const {findIdeaMap}=await import('../src/ideas-lab/maps.js');
+ const profile=new FreeJourney({getItem:()=>null,setItem:()=>{}}).profile;
+ const w=new ActiveIdeaWorld(findIdeaMap('layout-wide').site,profile),values=[],base=w.engine.gravity.scale;
+ Events.on(w.engine,'beforeUpdate',()=>values.push(w.engine.gravity.scale/base));
+ w.activateDevice('gravity',2);advance(w,300);
+ const loaded=values.filter(v=>v>1.01);
+ assert(loaded.length>0);assert(loaded[0]<Math.max(...loaded)/2,'pressure builds instead of jumping');
+ assert(w.snapCount>0,'weak columns fail under amplified load');assert.equal(w.engine.gravity.scale,base);
+ assert(w.diagnostics().balanced&&w.diagnostics().finite);
+});
+test('gravity compression acts at supporting contacts, never in empty air',async()=>{
+ const {findIdeaMap}=await import('../src/ideas-lab/maps.js');
+ const profile=new FreeJourney({getItem:()=>null,setItem:()=>{}}).profile;
+ const w=new ActiveIdeaWorld(findIdeaMap('layout-stacked').site,profile,{looseBodies:true});advance(w,240);
+ w.activateDevice('gravity',2);advance(w,300);
+ assert(w.activeHistory.some(h=>h.kind==='compression'),'resting assemblies receive contact pressure');
+ const air=new ActiveIdeaWorld({data:{width:60,height:900,floorY:890,shapes:[{rect:[20,10,8,8],color:1}]}},profile,{looseBodies:true});
+ air.activateDevice('gravity',2);advance(air,100);
+ assert(!air.activeHistory.some(h=>h.kind==='compression'),'airborne bodies have no contact stress');
+ assert(w.diagnostics().balanced&&w.diagnostics().finite);
 });

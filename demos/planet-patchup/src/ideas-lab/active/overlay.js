@@ -17,18 +17,38 @@ export class ActiveOverlay extends StructureOverlay{
    }else if(a.id==='seismic'){
     for(const target of a.targets){g.fillStyle(0x607e75,.8);g.fillRect(target.x-2,world.floorY-2,4,3);}
    }else if(a.id==='gravity'){
-    const on=t>=.5;g.fillStyle(0x547b9c,on?.08:.025);g.fillRect(a.left,0,Math.max(1,a.right-a.left),world.floorY);
-    g.lineStyle(.65,0x47799a,on?.85:.35);
-    for(let x=a.left;x<=a.right;x+=Math.max(12,(a.right-a.left)/10))for(let y=12;y<world.floorY;y+=30){const py=y+(this.reduced?0:(t*22)%20);g.lineBetween(x,py,x,py+7);g.lineBetween(x,py+7,x-2,py+4);g.lineBetween(x,py+7,x+2,py+4);}
+    const pressure=a.pressure,width=Math.max(1,a.right-a.left),barY=Math.max(3,a.top-12)+pressure*5;
+    g.fillStyle(0x547b9c,.025+.08*pressure);g.fillRect(a.left,barY,width,world.floorY-barY);
+    // A visible overhead emitter drives a pressure field, not a solid collision ceiling.
+    g.fillStyle(0x40586c,.9);g.fillRect(a.left-3,barY-3,width+6,4);
+    g.lineStyle(1.4,0x87c2cd,.5+.5*pressure);g.lineBetween(a.left,barY+2,a.right,barY+2);
+    for(let x=a.left;x<=a.right;x+=Math.max(12,width/10)){
+     g.fillStyle(0xd8b86a,.5+.5*pressure);g.fillRect(x-1,barY-2,2,1);
+     g.lineStyle(.65+pressure*.6,0x47799a,.25+.6*pressure);
+     for(let y=barY+8;y<world.floorY-8;y+=23){
+      const py=y+(this.reduced?0:(t*(12+pressure*25))%15),length=4+pressure*5;
+      g.lineBetween(x,py,x,py+length);g.lineBetween(x,py+length,x-2.5,py+length-3);g.lineBetween(x,py+length,x+2.5,py+length-3);
+     }
+    }
+    g.lineStyle(1+pressure,0x47799a,.15+.5*pressure);g.lineBetween(a.left,world.floorY-1,a.right,world.floorY-1);
    }else{
-    const x=a.left+(a.right-a.left)*Math.min(1,Math.max(0,(t-.4)/1.65));g.fillStyle(0x6d9e9c,.12);g.fillRect(x-5,0,10,world.floorY);
-    for(const offset of [-3,0,3]){g.lineStyle(.6,0x397879,.7);g.lineBetween(x+offset,0,x+offset,world.floorY);}
+    const center=(a.left+a.right)/2,half=(a.right-a.left)/2,progress=Math.min(1,Math.max(0,(t-.4)/1.65)),alpha=t<2.05?1:Math.max(0,1-(t-2.05)/.75);
+    for(const side of [-1,1]){
+     const x=center+side*half*(1-progress);g.fillStyle(0x6d9e9c,.12*alpha);g.fillRect(x-5,0,10,world.floorY);
+     for(const offset of [-3,0,3]){g.lineStyle(.6,0x397879,.7*alpha);g.lineBetween(x+offset,0,x+offset,world.floorY);}
+     for(let y=18;y<world.floorY;y+=24){g.lineBetween(x,y,x+side*3,y-3);g.lineBetween(x,y,x+side*3,y+3);}
+    }
    }
   }
   for(const f of world.deviceVisuals){
    const t=1-f.remaining/f.life,r=f.radius*(.3+.7*t);g.lineStyle(.8,f.kind==='impact'?0xc47b40:0x4d8c87,1-t);
    if(f.kind==='seismic'){g.beginPath();g.arc(f.x,f.y,r,Math.PI,Math.PI*2);g.strokePath();}
    else if(f.kind==='impact'){g.strokeCircle(f.x,f.y,r);g.lineBetween(f.x-r,f.y,f.x+r,f.y);}
+   else if(f.kind==='clap'){g.lineStyle(1,0x397879,1-t);g.strokeEllipse(f.x,f.y,Math.max(2,r*.4),r*2);}
+   else if(f.kind==='compression'){
+    g.lineStyle(.8,0xc47b40,1-t);g.lineBetween(f.x-r,f.y,f.x+r,f.y);
+    g.lineBetween(f.x-r*.6,f.y-2,f.x-r,f.y-4);g.lineBetween(f.x+r*.6,f.y-2,f.x+r,f.y-4);
+   }
   }
  }
 }
