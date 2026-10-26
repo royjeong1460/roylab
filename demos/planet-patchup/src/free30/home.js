@@ -1,6 +1,6 @@
 import {drawPixelAlley} from './pixel-alley.js';
 
-export function initHome(doc=document){
+export function initHome(doc=document,draw=drawPixelAlley){
   for(const name of ['options','zones']){
     const dialog=doc.getElementById(`home-${name}-dialog`);
     doc.getElementById(`home-${name}`).onclick=()=>dialog.showModal();
@@ -10,7 +10,7 @@ export function initHome(doc=document){
   const home=doc.getElementById('base'),canvas=doc.getElementById('home-alley');
   // ResizeObserver also redraws after returning from the workshop or a run.
   const observer=new ResizeObserver(()=>{
-    drawPixelAlley(canvas);
+    draw(canvas);
   });
   observer.observe(home);
   return ()=>observer.disconnect();

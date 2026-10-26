@@ -4,9 +4,9 @@ import {createTrashSurface,trashPreviewEnabled} from './trash-surface.js';
 
 // Borrows world data for drawing only; never moves bodies or removes pixels.
 export class WorldRenderer {
-  constructor(scene, world, viewport, minimap, automaticSuction, {surface,createBackdrop=createBackdropPreview,collectibleStyle=null}={}) {
+  constructor(scene, world, viewport, minimap, automaticSuction, {surface,createBackdrop=createBackdropPreview,collectibleStyle=null,collectionMode='pointer'}={}) {
     this.scene=scene;this.world=world;this.viewport=viewport;this.minimap=minimap;
-    this.automaticSuction=automaticSuction;this.collectibleStyle=collectibleStyle;
+    this.collectionMode=collectionMode;this.automaticSuction=automaticSuction;this.collectibleStyle=collectibleStyle;
     this.reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
     const w=world;
     this.surface=surface??(trashPreviewEnabled()?createTrashSurface(w.width,w.cells):null);
@@ -79,19 +79,21 @@ export class WorldRenderer {
       if(e.kind==='tool-line'){fx.lineStyle(.5,0xffae5e,alpha);fx.lineBetween(e.x,e.y,e.x2,e.y2);}
       else if(e.kind==='tool-strike'){fx.lineStyle(.75,0xb16d49,alpha);fx.lineBetween(e.x,e.y,e.x+(e.direction||direction)*8,e.y);}
       else if(e.kind==='collect'){
-        const x=e.x+(aim.x-e.x)*t*t,y=e.y+(aim.y-e.y)*t*t;fx.fillStyle(this.collectibleStyle?.color??(this.surface?.color(e.id,e.color)||palette[e.color]),alpha);fx.fillRect(x-.5,y-.5,1,1);
+        if(this.collectionMode==='rise'){for(const sample of e.samples||[e]){fx.fillStyle(this.surface?.color(sample.id,sample.color)||palette[sample.color]||0x86adba,alpha);fx.fillRect(sample.x-.5,sample.y-.5-t*9,1,1);}}
+        else{const x=e.x+(aim.x-e.x)*t*t,y=e.y+(aim.y-e.y)*t*t;fx.fillStyle(this.collectibleStyle?.color??(this.surface?.color(e.id,e.color)||palette[e.color]),alpha);fx.fillRect(x-.5,y-.5,1,1);}
       }else{fx.lineStyle(.5,e.phase==='fuse'?0xd55635:0xffb766,alpha);fx.strokeCircle(e.x,e.y,e.phase==='fuse'?(e.radius||6):1+t*(e.radius||4));}
     }
     this.effects=this.effects.filter(e=>e.age<e.life);const n=this.nozzle;n.clear();
     const {x,y}=aim,color=suctionOnly?0x447c68:selectedTool==='bomb'?0xb17151:selectedTool==='hammer'?0xa78247:0x447c68;
     const suctionActive=automaticSuction||working,suctionRadius=w.suctionRadius??12;
-    n.fillStyle(color,suctionActive?.06:.025);n.fillCircle(x,y,suctionRadius);n.lineStyle(.3,color,suctionActive?.55:.22);n.strokeCircle(x,y,suctionRadius);
+    if(this.collectionMode!=='rise'){n.fillStyle(color,suctionActive?.06:.025);n.fillCircle(x,y,suctionRadius);n.lineStyle(.3,color,suctionActive?.55:.22);n.strokeCircle(x,y,suctionRadius);
     if(automaticSuction&&!this.reducedMotion.matches){
       this.airTime+=dt;
       for(let i=0;i<3;i++){
         const phase=(this.airTime*.9+i/3)%1,angle=-Math.PI/2+i*Math.PI*2/3+this.airTime*.35,radius=(suctionRadius-1)*(1-phase)+1;
         n.lineStyle(.35,color,.15+.4*Math.sin(phase*Math.PI));n.beginPath();n.arc(x,y,radius,angle,angle+.7);n.strokePath();
       }
+    }
     }
     if(hideCursor)return;
     n.lineStyle(.6,working?0xf18a42:color,.9);n.strokeCircle(x,y,3);n.lineStyle(1,0x32524d);n.lineBetween(x,y+4,x,y+6.75);

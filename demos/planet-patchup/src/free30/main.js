@@ -1,16 +1,17 @@
 import Phaser from 'phaser';
-import {stageOpen,stageBest,FREE_STAGES} from './stages.js';
+import {campaign} from './campaign.js';
+import {stageOpen as legacyStageOpen,stageBest as legacyStageBest,FREE_STAGES as LEGACY_STAGES} from './stages.js';
 import {renderStageList} from './stage-menu.js';
 import './stage-menu.css';
 import {loadDraft,editorMessage} from './editor/model.js';
-import {FreeJourney,FreeRun} from './journey.js';
-import {BALANCE_VERSION,upgradeGuide} from './balance.js';
-import {FREE_TUTORIAL} from './sites.js';
+import {FreeJourney as LegacyJourney,FreeRun as LegacyRun} from './journey.js';
+import {BALANCE_VERSION as LEGACY_BALANCE_VERSION,upgradeGuide as legacyUpgradeGuide} from './balance.js';
+import {FREE_TUTORIAL as LEGACY_TUTORIAL} from './sites.js';
 import {testEdition} from './edition.js';
 import {contactStorage,pressContact} from '../mobile-tutorial2/controls.js';
 import {loadTouchMode,mountTouchSettings} from './touch-settings.js';
 let touchTap=Boolean(testEdition?.touchTap);
-import {FirstRunGuide,TutorialOverlay,gameTip} from './tutorial.js';
+import {FirstRunGuide as LegacyGuide,TutorialOverlay,gameTip as legacyGameTip} from './tutorial.js';
 import {clampToolAim} from '../three-tool-run.js';
 import {MapViewport} from '../map-viewport.js';
 import {closeView,COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';
@@ -30,6 +31,10 @@ import {GameSound} from './game-sound.js';
 import collectionSoundUrl from './audio/pixel-metal-chak.wav?url';
 import blastSoundUrl from './audio/blast-peoeong.wav?url';
 import impactSoundUrl from './audio/metal-tick-single.wav?url';
+
+const FreeJourney=campaign?.Journey||LegacyJourney,FreeRun=campaign?.Run||LegacyRun;
+const stageOpen=campaign?.stages.stageOpen||legacyStageOpen,stageBest=campaign?.stages.stageBest||legacyStageBest,FREE_STAGES=campaign?.stages.FREE_STAGES||LEGACY_STAGES;
+const BALANCE_VERSION=campaign?.BALANCE_VERSION||LEGACY_BALANCE_VERSION,upgradeGuide=campaign?.upgradeGuide||legacyUpgradeGuide,FREE_TUTORIAL=campaign?.tutorial||LEGACY_TUTORIAL,FirstRunGuide=campaign?.Guide||LegacyGuide,gameTip=campaign?.gameTip||legacyGameTip;
 
 export function bindSceneTeardown(events,cleanup){
   let cleaned=false;
@@ -53,6 +58,7 @@ const previewMemory=new Map();
 const scopedStorage=previewId?{getItem:k=>previewMemory.get(k)??null,setItem:(k,v)=>previewMemory.set(k,v)}:qa?{getItem:k=>storage.getItem('qa:'+k),setItem:(k,v)=>storage.setItem('qa:'+k,v)}:storage;
 if(!testEdition)touchTap=loadTouchMode(scopedStorage);
 const journey=new FreeJourney(scopedStorage);
+campaign?.init(storage,{qa,previewId});
 const soundButtons=[...document.querySelectorAll('[data-game-sound]')];
 let soundEnabled=true;
 try{soundEnabled=scopedStorage.getItem('free30-collection-sound')!=='off';}catch{}
@@ -89,6 +95,7 @@ function profile(){
   $('milestone').textContent=p.bossCleared?'첫 구역 완료 → 강화 레벨 제한 해제 · 계속 업그레이드해 보세요':`70% 달성 현장 ${FREE_STAGES.slice(0,6).filter(s=>stageBest(p,s.id)>=.7).length}/6곳 · 모두 달성하면 Boss 해금`;
   $('playtest-report').textContent=`출동 ${p.runCount}회 · 누적 작업 ${duration(p.workMs)} · 보스 ${p.bossAttempts}회${p.firstClearMs!==null?` · 첫 완료 작업 ${duration(p.firstClearMs)}`:''} (정산한 출동만 · 메뉴·일시정지 제외)`;
   $('stats').replaceChildren(...[['폭파 반경',`${stats.bombRadius}칸`],['배터리',`${stats.capacity}`],['흡입량',`${stats.suctionRate}/초`],['흡입 반경',`${stats.suctionRadius}칸`]].map(([name,value])=>{const div=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=name;dd.textContent=value;div.append(dt,dd);return div;}));
+  campaign?.profile(journey);
 }
 async function guarded(action){
   if(operating)return;operating=true;document.body.setAttribute('aria-busy','true');
@@ -109,24 +116,26 @@ function renderOffers(){
   $('workshop-random').textContent=next?'다음 현장 · 강화한 폭파기 써 보기 →':phase==='intro'?'연습 현장에서 더 모으기 →':'강화 마치고 맵 선택 →';
   $('workshop-retry').hidden||=first||next;$('workshop-boss').hidden=first||next;
   $('workshop-boss').disabled=!stageOpen(journey.profile,6);
-  const visible=next?[]:first?journey.offers().filter(o=>o.id==='bombRange'):journey.offers();
+  const visible=next?[]:first?journey.offers().filter(o=>o.id===(campaign?.firstUpgrade||'bombRange')):journey.offers();
   $('offers').replaceChildren(...visible.map(offer=>{
     const card=document.createElement('article');card.className='offer';
     if(first)card.classList.add('first-upgrade');
     const title=document.createElement('h3');title.textContent=`${offer.name} · ${offer.level}/${offer.max===null?'∞':offer.max}`;
     const description=document.createElement('p');description.textContent=offer.description;
-    const help=document.createElement('p');help.className='offer-help';help.textContent=offer.help||'새 도구를 해금한 뒤 게임 화면 왼쪽 아래에서 선택할 수 있어요.';
+    const help=document.createElement('p');help.className='offer-help';help.textContent=campaign?.offerHelp?.(offer)||offer.help||'새 도구를 해금한 뒤 게임 화면 왼쪽 아래에서 선택할 수 있어요.';
     const button=document.createElement('button');button.textContent=offer.available?`${offer.cost.toLocaleString()} 부품 · ${journey.profile.parts>=offer.cost?'구매':`${offer.cost-journey.profile.parts} 부족`}`:offer.max&&offer.level>=offer.max?'최대 성장 / 보유 중':'도구 해금 후 강화 가능';
     button.disabled=!offer.available||journey.profile.parts<offer.cost;
     button.onclick=()=>guarded(async()=>{const result=await journey.buy(offer.id,{level:offer.level,cost:offer.cost});if(!result.ok)notice(failureMessage(result.reason));else notice(`${offer.name} 구매 완료`);profile();renderOffers();});
     card.append(title,description,help);
     card.append(button);return card;
   }));
+  campaign?.offers(journey,id=>guarded(async()=>{const result=await journey.equipSkill(id);if(!result.ok)notice(failureMessage(result.reason));renderOffers();}));
 }
-function maps(){closeDialogs();profile();renderStageList($('stage-list'),journey.profile,id=>guarded(()=>dispatch('stage',id)));$('home-zones-dialog').showModal();}
+function maps(){closeDialogs();profile();renderStageList($('stage-list'),journey.profile,id=>guarded(()=>dispatch('stage',id)),campaign?.stages);$('home-zones-dialog').showModal();}
 async function dispatch(mode,stageId){
   const result=await journey.start(mode,stageId);if(!result.ok){notice(failureMessage(result.reason));return;}
   closeDialogs();dispose();screen('expedition');notice('');profile();
+  campaign?.start(journey.currentRun,{preview:Boolean(previewId),qa});
   launchGame();
 }
 function launchGame(){
@@ -134,9 +143,10 @@ function launchGame(){
 }
 async function settle(){
   release();scene?.run.pause(true);if($('pause-dialog').open)$('pause-dialog').close();
+  const journalRun=scene?.run;
   const result=await journey.finish();
   if(!result.ok){
-    if(result.reason==='reset'){$('run-receipt').hidden=true;home();notice('다른 탭에서 진행이 초기화됐어요. 처음부터 다시 시작할 수 있어요.');return;}
+    if(result.reason==='reset'){if(typeof campaign!=='undefined')campaign?.abandon(journalRun,'progress-reset');$('run-receipt').hidden=true;home();notice('다른 탭에서 진행이 초기화됐어요. 처음부터 다시 시작할 수 있어요.');return;}
     $('resume').hidden=true;$('pause-return').textContent='정산 저장 다시 시도';
     if(!$('pause-dialog').open)$('pause-dialog').showModal();
     notice(failureMessage(result.reason));return;
@@ -146,6 +156,7 @@ async function settle(){
   $('result-title').textContent=result.allClear?`${result.siteName} · 올클리어!`:result.qualified?`${result.siteName} · 클리어!`:`쓰레기 ${result.recovered.toLocaleString()}개를 수거했어요!`;
   $('result-copy').textContent=`${result.siteName} · ${result.mode==='boss'&&result.qualified?'무료 1단계 완료!':result.nextStage?`${result.nextStage} 해금!`:result.qualified?'70% 회수 목표 달성!':'모은 부품은 그대로 남아요.'} 부품 ${result.recovered.toLocaleString()}개로 장비를 강화해 보세요.`;
   $('result-bonus').textContent=result.mode==='boss'&&result.qualified?`${result.firstClear?`첫 성공 +${result.bonus} 부품! `:''}강화 레벨 제한이 해제됐어요. 계속 업그레이드해 보세요. 맵을 다시 골라 100% 올클리어에 도전할 수 있어요.`:`이번 작업 ${duration(result.workMs)} · 모은 부품은 작업장에서 사용할 수 있어요.`;
+  if(typeof campaign!=='undefined'){campaign?.finish(journalRun,result,journey.profile);campaign?.receipt(result);}
   $('run-receipt').hidden=false;workshop();
 }
 class FreeScene extends Phaser.Scene{
@@ -153,7 +164,7 @@ class FreeScene extends Phaser.Scene{
   create(){
     scene=this;this.run=journey.currentRun;const r=this.run,w=r.world,f=$('playfield');this.aim={...r.aim};this.working=false;this.settled=false;this.settling=false;this.lastHUD=0;this.lastClock=performance.now();
     this.viewport=new MapViewport({worldWidth:w.width,worldHeight:w.height,viewWidth:f.clientWidth,viewHeight:f.clientHeight});closeView(this.viewport,r.site.preview[0]?.x);this.aim={x:r.site.preview[0]?.x??w.width/2,y:w.floorY-10};
-    this.view=new WorldRenderer(this,w,this.viewport,$('minimap'),true,document.documentElement.dataset.demo==='planet'?{surface:artMap?testEdition.surface(w.width,w.cells):createTrashSurface(w.width,w.cells,'earth'),createBackdrop:artMap?testEdition.createBackdrop:createDustBackdrop,collectibleStyle:COLLECTIBLE_STYLE}:{});if(artMap){this.viewport.fit();testEdition.initialView?.(this.viewport,r);}this.view.transform();this.overlay=new ThreeToolsOverlay(this,this.view);this.editionOverlay=testEdition?.createOverlay?.(this,this.view);
+    this.view=new WorldRenderer(this,w,this.viewport,$('minimap'),true,campaign?campaign.renderer(w):document.documentElement.dataset.demo==='planet'?{surface:artMap?testEdition.surface(w.width,w.cells):createTrashSurface(w.width,w.cells,'earth'),createBackdrop:artMap?testEdition.createBackdrop:createDustBackdrop,collectibleStyle:COLLECTIBLE_STYLE}:{});if(artMap){this.viewport.fit();testEdition.initialView?.(this.viewport,r);}this.view.transform();this.overlay=new ThreeToolsOverlay(this,this.view);this.editionOverlay=campaign?.overlay(this,this.view)||testEdition?.createOverlay?.(this,this.view);
     this.gameSound=new GameSound(this.sound,soundEnabled,key=>this.cache.audio.exists(key));
     this.tipSeconds=0;
     if(r.site.id===FREE_TUTORIAL.id){
@@ -170,7 +181,7 @@ class FreeScene extends Phaser.Scene{
     this.pointer?.destroy();this.working=false;r.release();
     if(this.guide)this.guide.touchTap=touchTap;
     this.pointer=bindBatteryInput(f,this.game.canvas,this.viewport,{touchReleaseAtPointer:!touchTap,touchAtContact:touchTap,touchEdgePan:!touchTap,canStart:()=>!r.paused&&!r.finishReady&&!operating,start:q=>{r.release();this.working=true;this.aim=clampToolAim(w,q);},move:q=>{this.aim=clampToolAim(w,q);},press:q=>{this.aim=clampToolAim(w,q);return this.attack();},end:()=>{this.working=false;r.release();},touchPressOnRelease:()=>true,onViewChange:()=>{this.view.transform();this.mapLabel();}});
-    this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label',touchTap?'청소 현장. 모바일은 한 손가락으로 톡 터치한 위치에서 폭파. 두 손가락은 폭파 없이 이동·확대. 끌면 수집만 해요. PC는 클릭 즉시 사용.':'청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
+    this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label',touchTap?'청소 현장. 모바일은 한 손가락으로 톡 터치한 위치에서 폭파. 두 손가락은 폭파 없이 이동·확대. 끌면 수집만 해요. PC는 클릭 즉시 사용.':'청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');if(campaign)this.game.canvas.setAttribute('aria-label',touchTap?'Arch Quarter. Tap to attack. Two fingers move and zoom. Loose pixels collect globally.':'Arch Quarter. Aim with the pointer and release to attack. Arrow keys and space on PC. Loose pixels collect globally.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
   }
   mapLabel(){$('map-label').textContent=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001?'가까이 보기':'전체 보기';}
   resize(){const f=$('playfield');if(!f.clientWidth||!f.clientHeight)return;release();const fit=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001;this.scale.resize(f.clientWidth,f.clientHeight);this.viewport.setSize(f.clientWidth,f.clientHeight);if(fit)this.viewport.fit();this.view.transform();this.mapLabel();}
@@ -183,10 +194,12 @@ class FreeScene extends Phaser.Scene{
     $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?r.mode==='boss'?'보스 70% 성공! 계속해서 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':'70% 성공! 100%에 도전하거나 Ⅱ 메뉴에서 정산하고 다른 현장을 골라보세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice,touchTap);
     if(artMap)$('feedback').textContent=r.finishReady?`테스트 종료 · ${(r.ratio*100).toFixed(1)}% 회수 · 화력을 바꾸거나 다시 테스트하세요.`:r.paused?'테스트 일시정지':r.phase==='finishing'?`배터리 소진 · 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:'폭파로 받침·벽면을 깨고 블랙홀로 모아 보세요. 하단에서 화력을 조절할 수 있어요.';
     if(artMap&&!r.paused&&!r.finishReady&&r.phase!=='finishing'&&testEdition.status)$('feedback').textContent=testEdition.status(w);
+    campaign?.hud(r,()=>{release();if(!operating&&!r.paused&&!r.finishReady){r.activateSkill('orbital');this.hud();}});
     this.guideView?.render(this.viewport,this.aim,w,inputDevice,r.paused||r.phase==='finishing');
   }
   update(time){
-    const r=this.run;if(!r)return;const now=performance.now(),elapsed=Math.max(0,(now-this.lastClock)/1000);this.lastClock=now;const dt=r.paused||r.finishReady?0:Math.min(.1,elapsed);this.pointer?.update(dt);r.update(r.paused||r.finishReady?0:elapsed,{working:this.working,...this.aim});
+    const r=this.run;if(!r)return;const now=performance.now(),elapsed=Math.max(0,(now-this.lastClock)/1000);this.lastClock=now;const dt=r.paused||r.finishReady?0:Math.min(.1,elapsed);this.pointer?.update(dt);const measureUpdate=campaign&&(this.updateSamples=(this.updateSamples||0)+1)%30===0,updateStart=measureUpdate?performance.now():0;r.update(r.paused||r.finishReady?0:elapsed,{working:this.working,...this.aim});
+    if(!r.paused&&!r.finishReady)campaign?.frame(r,elapsed*1000,measureUpdate?performance.now()-updateStart:undefined);
     const events=r.world.events.splice(0);
     this.gameSound?.update(dt,r.world.collected,events,!r.paused&&!r.finishReady);
     this.tipSeconds+=dt;this.guide?.update(dt,r.world.collected,this.guide.pending&&(r.world.bodies.length>0||r.looseCount>0||r.world.collected>0));
@@ -202,7 +215,7 @@ class FreeScene extends Phaser.Scene{
     if(r.finishReady&&!this.settled&&!this.settling&&!operating){this.settling=true;guarded(async()=>{await settle();});}
   }
 }
-function pause(){if(!scene||scene.settled||scene.run.finishReady)return;if(testEdition?.modalOpen())return;release();scene.gameSound?.stop();scene.run.pause(true);scene.hud();if(!$('pause-dialog').open)$('pause-dialog').showModal();}
+function pause(){if(!scene||scene.settled||scene.run.finishReady)return;if(testEdition?.modalOpen())return;const wasPaused=scene.run.paused;release();scene.gameSound?.stop();scene.run.pause(true);campaign?.checkpoint(scene.run,{paused:!wasPaused});scene.hud();if(!$('pause-dialog').open)$('pause-dialog').showModal();}
 let resetRevision=null;
 $('reset-open').onclick=()=>{
   if(operating)return;
@@ -232,7 +245,7 @@ window.addEventListener('blur',pause);document.addEventListener('visibilitychang
 export function handleStep1PageHide(event,pauseRun,disposeRun){
   if(event.persisted)pauseRun();else disposeRun();
 }
-window.addEventListener('pagehide',event=>handleStep1PageHide(event,pause,dispose));
+window.addEventListener('pagehide',event=>{campaign?.checkpoint(scene?.run,{closed:!event.persisted});handleStep1PageHide(event,pause,dispose);});
 document.addEventListener('keydown',event=>{
   if(!scene||scene.run.paused||scene.run.finishReady||operating)return;if(event.key==='Escape'){event.preventDefault();pause();return;}
   if(document.activeElement!==game.canvas&&document.activeElement!==$('playfield'))return;
@@ -241,7 +254,7 @@ document.addEventListener('keydown',event=>{
   if(dx||dy){event.preventDefault();inputDevice='mouse';scene.aim=clampToolAim(scene.run.world,{x:scene.aim.x+dx,y:scene.aim.y+dy});}
 });
 document.addEventListener('keyup',event=>{if(event.code==='Space')release();});
-initHome();
+initHome(document,campaign?.drawHome);
 if(!testEdition)mountTouchSettings(document,scopedStorage,contact=>{
   release();touchTap=contact;
   if(scene&&!scene.settled){scene.bindControls();scene.hud();}
@@ -249,7 +262,7 @@ if(!testEdition)mountTouchSettings(document,scopedStorage,contact=>{
 $('home-zones').onclick=maps;$('home-zone-link').onclick=maps;
 profile();notice(journey.notice||(!journey.persistent?'저장소를 사용할 수 없어요. 저장 안내를 확인해 주세요.':''));
 
-$('export-report').onclick=()=>{const blob=new Blob([JSON.stringify({campaign:'free30',balanceVersion:BALANCE_VERSION,exportedAt:new Date().toISOString(),profile:journey.profile},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='free30-playtest.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('export-report').onclick=()=>{const blob=new Blob([JSON.stringify(campaign?.export(journey.profile)||{campaign:'free30',balanceVersion:BALANCE_VERSION,exportedAt:new Date().toISOString(),profile:journey.profile},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=campaign?'arch-playtest.json':'free30-playtest.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 
 if(previewId){
  try{
