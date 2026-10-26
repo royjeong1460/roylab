@@ -21,9 +21,9 @@ Status: decision summary plus balance proposal v0.1. This document does not chan
 
 Only loose pixels count. Detached rigid chunks do not qualify merely because their supports were cut.
 
-Remove suction throughput and suction radius upgrades and the need to sweep a collector around the map. Replace them with automatic collection: loose pixels rise and disappear at a comfortable visual pace. This is an automatic baseline function, not a new paid collection stat.
+Remove the old pointer-based suction range and manual sweeping model. Automatic collection makes loose pixels rise and disappear. User correction: automatic collection DOES have two separate upgrade tracks: pixels collected per batch and collection frequency (shorter interval). The earlier baseline-only/no-collection-upgrades interpretation was incorrect. Batch size moves existing eligible pixels; it does not duplicate rewards or collect rigid chunks.
 
-The 70% clear condition, best recovery percentage, and 100% completion are distinct from suction rate and remain progression measures. Removing collection-rate upgrades does not remove the stage percentage display.
+The 70% clear condition, best recovery percentage, and 100% completion are distinct from suction rate and remain progression measures. Replacing the old suction model does not remove the stage percentage display.
 
 On battery exhaustion, no more ordinary attacks can be issued. Allow up to ten seconds for already triggered effects, collapse and automatic pickup to finish. All eligible loose pixels produced through the end of that window are secured; visual travel must never cause loss. Remaining rigid chunks and attached structure do not count. No scripted conversion of remaining chunks to pixels at the deadline.
 
@@ -60,7 +60,7 @@ No requirement to buy every upgrade or to 100% all maps before moving on. Keep c
 
 ## Learning and loadout proposal
 
-Recommend two passive slots and one active slot for the campaign. Start with one passive slot; the second opens at entry to region two. One active button keeps mobile readable and makes the choice between demolition and extra energy meaningful. Do not add a second active slot yet.
+Latest recommendation, not yet explicitly approved: two passive slots and up to two active slots. Start with one of each; open the second slots in region two. Equip distinct active skills, each usable once per sortie (two activations total with two equipped). This allows preparation/finisher combos without repeat casting by spending battery. The user confirmed both auto-collection upgrade tracks; do not interpret that answer as approval of active-slot rules.
 
 Unlock access through map achievements; learn with the same pixel currency used for equipment. Unlocking a recipe is not automatically owning it. Give the first passive as a clear reward/tutorial grant so learning and equipping are demonstrated without competing with the first basic upgrade. Equip and swap between sorties without a fee; retain a learned skill's levels when unequipped.
 
@@ -71,7 +71,7 @@ Unlock access through map achievements; learn with the same pixel currency used 
 | Three distinct region-one clears | 8–12 min | Black Hole purchase available |
 | Four distinct region-one clears | 15–20 min | Orbital Drop purchase available; active slot one |
 | Five distinct region-one clears | 20–25 min | Impact Relay available as alternative passive |
-| Enter region two | 30–35 min | Passive slot two; Seismic Driver available |
+| Enter region two | 30–35 min | Passive slot two; proposed active slot two; Seismic Driver available |
 | Three distinct region-two clears | 45–55 min | Lift & Slam available |
 | Enter region three | 75–85 min | Gravity Press and Pressure Bloom available |
 | Enter region four | 125–135 min | Sonic Sweep and Ground Pulse available |
@@ -80,7 +80,7 @@ Unlock access through map achievements; learn with the same pixel currency used 
 
 Times are diagnostic targets, not timers. A skilled player reaches milestones earlier. Recipe availability does not guarantee the player buys every option. Recommend one affordable option, not a forced purchase path.
 
-Active devices: one activation per sortie, ready at entry, no normal battery cost. Recharge occupies the same single active slot, restores min(25% capacity, missing charge), and is usable only while charge > 0. No real-time recharge or idle cooldown farming. In the lab retain unlimited repeat testing; do not apply lab values directly to campaign progression. Equipping at camp cannot reset a charge in an ongoing sortie.
+Proposed active devices: one activation per equipped skill per sortie, ready at entry, no normal battery cost. Recharge occupies one of the active slots, restores min(25% capacity, missing charge), and is usable only while charge > 0. No duplicate skill equipment. No real-time recharge or idle cooldown farming. In the lab retain unlimited repeat testing; do not apply lab values directly to campaign progression. Equipping at camp cannot reset a charge in an ongoing sortie.
 
 A boss and an ordinary site both count as new sorties. Selecting a skill with poor suitability should never make an otherwise affordable stage impossible: both base tools remain available, and retries permit free swaps.
 
@@ -108,6 +108,8 @@ Keep one currency, permanent ownership and modest increments. Values below are c
 
 | Track | Small purchase step | Campaign candidate bound / treatment |
 |---|---|---|
+| Auto-collection batch size | Increase eligible pixels per pickup batch | Confirmed upgrade axis; base/step/cap to be calibrated, no extra currency creation |
+| Auto-collection frequency | Shorten interval between batches | Confirmed upgrade axis; evaluate combined pixels/second with batch size |
 | Battery capacity | +5 energy | Starting 60; up to 180 in this first pass |
 | Blast force | +5% baseline force | 30 steps: 1.0x to 2.5x |
 | Blast direct radius | +0.1 cell | 20 steps: radius 3 to 5; area rises about 2.78x, so price more heavily |
@@ -118,7 +120,7 @@ Keep one currency, permanent ownership and modest increments. Values below are c
 | Black Hole core mixing | +0.25x | Starts 1x, absolute cap 10x; not required to max before ending |
 | Black Hole wear ceiling | +0.25x | Starts 1x, absolute cap 10x; still ramps only during rubbing |
 
-Do not add suction rate/radius, attack-repeat speed or generalized physics-speed upgrade tracks now. Frequent multi-touch shots and multiple simultaneous wells need separate limits and performance checks. Enlarge force/reach safely without removing collision or speed protections.
+Do not restore pointer suction radius or add attack-repeat speed or generalized physics-speed upgrades now. Frequent multi-touch shots and multiple simultaneous wells need separate limits and performance checks. Enlarge force/reach safely without removing collision or speed protections.
 
 These caps are not a requirement to buy everything in five hours. A player should strengthen selected tracks and reach the ending with meaningful alternatives unmaxed. Do not unlock every branch at once: show tool-specific upgrades when its tool is learned, with advanced Black Hole mixing/wear introduced progressively.
 
@@ -164,4 +166,10 @@ Track first upgrade, first passive equip, Black Hole purchase, first device, eac
 
 Five-hour target means first completion around 300 min for the intended player, not a guarantee or minimum. Skilled routes may finish earlier. Previous 5–10 min reports remain evidence of earlier pacing failures, not evidence this plan is tuned.
 
-Next planning steps: (1) agree one active slot / one activation and the proposed learning order; (2) author one representative map per region plus the free seven-map pack; (3) capture real pixel yield for entry and stronger profiles; (4) make fixed cost tables and simulate progression with measured physics yields; (5) compare real playtests, then refine. No implementation or release was performed by writing this proposal.
+Next planning steps: (1) agree the proposed two-active-slot / once-per-equipped-skill rule and learning order; (2) author one representative map per region plus the free seven-map pack; (3) capture real pixel yield for entry and stronger profiles; (4) make fixed cost tables and simulate progression with measured physics yields; (5) compare real playtests, then refine. No implementation or release was performed by writing this proposal.
+
+## Auto-collection follow-up — 2026-10-26
+
+Confirmed by user: upgrade both batch quantity and collection speed. Strong upgrades can cost more. Evaluate effective throughput as batch quantity / interval; do not price both axes as though their combined improvement were merely additive. Author a fixed, visible price table after measuring combinations, rather than raising a player's price secretly based on their build.
+
+The guaranteed end-of-run pickup rule still applies. Consequently, faster collection chiefly improves pickup feedback and reduces waiting; it cannot justify large mandatory progression costs by withholding otherwise guaranteed pixels. Distinguish this convenience value from destructive power. Higher prices pace access but cannot by themselves prevent a late-game combo from trivializing maps; measure combos before finalizing late costs. No code changed.
