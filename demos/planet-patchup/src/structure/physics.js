@@ -56,15 +56,18 @@ export const withStructure=Base=>class extends Base {
   const bearings=previous.bearings.filter(b=>owned.has(b.id)&&this.cells[b.id+this.width]).map(b=>({...b,strength:Math.max(0,1-(this.bonds.get(key(b.id,b.id+this.width))||0))})).filter(b=>b.strength>0);
   const width=bearings.reduce((s,b)=>s+b.strength,0);
   const pivot=piece.hinge?.pointA;
-  const lever=pivot?Math.abs(piece.body.position.x-pivot.x):Math.abs(previous.center-previous.pivot);
+  const signedLever=pivot?piece.body.position.x-pivot.x:previous.center-previous.pivot,lever=Math.abs(signedLever);
   const gravity=Math.hypot(this.engine.gravity.x,this.engine.gravity.y)*this.engine.gravity.scale/.00007;
+  let axialUtilization=width?gravity*piece.pixels.length/(1800*width)/(previous.reserve||1):Infinity;
   let utilization=width?gravity*(piece.pixels.length/(1800*width)+piece.pixels.length*lever/(7000*width**2))/(previous.reserve||1):Infinity;
   if(this.columnFailure&&width){
    const ids=[...owned];
    for(const b of bearings)for(let id=b.id+this.width;this.cells[id]&&this.roles[id]===1;id+=this.width)ids.push(id);
-   utilization=Math.max(utilization,this.columnLoad(bearings,this.pillarLengths(ids),piece.pixels.length,lever,piece.body.angle,gravity)/(previous.reserve||1));
+   const lengths=this.pillarLengths(ids);
+   utilization=Math.max(utilization,this.columnLoad(bearings,lengths,piece.pixels.length,lever,piece.body.angle,gravity)/(previous.reserve||1));
+   axialUtilization=Math.max(axialUtilization,this.columnLoad(bearings,lengths,piece.pixels.length,0,piece.body.angle,gravity)/(previous.reserve||1));
   }
-  return {...previous,bearings,width,load:piece.pixels.length,utilization};
+  return {...previous,bearings,width,load:piece.pixels.length,utilization,axialUtilization,signedLever};
  }
  sections(ids,angle=0,cutLimit=Infinity,supportIds=null){
   const owned=new Set(ids),rows=new Map(),candidates=[];
@@ -106,11 +109,12 @@ export const withStructure=Base=>class extends Base {
     const width=bearings.reduce((s,b)=>s+b.strength,0),center=above.reduce((s,id)=>s+id%this.width+.5,0)/above.length;
     const cy=above.reduce((s,id)=>s+Math.floor(id/this.width)+.5,0)/above.length;
     const pivot=Math.min(bearings.at(-1).x+.5,Math.max(bearings[0].x-.5,center));
-    const lever=Math.abs((center-pivot)*Math.cos(angle)+(cut.y+1-cy)*Math.sin(angle));
+    const signedLever=(center-pivot)*Math.cos(angle)+(cut.y+1-cy)*Math.sin(angle),lever=Math.abs(signedLever);
     const reserve=this.supportReserve?.get(this.originalGroup[bearings[0].id])||1;
     const gravity=Math.hypot(this.engine.gravity.x,this.engine.gravity.y)*this.engine.gravity.scale/.00007;
     const utilization=Math.max(gravity*(above.length/(1800*width)+above.length*lever/(7000*width**2)),this.columnLoad(bearings,lengths,above.length,lever,angle,gravity))/reserve;
-    candidates.push({y:cut.y,bearings,width,above,center,pivot,load:above.length,utilization,reserve});
+    const axialUtilization=Math.max(gravity*above.length/(1800*width),this.columnLoad(bearings,lengths,above.length,0,angle,gravity))/reserve;
+    candidates.push({y:cut.y,bearings,width,above,center,pivot,load:above.length,utilization,axialUtilization,signedLever,reserve});
    }
   }
   return candidates.sort((a,b)=>b.utilization-a.utilization);
@@ -202,40 +206,74 @@ export const withStructure=Base=>class extends Base {
  }
  recordSnap(section){this.snapCount++;this.stage='기둥 연결부가 하중을 못 버티고 끊어졌어요';this.note({kind:'pillar-snap',x:section.pivot,y:section.y+1,width:section.width,utilization:section.utilization});}
  columnBreaks(piece,section){
-  const owned=new Set(piece.pixels.map(p=>p.id));
-  return section.bearings.map(b=>{
-   let top=this.roles[b.id]===1?b.id:b.id+this.width,bottom=top;
-   if(!owned.has(top)||this.roles[top]!==1)return b;
-   while(owned.has(top-this.width)&&this.roles[top-this.width]===1&&(this.bonds.get(key(top,top-this.width))||0)<1)top-=this.width;
-   while(owned.has(bottom+this.width)&&this.roles[bottom+this.width]===1&&(this.bonds.get(key(bottom,bottom+this.width))||0)<1)bottom+=this.width;
-   // Buckle through the shaft rather than shaving one cell off its grounded tip.
-   const length=(bottom-top)/this.width+1;
-   return length>=6?{...b,id:top+Math.floor((length-1)/2)*this.width}:b;
-  });
+  const owned=new Set(piece.pixels.map(p=>p.id)),visited=new Set(),cuts=[];
+  for(const bearing of section.bearings){
+   const seed=this.roles[bearing.id]===1?bearing.id:bearing.id+this.width;
+   if(visited.has(seed))continue;
+   if(!owned.has(seed)||this.roles[seed]!==1){cuts.push(bearing);continue;}
+   const shaft=[seed];visited.add(seed);
+   for(let n=0;n<shaft.length;n++)for(const id of this.neighbors(shaft[n])){
+    if(!owned.has(id)||visited.has(id)||this.roles[id]!==1||(this.bonds.get(key(shaft[n],id))||0)>=1)continue;
+    visited.add(id);shaft.push(id);
+   }
+   const rows=new Map();let left=this.width,right=0;for(const id of shaft){left=Math.min(left,id%this.width);right=Math.max(right,id%this.width);}
+   for(const id of shaft)for(const upper of [id-this.width,id]){
+    if(!owned.has(upper)||!owned.has(upper+this.width))continue;
+    const y=Math.floor(upper/this.width);if(!rows.has(y))rows.set(y,new Map());
+    rows.get(y).set(upper,{id:upper,x:upper%this.width+.5,strength:Math.max(0,1-(this.bonds.get(key(upper,upper+this.width))||0)),pillar:true});
+   }
+   const options=[...rows].map(([y,row])=>{
+    const bearings=[...row.values()].filter(b=>b.strength>0),width=bearings.reduce((sum,b)=>sum+b.strength,0);
+    let original=0;for(let x=left;x<=right;x++)if(this.original[y*this.width+x]&&this.original[(y+1)*this.width+x])original++;
+    return {bearings,y,ratio:width/Math.max(1,original),joint:bearings.some(b=>this.roles[b.id]!==1&&this.roles[b.id+this.width]===1)};
+   }).filter(s=>s.bearings.length);
+   // Fail an actual damaged neck, otherwise the head/column joint. Never invent a midshaft cut.
+   const weak=options.filter(s=>s.ratio<.999).sort((a,b)=>a.ratio-b.ratio||a.y-b.y)[0];
+   const joint=options.filter(s=>s.joint).sort((a,b)=>a.y-b.y)[0];
+   cuts.push(...(weak||joint||{bearings:[bearing]}).bearings);
+  }
+  return cuts;
+ }
+ loadStrain(state,piece,section,dt){
+  const location=`${section.y}:${section.bearings.map(b=>b.x).join(',')}`,direction=Math.sign(section.signedLever);
+  if(state.location!==location||(state.direction&&direction&&state.direction!==direction))state.age=0;
+  state.location=location;state.direction=direction;
+  // Recoil toward balance unloads bending; compression and collision damage are not waived.
+  const unloading=section.signedLever*piece.loadAngularSpeed<-.002;
+  const demand=unloading?section.axialUtilization:section.utilization;
+  state.age=Math.max(0,(state.age||0)+dt*(demand>1?Math.min(4,demand-1):-2));
+  return state.age;
  }
  checkStructure(dt){
   let changed=false;const supported=this.supportBodies();
   for(const piece of [...this.bodies]){
    if(!this.bodies.includes(piece))continue;
+   if(this.columnFailure){
+    piece.loadAngularSpeed=piece.lastStructureAngle===undefined?piece.body.angularVelocity*60:(piece.body.angle-piece.lastStructureAngle)/dt;
+    piece.lastStructureAngle=piece.body.angle;
+   }
    if(piece.structuralHinge){
     const state=piece.structuralHinge;
     const live=this.liveHingeSection(piece);this.lastLoad=live;
     // Even if the existing hinge angle limit releases it first, count the joint failure.
-    state.age=live.utilization>1?state.age+dt*Math.min(3,live.utilization-1):0;
+    if(this.columnFailure)this.loadStrain(state,piece,live,dt);
+    else state.age=live.utilization>1?state.age+dt*Math.min(3,live.utilization-1):0;
     if(!piece.hinge||state.age>=.65){this.snapHinge(piece,live);return;}
     if(!this.columnFailure)continue;
    }
-   if(!piece.hinge&&!supported.has(piece.body)){piece.structureStrain=0;continue;}
+   if(!piece.hinge&&!supported.has(piece.body)){piece.structureStrain=0;piece.columnStrain=null;continue;}
    const section=this.sections(piece.pixels.map(p=>p.id),piece.body.angle,this.supportCutLimit(piece,supported),this.columnFailure?this.supportPixels(piece,supported):null)[0];
-   if(!section||section.utilization<=1){piece.structureStrain=0;continue;}
-   this.lastLoad=section;piece.structureStrain=(piece.structureStrain||0)+dt*Math.min(4,section.utilization-1);
+   if(!section||section.utilization<=1){piece.structureStrain=0;piece.columnStrain=null;continue;}
+   this.lastLoad=section;
+   piece.structureStrain=this.columnFailure?this.loadStrain(piece.columnStrain??={},piece,section,dt):(piece.structureStrain||0)+dt*Math.min(4,section.utilization-1);
    if(piece.structureStrain<.35)continue;
    // Cut the actual live pillar bonds, then let the existing splitter preserve
    // rotation/translation and independently simulate the resulting modules.
    const breaks=this.columnFailure?this.columnBreaks(piece,section):section.bearings;
    for(const b of breaks)this.bonds.set(key(b.id,b.id+this.width),1);
    if(this.groups(piece.pixels).length>1){
-    this.removePiece(piece);this.addConnected(piece.pixels,piece,piece.damage);this.recordSnap(section);changed=true;
+    this.removePiece(piece);this.addConnected(piece.pixels,piece,piece.damage);
+    this.recordSnap(this.columnFailure?{...section,y:Math.floor(breaks[0].id/this.width),pivot:breaks.reduce((sum,b)=>sum+b.x,0)/breaks.length,width:breaks.length}:section);changed=true;
    }else piece.structureStrain=0;
    break;
   }
