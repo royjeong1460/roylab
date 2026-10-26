@@ -1,6 +1,6 @@
 # Arch Quarter free campaign
 
-Release date: 2026-10-26. Status: verified locally; production deployment pending.
+Release date: 2026-10-26. Status: published to the canonical free-play URL.
 
 ## Scope
 
@@ -46,4 +46,4 @@ The30-minute first-region target is not validated. Numeric tests establish costs
 
 Browser QA (local, separate QA save): the tutorial accepted five mouse Blasts, used60 energy and awarded160 recovered parts; Battery Capacity cost150, leaving10 parts, and reload preserved capacity65. The JSON download contained the same five attacks,160 reward, map seed/version and measured frame summary; the analysis script read that file successfully. Reloading an unfinished ordinary map added an abandoned record. The revised field retained its full width and overview toggle worked. Browser console error/warning list was empty during these checks.
 
-Root route/locale tests:5 passed. Arch plus implicated structural/effect checks:63 passed; legacy free checks:65 passed. Final correction checks:36 passed. Free production build passed with the existing large Phaser chunk warning. The root production build also passed with `npm run build -- --webpack`; the default local Turbopack command failed because this checkout links node_modules outside its root. No project config was changed for that environmental limitation. Final code review approved `1a12e1b` after correcting reset invalidation and actual cleanup duration. All119 preserved comparison assets remained byte-identical. Production deployment remains pending. No real iPhone validation is claimed. These QA actions include time spent inspecting the page and are not a completion-time playtest.
+Root route/locale tests:5 passed. Arch plus implicated structural/effect checks:63 passed; legacy free checks:65 passed. Final correction checks:36 passed. Free production build passed with the existing large Phaser chunk warning. The root production build also passed with `npm run build -- --webpack`; the default local Turbopack command failed because this checkout links node_modules outside its root. No project config was changed for that environmental limitation. Final code review approved `1a12e1b` after correcting reset invalidation and actual cleanup duration. All119 preserved comparison assets remained byte-identical. Cloudflare Pages deployed game commit `f7a2afa` successfully. The live canonical URL was reopened and showed Arch Quarter with all six ordinary maps and the locked boss. A final copy-only polish replaces duplicate boss advice with the distinct-clear count. No real iPhone validation is claimed. These QA actions include time spent inspecting the page and are not a completion-time playtest.
