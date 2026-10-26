@@ -2,7 +2,7 @@ export const TOUCH_MODE_KEY='free30-mobile-touch-mode';
 export function loadTouchMode(storage){try{return storage.getItem(TOUCH_MODE_KEY)==='contact';}catch{return false;}}
 export function saveTouchMode(storage,contact){try{storage.setItem(TOUCH_MODE_KEY,contact?'contact':'aim');return true;}catch{return false;}}
 
-export function mountTouchSettings(doc,storage,onChange){
+export function mountTouchSettings(doc,storage,onChange,helpCopy){
  let contact=loadTouchMode(storage);
  const controls=['home-options-dialog','pause-dialog'].map(id=>{
   const dialog=doc.getElementById(id),help=dialog.querySelector('p.fine');
@@ -17,7 +17,7 @@ export function mountTouchSettings(doc,storage,onChange){
  });
  const render=()=>{for(const {select,help} of controls){
   select.value=contact?'contact':'aim';
-  help.textContent=contact?'한 손가락으로 톡 누르고 떼면 누른 위치에서 폭파. 끌면 수집만 해요. 두 번째 손가락이 들어오면 폭파 취소 · 두 손가락 이동·확대. PC는 기존 클릭 그대로예요.':'기존 조작: 왼쪽 위 포인터로 조준 후 손을 떼면 사용. 두 손가락 이동·확대 · PC는 기존 클릭 그대로예요.';
+  help.textContent=helpCopy?helpCopy(contact):contact?'한 손가락으로 톡 누르고 떼면 누른 위치에서 폭파. 끌면 수집만 해요. 두 번째 손가락이 들어오면 폭파 취소 · 두 손가락 이동·확대. PC는 기존 클릭 그대로예요.':'기존 조작: 왼쪽 위 포인터로 조준 후 손을 떼면 사용. 두 손가락 이동·확대 · PC는 기존 클릭 그대로예요.';
  }};
  for(const {select} of controls)select.onchange=()=>{
   if(!['aim','contact'].includes(select.value)){render();return;}

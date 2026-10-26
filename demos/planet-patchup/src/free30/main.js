@@ -209,7 +209,7 @@ class FreeScene extends Phaser.Scene{
     if(time-this.lastHUD>100){this.hud();this.lastHUD=time;}
     if(!previewId&&!r.finishReady&&r.qualified&&r.site.id!==FREE_TUTORIAL.id&&!r.milestoneSaved&&!operating&&now>=(this.nextMilestoneSave||0)){
       this.nextMilestoneSave=now+1000;
-      guarded(async()=>{const result=await journey.checkpointStage();if(result.ok)r.milestoneSaved=true;else if(result.reason==='reset'){home();notice('다른 탭에서 진행을 초기화했어요.');}else notice('해금 기록을 저장하지 못했어요. 다시 시도 중이에요.');});
+      guarded(async()=>{const result=await journey.checkpointStage();if(result.ok)r.milestoneSaved=true;else if(result.reason==='reset'){campaign?.abandon(r,'progress-reset');home();notice('다른 탭에서 진행을 초기화했어요.');}else notice('해금 기록을 저장하지 못했어요. 다시 시도 중이에요.');});
     }
     if(r.finishReady&&previewId&&!this.settled){this.settled=true;release();$('feedback').textContent=artMap?`테스트 종료 · ${(r.ratio*100).toFixed(1)}% 회수 · 다시 테스트하거나 화력을 바꿔 보세요.`:'테스트 회수 완료 · 아래 링크로 편집기에 돌아가세요.';return;}
     if(r.finishReady&&!this.settled&&!this.settling&&!operating){this.settling=true;guarded(async()=>{await settle();});}
@@ -258,11 +258,11 @@ initHome(document,campaign?.drawHome);
 if(!testEdition)mountTouchSettings(document,scopedStorage,contact=>{
   release();touchTap=contact;
   if(scene&&!scene.settled){scene.bindControls();scene.hud();}
-});
+},campaign?.touchHelp);
 $('home-zones').onclick=maps;$('home-zone-link').onclick=maps;
 profile();notice(journey.notice||(!journey.persistent?'저장소를 사용할 수 없어요. 저장 안내를 확인해 주세요.':''));
 
-$('export-report').onclick=()=>{const blob=new Blob([JSON.stringify(campaign?.export(journey.profile)||{campaign:'free30',balanceVersion:BALANCE_VERSION,exportedAt:new Date().toISOString(),profile:journey.profile},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=campaign?'arch-playtest.json':'free30-playtest.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('export-report').onclick=async()=>{const blob=new Blob([JSON.stringify((await campaign?.export(journey.profile))||{campaign:'free30',balanceVersion:BALANCE_VERSION,exportedAt:new Date().toISOString(),profile:journey.profile},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=campaign?'arch-playtest.json':'free30-playtest.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 
 if(previewId){
  try{

@@ -6,12 +6,13 @@ import {ARCH_TUTORIAL} from './maps.js';
 import {createArchSurface,createArchBackdrop} from './art.js';
 import {ArchJournal,tabSession} from './telemetry.js';
 import {ActiveOverlay} from '../ideas-lab/active/overlay.js';
-import {ArchGuide,ArchTutorialOverlay,archTip,receiptText,mountArchUI,renderArchProfile,renderEquipment,renderSkillHUD,drawArchHome} from './ui.js';
+import {ArchGuide,ArchTutorialOverlay,archTouchHelp,archTip,receiptText,mountArchUI,renderArchProfile,renderEquipment,renderSkillHUD,drawArchHome} from './ui.js';
 import './style.css';
 let journal;
 const warn=()=>{document.getElementById('arch-journal-warning').textContent=journal.warning;};
 installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeGuide,tutorial:ARCH_TUTORIAL,Guide:ArchGuide,TutorialOverlay:ArchTutorialOverlay,gameTip:archTip,firstUpgrade:'blastRadius',
  offerHelp:offer=>offer.kind?'Learn and upgrade here; equip one passive and one active skill below.':offer.id==='blackhole'?'Unlock after 3 distinct site clears. Select Black Hole at the bottom left in the field.':'Applies next sortie. Collection upgrades affect global quantity or cadence, with no range limit.',
+ touchHelp:archTouchHelp,
  renderer:world=>({surface:createArchSurface(world.width,world.cells),createBackdrop:createArchBackdrop,collectionMode:'rise'}),
  overlay:(scene,view)=>new ActiveOverlay(scene,view),
  drawHome:drawArchHome,
@@ -25,6 +26,6 @@ installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeG
  finish(run,result,profile){journal.finish(run,result,profile);warn();},
  abandon(run,reason){journal.abandon(run,reason);warn();},
  hud(run,activate){renderSkillHUD(document,run,activate);document.getElementById('run-mode').textContent=run.mode==='boss'?'Crooked Bell Twins · Boss':'Arch Quarter';},
- export(profile){return journal.export(profile);}
+ async export(profile){await journal.flush();warn();return journal.export(profile);}
 });
 await import('../free30/main.js');
