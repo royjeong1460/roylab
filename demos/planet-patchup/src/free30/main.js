@@ -181,7 +181,7 @@ class FreeScene extends Phaser.Scene{
     this.pointer?.destroy();this.working=false;r.release();
     if(this.guide)this.guide.touchTap=touchTap;
     this.pointer=bindBatteryInput(f,this.game.canvas,this.viewport,{touchReleaseAtPointer:!touchTap,touchAtContact:touchTap,touchEdgePan:!touchTap,canStart:()=>!r.paused&&!r.finishReady&&!operating,start:q=>{r.release();this.working=true;this.aim=clampToolAim(w,q);},move:q=>{this.aim=clampToolAim(w,q);},press:q=>{this.aim=clampToolAim(w,q);return this.attack();},end:()=>{this.working=false;r.release();},touchPressOnRelease:()=>true,onViewChange:()=>{this.view.transform();this.mapLabel();}});
-    this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label',touchTap?'청소 현장. 모바일은 한 손가락으로 톡 터치한 위치에서 폭파. 두 손가락은 폭파 없이 이동·확대. 끌면 수집만 해요. PC는 클릭 즉시 사용.':'청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');if(campaign)this.game.canvas.setAttribute('aria-label',touchTap?'Arch Quarter. Tap to attack. Two fingers move and zoom. Loose pixels collect globally.':'Arch Quarter. Aim with the pointer and release to attack. Arrow keys and space on PC. Loose pixels collect globally.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
+    this.game.canvas.tabIndex=0;this.game.canvas.setAttribute('aria-label',touchTap?'청소 현장. 모바일은 한 손가락으로 톡 터치한 위치에서 폭파. 두 손가락은 폭파 없이 이동·확대. 끌면 수집만 해요. PC는 클릭 즉시 사용.':'청소 현장. 방향키로 조준, 스페이스로 도구 사용. 터치는 왼쪽 위 포인터로 조준하다 손을 떼면 그 포인터에 폭파 또는 블랙홀. 두 손가락으로 이동과 확대.');if(campaign)this.game.canvas.setAttribute('aria-label',touchTap?'Arch Quarter. Tap to attack. Two fingers move and zoom. Move the suction circle to collect loose pixels.':'Arch Quarter. Aim with the pointer and release to attack. Arrow keys and space on PC. Move the suction circle to collect loose pixels.');this.game.canvas.onpointerdown=()=>this.game.canvas.focus({preventScroll:true});
   }
   mapLabel(){$('map-label').textContent=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001?'가까이 보기':'전체 보기';}
   resize(){const f=$('playfield');if(!f.clientWidth||!f.clientHeight)return;release();const fit=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001;this.scale.resize(f.clientWidth,f.clientHeight);this.viewport.setSize(f.clientWidth,f.clientHeight);if(fit)this.viewport.fit();this.view.transform();this.mapLabel();}
@@ -228,9 +228,9 @@ $('reset-dialog').addEventListener('cancel',event=>{event.preventDefault();cance
 $('reset-confirm').onclick=()=>guarded(async()=>{
   const result=await journey.resetProgress(resetRevision);
   if(!result.ok){notice(result.reason==='stale'?'다른 탭에서 진행이 바뀌었어요. 취소 후 최신 진행을 확인하고 다시 눌러 주세요.':failureMessage(result.reason));return;}
-  $('run-receipt').hidden=true;home();notice('진행을 초기화했어요. 시작을 누르면 첫 튜토리얼부터 다시 플레이해요.');
+  $('run-receipt').hidden=true;home();notice(campaign?'Progress reset. Choose Tutorial or a site from the map list.':'진행을 초기화했어요. 시작을 누르면 첫 튜토리얼부터 다시 플레이해요.');
 });
-$('dispatch').onclick=()=>journey.profile.tutorial==='upgrade'?workshop():maps();$('workshop-open').onclick=workshop;$('workshop-back').onclick=home;
+$('dispatch').onclick=()=>!campaign&&journey.profile.tutorial==='upgrade'?workshop():maps();$('workshop-open').onclick=workshop;$('workshop-back').onclick=home;
 $('practice').onclick=()=>guarded(()=>dispatch('tutorial'));
 $('tutorial-replay').onclick=()=>guarded(()=>dispatch('tutorial'));
 $('workshop-skip').onclick=()=>guarded(async()=>{const result=await journey.skipTutorial();if(!result.ok)notice(failureMessage(result.reason));renderOffers();});
@@ -254,7 +254,7 @@ document.addEventListener('keydown',event=>{
   if(dx||dy){event.preventDefault();inputDevice='mouse';scene.aim=clampToolAim(scene.run.world,{x:scene.aim.x+dx,y:scene.aim.y+dy});}
 });
 document.addEventListener('keyup',event=>{if(event.code==='Space')release();});
-initHome(document,campaign?.drawHome);
+if(campaign?.home)campaign.home(document,journey);else initHome(document,campaign?.drawHome);
 if(!testEdition)mountTouchSettings(document,scopedStorage,contact=>{
   release();touchTap=contact;
   if(scene&&!scene.settled){scene.bindControls();scene.hud();}

@@ -40,8 +40,8 @@ test('all track prices and values match approved CSV, including ten-unit ceiling
  for(const row of rows){const [id,nextLevel,price,value]=row.split(',');assert.equal(upgradeCost(id,+nextLevel-1),+price,`${id} Lv${nextLevel}`);assert(Math.abs(freeStats({upgrades:{[id]:+nextLevel}})[id]-+value)<1e-8);}
  assert.equal(upgradeCost('battery',1),180);assert.equal(upgradeCost('battery',2),220);
 });
-test('tutorial auto-dispatch and active skip safely persist without changing frozen run',async()=>{
- const {j}=fixture(),{run}=await j.start('stage',FREE_STAGES[0].id);assert.equal(run.mode,'tutorial');assert.equal(run.profile.tutorial,'intro');assert((await j.skipTutorial()).ok);assert.equal(j.profile.tutorial,'done');assert.equal(run.profile.tutorial,'intro');pixelize(run);await j.finish();assert.equal(j.profile.tutorial,'done');
+test('explicit tutorial and active skip safely persist without changing frozen run',async()=>{
+ const {j}=fixture(),{run}=await j.start('tutorial');assert.equal(run.mode,'tutorial');assert.equal(run.profile.tutorial,'intro');assert((await j.skipTutorial()).ok);assert.equal(j.profile.tutorial,'done');assert.equal(run.profile.tutorial,'intro');pixelize(run);await j.finish();assert.equal(j.profile.tutorial,'done');
 });
 test('corruption fallback stays Arch and storage write failure cannot spend',async()=>{
  const {j,m}=fixture();fund(j);const before=structuredClone(j.profile);j.storage.setItem=()=>{throw Error('quota');};assert.equal((await j.buy('battery')).reason,'storage');assert.deepEqual(j.profile,before);

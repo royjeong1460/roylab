@@ -79,7 +79,7 @@ export class WorldRenderer {
       if(e.kind==='tool-line'){fx.lineStyle(.5,0xffae5e,alpha);fx.lineBetween(e.x,e.y,e.x2,e.y2);}
       else if(e.kind==='tool-strike'){fx.lineStyle(.75,0xb16d49,alpha);fx.lineBetween(e.x,e.y,e.x+(e.direction||direction)*8,e.y);}
       else if(e.kind==='collect'){
-        if(this.collectionMode==='rise'){for(const sample of e.samples||[e]){fx.fillStyle(this.surface?.color(sample.id,sample.color)||palette[sample.color]||0x86adba,alpha);fx.fillRect(sample.x-.5,sample.y-.5-t*9,1,1);}}
+        if(this.collectionMode==='rise'||e.mode==='rise'){for(const sample of e.samples||[e]){fx.fillStyle(this.surface?.color(sample.id,sample.color)||palette[sample.color]||0x86adba,alpha);fx.fillRect(sample.x-.5,sample.y-.5-t*9,1,1);}}
         else{const x=e.x+(aim.x-e.x)*t*t,y=e.y+(aim.y-e.y)*t*t;fx.fillStyle(this.collectibleStyle?.color??(this.surface?.color(e.id,e.color)||palette[e.color]),alpha);fx.fillRect(x-.5,y-.5,1,1);}
       }else{fx.lineStyle(.5,e.phase==='fuse'?0xd55635:0xffb766,alpha);fx.strokeCircle(e.x,e.y,e.phase==='fuse'?(e.radius||6):1+t*(e.radius||4));}
     }

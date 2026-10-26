@@ -5,6 +5,7 @@ export class ArchWorld extends ActiveIdeaWorld{
  constructor(site,profile){
   super(site,legacy(),{blast:'normal',well:'grind',level:1});
   this.archStats=freeStats(profile);this.gameStats=this.archStats;this.unlimited=false;
+  this.suctionRate=this.archStats.suctionRate;this.suctionRadius=this.archStats.suctionRadius;
   this.capacity=this.archStats.capacity;this.charge=this.capacity;this.allowedTools=[...profile.owned];this.usedTools=new Set();
   this.blackholeSettings.coreMix=this.archStats.coreMix;this.wearSettings.wearSpeed=this.archStats.wearSpeed;
   this.skills={...profile.skills};this.equipped={...profile.equipped};this.passiveCount=0;this.passiveTriggers=0;this.effectiveAttacks=0;this.effectiveBlasts=0;this.effectiveBlackHoles=0;this.simulatedMs=0;this.attackCounts={bomb:0,blackhole:0};this.energyUsed=0;this.collectedPixelIds=new Set();this.collectionClock=0;this.collectionBatches=0;
@@ -12,9 +13,8 @@ export class ArchWorld extends ActiveIdeaWorld{
  get ideaGain(){return 1+.1*Math.min(3,Math.max(0,(this.skills?.[this.equipped?.passive]||1)-1));}
  stats(){return {...super.stats(),...this.archStats};}
  tune(id,fallback){return id==='blastReach'&&this.archStats?this.archStats.blastReach:super.tune(id,fallback);}
- // Collection runs on simulated time only; pointer work never changes its rate or reach.
- work(){}
- collectAlong(){}
+ // Keep the original proximity suction; optional global collection uses a separate clock.
+ note(event){if(event.kind==='collect'&&Number.isInteger(event.id))this.collectedPixelIds?.add(event.id);super.note(event);}
  canUseTool(){return super.canUseTool()&&(!this.allowedTools||this.allowedTools.includes(this.tool));}
  effectiveAt(x,y,radius){return [null,...this.bodies].some(piece=>this.material(piece).some(({q})=>Math.hypot(q.x-x,q.y-y)<=radius));}
  activate(x,y){const before=this.charge,tool=this.tool;const effective=tool==='blackhole'&&this.validPoint(x,y)&&this.effectiveAt(x,y,this.stats().gravityRadius);const ok=super.activate(x,y);if(ok){this.energyUsed+=before-this.charge;this.attackCounts[tool]++;if(effective)this.effectiveBlackHoles++;}return ok;}
@@ -49,8 +49,8 @@ export class ArchWorld extends ActiveIdeaWorld{
   for(let i=0;i<this.sand.length&&count<limit;i++)if(this.sand[i]){take({id:this.sandOrigins[i]-1,color:this.sand[i],x:i%this.width+.5,y:Math.floor(i/this.width)+.5});this.sand[i]=0;this.sandOrigins[i]=0;this.speed[i]=0;}
   for(const key of ['flying','debris']){let n=0;while(n<this[key].length&&count<limit)take(this[key][n++]);if(n)this[key].splice(0,n);}
   for(let i=0;i<this.pending.length&&count<limit;i++)if(this.pending[i]){take({id:i,color:this.pending[i],x:i%this.width+.5,y:Math.floor(i/this.width)+.5});this.pending[i]=0;}
-  if(count){this.collected+=count;this.version++;this.collectionBatches++;this.note({kind:'collect',x:x/count,y:y/count,count,ids,samples,color:samples[0]?.color||1});}return count;
+  if(count){this.collected+=count;this.version++;this.collectionBatches++;this.note({kind:'collect',mode:'rise',x:x/count,y:y/count,count,ids,samples,color:samples[0]?.color||1});}return count;
  }
  secureLoose(){return this.collectLoose();}
- step(dt){if(this.settled||!Number.isFinite(dt)||dt<=0)return;const h=Math.min(.1,dt);super.step(h);this.simulatedMs+=h*1000;this.collectionClock+=h;const s=this.stats();while(this.collectionClock+1e-8>=s.collectInterval){this.collectionClock-=s.collectInterval;this.collectLoose(s.collectBatch);}}
+ step(dt){if(this.settled||!Number.isFinite(dt)||dt<=0)return;const h=Math.min(.1,dt);super.step(h);this.simulatedMs+=h*1000;const s=this.stats();if(!s.autoCollect){this.collectionClock=0;return;}this.collectionClock+=h;while(this.collectionClock+1e-8>=s.collectInterval){this.collectionClock-=s.collectInterval;this.collectLoose(s.collectBatch);}}
 }
