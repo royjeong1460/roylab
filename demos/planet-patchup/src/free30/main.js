@@ -11,7 +11,7 @@ import {testEdition} from './edition.js';
 import {contactStorage,pressContact} from '../mobile-tutorial2/controls.js';
 import {loadTouchMode,mountTouchSettings} from './touch-settings.js';
 let touchTap=Boolean(testEdition?.touchTap);
-import {FirstRunGuide as LegacyGuide,TutorialOverlay,gameTip as legacyGameTip} from './tutorial.js';
+import {FirstRunGuide as LegacyGuide,TutorialOverlay as LegacyTutorialOverlay,gameTip as legacyGameTip} from './tutorial.js';
 import {clampToolAim} from '../three-tool-run.js';
 import {MapViewport} from '../map-viewport.js';
 import {closeView,COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';
@@ -34,7 +34,7 @@ import impactSoundUrl from './audio/metal-tick-single.wav?url';
 
 const FreeJourney=campaign?.Journey||LegacyJourney,FreeRun=campaign?.Run||LegacyRun;
 const stageOpen=campaign?.stages.stageOpen||legacyStageOpen,stageBest=campaign?.stages.stageBest||legacyStageBest,FREE_STAGES=campaign?.stages.FREE_STAGES||LEGACY_STAGES;
-const BALANCE_VERSION=campaign?.BALANCE_VERSION||LEGACY_BALANCE_VERSION,upgradeGuide=campaign?.upgradeGuide||legacyUpgradeGuide,FREE_TUTORIAL=campaign?.tutorial||LEGACY_TUTORIAL,FirstRunGuide=campaign?.Guide||LegacyGuide,gameTip=campaign?.gameTip||legacyGameTip;
+const BALANCE_VERSION=campaign?.BALANCE_VERSION||LEGACY_BALANCE_VERSION,upgradeGuide=campaign?.upgradeGuide||legacyUpgradeGuide,FREE_TUTORIAL=campaign?.tutorial||LEGACY_TUTORIAL,FirstRunGuide=campaign?.Guide||LegacyGuide,TutorialOverlay=campaign?.TutorialOverlay||LegacyTutorialOverlay,gameTip=campaign?.gameTip||legacyGameTip;
 
 export function bindSceneTeardown(events,cleanup){
   let cleaned=false;
