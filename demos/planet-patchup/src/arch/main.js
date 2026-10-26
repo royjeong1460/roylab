@@ -9,6 +9,8 @@ import {ActiveOverlay} from '../ideas-lab/active/overlay.js';
 import {ArchGuide,ArchTutorialOverlay,archTouchHelp,archTip,receiptText,mountArchUI,renderArchProfile,renderEquipment} from './ui.js';
 import './style.css';
 import './planet/home.css';
+import './menus.css';
+import {mountArchMenus,renderArchStageList,renderArchWorkshop} from './menus.js';
 import {mountPlanetHome} from './planet/home.js';
 import {mountMinimalHUD,mountSkillHUD,renderSkillHUD,renderToolSwitch} from './hud.js';
 import {COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';
@@ -19,11 +21,12 @@ installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeG
  touchHelp:archTouchHelp,
  renderer:world=>({surface:createArchSurface(world.width,world.cells),createBackdrop:createArchBackdrop,collectibleStyle:COLLECTIBLE_STYLE}),
  overlay:(scene,view)=>new ActiveOverlay(scene,view),
- home(doc){planet=mountPlanetHome(doc);},
+ home(doc){planet=mountPlanetHome(doc);mountArchMenus(doc);},
+ renderStages:renderArchStageList,
  init(storage,{qa,previewId}){mountArchUI(document);mountMinimalHUD(document);mountSkillHUD(document);if(qa){const raw=storage,prefix='qa:';storage={get length(){return Array.from({length:raw.length},(_,i)=>raw.key(i)).filter(k=>k?.startsWith(prefix)).length;},key(i){return Array.from({length:raw.length},(_,n)=>raw.key(n)).filter(k=>k?.startsWith(prefix))[i]?.slice(prefix.length);},getItem:k=>raw.getItem(prefix+k),setItem:(k,v)=>raw.setItem(prefix+k,v),removeItem:k=>raw.removeItem(prefix+k)};}if(previewId){const m=new Map();storage={get length(){return m.size;},key:i=>[...m.keys()][i],getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};}let session;try{session=globalThis.sessionStorage;}catch{}journal=new ArchJournal({storage,sessionId:tabSession(session)});warn();},
  profile(journey){renderArchProfile(document,journey,journal);planet?.update(journey.profile);warn();},
- offers(journey,equip){renderEquipment(document,journey,equip);const p=journey.profile;document.getElementById('tutorial-workshop').hidden=!['upgrade','next'].includes(p.tutorial);document.getElementById('workshop-skip').hidden=!['upgrade','next'].includes(p.tutorial);document.getElementById('workshop-random').textContent='Choose a site →';document.getElementById('tutorial-workshop').textContent=p.tutorial==='upgrade'?'Use 300 parts to buy Blast Radius. Move the suction circle over loose pixels.':p.tutorial==='next'?'Blast Radius upgraded. Choose your next site.':'The first Blast Radius upgrade costs 300 parts. Practice to earn more.';},
- receipt(result){const text=receiptText(result);document.getElementById('result-copy').textContent=text.copy;document.getElementById('result-bonus').textContent=text.bonus;},
+ offers(journey,equip){renderEquipment(document,journey,equip);const p=journey.profile;document.getElementById('tutorial-workshop').hidden=!['upgrade','next'].includes(p.tutorial);document.getElementById('workshop-skip').hidden=!['upgrade','next'].includes(p.tutorial);document.getElementById('workshop-random').textContent='Choose a site →';document.getElementById('tutorial-workshop').textContent=p.tutorial==='upgrade'?'Use 300 parts to buy Blast Radius. Move the suction circle over loose pixels.':p.tutorial==='next'?'Blast Radius upgraded. Choose your next site.':'The first Blast Radius upgrade costs 300 parts. Practice to earn more.';renderArchWorkshop(document,journey);},
+ receipt(result){const text=receiptText(result);document.getElementById('result-title').textContent=`${result.recovered.toLocaleString()} pixels recovered`;document.getElementById('result-copy').textContent=text.copy;document.getElementById('result-bonus').textContent=text.bonus;},
  start(run,flags){journal.start(run,flags);warn();},
  frame(run,elapsedMs,updateMs){journal.frame(elapsedMs,updateMs);if(Date.now()-(journal.current?.checkpointAt||0)>=5000){journal.sample(run);warn();}},
  checkpoint(run,options){if(run)journal.checkpoint(run,options);warn();},

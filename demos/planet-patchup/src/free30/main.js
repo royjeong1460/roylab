@@ -118,7 +118,7 @@ function renderOffers(){
   $('workshop-boss').disabled=!stageOpen(journey.profile,6);
   const visible=next?[]:first?journey.offers().filter(o=>o.id===(campaign?.firstUpgrade||'bombRange')):journey.offers();
   $('offers').replaceChildren(...visible.map(offer=>{
-    const card=document.createElement('article');card.className='offer';
+    const card=document.createElement('article');card.className='offer';card.dataset.offerId=offer.id;
     if(first)card.classList.add('first-upgrade');
     const title=document.createElement('h3');title.textContent=`${offer.name} · ${offer.level}/${offer.max===null?'∞':offer.max}`;
     const description=document.createElement('p');description.textContent=offer.description;
@@ -131,7 +131,7 @@ function renderOffers(){
   }));
   campaign?.offers(journey,id=>guarded(async()=>{const result=await journey.equipSkill(id);if(!result.ok)notice(failureMessage(result.reason));renderOffers();}));
 }
-function maps(){closeDialogs();profile();renderStageList($('stage-list'),journey.profile,id=>guarded(()=>dispatch('stage',id)),campaign?.stages);$('home-zones-dialog').showModal();}
+function maps(){closeDialogs();profile();(campaign?.renderStages||renderStageList)($('stage-list'),journey.profile,id=>guarded(()=>dispatch('stage',id)),campaign?.stages);$('home-zones-dialog').showModal();}
 async function dispatch(mode,stageId){
   const result=await journey.start(mode,stageId);if(!result.ok){notice(failureMessage(result.reason));return;}
   closeDialogs();dispose();screen('expedition');notice('');profile();
