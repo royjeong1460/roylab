@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 export function analyzeReport(report){
  if(report.schemaVersion!==1||report.campaign!=='arch'||!Array.isArray(report.records))throw Error('Expected an Arch schemaVersion 1 report');
- const groups=new Map();for(const r of report.records){const key=[r.balanceVersion,r.mapVersion,`reset ${r.resetCount}`,r.mapId,r.qa?'QA':r.preview?'preview':r.training?'training':'campaign'].join(' | ');if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r);}
+ const groups=new Map();for(const r of report.records){const key=[r.balanceVersion,r.mapVersion,`reset ${r.resetCount}`,r.mapId,r.qa?'QA':r.preview?'preview':r.training?'training':'campaign',r.physicsVersion||'arch-rigid-joints-v0'].join(' | ');if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r);}
  const median=values=>{const a=values.slice().sort((a,b)=>a-b);return a.length?(a[Math.floor((a.length-1)/2)]+a[Math.ceil((a.length-1)/2)])/2:0;},mean=a=>a.length?a.reduce((n,v)=>n+v,0)/a.length:0;
  const rows=[`Arch journal: ${report.records.length} runs; ${report.truncated||0} dropped${report.truncationApproximate?' (approximate across tabs)':''}.`, 'Active play excludes pause/menu time; this does not validate a 30-minute campaign.'];
  for(const [key,runs] of groups){const finished=runs.filter(r=>r.status==='finished'),values=finished.map(r=>r.latest?.activeMs||0),recovered=finished.map(r=>(r.latest?.recovered||0)/(r.latest?.total||1)),activeMs=runs.reduce((n,r)=>n+(r.latest?.activeMs||0),0),energy=runs.reduce((n,r)=>n+(r.latest?.energyUsed||0),0);

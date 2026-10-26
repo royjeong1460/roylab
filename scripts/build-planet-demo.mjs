@@ -10,6 +10,7 @@ const dependencies=new URL('node_modules',demo);
 if(existsSync(dependencies)&&lstatSync(dependencies).isSymbolicLink())unlinkSync(dependencies);
 execFileSync('npm',['ci'],{cwd:demo,stdio:'inherit'});
 execFileSync('npm',['test'],{cwd:demo,stdio:'inherit'});
+if(free)execFileSync('npm',['run','test:arch'],{cwd:demo,stdio:'inherit'});
 if(tutorial2||free||paid||ideas||support||motion||bearing||ramp||tilt||structure)execFileSync('npm',['run','test:free'],{cwd:demo,stdio:'inherit'});
 if(paid||ideas||support||motion||bearing||ramp||tilt||structure)execFileSync('npm',['run','test:paid'],{cwd:demo,stdio:'inherit'});
 if(ideas||support||motion||bearing||ramp||tilt||structure)execFileSync('npm',['run','test:ideas'],{cwd:demo,stdio:'inherit'});
@@ -21,10 +22,13 @@ if(ramp)execFileSync('npm',['run','test:ramp'],{cwd:demo,stdio:'inherit'});
 if(tutorial2)execFileSync('npm',['run','test:tutorial2'],{cwd:demo,stdio:'inherit'});
 if(structure)execFileSync('npm',['run','test:structure'],{cwd:demo,stdio:'inherit'});
 execFileSync('npm',['run',tutorial2?'build:tutorial2':structure?'build:structure':tilt?'build:tilt':ramp?'build:ramp':bearing?'build:bearing':motion?'build:motion':support?'build:support':ideas?'build:ideas':paid?'build:paid':free?'build:free':blast?'build:blast':'build'],{cwd:demo,stdio:'inherit'});
-rmSync(out,{recursive:true,force:true});mkdirSync(out,{recursive:true});cpSync(new URL(tutorial2?'dist-tutorial2/':structure?'dist-structure/':tilt?'dist-tilt/':ramp?'dist-ramp/':bearing?'dist-bearing/':motion?'dist-motion/':support?'dist-support/':ideas?'dist-ideas/':paid?'dist-paid/':free?'dist-free/':blast?'dist-blast/':'dist-demo/',demo),out,{recursive:true});
+// Existing free tabs may still request their old hashed chunks.
+if(!free)rmSync(out,{recursive:true,force:true});mkdirSync(out,{recursive:true});cpSync(new URL(tutorial2?'dist-tutorial2/':structure?'dist-structure/':tilt?'dist-tilt/':ramp?'dist-ramp/':bearing?'dist-bearing/':motion?'dist-motion/':support?'dist-support/':ideas?'dist-ideas/':paid?'dist-paid/':free?'dist-free/':blast?'dist-blast/':'dist-demo/',demo),out,{recursive:true});
 
 mkdirSync(new URL("licenses/",out),{recursive:true});
 cpSync(new URL("node_modules/phaser/LICENSE.md",demo),new URL("licenses/Phaser-MIT.txt",out));
 cpSync(new URL("node_modules/phaser/src/physics/matter-js/lib/license.js",demo),new URL("licenses/Matter-MIT.txt",out));
+
+if(free)cpSync(new URL("src/arch/planet/OFL.md",demo),new URL("licenses/Galmuri-OFL.md",out));
 
 syncPlanetRoutes();
