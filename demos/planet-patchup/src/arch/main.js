@@ -8,6 +8,7 @@ import {ArchJournal,tabSession} from './telemetry.js';
 import {ActiveOverlay} from '../ideas-lab/active/overlay.js';
 import {ArchGuide,ArchTutorialOverlay,archTouchHelp,archTip,receiptText,mountArchUI,renderArchProfile,renderEquipment} from './ui.js';
 import './style.css';
+import './planet/home.css';
 import {mountPlanetHome} from './planet/home.js';
 import {mountMinimalHUD,mountSkillHUD,renderSkillHUD,renderToolSwitch} from './hud.js';
 import {COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';

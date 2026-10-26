@@ -1,0 +1,34 @@
+/* Approved planet-home V10. Start-screen-only styling; gameplay stays full width. */
+html.arch-design body:has(#base:not([hidden])){width:390px;max-width:100%;margin:0 auto;padding:0;background:#101621}
+html.arch-design:has(#base:not([hidden])){background:#101621}
+html.arch-design .planet-home{position:relative;box-sizing:border-box;height:min(844px,100svh);min-height:600px;padding:28px 24px 22px;background:#091322;color:#dfd3b8;border:0;border-radius:0;box-shadow:none}
+html.arch-design .planet-heading{height:90px}
+html.arch-design .planet-brand{font-size:24px;line-height:1.25;letter-spacing:1px;color:#b6b9ab;text-shadow:2px 2px #172936}
+html.arch-design .planet-brand span{font-size:32px;letter-spacing:0;color:#f0d99e}
+html.arch-design .home-options{color:#c3c4b2}
+.planet-home .home-options svg{width:20px;height:20px;shape-rendering:crispEdges}
+.planet-home .planet-stage{isolation:isolate;flex:1;min-height:0;background-image:radial-gradient(#889dad 1px,transparent 1px),radial-gradient(#a1ab9e 1px,transparent 1px);background-size:113px 139px,179px 167px;background-position:25px 61px,80px 27px}
+.planet-home .planet-bubble{top:0;background:#091322;border:0;box-shadow:none;padding:8px 18px;gap:10px;text-shadow:0 2px 3px #091322;white-space:nowrap}
+.planet-home .planet-bubble small{color:#8a969e}.planet-home .planet-bubble span{font-size:16px;color:#eee3c9}
+.planet-portrait{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(390px,100%,calc(100svh - 285px));aspect-ratio:1;pointer-events:none}
+.planet-home #globe{display:block;position:static;width:100%;height:auto;max-width:100%;aspect-ratio:1;transform:none;image-rendering:pixelated;touch-action:pan-y;cursor:default}
+#region-pin{position:absolute;display:grid;place-items:center;width:20px;height:20px;transform:translate(-50%,-50%);filter:drop-shadow(2px 2px #132332)}
+#region-pin:before{content:'';position:absolute;inset:0;background:#f6dda0;clip-path:polygon(27% 0,73% 0,73% 9%,91% 9%,91% 27%,100% 27%,100% 73%,91% 73%,91% 91%,73% 91%,73% 100%,27% 100%,27% 91%,9% 91%,9% 73%,0 73%,0 27%,9% 27%,9% 9%,27% 9%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;padding:2px}
+#region-pin i{width:4px;height:4px;background:#f6dda0}
+#region-pin[data-hidden=true] i{display:none}#region-pin[data-hidden=true]:after{content:'?';font:16px ArchPixel,monospace;color:#e6d7b4;line-height:1}#region-pin[data-hidden=true]:before{opacity:.45}
+.planet-home .orbit-nav{height:48px;background:linear-gradient(transparent,#091322 65%)}
+.planet-home .orbit-nav>button{width:48px;height:48px;color:#d6c49e}.planet-home .orbit-nav svg{width:12px;height:18px;shape-rendering:crispEdges}
+.planet-home #dots button{border-radius:0}.planet-home #dots button:before{background:#53616a}.planet-home #dots button[aria-current=true]:before{background:#e8c88b;box-shadow:0 0 0 3px #756548}.planet-home #dots button[data-locked=true]:before{outline-color:#63717a}.planet-home #dots button[data-cleared=true]:before{background:#9aba8b;outline-color:#9aba8b}
+html.arch-design .planet-home .planet-action{margin-top:16px}
+html.arch-design .planet-home .home-start{position:relative;height:56px;border:0;border-radius:0;background:#cbb17a;color:#182829;box-shadow:inset 0 3px #f2d99f,inset 0 -5px #7e6846;clip-path:polygon(4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px),0 4px,4px 4px)}
+html.arch-design .planet-home .home-start:hover:not(:disabled){background:#d8bf8b}.planet-home .home-start span{position:absolute;right:18px}
+html.arch-design .planet-home .home-start:disabled{background:#25313b;color:#88959a;box-shadow:inset 0 2px #42525b,inset 0 -4px #15212c;font-size:16px}
+html.arch-design .planet-home .home-start:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 2px #7e6846}
+html.arch-design .planet-home .planet-footer{margin-top:14px;gap:19px}
+html.arch-design .planet-home .planet-footer button{font-size:12px;color:#dfd3b8;padding:0;min-height:44px;border-radius:0}.planet-home .footer-dot{color:#566169}
+.planet-home button:focus-visible{outline:3px solid #f0d99e;outline-offset:3px}
+.planet-home .load-error{position:absolute;top:50%;padding:16px;font-size:12px;text-align:center;color:#dfd3b8}
+html.arch-design #planet-full-dialog{width:min(390px,calc(100% - 24px));font-size:14px;line-height:1.8}
+@media(min-width:431px){html.arch-design body:has(#base:not([hidden])){margin-top:24px}}
+@media(max-width:430px){html.arch-design .planet-home{height:100svh;padding-top:max(20px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}}
+@media(max-height:720px) and (max-width:430px){html.arch-design .planet-heading{height:78px}html.arch-design .planet-brand{font-size:19px}html.arch-design .planet-brand span{font-size:26px}html.arch-design .planet-home .planet-footer{margin-top:8px}html.arch-design .planet-home .planet-action{margin-top:8px}html.arch-design .planet-home .home-start{height:48px}}
