@@ -22,13 +22,22 @@ test('deterministic grid packing, complete roles, bounded dimensions and grounde
   for(let i=0;i<m.cells.length;i++)if(m.cells[i]){assert(art.color(i,m.cells[i]));assert.match(art.css(i,m.cells[i]),/^#[\da-f]{6}$/);}
  }
 });
-test('all Arch maps remain pristine at spawn and conserve material after a support blast',()=>{
+test('exposed column attack sequences release heavy dynamic facades while pristine maps stay stable',()=>{
  const profile=new FreeJourney({getItem:()=>null,setItem:()=>{}}).profile;
  for(const s of all){const w=new StructuralFreeWorld(s,profile);w.unlimited=true;
   for(let i=0;i<90;i++)w.step(1/60);
   assert.equal(w.snapCount,0,s.id);assert.equal(w.targetReleased,0,s.id);
-  assert(w.activate(s.preview[0].x,s.preview[0].y));
-  for(let i=0;i<240;i++){w.step(1/60);w.events=[];}
-  assert(w.targetReleased>0,s.id);assert(w.diagnostics().balanced&&w.diagnostics().finite,s.id);
+  let largestDynamic=0;
+  for(const point of s.preview){
+   assert(w.activate(point.x,point.y),s.id+' support attack');
+   for(let i=0;i<120;i++){
+    w.step(1/60);w.events=[];
+    largestDynamic=Math.max(largestDynamic,0,...w.bodies.map(body=>body.pixels.length));
+    assert(w.diagnostics().balanced&&w.diagnostics().finite,s.id);
+   }
+  }
+  assert(largestDynamic>200,s.id+' heavy facade must become a moving body');
+  assert(w.targetReleased>pixelCount(s.data)*.4,s.id+' release must exceed the direct blast cores');
+  if([ARCH_SITES[2],ARCH_SITES[4],ARCH_SITES[5],ARCH_BOSS].includes(s))assert(w.snapCount>0,s.id+' loaded structures fracture');
  }
 });
