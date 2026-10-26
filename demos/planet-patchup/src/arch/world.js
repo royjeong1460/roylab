@@ -30,7 +30,14 @@ export class ArchWorld extends ActiveIdeaWorld{
    if(chosen)this.ideaMarks.push({kind:'relay',ids:new Set(chosen.pixels.map(p=>p.id)),remaining:12,armedAt:this.ideaClock+.18});
   }
  }
- blast(bomb){const effective=!bomb.secondary&&!bomb.ideaSecondary&&this.effectiveAt(bomb.x,bomb.y,this.tune('blastReach',18));super.blast({...bomb,ideaSecondary:true});if(effective)this.passiveAttack(bomb);}
+ breakContact(...args){const count=super.breakContact(...args);if(this.blastOutcome&&count>0)this.blastOutcome.direct=true;return count;}
+ impulse(piece,point,vector){super.impulse(piece,point,vector);if(this.blastOutcome&&Math.hypot(vector.x,vector.y)>0)this.blastOutcome.impulse=true;}
+ blast(bomb){
+  const primary=!bomb.secondary&&!bomb.ideaSecondary,previous=this.blastOutcome,outcome=primary?{direct:false,impulse:false}:null;
+  this.blastOutcome=outcome;
+  try{super.blast({...bomb,ideaSecondary:true});}finally{this.blastOutcome=previous;}
+  if(primary&&(outcome.direct||outcome.impulse))this.passiveAttack(bomb);
+ }
  activateDevice(id,level=1){
   if(id!=='orbital'||!Number.isInteger(level)||level<1||level>5||!super.activateDevice('orbital',1))return false;
   const a=this.activeDevice,xs=this.structureMaterial().map(v=>v.q.x).sort((a,b)=>a-b),count=5+(level>=3?1:0)+(level>=5?1:0);
