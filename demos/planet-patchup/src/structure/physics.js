@@ -119,8 +119,10 @@ export const withStructure=Base=>class extends Base {
   const pixels=[];for(let id=0;id<this.cells.length;id++)if(this.cells[id])pixels.push({id});
   for(const group of this.groups(pixels)){
    const ids=group.map(p=>p.id);if(!ids.some(id=>Math.floor(id/this.width)===this.floorY-1))continue;
-   const section=this.sections(ids)[0];if(!section)continue;
-   this.lastLoad=section;if(section.utilization<=1)continue;
+   const sections=this.sections(ids);
+   // Losing balance starts tipping even before the remaining post overloads.
+   const section=sections.find(s=>s.utilization>1||(this.balanceSupports&&Math.abs(s.center-s.pivot)>this.tune('supportMargin',.1)));
+   this.lastLoad=section||sections[0]||this.lastLoad;if(!section)continue;
    const piece=this.releaseBody(section.above);if(!piece)continue;
    const anchor=section.bearings.reduce((a,b)=>Math.abs(a.x-section.pivot)<Math.abs(b.x-section.pivot)?a:b);
    this.attachHinge(piece,{x:section.pivot,y:section.y+1},anchor.id,anchor.id+this.width);

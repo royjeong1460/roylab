@@ -4,6 +4,7 @@ const legacy=()=>({owned:['bomb'],upgrades:{capacity:0,suction:0,range:0,bombRan
 export class ArchWorld extends ActiveIdeaWorld{
  constructor(site,profile){
   super(site,legacy(),{blast:'normal',well:'grind',level:1});
+  this.balanceSupports=true;
   this.archStats=freeStats(profile);this.gameStats=this.archStats;this.unlimited=false;
   this.suctionRate=this.archStats.suctionRate;this.suctionRadius=this.archStats.suctionRadius;
   this.capacity=this.archStats.capacity;this.charge=this.capacity;this.allowedTools=[...profile.owned];this.usedTools=new Set();
