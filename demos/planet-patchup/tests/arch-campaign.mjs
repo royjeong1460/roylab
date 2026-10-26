@@ -47,3 +47,8 @@ test('corruption fallback stays Arch and storage write failure cannot spend',asy
  const {j,m}=fixture();fund(j);const before=structuredClone(j.profile);j.storage.setItem=()=>{throw Error('quota');};assert.equal((await j.buy('battery')).reason,'storage');assert.deepEqual(j.profile,before);
  m.set(ARCH_SAVE_KEYS[0],'{bad');const bad=new ArchJourney(j.storage,{request:async(_,f)=>f()});assert.equal(bad.persistent,false);assert.equal(bad.profile.campaign,'arch');assert.deepEqual(bad.profile.owned,['bomb']);assert.equal(bad.stats().capacity,60);assert.equal(m.get(ARCH_SAVE_KEYS[0]),'{bad');
 });
+test('withdrawal sweep captures first70 time and seals all queued physical effects',async()=>{
+ const {j}=fixture();await j.skipTutorial();const r=(await j.start('stage',FREE_STAGES[0].id)).run;
+ r.world.breakContact(r.world.width/2,r.world.floorY/2,()=>true,Infinity);assert.equal(r.first70Ms,null);assert.equal(r.world.collected,0);r.world.bombs.push({x:1,y:1,delay:10,radius:3,power:1});
+ assert((await j.finish()).ok);assert.equal(r.first70Ms,0);assert.equal(r.world.settled,true);assert.equal(r.world.bombs.length,0);assert.equal(r.world.ideaPending.length,0);const before=r.world.diagnostics().total;r.world.step(.1);assert.equal(r.world.diagnostics().total,before);assert.equal(r.world.simulatedMs,0);assert(!r.activateSkill('orbital'));
+});

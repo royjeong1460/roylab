@@ -15,6 +15,7 @@ export class ArchRun extends FranceRun{
   Object.freeze(this.profile.skills);Object.freeze(this.profile.equipped);
  }
  exhaust(){if(this.world.charge<=1e-8){this.phase='finishing';this.world.toolEnabled=false;}}
+ seal(){this.release();this.state='finished';this.world.toolEnabled=false;this.world.settled=true;this.world.activeDevice=null;for(const key of ['bombs','wells','ideaPending','ideaFields','ideaMarks'])this.world[key]=[];}
  selectTool(id){if(this.paused||this.finishReady||this.state!=='active'||this.phase!=='working')return false;this.release();return this.world.setTool(id);}
  debrisDrained(){return !this.world.activeDevice&&!this.world.ideaPending.length&&!this.world.ideaFields.length&&!this.world.ideaMarks.length&&super.debrisDrained();}
  activateSkill(id){if(this.paused||this.settling||this.state!=='active'||this.phase!=='working'||this.finishReady||this.world.charge<=1e-8||this.profile.equipped.active!==id||this.skillUses[id])return false;const ok=this.world.activateDevice(id,this.profile.skills[id]);if(ok)this.skillUses[id]++;return ok;}
@@ -42,12 +43,12 @@ export class ArchJourney extends FranceJourney{
  async checkpointStage(){const run=this.currentRun;return this.transact(p=>{if(!run||run!==this.currentRun||run.settling)return {ok:false,reason:'no-run'};if(run.profile.resetCount!==p.resetCount)return {ok:false,reason:'reset'};if(!run.qualified)return {ok:false,reason:'not-qualified'};const next=clone(p);rememberStage(next.stageRecords,run.site.id,run.world.collected,run.world.initial);this.grantSkills(next);this.save(next);return {ok:true};});}
  async finish(){const run=this.currentRun;if(run){run.settling=true;run.pause(true);}return this.transact(p=>{
   if(!run||run!==this.currentRun)return {ok:false,reason:'no-run'};
-  if(run.profile.resetCount!==p.resetCount){run.state='finished';run.world.toolEnabled=false;this.currentRun=null;return {ok:false,reason:'reset'};}
+  if(run.profile.resetCount!==p.resetCount){run.seal();this.currentRun=null;return {ok:false,reason:'reset'};}
   run.world.secureLoose();if(run.first70Ms===null&&run.qualified)run.first70Ms=run.workMs;const recovered=run.world.collected,workMs=Math.round(run.workMs);if(!uint(recovered)||recovered>run.world.initial)return {ok:false,reason:'invalid-recovery'};
   const qualified=run.qualified,boss=run.mode==='boss',firstClear=boss&&qualified&&!p.bossCleared,reward=boss?(qualified?(firstClear?4000:1000):0):recovered,next=clone(p);
   rememberStage(next.stageRecords,run.site.id,recovered,run.world.initial);next.parts+=reward;next.earned+=reward;next.workMs+=workMs;next.runCount++;next.bossAttempts+=boss?1:0;next.lastSite=run.site.id;if(firstClear){next.bossCleared=true;next.firstClearMs=next.workMs;}this.grantSkills(next);
   if(run.site.id===ARCH_TUTORIAL.id&&p.tutorial==='intro'&&next.parts>=300)next.tutorial='upgrade';
-  next.history.push({site:run.site.id,mode:run.mode,workMs,recovered,total:run.world.initial,reward,batteryUsed:run.world.energyUsed,tools:[...run.world.usedTools]});next.history=next.history.slice(-100);this.save(next);run.state='finished';run.world.toolEnabled=false;this.currentRun=null;this.lastRunSite=run.site.id;
+  next.history.push({site:run.site.id,mode:run.mode,workMs,recovered,total:run.world.initial,reward,batteryUsed:run.world.energyUsed,tools:[...run.world.usedTools]});next.history=next.history.slice(-100);this.save(next);run.seal();this.currentRun=null;this.lastRunSite=run.site.id;
   return {ok:true,recovered,reward,bonus:boss?reward:0,qualified,firstClear,bossCleared:next.bossCleared,mode:run.mode,siteName:run.site.name,nextStage:!stageOpen(p,6)&&stageOpen(next,6)?FREE_STAGES[6].name:null,allClear:recovered===run.world.initial,ratio:run.ratio,workMs};
  });}
 }
