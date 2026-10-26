@@ -173,3 +173,7 @@ Next planning steps: (1) agree the proposed two-active-slot / once-per-equipped-
 Confirmed by user: upgrade both batch quantity and collection speed. Strong upgrades can cost more. Evaluate effective throughput as batch quantity / interval; do not price both axes as though their combined improvement were merely additive. Author a fixed, visible price table after measuring combinations, rather than raising a player's price secretly based on their build.
 
 The guaranteed end-of-run pickup rule still applies. Consequently, faster collection chiefly improves pickup feedback and reduces waiting; it cannot justify large mandatory progression costs by withholding otherwise guaranteed pixels. Distinguish this convenience value from destructive power. Higher prices pace access but cannot by themselves prevent a late-game combo from trivializing maps; measure combos before finalizing late costs. No code changed.
+
+## Numerical planning follow-up
+
+The [integrated v0.2 budget](../../campaign-balance-v0.2.md) supplies proposed map-by-map counts, fixed upgrade prices, boss rewards and an explicit replay-income scenario. It supersedes the unspecified numerical placeholders above only as a planning candidate, not as approved or measured game balance.

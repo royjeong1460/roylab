@@ -1,0 +1,549 @@
+{
+  "version": "campaign-plan-v0.2",
+  "date": "2026-10-26",
+  "status": "proposed planning arithmetic, not gameplay or device validation",
+  "rules": {
+    "regions": 6,
+    "ordinaryPerRegion": 6,
+    "clearFraction": 0.7,
+    "normalPixelValue": 1,
+    "bossFailureReward": 0,
+    "bossDebrisReward": 0,
+    "bossRepeatMultiplier": 0.25,
+    "fullClearCurrencyBonus": 0,
+    "guaranteedLoosePixelSettlement": true,
+    "collectionFinishSeconds": 10,
+    "detachedChunksCollectible": false,
+    "passiveSlots": 2,
+    "activeSlotsProposal": 2,
+    "usesPerActivePerSortieProposal": 1,
+    "blackHoleLearnCost": 2000,
+    "batteryStart": 60,
+    "blastEnergy": 12,
+    "blackHoleEnergy": 24,
+    "remainingEnergyAllowsLastFullAttack": true
+  },
+  "regions": [
+    {
+      "id": "arch",
+      "name": "아치 지구",
+      "maps": [
+        2000,
+        2400,
+        2800,
+        3200,
+        3600,
+        4000
+      ],
+      "boss": 6000,
+      "reward": 4000,
+      "minutes": 30,
+      "fractions": [
+        0.35,
+        0.75
+      ],
+      "normalSeconds": 90,
+      "bossAttempts": 2,
+      "bossSeconds": 120,
+      "campMinutes": 8,
+      "core": [
+        8,
+        8,
+        4,
+        4,
+        3,
+        2,
+        2,
+        2,
+        2,
+        4,
+        4
+      ],
+      "skills": [
+        2,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "eave",
+      "name": "처마 골목",
+      "maps": [
+        4000,
+        4600,
+        5200,
+        5800,
+        6400,
+        7000
+      ],
+      "boss": 10000,
+      "reward": 8000,
+      "minutes": 45,
+      "fractions": [
+        0.25,
+        0.45,
+        0.8
+      ],
+      "normalSeconds": 100,
+      "bossAttempts": 2,
+      "bossSeconds": 150,
+      "campMinutes": 10,
+      "core": [
+        12,
+        14,
+        8,
+        8,
+        8,
+        6,
+        4,
+        7,
+        7,
+        7,
+        6
+      ],
+      "skills": [
+        3,
+        2,
+        1,
+        0,
+        0,
+        2,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "amber",
+      "name": "호박빛 시장",
+      "maps": [
+        7000,
+        7800,
+        8600,
+        9400,
+        10200,
+        11000
+      ],
+      "boss": 16000,
+      "reward": 12000,
+      "minutes": 50,
+      "fractions": [
+        0.3,
+        0.5,
+        0.8
+      ],
+      "normalSeconds": 115,
+      "bossAttempts": 2,
+      "bossSeconds": 165,
+      "campMinutes": 10,
+      "core": [
+        16,
+        18,
+        12,
+        10,
+        12,
+        8,
+        8,
+        11,
+        11,
+        9,
+        8
+      ],
+      "skills": [
+        4,
+        3,
+        2,
+        1,
+        0,
+        3,
+        2,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "canal",
+      "name": "수로 공업지",
+      "maps": [
+        11000,
+        12000,
+        13000,
+        14000,
+        15000,
+        16000
+      ],
+      "boss": 23000,
+      "reward": 18000,
+      "minutes": 55,
+      "fractions": [
+        0.3,
+        0.55,
+        0.85
+      ],
+      "normalSeconds": 130,
+      "bossAttempts": 2,
+      "bossSeconds": 180,
+      "campMinutes": 10,
+      "core": [
+        18,
+        22,
+        14,
+        12,
+        15,
+        10,
+        9,
+        13,
+        13,
+        10,
+        9
+      ],
+      "skills": [
+        5,
+        4,
+        3,
+        2,
+        1,
+        4,
+        3,
+        2,
+        1,
+        0
+      ]
+    },
+    {
+      "id": "terrace",
+      "name": "계단 고원",
+      "maps": [
+        16000,
+        17400,
+        18800,
+        20200,
+        21600,
+        23000
+      ],
+      "boss": 32000,
+      "reward": 28000,
+      "minutes": 60,
+      "fractions": [
+        0.35,
+        0.6,
+        0.85
+      ],
+      "normalSeconds": 145,
+      "bossAttempts": 2,
+      "bossSeconds": 195,
+      "campMinutes": 10,
+      "core": [
+        21,
+        24,
+        16,
+        15,
+        18,
+        13,
+        10,
+        17,
+        17,
+        12,
+        11
+      ],
+      "skills": [
+        5,
+        5,
+        3,
+        3,
+        2,
+        5,
+        4,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": "mosaic",
+      "name": "모자이크 분지",
+      "maps": [
+        23000,
+        24800,
+        26600,
+        28400,
+        30200,
+        32000
+      ],
+      "boss": 45000,
+      "reward": 40000,
+      "minutes": 60,
+      "fractions": [
+        0.4,
+        0.6,
+        0.9
+      ],
+      "normalSeconds": 145,
+      "bossAttempts": 2,
+      "bossSeconds": 195,
+      "campMinutes": 10,
+      "core": [
+        24,
+        27,
+        18,
+        17,
+        21,
+        15,
+        12,
+        20,
+        20,
+        14,
+        12
+      ],
+      "skills": [
+        5,
+        5,
+        4,
+        4,
+        3,
+        5,
+        5,
+        4,
+        4,
+        1
+      ]
+    }
+  ],
+  "tracks": [
+    {
+      "id": "battery",
+      "name": "배터리 용량",
+      "base": 150,
+      "growth": 1.2,
+      "cap": 24,
+      "start": 60,
+      "step": 5,
+      "unit": "energy"
+    },
+    {
+      "id": "blastForce",
+      "name": "폭파 힘",
+      "base": 180,
+      "growth": 1.23,
+      "cap": 30,
+      "start": 1,
+      "step": 0.05,
+      "unit": "base multiplier"
+    },
+    {
+      "id": "blastRadius",
+      "name": "폭파 직접 반경",
+      "base": 300,
+      "growth": 1.25,
+      "cap": 20,
+      "start": 3,
+      "step": 0.1,
+      "unit": "cells"
+    },
+    {
+      "id": "blastReach",
+      "name": "폭파 힘 전달 범위",
+      "base": 150,
+      "growth": 1.22,
+      "cap": 20,
+      "start": 18,
+      "step": 0.5,
+      "unit": "cells"
+    },
+    {
+      "id": "wellPull",
+      "name": "블랙홀 인력",
+      "base": 180,
+      "growth": 1.23,
+      "cap": 30,
+      "start": 1,
+      "step": 0.05,
+      "unit": "base multiplier"
+    },
+    {
+      "id": "wellReach",
+      "name": "블랙홀 범위",
+      "base": 180,
+      "growth": 1.22,
+      "cap": 20,
+      "start": 30,
+      "step": 0.5,
+      "unit": "cells"
+    },
+    {
+      "id": "wellDuration",
+      "name": "블랙홀 지속",
+      "base": 200,
+      "growth": 1.22,
+      "cap": 20,
+      "start": 2,
+      "step": 0.1,
+      "unit": "seconds"
+    },
+    {
+      "id": "mix",
+      "name": "중심 휘젓기",
+      "base": 180,
+      "growth": 1.2,
+      "cap": 36,
+      "start": 1,
+      "step": 0.25,
+      "unit": "multiplier"
+    },
+    {
+      "id": "wear",
+      "name": "마모 상한",
+      "base": 180,
+      "growth": 1.2,
+      "cap": 36,
+      "start": 1,
+      "step": 0.25,
+      "unit": "multiplier"
+    },
+    {
+      "id": "collectBatch",
+      "name": "자동수집 수량",
+      "base": 80,
+      "growth": 1.15,
+      "cap": 20,
+      "start": 20,
+      "step": 2,
+      "unit": "pixels/batch"
+    },
+    {
+      "id": "collectInterval",
+      "name": "자동수집 간격",
+      "base": 100,
+      "growth": 1.18,
+      "cap": 15,
+      "start": 0.25,
+      "step": -0.01,
+      "unit": "seconds/batch"
+    }
+  ],
+  "skillUpgradePrices": {
+    "passive": [
+      600,
+      1800,
+      6000,
+      18000
+    ],
+    "active": [
+      1200,
+      4000,
+      12000,
+      36000
+    ]
+  },
+  "skills": [
+    {
+      "id": "aftershock",
+      "name": "Aftershock",
+      "kind": "passive",
+      "learn": 0,
+      "cap": 5,
+      "event": "region 1 / 2 distinct normal clears (grant)",
+      "trigger": 4,
+      "finalTrigger": 3
+    },
+    {
+      "id": "relay",
+      "name": "Impact Relay",
+      "kind": "passive",
+      "learn": 1000,
+      "cap": 5,
+      "event": "region 1 / 5 distinct normal clears",
+      "trigger": 5,
+      "finalTrigger": 4
+    },
+    {
+      "id": "slam",
+      "name": "Lift & Slam",
+      "kind": "passive",
+      "learn": 3500,
+      "cap": 5,
+      "event": "region 2 / 3 distinct normal clears",
+      "trigger": 6,
+      "finalTrigger": 5
+    },
+    {
+      "id": "bloom",
+      "name": "Pressure Bloom",
+      "kind": "passive",
+      "learn": 6000,
+      "cap": 5,
+      "event": "region 3 entry",
+      "trigger": 5,
+      "finalTrigger": 4
+    },
+    {
+      "id": "ground",
+      "name": "Ground Pulse",
+      "kind": "passive",
+      "learn": 10000,
+      "cap": 5,
+      "event": "region 4 entry",
+      "trigger": 6,
+      "finalTrigger": 5
+    },
+    {
+      "id": "orbital",
+      "name": "Orbital Drop",
+      "kind": "active",
+      "learn": 2000,
+      "cap": 5,
+      "event": "region 1 / 4 distinct normal clears"
+    },
+    {
+      "id": "seismic",
+      "name": "Seismic Driver",
+      "kind": "active",
+      "learn": 4000,
+      "cap": 5,
+      "event": "region 2 entry"
+    },
+    {
+      "id": "gravity",
+      "name": "Gravity Press",
+      "kind": "active",
+      "learn": 8000,
+      "cap": 5,
+      "event": "region 3 entry"
+    },
+    {
+      "id": "sonic",
+      "name": "Sonic Sweep",
+      "kind": "active",
+      "learn": 12000,
+      "cap": 5,
+      "event": "region 4 entry"
+    },
+    {
+      "id": "recharge",
+      "name": "Battery Recharge",
+      "kind": "active",
+      "learn": 12000,
+      "cap": 1,
+      "event": "region 5 entry",
+      "restoreMaxCapacityFraction": 0.25
+    }
+  ],
+  "assumptions": [
+    "Each region budget repeats every normal map using fractions in order, resets geometry each time, and includes one successful boss and the remaining failed boss attempts.",
+    "Fractions and durations are authored targets, not outputs of physics, player skill or upgrades.",
+    "Normal and boss durations include the maximum ten-second settlement allowance; not added again.",
+    "Core/skill checkpoint costs describe one affordable mixed collection of owned upgrades, not an optimized purchase route or equipped loadout.",
+    "Learning opportunities can occur before these end-of-region checkpoints. Exact in-region affordability and force adequacy are not validated.",
+    "No currency multipliers, tutorial-only bonus, 100% cash bonus, extra boss wins or elective farming in base forecast. Replaying indefinitely has no finite income ceiling.",
+    "Existing live game and accepted physics values are unchanged."
+  ]
+}
