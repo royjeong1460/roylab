@@ -12,11 +12,22 @@ test('returned settlement failure keeps a visible retry control and frozen run',
 test('finish during an awaited operation retries automatic settlement next frame',async()=>{
  const start=main.indexOf('if(r.finishReady&&!this.settled'),end=main.indexOf('\n  }',start);
  const condition=main.slice(start,end);
- const scene={settled:false,settling:false};let calls=0;
- const context={r:{finishReady:true},operating:true,guarded:async fn=>{if(!context.operating)await fn();},settle:async()=>{calls++;}};
+ const scene={settled:false,settling:false,hud(){}};let calls=0;
+ const context={r:{finishReady:true},now:0,campaign:undefined,operating:true,guarded:async fn=>{if(!context.operating)await fn();},settle:async()=>{calls++;}};
  vm.createContext(context);vm.runInContext(`function tick(){${condition}}`,context);
  context.tick.call(scene);assert.equal(scene.settling,false);
  context.operating=false;context.tick.call(scene);await Promise.resolve();assert.equal(calls,1);assert.equal(scene.settling,true);
+});
+
+test('completion notice remains for one second before settlement and cannot settle twice',async()=>{
+ const start=main.indexOf('if(r.finishReady&&!this.settled'),end=main.indexOf('\n  }',start),condition=main.slice(start,end);
+ let shown=0,calls=0;const scene={settled:false,settling:false,hud(){shown++;}};
+ const context={r:{finishReady:true},now:100,campaign:{finishNoticeMs:()=>1000},operating:false,guarded:async fn=>fn(),settle:async()=>{calls++;}};
+ vm.createContext(context);vm.runInContext(`function tick(){${condition}}`,context);
+ context.tick.call(scene);assert.equal(shown,1);assert.equal(calls,0);
+ context.now=1099;context.tick.call(scene);assert.equal(shown,1);assert.equal(calls,0);
+ context.now=1100;context.tick.call(scene);await Promise.resolve();assert.equal(calls,1);
+ context.now=2100;context.tick.call(scene);assert.equal(calls,1);
 });
 
 test('successful boss receipt explicitly offers continued uncapped upgrades',async()=>{

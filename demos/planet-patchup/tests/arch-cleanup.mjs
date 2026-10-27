@@ -45,4 +45,10 @@ test('cleanup HUD enters once, emphasizes final seconds, pauses, and clears betw
  r.finishRemaining=2.8;renderCleanupHUD(doc,r);assert.equal(seconds.textContent,'3');assert.equal(hud.dataset.urgent,'true');
  r.finishReady=true;renderCleanupHUD(doc,r);assert(hud.hidden);
  r.finishReady=false;r.finishRemaining=10;renderCleanupHUD(doc,r);assert.equal(hud.dataset.urgent,'false');assert.match(status.textContent,/Battery empty/);
+ for(const reason of ['drained','collected']){
+  r.finishReady=true;r.finishReason=reason;renderCleanupHUD(doc,r);
+  assert(!hud.hidden);assert.equal(hud.dataset.complete,'true');assert.match(status.textContent,/All pixels collected/);
+ }
+ r.finishReason='timeout';renderCleanupHUD(doc,r);assert(hud.hidden);
+ r.finishReady=false;r.finishRemaining=10;renderCleanupHUD(doc,r);assert.equal(hud.dataset.complete,'false');
 });

@@ -212,7 +212,11 @@ class FreeScene extends Phaser.Scene{
       guarded(async()=>{const result=await journey.checkpointStage();if(result.ok)r.milestoneSaved=true;else if(result.reason==='reset'){campaign?.abandon(r,'progress-reset');home();notice('다른 탭에서 진행을 초기화했어요.');}else notice('해금 기록을 저장하지 못했어요. 다시 시도 중이에요.');});
     }
     if(r.finishReady&&previewId&&!this.settled){this.settled=true;release();$('feedback').textContent=artMap?`테스트 종료 · ${(r.ratio*100).toFixed(1)}% 회수 · 다시 테스트하거나 화력을 바꿔 보세요.`:'테스트 회수 완료 · 아래 링크로 편집기에 돌아가세요.';return;}
-    if(r.finishReady&&!this.settled&&!this.settling&&!operating){this.settling=true;guarded(async()=>{await settle();});}
+    if(r.finishReady&&!this.settled&&!this.settling&&!operating){
+      if(this.finishNoticeUntil===undefined){this.hud();this.finishNoticeUntil=now+(campaign?.finishNoticeMs?.(r)||0);}
+      if(now<this.finishNoticeUntil)return;
+      this.settling=true;guarded(async()=>{await settle();});
+    }
   }
 }
 function pause(){if(!scene||scene.settled||scene.run.finishReady)return;if(testEdition?.modalOpen())return;const wasPaused=scene.run.paused;release();scene.gameSound?.stop();scene.run.pause(true);campaign?.checkpoint(scene.run,{paused:!wasPaused});scene.hud();if(!$('pause-dialog').open)$('pause-dialog').showModal();}

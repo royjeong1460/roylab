@@ -29,8 +29,8 @@ html.arch-design #expedition{position:relative}html.arch-design #feedback[hidden
 /* Finishing phase: the center notice clears quickly; the clock never intercepts aiming. */
 #arch-cleanup{position:absolute;inset:0;z-index:8;pointer-events:none;color:#f5e4b7;text-align:center}
 #arch-cleanup[hidden]{display:none}
-.cleanup-intro{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:max-content;max-width:90%;padding:14px 20px;border:2px solid #cbb17a;background:#091322ed;box-shadow:4px 4px #09132266;font-size:16px;animation:cleanup-intro 1.5s ease-out both}
-.cleanup-intro span{display:block;margin-top:8px;font-size:11px;color:#d4c5a3}
+.cleanup-intro,.cleanup-complete{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:max-content;max-width:90%;padding:14px 20px;border:2px solid #cbb17a;background:#091322ed;box-shadow:4px 4px #09132266;font-size:16px;animation:cleanup-intro 1.5s ease-out both}
+.cleanup-intro span,.cleanup-complete span{display:block;margin-top:8px;font-size:11px;color:#d4c5a3}
 .cleanup-clock{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:112px;padding:8px 12px;border:2px solid #cbb17a;background:#091322ed;box-shadow:3px 3px #09132244}
 .cleanup-clock>span:first-child{display:block;font-size:9px;letter-spacing:2px}
 #arch-cleanup-seconds{display:block;font-size:28px;line-height:1.4;font-weight:400;font-variant-numeric:tabular-nums}
@@ -41,3 +41,7 @@ html.arch-design #expedition{position:relative}html.arch-design #feedback[hidden
 @keyframes cleanup-intro{0%{opacity:0;transform:translate(-50%,-40%)}15%,65%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-65%)}}
 @keyframes cleanup-pulse{50%{box-shadow:0 0 0 3px #edb08c55}}
 @media(prefers-reduced-motion:reduce){.cleanup-intro{animation:none;display:none}#arch-cleanup[data-urgent=true] .cleanup-clock{animation:none}}
+
+.cleanup-complete{display:none;animation:none;top:45%;border-color:#d9c68f}
+#arch-cleanup[data-complete=true] .cleanup-complete{display:block}
+#arch-cleanup[data-complete=true] .cleanup-clock,#arch-cleanup[data-complete=true] .cleanup-intro{display:none}

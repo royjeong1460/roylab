@@ -12,7 +12,7 @@ import './planet/home.css';
 import './menus.css';
 import {mountArchMenus,mountArchOptions,renderArchStageList,renderArchWorkshop} from './menus.js';
 import {mountPlanetHome} from './planet/home.js';
-import {mountMinimalHUD,mountSkillHUD,renderSkillHUD,renderToolSwitch,mountCleanupHUD,renderCleanupHUD} from './hud.js';
+import {mountMinimalHUD,mountSkillHUD,renderSkillHUD,renderToolSwitch,mountCleanupHUD,renderCleanupHUD,collectionComplete} from './hud.js';
 import {COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';
 let journal,planet;
 const warn=()=>{document.getElementById('arch-journal-warning').textContent=journal.warning;};
@@ -20,6 +20,7 @@ installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeG
  offerHelp:offer=>offer.kind?'Learn and upgrade here; equip one passive and one active skill below.':offer.id==='blackhole'?'Unlock after 3 distinct site clears. Select Black Hole at the bottom left in the field.':'Applies next sortie. Proximity suction stays free. Auto Collect unlocks map-wide pickup; its upgrades improve quantity or cadence.',
  touchHelp:archTouchHelp,
  initialView:viewport=>viewport.fit(),
+ finishNoticeMs:run=>collectionComplete(run)?1000:0,
  renderer:world=>({surface:createArchSurface(world.width,world.cells),createBackdrop:createArchBackdrop,collectibleStyle:COLLECTIBLE_STYLE}),
  overlay:(scene,view)=>new ActiveOverlay(scene,view),
  home(doc){planet=mountPlanetHome(doc);mountArchMenus(doc);},
