@@ -5,7 +5,7 @@ import {BALANCE_VERSION,upgradeGuide} from './balance.js';
 import {ARCH_TUTORIAL} from './maps.js';
 import {createArchSurface,createArchBackdrop} from './art.js';
 import {ArchJournal,tabSession} from './telemetry.js';
-import {ActiveOverlay} from '../ideas-lab/active/overlay.js';
+import {ArchOverlay} from './overlay.js';
 import {ArchGuide,ArchTutorialOverlay,archTouchHelp,archTip,receiptText,mountArchUI,renderArchProfile,renderEquipment} from './ui.js';
 import './style.css';
 import './planet/home.css';
@@ -22,7 +22,7 @@ installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeG
  initialView:viewport=>viewport.fit(),
  finishNoticeMs:run=>collectionComplete(run)?1000:0,
  renderer:world=>({surface:createArchSurface(world.width,world.cells),createBackdrop:createArchBackdrop,collectibleStyle:COLLECTIBLE_STYLE}),
- overlay:(scene,view)=>new ActiveOverlay(scene,view),
+ overlay:(scene,view)=>new ArchOverlay(scene,view),
  home(doc){planet=mountPlanetHome(doc);mountArchMenus(doc);},
  settings:mountArchOptions,
  soundLabel:enabled=>`Sound · ${enabled?'ON':'OFF'}`,

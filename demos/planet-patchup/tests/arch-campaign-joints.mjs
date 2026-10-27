@@ -82,7 +82,7 @@ test('free run export identifies the physical model and connection counts',async
  const {runSnapshot,ArchJournal}=await import('../src/arch/telemetry.js');
  const run=new ArchRun(ARCH_SITES[0],freshProfile(),'stage'),journal=new ArchJournal({sessionId:'joint-test'});
  run.world.activate(attacks[1].x,attacks[1].y);step(run.world,4);
- const snapshot=runSnapshot(run);assert.equal(snapshot.physicsVersion,'arch-yielding-joints-v1');assert(snapshot.jointYields>0);assert(snapshot.jointBreaks>0);
+ const snapshot=runSnapshot(run);assert.equal(snapshot.physicsVersion,'arch-chain-v1');assert(snapshot.jointYields>0);assert(snapshot.jointBreaks>0);
  journal.start(run);assert.equal(journal.current.physicsVersion,snapshot.physicsVersion);
 });
 test('body budget fallback releases a removed joint endpoint without losing pixels',()=>{

@@ -174,7 +174,7 @@ class FreeScene extends Phaser.Scene{
     this.bindControls();
     $('site-name').textContent=r.site.name;$('run-mode').textContent=artMap?(testEdition.runLabel||'유료판 테스트'):r.mode==='boss'?'쌍봉 철탑 보스':'고물 바람골';
     this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(f);
-    this.teardown=bindSceneTeardown(this.events,()=>{this.observer.disconnect();this.pointer.destroy();this.gameSound?.destroy();this.guideView?.destroy();this.view.destroy();});this.hud();this.mapLabel();
+    this.teardown=bindSceneTeardown(this.events,()=>{this.observer.disconnect();this.pointer.destroy();this.gameSound?.destroy();this.guideView?.destroy();this.editionOverlay?.destroy?.();this.view.destroy();});this.hud();this.mapLabel();
   }
   bindControls(){
     const r=this.run,w=r.world,f=$('playfield');
@@ -205,7 +205,7 @@ class FreeScene extends Phaser.Scene{
     this.tipSeconds+=dt;this.guide?.update(dt,r.world.collected,this.guide.pending&&(r.world.bodies.length>0||r.looseCount>0||r.world.collected>0));
     this.guideView?.render(this.viewport,this.aim,r.world,inputDevice,r.paused||r.phase==='finishing');
     for(const event of events)this.view.addEffect(event);
-    this.view.render(dt,{aim:this.aim,working:this.working,selectedTool:r.world.tool,direction:0,suctionOnly:r.phase==='finishing',hideCursor:touchTap&&inputDevice==='touch'});this.overlay.draw(this.view.reducedMotion.matches?0:dt,r.world,this.aim,!(touchTap&&inputDevice==='touch'));this.editionOverlay?.draw(dt,r.world);
+    this.view.render(dt,{aim:this.aim,working:this.working,selectedTool:r.world.tool,direction:0,suctionOnly:r.phase==='finishing',hideCursor:touchTap&&inputDevice==='touch'});this.overlay.draw(this.view.reducedMotion.matches?0:dt,r.world,this.aim,!(touchTap&&inputDevice==='touch'));this.editionOverlay?.draw(dt,r.world,events);
     if(time-this.lastHUD>100){this.hud();this.lastHUD=time;}
     if(!previewId&&!r.finishReady&&r.qualified&&r.site.id!==FREE_TUTORIAL.id&&!r.milestoneSaved&&!operating&&now>=(this.nextMilestoneSave||0)){
       this.nextMilestoneSave=now+1000;
