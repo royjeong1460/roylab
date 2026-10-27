@@ -23,12 +23,35 @@ test('skills grant and unlock at distinct clears, equip at camp, frozen run snap
  for(const expectedCost of [600,1800,6000,18000]){assert.equal(j.offers().find(o=>o.id==='relay').cost,expectedCost);assert((await j.buy('relay')).ok);}assert.equal(j.profile.skills.relay,5);assert.equal((await j.buy('relay')).reason,'unavailable');
  const r=(await j.start('stage',FREE_STAGES[0].id)).run;assert(Object.isFrozen(r.profile.skills));assert(Object.isFrozen(r.profile.equipped));assert.equal(r.skillState().passive.threshold,4);assert.equal((await j.equipSkill('aftershock')).reason,'active');assert.equal((await j.buy('battery')).reason,'active');assert.equal((await j.resetProgress(j.profile.revision)).reason,'active');
 });
-test('boss is manual and fixed first/repeat/failure payout, settlement idempotent',async()=>{
- const {j}=fixture();await j.skipTutorial();assert.equal((await j.start('boss')).reason,'locked');clear(j,6);assert(stageOpen(j.profile,6));
- let r=(await j.start('boss')).run;let out=await j.finish();assert.equal(out.reward,0);assert.equal(out.recovered,0);assert.equal(j.profile.parts,0);
- r=(await j.start('boss')).run;pixelize(r);assert.equal(r.world.collected,r.world.initial);out=await j.finish();assert.equal(out.reward,4000);assert.equal(out.firstClear,true);assert.equal(j.profile.parts,4000);assert.equal((await j.finish()).reason,'no-run');assert.equal(j.profile.parts,4000);
- r=(await j.start('boss')).run;pixelize(r);out=await j.finish();assert.equal(out.reward,1000);assert.equal(out.firstClear,false);assert.equal(j.profile.parts,5000);
+test('boss keeps recovered pixels on failure and can spend them after returning',async()=>{
+ const {j}=fixture();await j.skipTutorial();assert.equal((await j.start('boss')).reason,'locked');clear(j,6);
+ const r=(await j.start('boss')).run;let count=0;
+ r.world.breakContact(r.world.width/2,r.world.floorY/2,()=>count++<350,Infinity);
+ assert(r.world.diagnostics().balanced);assert.equal(r.world.collected,0);
+ const out=await j.finish();assert(out.recovered>0&&out.ratio<.7);assert.equal(out.reward,out.recovered);assert.equal(out.bonus,0);assert.equal(out.qualified,false);assert.equal(j.profile.bossCleared,false);
+ assert.equal(j.profile.parts,out.recovered);assert.equal(j.profile.history.at(-1).reward,out.reward);
+ const reload=new ArchJourney(j.storage,{request:async(_,f)=>f()});assert.equal(reload.profile.parts,out.reward);assert.equal(reload.profile.bossAttempts,1);
+ const price=reload.offers().find(o=>o.id==='battery').cost;assert((await reload.buy('battery')).ok);assert.equal(reload.profile.parts,out.reward-price);
+ assert.equal((await j.finish()).reason,'no-run');assert.equal(j.profile.parts,reload.profile.parts);
+ const retry=(await reload.start('boss')).run;assert.equal(retry.world.collected,0);assert.equal(retry.world.charge,65);
+});
+test('boss keeps pixels plus existing first/repeat clear bonuses exactly once',async()=>{
+ const {j}=fixture();await j.skipTutorial();clear(j,6);
+ let r=(await j.start('boss')).run;let out=await j.finish();assert.equal(out.reward,0);assert.equal(out.recovered,0);assert.equal(out.bonus,0);
+ r=(await j.start('boss')).run;pixelize(r);out=await j.finish();assert.equal(out.reward,out.recovered+4000);assert.equal(out.bonus,4000);assert.equal(out.firstClear,true);const firstTotal=out.reward;
+ assert.equal(j.profile.parts,firstTotal);assert.equal((await j.finish()).reason,'no-run');assert.equal(j.profile.parts,firstTotal);
+ r=(await j.start('boss')).run;pixelize(r);out=await j.finish();assert.equal(out.reward,out.recovered+1000);assert.equal(out.bonus,1000);assert.equal(out.firstClear,false);assert.equal(j.profile.parts,firstTotal+out.reward);
  r=(await j.start('stage',FREE_STAGES[0].id)).run;pixelize(r);out=await j.finish();assert.equal(out.reward,out.recovered);assert.equal(out.bonus,0);
+});
+test('exhausted boss payout survives a failed save retry and is recorded once',async()=>{
+ const {ArchJournal}=await import('../src/arch/telemetry.js');
+ const {j}=fixture();await j.skipTutorial();clear(j,6);const r=(await j.start('boss')).run;
+ const journal=new ArchJournal({sessionId:'boss-payout-test'});journal.start(r);let count=0;
+ r.world.breakContact(r.world.width/2,r.world.floorY/2,()=>count++<250,Infinity);r.world.charge=0;r.exhaust();assert.equal(r.phase,'finishing');
+ const set=j.storage.setItem;j.storage.setItem=()=>{throw Error('disk full');};assert.equal((await j.finish()).reason,'storage');assert.equal(j.profile.parts,0);assert.equal(j.currentRun,r);
+ j.storage.setItem=set;const out=await j.finish();assert.equal(out.reward,250);assert.equal(out.bonus,0);assert(!out.qualified);assert(r.world.collected<r.world.initial);
+ journal.finish(r,out,j.profile);assert.equal(journal.export(j.profile).records[0].reward,250);assert.equal(journal.export(j.profile).records[0].receipt.bonus,0);
+ assert.equal((await j.finish()).reason,'no-run');assert.equal(j.profile.parts,250);assert.equal(j.profile.history.length,1);
 });
 test('cross-tab reset invalidates old runs, corrupted/conflicting saves fail closed',async()=>{
  const {j,m}=fixture();await j.skipTutorial();const r=(await j.start('stage',FREE_STAGES[0].id)).run;const j2=new ArchJourney(j.storage,{request:async(_,f)=>f()});assert((await j2.resetProgress(j2.profile.revision)).ok);pixelize(r);assert.equal((await j.finish()).reason,'reset');assert.equal(j2.profile.parts,0);

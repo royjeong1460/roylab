@@ -65,10 +65,10 @@ export class ArchJourney extends FranceJourney{
   if(!run||run!==this.currentRun)return {ok:false,reason:'no-run'};
   if(run.profile.resetCount!==p.resetCount){run.seal();this.currentRun=null;return {ok:false,reason:'reset'};}
   run.world.secureLoose();if(run.first70Ms===null&&run.qualified)run.first70Ms=run.workMs;const recovered=run.world.collected,workMs=Math.round(run.workMs);if(!uint(recovered)||recovered>run.world.initial)return {ok:false,reason:'invalid-recovery'};
-  const qualified=run.qualified,boss=run.mode==='boss',firstClear=boss&&qualified&&!p.bossCleared,reward=boss?(qualified?(firstClear?4000:1000):0):recovered,next=clone(p);
+  const qualified=run.qualified,boss=run.mode==='boss',firstClear=boss&&qualified&&!p.bossCleared,bonus=boss&&qualified?(firstClear?4000:1000):0,reward=recovered+bonus,next=clone(p);
   rememberStage(next.stageRecords,run.site.id,recovered,run.world.initial);next.parts+=reward;next.earned+=reward;next.workMs+=workMs;next.runCount++;next.bossAttempts+=boss?1:0;next.lastSite=run.site.id;if(firstClear){next.bossCleared=true;next.firstClearMs=next.workMs;}this.grantSkills(next);
   if(run.site.id===ARCH_TUTORIAL.id&&p.tutorial==='intro'&&next.parts>=300)next.tutorial='upgrade';
   next.history.push({site:run.site.id,mode:run.mode,workMs,recovered,total:run.world.initial,reward,batteryUsed:run.world.energyUsed,tools:[...run.world.usedTools]});next.history=next.history.slice(-100);this.save(next);run.seal();this.currentRun=null;this.lastRunSite=run.site.id;
-  return {ok:true,recovered,reward,bonus:boss?reward:0,qualified,firstClear,bossCleared:next.bossCleared,mode:run.mode,siteName:run.site.name,nextStage:!stageOpen(p,6)&&stageOpen(next,6)?FREE_STAGES[6].name:null,allClear:recovered===run.world.initial,ratio:run.ratio,workMs};
+  return {ok:true,recovered,reward,bonus,qualified,firstClear,bossCleared:next.bossCleared,mode:run.mode,siteName:run.site.name,nextStage:!stageOpen(p,6)&&stageOpen(next,6)?FREE_STAGES[6].name:null,allClear:recovered===run.world.initial,ratio:run.ratio,workMs};
  });}
 }

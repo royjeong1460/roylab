@@ -34,5 +34,5 @@ export function freeOffers(p){const clears=distinctClears(p);return [
  ...Object.entries(SKILLS).map(([id,s])=>{const level=p.skills?.[id]||0;return {id,name:s.name,kind:s.kind,description:level?`Level ${level} → ${Math.min(5,level+1)}`:`Learn after ${s.clears} distinct clears`,level,max:5,cost:level?SKILL_PRICES[s.kind][level-1]??0:s.learn,available:clears>=s.clears&&level<5};})];}
 export const offers=freeOffers;
 export const upgradeGuide=p=>`${p.parts.toLocaleString()} parts · proximity suction + optional Auto Collect · one passive and one active skill`;
-export const bossAdvice=p=>p.bossCleared?'Boss repeat success: 1,000 parts.':'Clear all six normal sites at 70% to unlock the boss. First success: 4,000 parts; failure: 0.';
+export const bossAdvice=p=>p.bossCleared?'Keep recovered pixels on every attempt. Repeat clear bonus: 1,000 parts.':'Clear all six normal sites at 70% to unlock the boss. Keep recovered pixels on every attempt. First clear bonus: 4,000 parts.';
 export const totalSpent=p=>Object.entries(TRACKS).reduce((sum,[id])=>sum+Array.from({length:p.upgrades[id]||0},(_,i)=>upgradeCost(id,i)).reduce((a,b)=>a+b,0),0)+(p.owned.includes('blackhole')?2000:0)+Object.entries(SKILLS).reduce((sum,[id,s])=>sum+((p.skills[id]||0)?s.learn+SKILL_PRICES[s.kind].slice(0,p.skills[id]-1).reduce((a,b)=>a+b,0):0),0);
