@@ -1,5 +1,5 @@
 import {FREE_STAGES,stageBest,stageOpen} from './stages.js';
-import {SKILLS,freeStats} from './balance.js';
+import {SKILLS,freeStats,distinctClears} from './balance.js';
 
 const icons={
  battery:new URL('./icons/hud-battery.svg',import.meta.url).href,
@@ -11,13 +11,47 @@ const icons={
  orbital:new URL('./icons/active-orbital-drop.svg',import.meta.url).href,
 };
 const GROUPS=[
- {name:'Battery & Collection',ids:['battery','range','suction','collectBatch'],icon:'collect'},
- {name:'Blast',ids:['blastForce','blastRadius','blastReach'],icon:'blast'},
- {name:'Black Hole',ids:['blackhole','wellPull','wellReach','wellDuration','mix','wear'],icon:'well'},
- {name:'Skills',ids:['aftershock','relay','orbital'],icon:'aftershock'},
+ {tab:'weapons',name:'Blast',ids:['blastForce','blastRadius','blastReach'],icon:'blast'},
+ {tab:'weapons',name:'Black Hole',ids:['blackhole','wellPull','wellReach','wellDuration','mix','wear'],icon:'well'},
+ {tab:'skills',name:'Skills',ids:['aftershock','relay','orbital'],icon:'aftershock'},
+ {tab:'utility',name:'Battery & Collection',ids:['battery','range','suction','collectBatch'],icon:'collect'},
 ];
 const element=(doc,tag,className,text)=>{const e=doc.createElement(tag);e.className=className;if(text!==undefined)e.textContent=text;return e;};
 function icon(doc,key){const image=element(doc,'img','menu-icon');image.src=icons[key];image.alt='';image.setAttribute('aria-hidden','true');return image;}
+
+export function workshopTabs(profile){
+ const tabs=[{id:'weapons',name:'Weapons'}];
+ if(['upgrade','next'].includes(profile.tutorial))return tabs;
+ if(Object.entries(SKILLS).some(([id,s])=>(profile.skills?.[id]||0)>0||distinctClears(profile)>=s.clears))tabs.push({id:'skills',name:'Skills'});
+ tabs.push({id:'utility',name:'Utility'});return tabs;
+}
+
+function renderWorkshopTabs(doc,profile){
+ const root=doc.getElementById('offers'),equipment=doc.getElementById('arch-skills');
+ let tabs=doc.getElementById('workshop-tabs'),panel=doc.getElementById('upgrade-panel');
+ if(!tabs){
+  tabs=element(doc,'div','workshop-tabs');tabs.id='workshop-tabs';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Upgrade categories');
+  panel=element(doc,'div','upgrade-panel');panel.id='upgrade-panel';panel.setAttribute('role','tabpanel');panel.tabIndex=0;
+  root.before(tabs,panel);panel.append(root,equipment);
+ }
+ const options=workshopTabs(profile);
+ const select=(id,scroll=false)=>{
+  root.dataset.tab=id;panel.setAttribute('aria-labelledby',`upgrade-tab-${id}`);
+  for(const button of tabs.children){const selected=button.dataset.tab===id;button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;}
+  for(const group of root.children)group.hidden=group.dataset.tab!==id;
+  equipment.hidden=id!=='skills';
+  if(scroll)tabs.scrollIntoView({block:'start'});
+ };
+ tabs.replaceChildren(...options.map(({id,name},index)=>{
+  const button=element(doc,'button','workshop-tab',name);button.type='button';button.id=`upgrade-tab-${id}`;button.dataset.tab=id;button.setAttribute('role','tab');button.setAttribute('aria-controls',panel.id);
+  button.onclick=()=>select(id,true);
+  button.onkeydown=event=>{
+   const next={ArrowRight:(index+1)%options.length,ArrowLeft:(index+options.length-1)%options.length,Home:0,End:options.length-1}[event.key];
+   if(next===undefined)return;event.preventDefault();select(options[next].id,true);tabs.children[next].focus();
+  };return button;
+ }));
+ select(options.some(t=>t.id===root.dataset.tab)?root.dataset.tab:'weapons');
+}
 
 export function stagePresentation(profile,site,index){
  const best=stageBest(profile,site.id),open=stageOpen(profile,index);
@@ -94,8 +128,9 @@ export function renderArchWorkshop(doc,journey){
  root.replaceChildren();
  for(const group of GROUPS){
   const entries=group.ids.map(id=>cards.get(id)).filter(Boolean);if(!entries.length)continue;
-  const section=element(doc,'section','upgrade-group'),title=element(doc,'h2','upgrade-heading'),grid=element(doc,'div','upgrade-grid');title.append(icon(doc,group.icon),element(doc,'span','',group.name));grid.append(...entries);section.append(title,grid);root.append(section);
+  const section=element(doc,'section','upgrade-group'),title=element(doc,'h2','upgrade-heading'),grid=element(doc,'div','upgrade-grid');section.dataset.tab=group.tab;title.append(icon(doc,group.icon),element(doc,'span','',group.name));grid.append(...entries);section.append(title,grid);root.append(section);
  }
+ renderWorkshopTabs(doc,profile);
  $('workshop-note').textContent='Upgrades apply next sortie. Save parts or spend them here.';
  $('upgrade-guide').textContent='';
  $('workshop-random').textContent='Choose a map →';$('workshop-retry').textContent='Retry this map';$('workshop-boss').textContent='Challenge Boss';

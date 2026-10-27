@@ -1,9 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {stagePresentation,offerPresentation,renderArchStageList} from '../src/arch/menus.js';
+import {stagePresentation,offerPresentation,renderArchStageList,workshopTabs} from '../src/arch/menus.js';
 import {freeOffers} from '../src/arch/balance.js';
 import {FREE_STAGES} from '../src/arch/stages.js';
 const profile=()=>({parts:150,upgrades:{},owned:['bomb'],skills:{},equipped:{passive:null,active:null},stageRecords:{}});
+
+test('weapons lead, skills appear when learnable even without money, and tutorial stays on its required weapon',()=>{
+ const p=profile(),ids=()=>workshopTabs(p).map(t=>t.id);
+ assert.deepEqual(ids(),['weapons','utility']);
+ p.parts=0;p.stageRecords[FREE_STAGES[0].id]={recovered:70,total:100};assert.deepEqual(ids(),['weapons','utility']);
+ p.stageRecords[FREE_STAGES[1].id]={recovered:70,total:100};assert.deepEqual(ids(),['weapons','skills','utility']);
+ p.tutorial='upgrade';assert.deepEqual(ids(),['weapons']);p.tutorial='done';assert.deepEqual(ids(),['weapons','skills','utility']);
+ p.stageRecords={};p.skills.aftershock=1;assert.deepEqual(ids(),['weapons','skills','utility']);
+ p.skills={};assert.deepEqual(ids(),['weapons','utility']);
+});
 
 test('map labels do not round incomplete clears or full clears upward',()=>{
  for(const [recovered,status,text]of [[699,'open','69.9%'],[700,'cleared','70.0%'],[999,'cleared','99.9%'],[1000,'complete','100%']]){

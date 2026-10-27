@@ -44,6 +44,11 @@ html.arch-design #workshop h1{font-size:28px;font-weight:400;margin:8px 0 13px;c
 html.arch-design #workshop-note{font-size:11px;color:var(--menu-muted);line-height:1.8;margin:0 0 18px}
 html.arch-design #upgrade-guide:empty{display:none}
 html.arch-design #offers{display:block;margin:0}
+html.arch-design #workshop .workshop-tabs{position:sticky;top:0;z-index:10;display:flex;gap:8px;padding:10px 0;background:var(--menu-bg);border-bottom:1px solid var(--menu-border)}
+html.arch-design #workshop .workshop-tab{flex:1;min-width:0;min-height:44px;margin:0;padding:10px 8px;background:var(--menu-panel);border:1px solid var(--menu-border);box-shadow:none;color:var(--menu-muted);font-size:12px;clip-path:var(--pixel-corners)}
+html.arch-design #workshop .workshop-tab[aria-selected=true]{background:var(--menu-gold);color:#172028;border-color:var(--menu-gold);box-shadow:inset 0 -3px #8c7952}
+html.arch-design #workshop :is(.upgrade-group,#arch-skills)[hidden]{display:none}
+html.arch-design #workshop .upgrade-panel{outline-offset:3px}
 html.arch-design .upgrade-group{margin-top:28px}
 html.arch-design #workshop .upgrade-heading{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:400;color:var(--menu-text);margin:0 0 12px}
 html.arch-design .upgrade-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
