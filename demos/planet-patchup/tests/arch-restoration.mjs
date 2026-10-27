@@ -15,9 +15,9 @@ test('base suction collects nearby pixels without clicking, leaves remote debris
 });
 test('global collection requires an upgrade and coexists with base suction',()=>{
  const p=freshProfile(),base=new ArchWorld(ARCH_SITES[0],p);loose(base);for(let i=0;i<30;i++)base.step(1/60);assert.equal(base.collected,0);
- assert.equal(freeStats(p).autoCollect,false);assert.equal(freeStats(p).suctionRate,80);assert.equal(freeStats(p).suctionRadius,12);
+ assert.equal(freeStats(p).autoCollect,false);assert.equal(freeStats(p).suctionRate,20);assert.equal(freeStats(p).suctionRadius,12);
  assert.match(freeOffers(p).find(o=>o.id==='collectBatch').description,/Unlock/);
- p.upgrades.collectBatch=1;const w=new ArchWorld(ARCH_SITES[0],p);loose(w);for(let i=0;i<15;i++)w.step(1/60);assert(w.collected>0);assert(w.events.some(e=>e.kind==='collect'&&e.mode==='rise'));assert(w.diagnostics().balanced);assert.equal(w.suctionRate,80);
+ p.upgrades.collectBatch=1;const w=new ArchWorld(ARCH_SITES[0],p);loose(w);for(let i=0;i<30;i++)w.step(1/60);assert(w.collected>0);assert(w.events.some(e=>e.kind==='collect'&&e.mode==='rise'));assert(w.diagnostics().balanced);assert.equal(w.suctionRate,20);
 });
 test('new profile selects real first site; tutorial is explicit and cannot clear a campaign site',async()=>{
  const j=new ArchJourney(storage(),{request:async(_,f)=>f()});let result=await j.start('stage',ARCH_SITES[0].id);assert.equal(result.run.site.id,ARCH_SITES[0].id);assert.equal(result.run.mode,'stage');await j.finish();
@@ -34,7 +34,7 @@ test('current tabs share purchases while run records identify the new collection
  const p=structuredClone(first.profile);p.parts=300;p.earned=300;first.save(p);
  const {run}=await first.start('tutorial'),other=new ArchJourney(store,lock);
  assert((await other.buy('battery')).ok);
- for(const key of ARCH_SAVE_KEYS)assert.equal(JSON.parse(store.getItem(key)).balanceVersion,BALANCE_VERSION);
+ for(const key of ARCH_SAVE_KEYS)assert.equal(JSON.parse(store.getItem(key)).balanceVersion,'arch-campaign-v0.2.2');
  assert.equal(other.profile.balanceVersion,BALANCE_VERSION);
  const journal=new ArchJournal({storage:store,sessionId:'mixed-version',locks:null});journal.start(run);
  assert.equal(journal.current.balanceVersion,BALANCE_VERSION);

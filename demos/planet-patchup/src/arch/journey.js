@@ -7,9 +7,11 @@ export const ARCH_SAVE_KEYS=['pixel-demolition-arch-v2-a','pixel-demolition-arch
 const LEGACY_SAVE_KEYS=['pixel-demolition-arch-v1-a','pixel-demolition-arch-v1-b'];
 export const FREE_SAVE_KEYS=ARCH_SAVE_KEYS;
 const LOCK='pixel-demolition-arch-v2',clone=v=>JSON.parse(JSON.stringify(v));
+// Only tuning changed; preserve the v2 wire tag for already-open tabs. Journals use BALANCE_VERSION.
+const SAVE_BALANCE_VERSION='arch-campaign-v0.2.2';
 const uint=n=>Number.isSafeInteger(n)&&n>=0;
 export const freshProfile=()=>({version:2,campaign:'arch',balanceVersion:BALANCE_VERSION,revision:0,resetCount:0,tutorial:'intro',parts:0,earned:0,spent:0,owned:['bomb'],patterns:['dot'],upgrades:Object.fromEntries(Object.keys(TRACKS).map(k=>[k,0])),skills:{aftershock:0,relay:0,orbital:0},equipped:{passive:null,active:null},stageRecords:{},bossCleared:false,lastSite:null,runCount:0,bossAttempts:0,workMs:0,firstClearMs:null,history:[],purchases:[]});
-function valid(p){return !!p&&p.version===2&&p.campaign==='arch'&&p.balanceVersion===BALANCE_VERSION&&['revision','resetCount','parts','earned','spent','runCount','bossAttempts','workMs'].every(k=>uint(p[k]))&&p.earned-p.spent===p.parts&&['intro','upgrade','next','done'].includes(p.tutorial)&&Array.isArray(p.owned)&&p.owned.includes('bomb')&&p.owned.every(id=>['bomb','blackhole'].includes(id))&&new Set(p.owned).size===p.owned.length&&Array.isArray(p.patterns)&&p.patterns.length===1&&p.patterns[0]==='dot'&&p.upgrades&&Object.keys(p.upgrades).length===Object.keys(TRACKS).length&&Object.entries(TRACKS).every(([id,t])=>uint(p.upgrades[id])&&p.upgrades[id]<=t.cap)&&p.skills&&Object.keys(p.skills).length===3&&Object.keys(SKILLS).every(id=>uint(p.skills[id])&&p.skills[id]<=5)&&p.equipped&&['passive','active'].every(kind=>p.equipped[kind]===null||SKILLS[p.equipped[kind]]?.kind===kind&&p.skills[p.equipped[kind]]>0)&&validStageRecords(p.stageRecords)&&typeof p.bossCleared==='boolean'&&(p.lastSite===null||[...FREE_STAGES,ARCH_TUTORIAL].some(s=>s.id===p.lastSite))&&Array.isArray(p.history)&&p.history.length<=100&&Array.isArray(p.purchases)&&p.purchases.length<=100&&totalSpent(p)===p.spent;}
+function valid(p){return !!p&&p.version===2&&p.campaign==='arch'&&[BALANCE_VERSION,SAVE_BALANCE_VERSION].includes(p.balanceVersion)&&['revision','resetCount','parts','earned','spent','runCount','bossAttempts','workMs'].every(k=>uint(p[k]))&&p.earned-p.spent===p.parts&&['intro','upgrade','next','done'].includes(p.tutorial)&&Array.isArray(p.owned)&&p.owned.includes('bomb')&&p.owned.every(id=>['bomb','blackhole'].includes(id))&&new Set(p.owned).size===p.owned.length&&Array.isArray(p.patterns)&&p.patterns.length===1&&p.patterns[0]==='dot'&&p.upgrades&&Object.keys(p.upgrades).length===Object.keys(TRACKS).length&&Object.entries(TRACKS).every(([id,t])=>uint(p.upgrades[id])&&p.upgrades[id]<=t.cap)&&p.skills&&Object.keys(p.skills).length===3&&Object.keys(SKILLS).every(id=>uint(p.skills[id])&&p.skills[id]<=5)&&p.equipped&&['passive','active'].every(kind=>p.equipped[kind]===null||SKILLS[p.equipped[kind]]?.kind===kind&&p.skills[p.equipped[kind]]>0)&&validStageRecords(p.stageRecords)&&typeof p.bossCleared==='boolean'&&(p.lastSite===null||[...FREE_STAGES,ARCH_TUTORIAL].some(s=>s.id===p.lastSite))&&Array.isArray(p.history)&&p.history.length<=100&&Array.isArray(p.purchases)&&p.purchases.length<=100&&totalSpent(p)===p.spent;}
 export class ArchRun extends FranceRun{
  constructor(site,profile,mode='stage'){
   super(site,profile,mode);this.world=new ArchWorld(site,this.profile);this.workMs=0;this.wallActiveMs=0;this.finishingElapsedMs=0;this.first70Ms=null;this.skillUses={orbital:0};
@@ -39,10 +41,10 @@ export class ArchJourney extends FranceJourney{
   });
   if(normalized.some(p=>!valid(p)))throw Error('corrupt');
   if(parsed.length===2&&parsed[0].revision===parsed[1].revision&&JSON.stringify(parsed[0])!==JSON.stringify(parsed[1]))throw Error('conflict');
-  normalized.sort((a,b)=>b.revision-a.revision);return normalized[0];
+  normalized.sort((a,b)=>b.revision-a.revision);return {...normalized[0],balanceVersion:BALANCE_VERSION};
  }
  // Keep v1 as a recovery copy; older open tabs cannot overwrite the expanded upgrade schema.
- save(next){next.revision++;if(!valid(next))throw Error('invalid');this.storage.setItem(ARCH_SAVE_KEYS[next.revision%2],JSON.stringify(next));this.profile=next;}
+ save(next){next.revision++;if(!valid(next))throw Error('invalid');this.storage.setItem(ARCH_SAVE_KEYS[next.revision%2],JSON.stringify({...next,balanceVersion:SAVE_BALANCE_VERSION}));this.profile=next;}
 
  stats(p=this.profile){return freeStats(p);}
  offers(p=this.profile){return freeOffers(p);}

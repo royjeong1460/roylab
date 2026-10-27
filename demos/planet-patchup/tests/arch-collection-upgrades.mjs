@@ -14,20 +14,20 @@ test('three independent collection upgrades distinguish local radius, local spee
  const offers=freeOffers(p);for(const id of ['range','suction','collectBatch'])assert(offers.find(o=>o.id===id)?.available);
  assert(!offers.some(o=>o.id==='collectInterval'));assert.equal((await j.buy('collectInterval')).reason,'unknown');
  assert.equal(offerPresentation(offers.find(o=>o.id==='collectBatch'),p).action,'Learn');
- assert((await j.buy('range')).ok);assert.equal(j.stats().suctionRadius,12.5);assert.equal(j.stats().suctionRate,80);assert(!j.stats().autoCollect);
- assert((await j.buy('suction')).ok);assert.equal(j.stats().suctionRate,88);assert(!j.stats().autoCollect);
- assert((await j.buy('collectBatch')).ok);assert(j.stats().autoCollect);assert.equal(j.stats().autoCollectRate,88);
- assert((await j.buy('collectBatch')).ok);assert.equal(j.stats().autoCollectRate,96);assert.equal(j.stats().suctionRate,88);assert.equal(j.stats().suctionRadius,12.5);
- const run=(await j.start('stage',ARCH_SITES[0].id)).run;assert.equal(run.world.suctionRate,88);assert.equal(run.world.suctionRadius,12.5);
- assert.equal((await j.buy('suction')).reason,'active');assert.equal(run.world.stats().autoCollectRate,96);
+ assert((await j.buy('range')).ok);assert.equal(j.stats().suctionRadius,12.5);assert.equal(j.stats().suctionRate,20);assert(!j.stats().autoCollect);
+ assert((await j.buy('suction')).ok);assert.equal(j.stats().suctionRate,28);assert(!j.stats().autoCollect);
+ assert((await j.buy('collectBatch')).ok);assert(j.stats().autoCollect);assert.equal(j.stats().autoCollectRate,2);
+ assert((await j.buy('collectBatch')).ok);assert.equal(j.stats().autoCollectRate,24/11);assert.equal(j.stats().suctionRate,28);assert.equal(j.stats().suctionRadius,12.5);
+ const run=(await j.start('stage',ARCH_SITES[0].id)).run;assert.equal(run.world.suctionRate,28);assert.equal(run.world.suctionRadius,12.5);
+ assert.equal((await j.buy('suction')).reason,'active');assert.equal(run.world.stats().autoCollectRate,24/11);
 });
-test('v1 purchases, throughput, currency and clears migrate without overwriting the original save',async()=>{
+test('v1 purchases, currency and clears migrate with retuned throughput without overwriting the original save',async()=>{
  const s=store(),old=legacy(),encoded=JSON.stringify(old);for(const key of legacyKeys)s.setItem(key,encoded);
  const j=new ArchJourney(s,locks);assert(j.persistent);assert.equal(j.profile.parts,900);assert.equal(j.profile.spent,old.spent);assert.deepEqual(j.profile.stageRecords,old.stageRecords);
- assert.equal(j.stats().autoCollectRate,26/.21);assert.equal(j.stats().suctionRate,80);assert.equal(j.stats().suctionRadius,12);
- assert((await j.buy('suction')).ok);const loaded=new ArchJourney(s,locks);assert.equal(loaded.stats().suctionRate,88);assert.equal(loaded.stats().autoCollectRate,26/.21);assert.equal(loaded.profile.parts,820);assert.equal(totalSpent(loaded.profile),loaded.profile.spent);assert.equal(loaded.profile.balanceVersion,BALANCE_VERSION);
+ assert.equal(j.stats().autoCollectRate,(26/.21)/44);assert.equal(j.stats().suctionRate,20);assert.equal(j.stats().suctionRadius,12);
+ assert((await j.buy('suction')).ok);const loaded=new ArchJourney(s,locks);assert.equal(loaded.stats().suctionRate,28);assert.equal(loaded.stats().autoCollectRate,(26/.21)/44);assert.equal(loaded.profile.parts,820);assert.equal(totalSpent(loaded.profile),loaded.profile.spent);assert.equal(loaded.profile.balanceVersion,BALANCE_VERSION);
  for(const key of legacyKeys)assert.equal(s.getItem(key),encoded);assert(ARCH_SAVE_KEYS.some(k=>s.getItem(k)));
- assert((await loaded.resetProgress(loaded.profile.revision)).ok);const reset=new ArchJourney(s,locks);assert.equal(reset.profile.parts,0);assert(!reset.stats().autoCollect);assert.equal(reset.stats().suctionRate,80);
+ assert((await loaded.resetProgress(loaded.profile.revision)).ok);const reset=new ArchJourney(s,locks);assert.equal(reset.profile.parts,0);assert(!reset.stats().autoCollect);assert.equal(reset.stats().suctionRate,20);
 });
 test('invalid legacy saves fail closed and a corrupt current save never falls back to older progress',()=>{
  for(const mutate of [p=>delete p.upgrades.battery,p=>p.spent++,p=>p.upgrades.range=0,p=>p.balanceVersion='unknown']){const s=store(),p=legacy();mutate(p);s.setItem(legacyKeys[0],JSON.stringify(p));assert.equal(new ArchJourney(s,locks).persistent,false);}
@@ -39,4 +39,19 @@ test('restored local upgrades change actual reach and throughput without enablin
  assert(fast.w.collected>base.w.collected);assert(fast.w.diagnostics().balanced);
  const narrow=world({}),wide=world({range:20});for(const q of [narrow,wide])q.w.work(q.x-18,q.y,.1,1,undefined,false);
  assert.equal(narrow.w.collected,0);assert(wide.w.collected>0);assert(!wide.w.stats().autoCollect);assert(wide.w.diagnostics().balanced);
+});
+
+test('global pickup uses the stated two pixels per simulated second, independently of proximity suction',()=>{
+ const p=freshProfile();p.upgrades.collectBatch=1;
+ const w=new ArchWorld(ARCH_SITES[0],p),i=w.cells.findIndex(Boolean),x=i%w.width+.5,y=Math.floor(i/w.width)+.5;
+ w.breakContact(x,y,()=>true,Infinity);w.flushDebris();
+ for(let i=0;i<29;i++)w.step(1/60);assert.equal(w.collected,0);
+ w.step(1/60);assert.equal(w.collected,1);
+ for(let i=0;i<30;i++)w.step(1/60);assert.equal(w.collected,2);assert(w.diagnostics().balanced);
+});
+test('base proximity suction collects twenty pixels per simulated second',()=>{
+ const w=new ArchWorld(ARCH_SITES[0],freshProfile()),i=w.cells.findIndex(Boolean),x=i%w.width+.5,y=Math.floor(i/w.width)+.5;
+ w.breakContact(x,y,()=>true,Infinity);w.flushDebris();
+ for(let i=0;i<60;i++)w.work(x,y,1/60,1,undefined,false);
+ assert.equal(w.collected,20);assert(w.diagnostics().balanced);
 });

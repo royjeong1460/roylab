@@ -5,9 +5,9 @@ import {ArchRun,freshProfile} from '../src/arch/journey.js';
 import {ARCH_TUTORIAL,ARCH_SITES} from '../src/arch/maps.js';
 const site=ARCH_TUTORIAL;
 const point=w=>{const i=w.cells.findIndex(Boolean);return {x:i%w.width+.5,y:Math.floor(i/w.width)+.5};};
-test('global batches preserve exact pixel IDs and exclude detached bodies',()=>{
+test('global pickup preserves exact pixel IDs and exclude detached bodies',()=>{
  const profile=freshProfile();profile.upgrades.collectBatch=1;const w=new ArchWorld(site,profile),p=point(w);w.blast({...p,radius:4,power:1});const before=w.collected;assert(w.flying.length+w.debris.length+w.sand.filter(Boolean).length>0);w.work(0,0,.1);assert.equal(w.collected,before);
- for(let i=0;i<14;i++)w.step(1/60);assert.equal(w.collected,0);w.step(1/60);assert(w.collected>0&&w.collected<=22);assert.equal(w.collectedPixelIds.size,w.collected);assert(w.diagnostics().balanced);
+ for(let i=0;i<29;i++)w.step(1/60);assert.equal(w.collected,0);w.step(1/60);assert(w.collected===1);assert.equal(w.collectedPixelIds.size,w.collected);assert(w.diagnostics().balanced);
  const chunks=w.bodies.reduce((n,p)=>n+p.pixels.length,0);w.secureLoose();assert.equal(w.bodies.reduce((n,p)=>n+p.pixels.length,0),chunks);assert.equal(w.collectedPixelIds.size,w.collected);assert(w.diagnostics().balanced);assert.equal(w.secureLoose(),0);
 });
 test('last positive energy attack is accepted, pause blocks and exhaustion sweeps by 10s',()=>{

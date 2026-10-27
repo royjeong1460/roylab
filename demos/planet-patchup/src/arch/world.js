@@ -54,5 +54,5 @@ export class ArchWorld extends ActiveIdeaWorld{
   if(count){this.collected+=count;this.version++;this.collectionBatches++;this.note({kind:'collect',mode:'rise',x:x/count,y:y/count,count,ids,samples,color:samples[0]?.color||1});}return count;
  }
  secureLoose(){return this.collectLoose();}
- step(dt){if(this.settled||!Number.isFinite(dt)||dt<=0)return;const h=Math.min(.1,dt);super.step(h);this.simulatedMs+=h*1000;const s=this.stats();if(!s.autoCollect){this.collectionClock=0;return;}this.collectionClock+=h;while(this.collectionClock+1e-8>=s.collectInterval){this.collectionClock-=s.collectInterval;this.collectLoose(s.collectBatch);}}
+ step(dt){if(this.settled||!Number.isFinite(dt)||dt<=0)return;const h=Math.min(.1,dt);super.step(h);this.simulatedMs+=h*1000;const s=this.stats();if(!s.autoCollect){this.collectionClock=0;return;}this.collectionClock+=h;const interval=1/s.autoCollectRate;while(this.collectionClock+1e-8>=interval){this.collectionClock-=interval;this.collectLoose(1);}}
 }
