@@ -4,6 +4,7 @@ import {SensitiveFallWorld} from './sensitive-world.js';
 import {YardKit} from '../paid-lab/culture/kit.js';
 import {packMapCells} from '../map-maker-generator.js';
 import {freshProfile} from '../arch/journey.js';
+import {ARCH_SITES} from '../arch/maps.js';
 import {COLLAPSE_MAPS,PRESETS} from '../collapse-lab/model.js';
 export {readMetrics} from '../collapse-lab/model.js';
 
@@ -15,7 +16,10 @@ export function dropMap(height){
   data:{width,height:120,floorY,shapes:packMapCells(k.cells,width,floorY)},
   structure:{version:1,roles:packMapCells(k.roles,width,floorY)}};
 }
-export const FALL_MAPS=[dropMap(4),dropMap(10),dropMap(20),dropMap(70),...COLLAPSE_MAPS];
+// Reuse campaign data and roles verbatim; only the local label/aim is added.
+const archMap1={...ARCH_SITES[0],name:'무료판 맵 1 · Arch Lane',aim:ARCH_SITES[0].preview[0],
+ hint:'무료판에서 플레이한 실제 1번 맵이에요. 왼쪽 건물의 표시된 다리를 끊어 몸통의 낙하를 비교하세요.'};
+export const FALL_MAPS=[archMap1,dropMap(4),dropMap(10),dropMap(20),dropMap(70),...COLLAPSE_MAPS.map(m=>({...m,name:`실험용 · ${m.name}`}))];
 export function createExperiment(mapId='drop-70',preset='base',unlimited=true,response='fall'){
  const map=FALL_MAPS.find(m=>m.id===mapId);
  if(!map||!PRESETS[preset]||!['fall','chain','sensitive'].includes(response))throw Error('Unknown fall experiment');

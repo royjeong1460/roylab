@@ -12,7 +12,7 @@ import '../collapse-lab/style.css';
 import './style.css';
 const $=id=>document.getElementById(id);
 $('map').replaceChildren(...FALL_MAPS.map(map=>new Option(map.name,map.id)));
-$('map').value='drop-70';
+$('map').value=FALL_MAPS[0].id;
 const params=new URLSearchParams(location.search);
 if(FALL_MAPS.some(m=>m.id===params.get('map')))$('map').value=params.get('map');
 if(['fall','chain','sensitive'].includes(params.get('response')))$('response').value=params.get('response');

@@ -25,6 +25,12 @@ These are repeatable fixture results, not final game balance or iPhone performan
 
 ## Lowered map 1 criteria (separate response)
 
+Correction: the user meant the real free-game **Arch Lane**, not the first collapse mini-map. The page now opens `무료판 맵 1 · Arch Lane` by default, directly reusing `ARCH_SITES[0]` (2,000 pixels, original structural roles and architecture). Direct link: `http://127.0.0.1:8793/collapse-fall.html?map=arch-1-arch-quarter-v2&response=sensitive`. The three small maps are explicitly labelled `실험용`. No physics parameters changed in this map-selection correction.
+
+Same marked left-column blast on the real Arch Lane, 30 simulated seconds: previous fall response leaves 1,658 pixels in chunks; sensitive response leaves 1,324 in chunks and 598 loose/pending pixels. One 645-pixel falling group splits into 10 groups, including body-containing pieces with 191/61/53/46/46/28/28 pixels. Material remains 2,000 in both responses. These are local fixture outcomes, not a campaign balance measurement.
+
+The measurements below refer to **the earlier collapse-stack mini-map**, not Arch Lane:
+
 Open `http://127.0.0.1:8793/collapse-fall.html?map=collapse-stack&response=sensitive`. Choose **낮춘 균열 기준** or **이전 낙하 균열**, then press **초기화 + 비교 1발** for the same initial pose, aim and starter power. The original chain-only response also remains available. No public/free-game entrypoint changed.
 
 Sensitive-only falling contact settings:
