@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {ArchWorld} from '../src/arch/world.js';
 import {ARCH_SAVE_KEYS,ArchJourney,freshProfile} from '../src/arch/journey.js';
 import {ArchJournal} from '../src/arch/telemetry.js';
-import {freeStats,freeOffers} from '../src/arch/balance.js';
+import {freeStats,freeOffers,BALANCE_VERSION} from '../src/arch/balance.js';
 import {ARCH_TUTORIAL,ARCH_SITES} from '../src/arch/maps.js';
 const storage=()=>{const m=new Map();return {getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v)}};
 const loose=w=>{const i=w.cells.findIndex(Boolean);const x=i%w.width+.5,y=Math.floor(i/w.width)+.5;w.breakContact(x,y,q=>Math.hypot(q.x-x,q.y-y)<2,8);w.flushDebris();return {x,y};};
@@ -24,21 +24,20 @@ test('new profile selects real first site; tutorial is explicit and cannot clear
  result=await j.start('tutorial');assert.equal(result.run.site.id,ARCH_TUTORIAL.id);result.run.world.breakContact(0,0,()=>true,Infinity);result.run.world.secureLoose();await j.finish();assert.equal(Object.keys(j.profile.stageRecords).length,1);assert(!j.profile.stageRecords[ARCH_TUTORIAL.id]);
  const fresh=new ArchJourney(storage(),{request:async(_,f)=>f()});assert.equal((await fresh.start()).run.site.id,ARCH_SITES[0].id);
 });
-test('buying Auto Collect activates it next sortie and old progress migrates without losing purchases',async()=>{
+test('buying Auto Collect activates it next sortie and survives reload',async()=>{
  const store=storage(),lock={request:async(_,f)=>f()},j=new ArchJourney(store,lock);const p=structuredClone(j.profile);p.parts=100;p.earned=100;j.save(p);
- assert(!(j.offers().find(o=>o.id==='collectInterval').available));assert((await j.buy('collectBatch')).ok);assert.equal(j.profile.parts,20);assert(j.stats().autoCollect);assert(j.offers().find(o=>o.id==='collectInterval').available);
- const saved=structuredClone(j.profile);saved.balanceVersion='arch-campaign-v0.2';for(const k of ['pixel-demolition-arch-v1-a','pixel-demolition-arch-v1-b'])store.setItem(k,JSON.stringify(saved));
- const loaded=new ArchJourney(store,lock);assert(loaded.persistent);assert.equal(loaded.profile.parts,20);assert.equal(loaded.profile.upgrades.collectBatch,1);assert.equal(loaded.profile.balanceVersion,'arch-campaign-v0.2.1');assert((await loaded.start('stage',ARCH_SITES[0].id)).run.world.stats().autoCollect);
+ assert(!j.offers().some(o=>o.id==='collectInterval'));assert((await j.buy('collectBatch')).ok);assert.equal(j.profile.parts,20);assert(j.stats().autoCollect);
+ const loaded=new ArchJourney(store,lock);assert(loaded.persistent);assert.equal(loaded.profile.parts,20);assert.equal(loaded.profile.upgrades.collectBatch,1);assert.equal(loaded.profile.balanceVersion,BALANCE_VERSION);assert((await loaded.start('stage',ARCH_SITES[0].id)).run.world.stats().autoCollect);
 });
-test('shared save writes stay readable by v0.2 tabs while new run records identify v0.2.1',async()=>{
+test('current tabs share purchases while run records identify the new collection rules',async()=>{
  const store=storage(),lock={request:async(_,f)=>f()},first=new ArchJourney(store,lock);
  const p=structuredClone(first.profile);p.parts=300;p.earned=300;first.save(p);
  const {run}=await first.start('tutorial'),other=new ArchJourney(store,lock);
  assert((await other.buy('battery')).ok);
- for(const key of ARCH_SAVE_KEYS)assert.equal(JSON.parse(store.getItem(key)).balanceVersion,'arch-campaign-v0.2');
- assert.equal(other.profile.balanceVersion,'arch-campaign-v0.2.1');
+ for(const key of ARCH_SAVE_KEYS)assert.equal(JSON.parse(store.getItem(key)).balanceVersion,BALANCE_VERSION);
+ assert.equal(other.profile.balanceVersion,BALANCE_VERSION);
  const journal=new ArchJournal({storage:store,sessionId:'mixed-version',locks:null});journal.start(run);
- assert.equal(journal.current.balanceVersion,'arch-campaign-v0.2.1');
+ assert.equal(journal.current.balanceVersion,BALANCE_VERSION);
  assert((await first.finish()).ok);assert.equal(first.profile.upgrades.battery,1);assert.equal(first.profile.parts,150);
 });
 import Globe from '../src/arch/planet/globe-math.js';

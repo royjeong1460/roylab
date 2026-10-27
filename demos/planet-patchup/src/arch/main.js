@@ -17,7 +17,7 @@ import {COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';
 let journal,planet;
 const warn=()=>{document.getElementById('arch-journal-warning').textContent=journal.warning;};
 installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeGuide,tutorial:ARCH_TUTORIAL,Guide:ArchGuide,TutorialOverlay:ArchTutorialOverlay,gameTip:archTip,firstUpgrade:'blastRadius',
- offerHelp:offer=>offer.kind?'Learn and upgrade here; equip one passive and one active skill below.':offer.id==='blackhole'?'Unlock after 3 distinct site clears. Select Black Hole at the bottom left in the field.':'Applies next sortie. Proximity suction stays free. Auto Collect unlocks map-wide pickup; its upgrades improve quantity or cadence.',
+ offerHelp:offer=>offer.kind?'Learn and upgrade here; equip one passive and one active skill below.':offer.id==='blackhole'?'Unlock after 3 distinct site clears. Select Black Hole at the bottom left in the field.':'Applies next sortie. Proximity suction stays free. Upgrade the suction circle’s range and speed separately. Auto Collect adds map-wide pickup and upgrades its speed.',
  touchHelp:archTouchHelp,
  initialView:viewport=>viewport.fit(),
  finishNoticeMs:run=>collectionComplete(run)?1000:0,

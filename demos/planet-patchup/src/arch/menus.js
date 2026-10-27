@@ -1,5 +1,5 @@
 import {FREE_STAGES,stageBest,stageOpen} from './stages.js';
-import {SKILLS} from './balance.js';
+import {SKILLS,freeStats} from './balance.js';
 
 const icons={
  battery:new URL('./icons/hud-battery.svg',import.meta.url).href,
@@ -11,7 +11,7 @@ const icons={
  orbital:new URL('./icons/active-orbital-drop.svg',import.meta.url).href,
 };
 const GROUPS=[
- {name:'Battery & Collection',ids:['battery','collectBatch','collectInterval'],icon:'collect'},
+ {name:'Battery & Collection',ids:['battery','range','suction','collectBatch'],icon:'collect'},
  {name:'Blast',ids:['blastForce','blastRadius','blastReach'],icon:'blast'},
  {name:'Black Hole',ids:['blackhole','wellPull','wellReach','wellDuration','mix','wear'],icon:'well'},
  {name:'Skills',ids:['aftershock','relay','orbital'],icon:'aftershock'},
@@ -39,14 +39,13 @@ export function renderArchStageList(container,profile,onChoose){
 
 export function offerPresentation(offer,profile){
  const max=offer.max!==null&&offer.level>=offer.max;
- let hint='';
+ let hint={range:'Widens the suction circle. Collection costs no energy.',suction:'Collects pixels inside the suction circle faster.',collectBatch:'Collects loose pixels anywhere on the map, even outside the circle.'}[offer.id]||'';
  if(!max&&!offer.available){
   if(offer.id==='blackhole')hint='Clear 3 sites at 70% to unlock.';
   else if(SKILLS[offer.id])hint=`Clear ${SKILLS[offer.id].clears} sites at 70% to unlock.`;
-  else if(offer.id==='collectInterval')hint='Learn Auto Collect first.';
   else hint='Unlock Black Hole first.';
  }
- const learn=!offer.level&&(offer.kind||offer.id==='blackhole'||offer.id==='collectBatch');
+ const learn=!offer.level&&(offer.kind||offer.id==='blackhole'||offer.id==='collectBatch'&&!freeStats(profile).autoCollect);
  return {hint,price:max?'':offer.cost===0?'FREE':`${offer.cost.toLocaleString()} parts`,action:max?'Max level':!offer.available?'Locked':profile.parts<offer.cost?`Need ${(offer.cost-profile.parts).toLocaleString()}`:learn?'Learn':'Upgrade'};
 }
 
@@ -85,7 +84,7 @@ export function renderArchWorkshop(doc,journey){
  const offers=new Map(journey.offers().map(offer=>[offer.id,offer]));
  for(const [id,card]of cards){
   const offer=offers.get(id),view=offerPresentation(offer,profile),title=card.querySelector('h3');
-  const key=id==='battery'?'battery':id.startsWith('collect')?'collect':SKILLS[id]?id:id.startsWith('blast')?'blast':'well';
+  const key=id==='battery'?'battery':['range','suction','collectBatch'].includes(id)?'collect':SKILLS[id]?id:id.startsWith('blast')?'blast':'well';
   title.replaceChildren(icon(doc,key),element(doc,'span','offer-name',offer.name),element(doc,'span','offer-level',`Lv ${offer.level}/${offer.max??'∞'}`));
   const description=card.querySelector('p');description.className='offer-value';
   const help=card.querySelector('.offer-help');help.textContent=view.hint;help.hidden=!view.hint;

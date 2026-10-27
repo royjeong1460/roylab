@@ -1,8 +1,12 @@
-// Numeric source: simulation/campaign-plan-v0.2/config.json. IDs intentionally match planning tracks.
+// Demolition values retain campaign-plan-v0.2; collection tracks restore local suction upgrades.
 import {ARCH_SITES} from './maps.js';
-export const BALANCE_VERSION='arch-campaign-v0.2.1';
+export const BALANCE_VERSION='arch-campaign-v0.2.2';
 export const TRACKS={"battery": {"id": "battery", "name": "배터리 용량", "base": 150, "growth": 1.2, "cap": 24, "start": 60, "step": 5, "unit": "energy"}, "blastForce": {"id": "blastForce", "name": "폭파 힘", "base": 180, "growth": 1.23, "cap": 30, "start": 1, "step": 0.05, "unit": "base multiplier"}, "blastRadius": {"id": "blastRadius", "name": "폭파 직접 반경", "base": 300, "growth": 1.25, "cap": 20, "start": 3, "step": 0.1, "unit": "cells"}, "blastReach": {"id": "blastReach", "name": "폭파 힘 전달 범위", "base": 150, "growth": 1.22, "cap": 20, "start": 18, "step": 0.5, "unit": "cells"}, "wellPull": {"id": "wellPull", "name": "블랙홀 인력", "base": 180, "growth": 1.23, "cap": 30, "start": 1, "step": 0.05, "unit": "base multiplier"}, "wellReach": {"id": "wellReach", "name": "블랙홀 범위", "base": 180, "growth": 1.22, "cap": 20, "start": 30, "step": 0.5, "unit": "cells"}, "wellDuration": {"id": "wellDuration", "name": "블랙홀 지속", "base": 200, "growth": 1.22, "cap": 20, "start": 2, "step": 0.1, "unit": "seconds"}, "mix": {"id": "mix", "name": "중심 휘젓기", "base": 180, "growth": 1.2, "cap": 36, "start": 1, "step": 0.25, "unit": "multiplier"}, "wear": {"id": "wear", "name": "마모 상한", "base": 180, "growth": 1.2, "cap": 36, "start": 1, "step": 0.25, "unit": "multiplier"}, "collectBatch": {"id": "collectBatch", "name": "자동수집 수량", "base": 80, "growth": 1.15, "cap": 20, "start": 20, "step": 2, "unit": "pixels/batch"}, "collectInterval": {"id": "collectInterval", "name": "자동수집 간격", "base": 100, "growth": 1.18, "cap": 15, "start": 0.25, "step": -0.01, "unit": "seconds/batch"}};
-const ENGLISH={battery:'Battery Capacity',blastForce:'Blast Force',blastRadius:'Blast Radius',blastReach:'Blast Reach',wellPull:'Black Hole Pull',wellReach:'Black Hole Reach',wellDuration:'Black Hole Duration',mix:'Core Mix',wear:'Wear Limit',collectBatch:'Auto Collect',collectInterval:'Auto Collect Interval'};
+// Retain old interval purchases in saves and throughput; the workshop sells one global speed track.
+TRACKS.collectInterval.hidden=true;
+TRACKS.suction={id:'suction',base:80,growth:1.15,cap:20,start:80,step:8,unit:'pixels/s inside circle'};
+TRACKS.range={id:'range',base:80,growth:1.15,cap:20,start:12,step:.5,unit:'cells radius'};
+const ENGLISH={suction:'Suction Speed',range:'Suction Range',battery:'Battery Capacity',blastForce:'Blast Force',blastRadius:'Blast Radius',blastReach:'Blast Reach',wellPull:'Black Hole Pull',wellReach:'Black Hole Reach',wellDuration:'Black Hole Duration',mix:'Core Mix',wear:'Wear Limit',collectBatch:'Auto Collect',collectInterval:'Auto Collect Interval'};
 for(const [id,t] of Object.entries(TRACKS))t.name=ENGLISH[id];
 export const SKILLS={aftershock:{name:'Aftershock',kind:'passive',clears:2,learn:0,trigger:4},relay:{name:'Impact Relay',kind:'passive',clears:5,learn:1000,trigger:5},orbital:{name:'Orbital Drop',kind:'active',clears:4,learn:2000}};
 export const SKILL_PRICES={passive:[600,1800,6000,18000],active:[1200,4000,12000,36000]};
@@ -10,11 +14,19 @@ export const upgradeCost=(id,level)=>Math.ceil(TRACKS[id].base*TRACKS[id].growth
 export const distinctClears=p=>ARCH_SITES.filter(s=>{const r=p.stageRecords?.[s.id];return r&&r.recovered/r.total>=.7;}).length;
 export function freeStats(p){
  const v=Object.fromEntries(Object.entries(TRACKS).map(([id,t])=>[id,t.start+t.step*(p.upgrades?.[id]||0)]));
- return {...v,capacity:v.battery,bombRadius:v.blastRadius,bombPower:v.blastForce,bombCost:12,gravityCost:24,gravityPower:.2*v.wellPull,gravityRadius:v.wellReach,gravityDuration:v.wellDuration,coreMix:v.mix,wearSpeed:v.wear,autoCollect:!!((p.upgrades?.collectBatch||0)+(p.upgrades?.collectInterval||0)),suctionRate:80,suctionRadius:12};
+ return {...v,capacity:v.battery,bombRadius:v.blastRadius,bombPower:v.blastForce,bombCost:12,gravityCost:24,gravityPower:.2*v.wellPull,gravityRadius:v.wellReach,gravityDuration:v.wellDuration,coreMix:v.mix,wearSpeed:v.wear,autoCollect:!!((p.upgrades?.collectBatch||0)+(p.upgrades?.collectInterval||0)),suctionRate:v.suction,suctionRadius:v.range,autoCollectRate:((p.upgrades?.collectBatch||0)+(p.upgrades?.collectInterval||0))?v.collectBatch/v.collectInterval:0};
 }
 export const statsForProfile=freeStats;
 export function freeOffers(p){const clears=distinctClears(p);return [
- ...Object.entries(TRACKS).map(([id,t])=>{const level=p.upgrades[id]||0;return {id,name:t.name,description:id==='collectBatch'&&!freeStats(p).autoCollect?'Unlock map-wide collection · 22 pixels / 0.25s':`${Number((t.start+t.step*level).toFixed(2))} → ${Number((t.start+t.step*Math.min(level+1,t.cap)).toFixed(2))} ${t.unit}`,level,max:t.cap,cost:upgradeCost(id,level),available:level<t.cap&&(id!=='collectInterval'||freeStats(p).autoCollect)&&(!['wellPull','wellReach','wellDuration','mix','wear'].includes(id)||p.owned.includes('blackhole'))};}),
+ ...Object.entries(TRACKS).filter(([,t])=>!t.hidden).map(([id,t])=>{
+  const level=p.upgrades[id]||0,stats=freeStats(p),nextLevel=Math.min(level+1,t.cap);
+  let description=`${Number((t.start+t.step*level).toFixed(2))} → ${Number((t.start+t.step*nextLevel).toFixed(2))} ${t.unit}`;
+  if(id==='collectBatch'){
+   const next=(t.start+t.step*nextLevel)/stats.collectInterval;
+   description=stats.autoCollect?`${Number(stats.autoCollectRate.toFixed(1))} → ${Number(next.toFixed(1))} pixels/s map-wide`:`Unlock map-wide collection · ${Number(next.toFixed(1))} pixels/s`;
+  }
+  return {id,name:t.name,description,level,max:t.cap,cost:upgradeCost(id,level),available:level<t.cap&&(!['wellPull','wellReach','wellDuration','mix','wear'].includes(id)||p.owned.includes('blackhole'))};
+ }),
  {id:'blackhole',name:'Black Hole',description:'24 energy per attack',level:p.owned.includes('blackhole')?1:0,max:1,cost:2000,available:clears>=3&&!p.owned.includes('blackhole')},
  ...Object.entries(SKILLS).map(([id,s])=>{const level=p.skills?.[id]||0;return {id,name:s.name,kind:s.kind,description:level?`Level ${level} → ${Math.min(5,level+1)}`:`Learn after ${s.clears} distinct clears`,level,max:5,cost:level?SKILL_PRICES[s.kind][level-1]??0:s.learn,available:clears>=s.clears&&level<5};})];}
 export const offers=freeOffers;
