@@ -31,3 +31,20 @@ export function mountMinimalHUD(doc){
 }
 
 export function mountSkillHUD(doc){const hud=doc.createElement('div');hud.id='arch-skill-hud';hud.hidden=true;hud.innerHTML=`<img id="arch-passive" hidden alt=""><button id="arch-active" type="button" hidden><img src="${orbitalIcon}" alt=""></button>`;doc.getElementById('playfield').append(hud);}
+
+export function mountCleanupHUD(doc){
+ const hud=doc.createElement('div');hud.id='arch-cleanup';hud.hidden=true;
+ hud.innerHTML='<div class="cleanup-intro" aria-hidden="true">BATTERY EMPTY<span>Finish collecting</span></div><div class="cleanup-clock"><span>COLLECT</span><strong id="arch-cleanup-seconds"></strong><span class="cleanup-track"><i></i></span></div><span id="arch-cleanup-status" class="cleanup-sr" role="status" aria-live="polite"></span>';
+ doc.getElementById('playfield').append(hud);
+}
+export function renderCleanupHUD(doc,run){
+ const hud=doc.getElementById('arch-cleanup'),visible=run.phase==='finishing'&&!run.finishReady&&run.state==='active';
+ const entered=hud.hidden&&visible;hud.hidden=!visible;if(!visible)return;
+ const seconds=Math.max(1,Math.ceil(run.finishRemaining)),label=doc.getElementById('arch-cleanup-seconds');
+ if(label.textContent!==String(seconds))label.textContent=String(seconds);
+ const resumed=hud.dataset.paused==='true'&&!run.paused;
+ hud.dataset.urgent=String(seconds<=3);hud.dataset.paused=String(run.paused);
+ hud.style.setProperty('--cleanup-left',String(Math.max(0,Math.min(1,run.finishRemaining/10))));
+ const message=run.paused?'Collection paused':entered?'Battery empty. Finish collecting. Up to 10 seconds.':seconds<=3?`${seconds} seconds to collect.`:resumed?'Collection resumed.':'';
+ const status=doc.getElementById('arch-cleanup-status');if(message&&status.textContent!==message)status.textContent=message;
+}

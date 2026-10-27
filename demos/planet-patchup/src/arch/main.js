@@ -12,20 +12,21 @@ import './planet/home.css';
 import './menus.css';
 import {mountArchMenus,mountArchOptions,renderArchStageList,renderArchWorkshop} from './menus.js';
 import {mountPlanetHome} from './planet/home.js';
-import {mountMinimalHUD,mountSkillHUD,renderSkillHUD,renderToolSwitch} from './hud.js';
+import {mountMinimalHUD,mountSkillHUD,renderSkillHUD,renderToolSwitch,mountCleanupHUD,renderCleanupHUD} from './hud.js';
 import {COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';
 let journal,planet;
 const warn=()=>{document.getElementById('arch-journal-warning').textContent=journal.warning;};
 installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeGuide,tutorial:ARCH_TUTORIAL,Guide:ArchGuide,TutorialOverlay:ArchTutorialOverlay,gameTip:archTip,firstUpgrade:'blastRadius',
  offerHelp:offer=>offer.kind?'Learn and upgrade here; equip one passive and one active skill below.':offer.id==='blackhole'?'Unlock after 3 distinct site clears. Select Black Hole at the bottom left in the field.':'Applies next sortie. Proximity suction stays free. Auto Collect unlocks map-wide pickup; its upgrades improve quantity or cadence.',
  touchHelp:archTouchHelp,
+ initialView:viewport=>viewport.fit(),
  renderer:world=>({surface:createArchSurface(world.width,world.cells),createBackdrop:createArchBackdrop,collectibleStyle:COLLECTIBLE_STYLE}),
  overlay:(scene,view)=>new ActiveOverlay(scene,view),
  home(doc){planet=mountPlanetHome(doc);mountArchMenus(doc);},
  settings:mountArchOptions,
  soundLabel:enabled=>`Sound · ${enabled?'ON':'OFF'}`,
  renderStages:renderArchStageList,
- init(storage,{qa,previewId}){mountArchUI(document);mountMinimalHUD(document);mountSkillHUD(document);if(qa){const raw=storage,prefix='qa:';storage={get length(){return Array.from({length:raw.length},(_,i)=>raw.key(i)).filter(k=>k?.startsWith(prefix)).length;},key(i){return Array.from({length:raw.length},(_,n)=>raw.key(n)).filter(k=>k?.startsWith(prefix))[i]?.slice(prefix.length);},getItem:k=>raw.getItem(prefix+k),setItem:(k,v)=>raw.setItem(prefix+k,v),removeItem:k=>raw.removeItem(prefix+k)};}if(previewId){const m=new Map();storage={get length(){return m.size;},key:i=>[...m.keys()][i],getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};}let session;try{session=globalThis.sessionStorage;}catch{}journal=new ArchJournal({storage,sessionId:tabSession(session)});warn();},
+ init(storage,{qa,previewId}){mountArchUI(document);mountMinimalHUD(document);mountSkillHUD(document);mountCleanupHUD(document);if(qa){const raw=storage,prefix='qa:';storage={get length(){return Array.from({length:raw.length},(_,i)=>raw.key(i)).filter(k=>k?.startsWith(prefix)).length;},key(i){return Array.from({length:raw.length},(_,n)=>raw.key(n)).filter(k=>k?.startsWith(prefix))[i]?.slice(prefix.length);},getItem:k=>raw.getItem(prefix+k),setItem:(k,v)=>raw.setItem(prefix+k,v),removeItem:k=>raw.removeItem(prefix+k)};}if(previewId){const m=new Map();storage={get length(){return m.size;},key:i=>[...m.keys()][i],getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};}let session;try{session=globalThis.sessionStorage;}catch{}journal=new ArchJournal({storage,sessionId:tabSession(session)});warn();},
  profile(journey){renderArchProfile(document,journey,journal);planet?.update(journey.profile);warn();},
  offers(journey,equip){renderEquipment(document,journey,equip);const p=journey.profile;document.getElementById('tutorial-workshop').hidden=!['upgrade','next'].includes(p.tutorial);document.getElementById('workshop-skip').hidden=!['upgrade','next'].includes(p.tutorial);document.getElementById('workshop-random').textContent='Choose a site →';document.getElementById('tutorial-workshop').textContent=p.tutorial==='upgrade'?'Use 300 parts to buy Blast Radius. Move the suction circle over loose pixels.':p.tutorial==='next'?'Blast Radius upgraded. Choose your next site.':'The first Blast Radius upgrade costs 300 parts. Practice to earn more.';renderArchWorkshop(document,journey);},
  receipt(result){const text=receiptText(result);document.getElementById('result-title').textContent=`${result.recovered.toLocaleString()} pixels recovered`;document.getElementById('result-copy').textContent=text.copy;document.getElementById('result-bonus').textContent=text.bonus;},
@@ -34,7 +35,7 @@ installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeG
  checkpoint(run,options){if(run)journal.checkpoint(run,options);warn();},
  finish(run,result,profile){journal.finish(run,result,profile);warn();},
  abandon(run,reason){journal.abandon(run,reason);warn();},
- hud(run,activate){const feedback=document.getElementById('feedback');feedback.hidden=run.phase!=='finishing'&&!run.paused;renderToolSwitch(document,run);renderSkillHUD(document,run,activate);document.getElementById('run-mode').textContent=run.mode==='boss'?'Crooked Bell Twins · Boss':'Arch Quarter';},
+ hud(run,activate){const feedback=document.getElementById('feedback');feedback.hidden=!run.paused;renderCleanupHUD(document,run);renderToolSwitch(document,run);renderSkillHUD(document,run,activate);document.getElementById('run-mode').textContent=run.mode==='boss'?'Crooked Bell Twins · Boss':'Arch Quarter';},
  async export(profile){await journal.flush();warn();return journal.export(profile);}
 });
 await import('../free30/main.js');

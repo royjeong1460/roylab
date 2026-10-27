@@ -3,6 +3,30 @@ import assert from 'node:assert/strict';
 import Projection from '../src/arch/planet/projection.js';
 import {HOME_REGIONS,homeRegions} from '../src/arch/planet/regions.js';
 import {createPlanetGlobe} from '../src/arch/planet/globe.js';
+import {ARCH_SITES,ARCH_TUTORIAL} from '../src/arch/maps.js';
+import Territories from '../src/arch/planet/territories.js';
+
+test('six distinct 70% clears progressively restore Arch, with full restoration reserved for the boss',()=>{
+ const profile={stageRecords:{[ARCH_TUTORIAL.id]:{recovered:100,total:100}},bossCleared:false};
+ assert.equal(homeRegions(profile)[0].restoration,0);
+ for(let i=0;i<6;i++){
+  profile.stageRecords[ARCH_SITES[i].id]={recovered:699,total:1000};
+  assert.equal(homeRegions(profile)[0].restoration,i/7);
+  profile.stageRecords[ARCH_SITES[i].id].recovered=700;
+  assert.equal(homeRegions(profile)[0].restoration,(i+1)/7);
+  profile.stageRecords[ARCH_SITES[i].id].recovered=1000;
+  assert.equal(homeRegions(profile)[0].restoration,(i+1)/7);
+ }
+ assert(!homeRegions(profile)[0].cleared);
+ profile.bossCleared=true;assert.equal(homeRegions(profile)[0].restoration,1);
+ assert(homeRegions(profile).slice(1).every(r=>r.restoration===0&&!r.available));
+});
+
+test('territory restoration blends partial progress across geographic borders',()=>{
+ const clean=new Uint8ClampedArray([200,200,200,255]),dirty=new Uint8ClampedArray([40,40,40,255]);
+ const masks={first:[0],second:[1],weight:[.75]};
+ assert.deepEqual([...Territories.compose(clean,dirty,masks,[.5,0])],[100,100,100,255]);
+});
 
 test('free Arch access and real boss restoration remain separate from prototype flags',()=>{
  const p={bossCleared:false,available:[0,1,2,3,4,5],cleared:[0],zone:5,state:'clean'};
@@ -44,6 +68,16 @@ test('saved clear before image load restores Arch; reset hides restoration, othe
  r.globe.select(1);r.advance();assert.equal(r.pin.dataset.hidden,'true');
  r.globe.select(0);r.advance();assert.equal(r.pin.dataset.hidden,'false');
  r.globe.update(homeRegions({bossCleared:true}));assert.deepEqual(r.frame(),clean);
+});
+
+test('each saved map clear changes the real renderer, without repeated redraw for unchanged progress',()=>{
+ const r=renderer(),p={stageRecords:{}};r.load();let previous=r.frame();
+ for(const site of ARCH_SITES){
+  p.stageRecords[site.id]={recovered:7,total:10};r.globe.update(homeRegions(p));
+  assert.notDeepEqual(r.frame(),previous);previous=r.frame();
+  const count=r.renders();r.globe.update(homeRegions(p));assert.equal(r.renders(),count);
+ }
+ r.globe.update(homeRegions({...p,bossCleared:true}));assert.notDeepEqual(r.frame(),previous);
 });
 
 test('rapid selection replaces rotation and disposal stops pending image/animation work',()=>{

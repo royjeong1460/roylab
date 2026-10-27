@@ -163,7 +163,7 @@ class FreeScene extends Phaser.Scene{
   preload(){this.load.audio('pixel-collect',collectionSoundUrl);this.load.audio('blast',blastSoundUrl);this.load.audio('debris-impact',impactSoundUrl);}
   create(){
     scene=this;this.run=journey.currentRun;const r=this.run,w=r.world,f=$('playfield');this.aim={...r.aim};this.working=false;this.settled=false;this.settling=false;this.lastHUD=0;this.lastClock=performance.now();
-    this.viewport=new MapViewport({worldWidth:w.width,worldHeight:w.height,viewWidth:f.clientWidth,viewHeight:f.clientHeight});closeView(this.viewport,r.site.preview[0]?.x);this.aim={x:r.site.preview[0]?.x??w.width/2,y:w.floorY-10};
+    this.viewport=new MapViewport({worldWidth:w.width,worldHeight:w.height,viewWidth:f.clientWidth,viewHeight:f.clientHeight});if(campaign?.initialView)campaign.initialView(this.viewport,r);else closeView(this.viewport,r.site.preview[0]?.x);this.aim={x:r.site.preview[0]?.x??w.width/2,y:w.floorY-10};
     this.view=new WorldRenderer(this,w,this.viewport,$('minimap'),true,campaign?campaign.renderer(w):document.documentElement.dataset.demo==='planet'?{surface:artMap?testEdition.surface(w.width,w.cells):createTrashSurface(w.width,w.cells,'earth'),createBackdrop:artMap?testEdition.createBackdrop:createDustBackdrop,collectibleStyle:COLLECTIBLE_STYLE}:{});if(artMap){this.viewport.fit();testEdition.initialView?.(this.viewport,r);}this.view.transform();this.overlay=new ThreeToolsOverlay(this,this.view);this.editionOverlay=campaign?.overlay(this,this.view)||testEdition?.createOverlay?.(this,this.view);
     this.gameSound=new GameSound(this.sound,soundEnabled,key=>this.cache.audio.exists(key));
     this.tipSeconds=0;

@@ -36,7 +36,7 @@ export function mountPlanetHome(doc){
   const region=regions[selected];
   q('#zone-number').textContent=String(selected+1).padStart(2,'0')+' / 06';
   q('#zone-name').textContent=region.available?region.name+(region.cleared?' ✓':''):'?';
-  q('#globe').setAttribute('aria-label',region.available?`${region.name} · ${region.cleared?'Restored':'Awaiting cleanup'}`:'Undiscovered region');
+  q('#globe').setAttribute('aria-label',region.available?`${region.name} · ${region.cleared?'Restored':region.restoration?`${Math.round(region.restoration*100)}% restored`:'Awaiting cleanup'}`:'Undiscovered region');
   enter.disabled=!region.available;enter.innerHTML=region.available?'Enter <span>→</span>':'Undiscovered';
   zoneLink.disabled=!region.available;
   for(const [i,b]of [...q('#dots').children].entries()){

@@ -26,3 +26,18 @@ html.arch-design #feedback:empty{display:none}html.arch-design #map-overview{wid
 @media(orientation:landscape) and (max-height:600px){html.arch-design body:has(#expedition:not([hidden])){max-width:none}html.arch-design .compact-hud{height:48px}html.arch-design #base{min-height:540px}html.arch-design body:has(#base:not([hidden])){overflow:auto}}
 html.arch-design #stage-list .stage-row small{display:none}html.arch-design #stage-list .stage-row{min-height:54px;padding:10px 4px}html.arch-design #stage-list .stage-row strong{font-size:14px;font-weight:400}html.arch-design #stage-list .stage-best{font-size:11px}html.arch-design #home-zones-dialog>p.fine{display:none}html.arch-design #country-status{display:none}
 html.arch-design #expedition{position:relative}html.arch-design #feedback[hidden]{display:none!important}
+/* Finishing phase: the center notice clears quickly; the clock never intercepts aiming. */
+#arch-cleanup{position:absolute;inset:0;z-index:8;pointer-events:none;color:#f5e4b7;text-align:center}
+#arch-cleanup[hidden]{display:none}
+.cleanup-intro{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:max-content;max-width:90%;padding:14px 20px;border:2px solid #cbb17a;background:#091322ed;box-shadow:4px 4px #09132266;font-size:16px;animation:cleanup-intro 1.5s ease-out both}
+.cleanup-intro span{display:block;margin-top:8px;font-size:11px;color:#d4c5a3}
+.cleanup-clock{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:112px;padding:8px 12px;border:2px solid #cbb17a;background:#091322ed;box-shadow:3px 3px #09132244}
+.cleanup-clock>span:first-child{display:block;font-size:9px;letter-spacing:2px}
+#arch-cleanup-seconds{display:block;font-size:28px;line-height:1.4;font-weight:400;font-variant-numeric:tabular-nums}
+.cleanup-track{display:block;height:4px;background:#394353;overflow:hidden}.cleanup-track i{display:block;height:100%;background:#cbb17a;transform:scaleX(var(--cleanup-left));transform-origin:left}
+#arch-cleanup[data-urgent=true] .cleanup-clock{border-color:#edb08c;animation:cleanup-pulse 1s ease-in-out infinite}
+#arch-cleanup[data-paused=true] *{animation-play-state:paused}
+.cleanup-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@keyframes cleanup-intro{0%{opacity:0;transform:translate(-50%,-40%)}15%,65%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-65%)}}
+@keyframes cleanup-pulse{50%{box-shadow:0 0 0 3px #edb08c55}}
+@media(prefers-reduced-motion:reduce){.cleanup-intro{animation:none;display:none}#arch-cleanup[data-urgent=true] .cleanup-clock{animation:none}}
