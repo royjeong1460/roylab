@@ -64,6 +64,20 @@ export function mountArchMenus(doc){
  $('workshop-skip').textContent='Skip upgrade guide';
 }
 
+export function mountArchOptions(doc){
+ const $=id=>doc.getElementById(id),dialog=$('home-options-dialog'),heading=dialog.querySelector('.home-dialog-heading');
+ const titles=element(doc,'div','menu-titles');$('home-options-title').textContent='Options';titles.append(element(doc,'small','menu-kicker','SYSTEM · SETUP'),$('home-options-title'));heading.prepend(titles);
+ heading.querySelector('button').setAttribute('aria-label','Close options');
+ const sound=dialog.querySelector('[data-game-sound]');$('stats').after(sound);
+ const label=dialog.querySelector('.pattern-label'),select=label.querySelector('select');
+ label.firstChild.textContent='Mobile controls';select.setAttribute('aria-label','Mobile controls');
+ for(const option of select.options)option.textContent=option.value==='contact'?'Tap at touch point':'Aim with offset pointer';
+ const shortcuts=element(doc,'div','option-shortcuts');$('practice').textContent='Tutorial ↗';shortcuts.append($('practice'),$('home-map-maker'));dialog.querySelector('.playtest').before(shortcuts);
+ dialog.querySelector('.playtest summary').textContent='Play records';$('export-report').textContent='Export records';dialog.querySelector('.playtest p.fine').textContent='Saved on this device only.';
+ $('reset-open').textContent='Reset progress';dialog.querySelector('.home-back-link').before($('reset-open'));
+ $('reset-title').textContent='Reset your progress?';$('reset-dialog').querySelector('p.fine').textContent='Sound settings and other game saves are kept.';$('reset-cancel').textContent='Cancel · keep playing';$('reset-confirm').textContent='Reset and start over';
+}
+
 export function renderArchWorkshop(doc,journey){
  const $=id=>doc.getElementById(id),profile=journey.profile,root=$('offers');
  // Move the actual controller-created cards, retaining disabled states and guarded purchase handlers.

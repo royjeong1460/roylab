@@ -10,7 +10,7 @@ import {ArchGuide,ArchTutorialOverlay,archTouchHelp,archTip,receiptText,mountArc
 import './style.css';
 import './planet/home.css';
 import './menus.css';
-import {mountArchMenus,renderArchStageList,renderArchWorkshop} from './menus.js';
+import {mountArchMenus,mountArchOptions,renderArchStageList,renderArchWorkshop} from './menus.js';
 import {mountPlanetHome} from './planet/home.js';
 import {mountMinimalHUD,mountSkillHUD,renderSkillHUD,renderToolSwitch} from './hud.js';
 import {COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';
@@ -22,6 +22,8 @@ installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeG
  renderer:world=>({surface:createArchSurface(world.width,world.cells),createBackdrop:createArchBackdrop,collectibleStyle:COLLECTIBLE_STYLE}),
  overlay:(scene,view)=>new ActiveOverlay(scene,view),
  home(doc){planet=mountPlanetHome(doc);mountArchMenus(doc);},
+ settings:mountArchOptions,
+ soundLabel:enabled=>`Sound · ${enabled?'ON':'OFF'}`,
  renderStages:renderArchStageList,
  init(storage,{qa,previewId}){mountArchUI(document);mountMinimalHUD(document);mountSkillHUD(document);if(qa){const raw=storage,prefix='qa:';storage={get length(){return Array.from({length:raw.length},(_,i)=>raw.key(i)).filter(k=>k?.startsWith(prefix)).length;},key(i){return Array.from({length:raw.length},(_,n)=>raw.key(n)).filter(k=>k?.startsWith(prefix))[i]?.slice(prefix.length);},getItem:k=>raw.getItem(prefix+k),setItem:(k,v)=>raw.setItem(prefix+k,v),removeItem:k=>raw.removeItem(prefix+k)};}if(previewId){const m=new Map();storage={get length(){return m.size;},key:i=>[...m.keys()][i],getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};}let session;try{session=globalThis.sessionStorage;}catch{}journal=new ArchJournal({storage,sessionId:tabSession(session)});warn();},
  profile(journey){renderArchProfile(document,journey,journal);planet?.update(journey.profile);warn();},

@@ -62,7 +62,7 @@ campaign?.init(storage,{qa,previewId});
 const soundButtons=[...document.querySelectorAll('[data-game-sound]')];
 let soundEnabled=true;
 try{soundEnabled=scopedStorage.getItem('free30-collection-sound')!=='off';}catch{}
-function soundSettings(){for(const button of soundButtons){button.setAttribute('aria-pressed',String(soundEnabled));button.textContent=`소리 ${soundEnabled?'켜짐':'꺼짐'}`;}}
+function soundSettings(){for(const button of soundButtons){button.setAttribute('aria-pressed',String(soundEnabled));button.textContent=campaign?.soundLabel?.(soundEnabled)||`소리 ${soundEnabled?'켜짐':'꺼짐'}`;}}
 for(const button of soundButtons)button.onclick=()=>{soundEnabled=!soundEnabled;scene?.gameSound?.setEnabled(soundEnabled);try{scopedStorage.setItem('free30-collection-sound',soundEnabled?'on':'off');}catch{}soundSettings();};
 soundSettings();
 const duration=ms=>`${Math.floor(ms/60000)}분 ${Math.floor(ms/1000)%60}초`;
@@ -259,6 +259,7 @@ if(!testEdition)mountTouchSettings(document,scopedStorage,contact=>{
   release();touchTap=contact;
   if(scene&&!scene.settled){scene.bindControls();scene.hud();}
 },campaign?.touchHelp);
+campaign?.settings?.(document);
 $('home-zones').onclick=maps;$('home-zone-link').onclick=maps;
 profile();notice(journey.notice||(!journey.persistent?'저장소를 사용할 수 없어요. 저장 안내를 확인해 주세요.':''));
 
