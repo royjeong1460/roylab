@@ -1,5 +1,5 @@
 import {FranceJourney,FranceRun} from '../france/journey.js';
-import {ChainArchWorld as ArchWorld} from './chain-world.js';
+import {FallArchWorld as ArchWorld} from './fall-world.js';
 import {ARCH_TUTORIAL} from './maps.js';
 import {FREE_STAGES,stageOpen,nextStage,rememberStage,validStageRecords} from './stages.js';
 import {TRACKS,SKILLS,freeStats,freeOffers,distinctClears,totalSpent,BALANCE_VERSION} from './balance.js';

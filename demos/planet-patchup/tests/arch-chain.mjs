@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ArchRun,freshProfile} from '../src/arch/journey.js';
 import {JointedArchWorld} from '../src/arch/jointed-world.js';
+import {ChainArchWorld} from '../src/arch/chain-world.js';
 import {ARCH_TUTORIAL,ARCH_SITES,ARCH_BOSS} from '../src/arch/maps.js';
 import {runSnapshot,ArchJournal} from '../src/arch/telemetry.js';
 import {COLLAPSE_MAPS} from '../src/collapse-lab/maps.js';
@@ -10,7 +11,7 @@ const advance=(w,seconds)=>{const events=[];for(let i=0;i<seconds*60;i++){w.step
 test('every free entry uses 10x chains without changing tools, gravity, collection or initial material',()=>{
  for(const site of [ARCH_TUTORIAL,...ARCH_SITES,ARCH_BOSS]){
   const profile=freshProfile(),w=new ArchRun(site,profile).world,old=new JointedArchWorld(site,profile);
-  assert.equal(w.physicsVersion,'arch-chain-v1');assert.equal(w.chainPower,10);
+  assert.equal(w.physicsVersion,'arch-fall-sensitive-v1');assert.equal(w.chainPower,10);
   assert.deepEqual(w.stats(),old.stats());assert.deepEqual(w.engine.gravity,old.engine.gravity);
   assert.deepEqual(w.ledger(),old.ledger());assert.equal(w.capacity,old.capacity);
   assert.equal(advance(w,2).filter(e=>e.kind==='chain-impact').length,0);
@@ -29,7 +30,7 @@ test('the campaign world actually executes the lab cascade and exports independe
  w.chainSummary.pixels++;assert.deepEqual(snapshot.chain,expected);
 });
 test('zero chain power preserves original free-map collisions and motion exactly',()=>{
- const site=ARCH_SITES[0],p=freshProfile(),w=new ArchRun(site,p).world,old=new JointedArchWorld(site,p);
+ const site=ARCH_SITES[0],p=freshProfile(),w=new ChainArchWorld(site,p),old=new JointedArchWorld(site,p);
  w.setChainPower(0);for(const world of [w,old]){world.unlimited=true;world.activate(site.preview[0].x,site.preview[0].y);advance(world,10);}
  assert.deepEqual(w.ledger(),old.ledger());assert.deepEqual(w.bodies.map(p=>p.body.position),old.bodies.map(p=>p.body.position));
  assert.equal(w.chainSummary.impacts,0);
