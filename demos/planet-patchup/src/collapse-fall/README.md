@@ -22,3 +22,29 @@ Verification: `node --test tests/collapse-fall.mjs tests/collapse-chain.mjs test
 | 70 cells | 88.3 cells/s | 104 / 5 | 21 / 10 | 105 |
 
 These are repeatable fixture results, not final game balance or iPhone performance validation. Evidence is saved under `/Users/roy/Developer/sand/artifacts/local-fall-fracture-2026-10-27/`.
+
+## Lowered map 1 criteria (separate response)
+
+Open `http://127.0.0.1:8793/collapse-fall.html?map=collapse-stack&response=sensitive`. Choose **낮춘 균열 기준** or **이전 낙하 균열**, then press **초기화 + 비교 1발** for the same initial pose, aim and starter power. The original chain-only response also remains available. No public/free-game entrypoint changed.
+
+Sensitive-only falling contact settings:
+
+- Crack severity now rises from 14 to 32 cells/s (previously 30–75); activation span is 10 instead of 20.
+- Graph bond resistance is .02 instead of .65, and propagation distance is 3×. Lowering speed alone only detached leg tips, so these changes let the measured impact reach and split the body.
+- A contact span wider than 3 cells proportionally increases bond resistance to distribute load. This keeps a low, flat landing from shredding the body.
+- Gravity, actual collision energy, tools and chain priority/power are unchanged. Initial map seating uses the previous settings before enabling the comparison. Resting debris does not continually crack.
+
+Same map 1 starter shot, 20 simulated seconds: previous response had 0 additional fall fractures; sensitive response had 7. A 374-pixel body group hit at 24.5 cells/s and split into 8 groups, with 243 pixels in the largest. Multiple resulting pieces contained substantial body material (139, 35, 26, 24 body pixels), not merely detached legs. The first chain hit is identical; later chain results can differ because the geometry now splits differently.
+
+Controlled first landings, same 360-pixel body:
+
+| Height | Speed (cells/s) | Loose pixels | Bodies | Largest |
+|---|---:|---:|---:|---:|
+| 4 | 23.5 | 2 | 1 | 358 |
+| 10 | 36.1 | 10 | 8 | 60 |
+| 20 | 50.1 | 7 | 10 | 132 |
+| 70 | 88.3 | 21 | 10 | 105 |
+
+Fragment size/count is not monotonic with height: energy is shared between contact chips and graph cracks, and impact grouping is capped. These are fracture-sensitivity tests, not final balance.
+
+Tests: `node --test tests/collapse-fall-sensitive.mjs tests/collapse-fall.mjs tests/collapse-chain.mjs` (21 passing). Local build passed. Raw comparison and browser screenshot: `/Users/roy/Developer/sand/artifacts/local-fall-sensitive-2026-10-27/`.

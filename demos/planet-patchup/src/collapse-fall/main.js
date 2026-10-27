@@ -13,6 +13,9 @@ import './style.css';
 const $=id=>document.getElementById(id);
 $('map').replaceChildren(...FALL_MAPS.map(map=>new Option(map.name,map.id)));
 $('map').value='drop-70';
+const params=new URLSearchParams(location.search);
+if(FALL_MAPS.some(m=>m.id===params.get('map')))$('map').value=params.get('map');
+if(['fall','chain','sensitive'].includes(params.get('response')))$('response').value=params.get('response');
 class CollapseScene extends Phaser.Scene{
  create(){
   this.resetExperiment();this.bindUI();
@@ -27,7 +30,7 @@ class CollapseScene extends Phaser.Scene{
   this.chainView=new ChainView(this,this.viewport);
   this.pointer=bindBatteryInput(f,this.game.canvas,this.viewport,{touchAtContact:true,touchPressOnRelease:()=>true,canStart:()=>!this.paused,start:q=>{this.aim=q;},move:q=>{this.aim=q;},end:()=>{},press:q=>this.fire(q),onViewChange:()=>this.view.transform()});
   this.game.canvas.setAttribute('aria-label',`${map.name}. 클릭 또는 탭으로 폭파. 두 손가락으로 지도 이동.`);
-  $('hint').textContent=map.hint;$('aimed-shot').textContent=map.dropHeight?'자유 낙하':'표시 지점 1발';$('pause').textContent=this.paused?'계속':'일시정지';this.setTool('bomb');this.renderUI();
+  $('hint').textContent=map.hint;$('compare-shot').hidden=Boolean(map.dropHeight);$('aimed-shot').textContent=map.dropHeight?'자유 낙하':'표시 지점 1발';$('pause').textContent=this.paused?'계속':'일시정지';this.setTool('bomb');this.renderUI();
  }
  fire(q){if(this.paused)return false;this.aim=q;const ok=this.world.activate(q.x,q.y);if(ok)this.attacks.push({t:this.elapsed(),tool:this.world.tool,...q});return ok;}
  elapsed(){return this.world.elapsed-this.experiment.startedAt;}
@@ -35,11 +38,12 @@ class CollapseScene extends Phaser.Scene{
  bindUI(){
   for(const id of ['map','preset','response'])$(id).onchange=()=>this.resetExperiment();$('reset').onclick=()=>this.resetExperiment();
   $('blast').onclick=()=>this.setTool('bomb');$('blackhole').onclick=()=>this.setTool('blackhole');
+  $('compare-shot').onclick=()=>{this.resetExperiment();this.fire({...this.experiment.map.aim});};
   $('aimed-shot').onclick=()=>{if(this.experiment.map.dropHeight){if(this.dropped)this.resetExperiment();this.dropped=true;this.paused=false;this.accumulator=0;$('pause').textContent='일시정지';}else{this.setTool('bomb');this.fire({...this.experiment.map.aim});}};
   $('pause').onclick=()=>{this.paused=!this.paused;this.accumulator=0;$('pause').textContent=this.paused?'계속':'일시정지';this.renderUI();};
   $('fit').onclick=()=>{this.viewport.fit();this.view.transform();};
   $('unlimited').onchange=()=>{this.world.unlimited=$('unlimited').checked;this.renderUI();};
-  $('export').onclick=()=>{const data={schemaVersion:4,localOnly:true,mapId:this.experiment.map.id,response:this.experiment.response,physicsVersion:this.world.physicsVersion,preset:this.experiment.preset,stats:this.world.stats(),unlimited:this.world.unlimited,seconds:this.elapsed(),metrics:readMetrics(this.world),chain:this.world.chainSummary||null,chainPower:this.world.chainPower??null,fall:this.world.fallSummary||null,firstLanding:this.world.firstLanding||null,attacks:this.attacks,events:this.events,diagnostics:this.world.diagnostics()};const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`${data.mapId}-${data.preset}-${Date.now()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+  $('export').onclick=()=>{const data={schemaVersion:4,localOnly:true,mapId:this.experiment.map.id,response:this.experiment.response,physicsVersion:this.world.physicsVersion,fallSettings:this.world.fallSettings||null,preset:this.experiment.preset,stats:this.world.stats(),unlimited:this.world.unlimited,seconds:this.elapsed(),metrics:readMetrics(this.world),chain:this.world.chainSummary||null,chainPower:this.world.chainPower??null,fall:this.world.fallSummary||null,firstLanding:this.world.firstLanding||null,attacks:this.attacks,events:this.events,diagnostics:this.world.diagnostics()};const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`${data.mapId}-${data.preset}-${Date.now()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
   document.addEventListener('visibilitychange',()=>{if(document.hidden){this.paused=true;this.accumulator=0;$('pause').textContent='계속';}});
  }
  resize(){const f=$('playfield');if(!this.viewport||!f.clientWidth||!f.clientHeight)return;const fit=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001;this.scale.resize(f.clientWidth,f.clientHeight);this.viewport.setSize(f.clientWidth,f.clientHeight);if(fit)this.viewport.fit();this.view.transform();}
@@ -52,8 +56,8 @@ class CollapseScene extends Phaser.Scene{
   if(time-(this.lastUI||0)>150){this.lastUI=time;this.renderUI();}
  }
  renderUI(){const w=this.world,m=readMetrics(w),stats=w.stats();$('metrics').replaceChildren(...[['총 픽셀',m.total.toLocaleString()],['픽셀화',`${m.percent.toFixed(1)}% · ${m.pixelized}`],['회수',`${(m.collected/m.total*100).toFixed(1)}% · ${m.collected}`],['독립 강체',m.rigid],['공격 횟수',m.attacks],['경과',`${this.elapsed().toFixed(1)}초${this.paused?' · 정지':''}`],['배터리',w.unlimited?'∞':`${Math.ceil(w.charge)} / ${w.capacity}`]].flatMap(([label,value])=>{const a=document.createElement('span'),b=document.createElement('b');a.textContent=label;b.textContent=value;return[a,b];}));$('power').textContent=`Blast 반경 ${stats.bombRadius.toFixed(1)} · 힘 ${stats.bombPower.toFixed(2)} · 전달 ${stats.blastReach} | 자동 회수 ${stats.autoCollectRate.toFixed(2)}/초`;
-  const fall=w.firstLanding||this.events.find(e=>e.kind==='fall-fracture');
-  $('fall-result').textContent=fall?`첫 충돌 ${fall.speed.toFixed(1)}칸/초 · 픽셀화 ${fall.count}개 · 남은 덩어리 ${fall.fragments}개${fall.largest?` · 가장 큰 조각 ${fall.largest}픽셀`:''}`:'낙하 충돌 기록 대기';
+  const falls=this.events.filter(e=>e.kind==='fall-fracture'),fall=w.firstLanding||falls.reduce((a,b)=>!a||b.fragments>a.fragments?b:a,null);
+  $('fall-result').textContent=fall?`${w.firstLanding?'첫 충돌':`낙하 균열 ${falls.length}회 · 최대 분리 충돌`} ${fall.speed.toFixed(1)}칸/초 · 픽셀화 ${fall.count}개 · 남은 덩어리 ${fall.fragments}개${fall.largest?` · 가장 큰 조각 ${fall.largest}픽셀`:''}`:'낙하 균열 0회 · 충돌 기록 대기';
   const chain=w.chainSummary,active=chain&&w.elapsed-chain.lastAt<2;
   $('chain-status').classList.toggle('active',!!active);
   $('chain-stage').textContent=chain?(chain.best?`${chain.best} CHAIN`:'READY'):'ORIGINAL';

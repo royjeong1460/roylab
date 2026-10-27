@@ -1,5 +1,6 @@
 import {ChainArchWorld} from '../arch/chain-world.js';
-import {FallFractureWorld} from './world.js';
+import {FallFractureWorld,DEFAULT_FALL_SETTINGS} from './world.js';
+import {SensitiveFallWorld} from './sensitive-world.js';
 import {YardKit} from '../paid-lab/culture/kit.js';
 import {packMapCells} from '../map-maker-generator.js';
 import {freshProfile} from '../arch/journey.js';
@@ -14,12 +15,13 @@ export function dropMap(height){
   data:{width,height:120,floorY,shapes:packMapCells(k.cells,width,floorY)},
   structure:{version:1,roles:packMapCells(k.roles,width,floorY)}};
 }
-export const FALL_MAPS=[dropMap(4),dropMap(20),dropMap(70),...COLLAPSE_MAPS];
-export function createExperiment(mapId=FALL_MAPS[2].id,preset='base',unlimited=true,response='fall'){
+export const FALL_MAPS=[dropMap(4),dropMap(10),dropMap(20),dropMap(70),...COLLAPSE_MAPS];
+export function createExperiment(mapId='drop-70',preset='base',unlimited=true,response='fall'){
  const map=FALL_MAPS.find(m=>m.id===mapId);
- if(!map||!PRESETS[preset]||!['fall','chain'].includes(response))throw Error('Unknown fall experiment');
+ if(!map||!PRESETS[preset]||!['fall','chain','sensitive'].includes(response))throw Error('Unknown fall experiment');
  const profile=freshProfile();Object.assign(profile.upgrades,PRESETS[preset].upgrades);profile.owned.push('blackhole');
- const world=new (response==='fall'?FallFractureWorld:ChainArchWorld)(map,profile);world.unlimited=unlimited;
+ const World={fall:FallFractureWorld,chain:ChainArchWorld,sensitive:SensitiveFallWorld}[response];
+ const world=new World(map,profile);world.unlimited=unlimited;
  // Read-only observation also reports the old algorithm's zero-damage landings.
  if(map.dropHeight){
   const applyImpact=world.applyImpact.bind(world);
@@ -32,6 +34,11 @@ export function createExperiment(mapId=FALL_MAPS[2].id,preset='base',unlimited=t
   };
  }
  world.detach();
- if(!map.dropHeight)for(let i=0;i<180;i++){world.step(1/60);world.events=[];}
+ if(!map.dropHeight){
+  // Seat authored one-cell gaps identically before either response is compared.
+  const settings=world.fallSettings;if(response==='sensitive')world.fallSettings=DEFAULT_FALL_SETTINGS;
+  for(let i=0;i<180;i++){world.step(1/60);world.events=[];}
+  if(response==='sensitive')world.fallSettings=settings;
+ }
  return {map,world,preset,response,startedAt:world.elapsed};
 }
