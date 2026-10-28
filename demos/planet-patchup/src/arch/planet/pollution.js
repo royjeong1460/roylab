@@ -9,8 +9,8 @@ function vector([u,v]){const a=(u-.5)*Math.PI*2,b=(.5-v)*Math.PI;return [Math.si
 function outerCloud(u,v,seeds){if(!seeds.length)return {opacity:0,tone:0};const [x,y,z]=vector([u,v]);let nearest=-1;for(const seed of seeds)nearest=Math.max(nearest,x*seed[0]+y*seed[1]+z*seed[2]);const outside=fade(Math.max(0,Math.min(1,(.985-nearest)/.12))),n=noise(x*3.1+11,y*4.2+2,z*3.1-3)*.78+noise(x*8+3,y*7,z*8+1)*.22,tone=Math.round(n*6)/6;return {opacity:outside*(.56+tone*.28),tone}}
 function build(source,width,height,sites=[],includeIndustry=true){const result=new Uint8ClampedArray(source.length),seeds=sites.map(vector);for(let y=0;y<height;y++)for(let x=0;x<width;x++){
 const i=(y*width+x)*4,r=source[i],g=source[i+1],b=source[i+2],water=b>r*1.22&&g>r*1.12,green=g>r*1.04&&g>b*1.12,ice=r>155&&g>180&&b>175;
-const stain=water?[68,91,80]:green?[144,123,73]:ice?[160,162,132]:[140,119,83];
-const amount=water?.58:green?.64:ice?.32:.29,smog=haze(x/width,y/(height-1))*.43;
+const stain=water?[119,103,82]:green?[144,123,86]:ice?[160,162,132]:[140,119,83];
+const amount=water?.9:green?.82:ice?.32:.29,smog=haze(x/width,y/(height-1))*.43;
 const cloud=outerCloud(x/width,y/(height-1),seeds);for(let c=0;c<3;c++){let value=mix(source[i+c],stain[c],amount);value=mix(value,[133,120,91][c],smog)*.94;const soot=[41,47,43][c]+cloud.tone*[45,39,28][c];result[i+c]=mix(value,soot,cloud.opacity)}result[i+3]=source[i+3]}
 // All industrial marks live in UV coordinates, so they stay attached during rotation.
 if(includeIndustry)for(const [index,site]of sites.entries())industry(result,width,height,site,index);

@@ -61,7 +61,18 @@ function paint(data,width,height,site,index,clean){
   // Retrofit chimneys and soot make the intact cultural shell read as a waste factory.
   const chimneyX=index%2?10:-11;rect(chimneyX,-29,4,17,ink);rect(chimneyX+1,-28,2,14,shade);rect(chimneyX-1,-31,6,2,metal);
   for(let k=0;k<4;k++)ellipse(chimneyX+1-k*2,-33-k*3,3+k,2,[70,72,65],.7-k*.14);
-  rect(-10,1,20,7,ink,.65);for(let j=0;j<5;j++){rect(-11+j*5,5-j%2*3,5,4,j%2?scrap:metal)}
+  // Tall, uneven scrap heaps bury the landmark until this district is restored.
+  const piles=[[-25,10],[-19,18],[-12,27],[-4,21],[4,16],[11,24],[18,14]];
+  for(const [x,h] of piles){
+   rect(x,10-h,8,h,ink);
+   for(let row=0;row<h;row+=4){
+    const shift=(row/4+index)%2, y=10-h+row;
+    rect(x+shift,y,7-shift,3,(row/4+index)%3===0?scrap:metal);
+    rect(x+shift,y,6-shift,1,[161,145,111]);
+    rect(x+3,y+1,1,2,shade);
+   }
+  }
+  for(let j=0;j<8;j++)rect(-27+j*7,9+j%2,6,3,j%2?scrap:metal);
  }else{
   // One restored landmark, framed by low greenery and a few paving pixels.
   for(const x of [-21,19]){ellipse(x,6,3,2,t.roof);rect(x,3,2,2,t.bright)}

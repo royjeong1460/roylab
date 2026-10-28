@@ -1,14 +1,14 @@
-/* Approved planet-home V10. Start-screen-only styling; gameplay stays full width. */
+/* Orbital salvage home. Approved V10 planet motion remains unchanged. Start-screen-only styling; gameplay stays full width. */
 html.arch-design body:has(#base:not([hidden])){width:390px;max-width:100%;margin:0 auto;padding:0;background:#101621}
 html.arch-design:has(#base:not([hidden])){background:#101621}
-html.arch-design .planet-home{position:relative;box-sizing:border-box;height:min(844px,100svh);min-height:600px;padding:28px 24px 22px;background:#091322;color:#dfd3b8;border:0;border-radius:0;box-shadow:none}
-html.arch-design .planet-heading{height:90px}
-html.arch-design .planet-brand{font-size:24px;line-height:1.25;letter-spacing:1px;color:#b6b9ab;text-shadow:2px 2px #172936}
-html.arch-design .planet-brand span{font-size:32px;letter-spacing:0;color:#f0d99e}
+html.arch-design .planet-home{position:relative;box-sizing:border-box;height:min(844px,100svh);min-height:520px;padding:28px 24px 22px;background:radial-gradient(ellipse at 50% 45%,#333d3d 0%,#202c33 40%,#121c29 75%);color:#dfd3b8;border:0;border-radius:0;box-shadow:none}
+html.arch-design .planet-heading{height:110px;position:relative;text-align:center;flex-shrink:0}
+html.arch-design .planet-brand{font-size:20px;line-height:1.3;letter-spacing:5px;color:#b6b9ab;text-shadow:2px 2px #172936}
+html.arch-design .planet-brand span{font-size:36px;letter-spacing:0;color:#f0d99e;text-shadow:0 3px #7b6549,0 6px #15212a}
 html.arch-design .home-options{color:#c3c4b2}
 .planet-home .home-options svg{width:20px;height:20px;shape-rendering:crispEdges}
 .planet-home .planet-stage{isolation:isolate;flex:1;min-height:0;background-image:radial-gradient(#889dad 1px,transparent 1px),radial-gradient(#a1ab9e 1px,transparent 1px);background-size:113px 139px,179px 167px;background-position:25px 61px,80px 27px}
-.planet-home .planet-bubble{top:0;background:#091322;border:0;box-shadow:none;padding:8px 18px;gap:10px;text-shadow:0 2px 3px #091322;white-space:nowrap}
+.planet-home .planet-bubble{top:0;background:#18242c;border:0;box-shadow:none;padding:8px 18px;gap:10px;text-shadow:0 2px 3px #091322;white-space:nowrap}
 .planet-home .planet-bubble small{color:#8a969e}.planet-home .planet-bubble span{font-size:16px;color:#eee3c9}
 .planet-portrait{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(390px,100%,calc(100svh - 285px));aspect-ratio:1;pointer-events:none}
 .planet-home #globe{display:block;position:static;width:100%;height:auto;max-width:100%;aspect-ratio:1;transform:none;image-rendering:pixelated;touch-action:pan-y;cursor:default}
@@ -16,7 +16,7 @@ html.arch-design .home-options{color:#c3c4b2}
 #region-pin:before{content:'';position:absolute;inset:0;background:#f6dda0;clip-path:polygon(27% 0,73% 0,73% 9%,91% 9%,91% 27%,100% 27%,100% 73%,91% 73%,91% 91%,73% 91%,73% 100%,27% 100%,27% 91%,9% 91%,9% 73%,0 73%,0 27%,9% 27%,9% 9%,27% 9%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;padding:2px}
 #region-pin i{width:4px;height:4px;background:#f6dda0}
 #region-pin[data-hidden=true] i{display:none}#region-pin[data-hidden=true]:after{content:'?';font:16px ArchPixel,monospace;color:#e6d7b4;line-height:1}#region-pin[data-hidden=true]:before{opacity:.45}
-.planet-home .orbit-nav{height:48px;background:linear-gradient(transparent,#091322 65%)}
+.planet-home .orbit-nav{height:48px;background:none}
 .planet-home .orbit-nav>button{width:48px;height:48px;color:#d6c49e}.planet-home .orbit-nav svg{width:12px;height:18px;shape-rendering:crispEdges}
 .planet-home #dots button{border-radius:0}.planet-home #dots button:before{background:#53616a}.planet-home #dots button[aria-current=true]:before{background:#e8c88b;box-shadow:0 0 0 3px #756548}.planet-home #dots button[data-locked=true]:before{outline-color:#63717a}.planet-home #dots button[data-cleared=true]:before{background:#9aba8b;outline-color:#9aba8b}
 html.arch-design .planet-home .planet-action{margin-top:16px}
@@ -29,6 +29,18 @@ html.arch-design .planet-home .planet-footer button{font-size:12px;color:#dfd3b8
 .planet-home button:focus-visible{outline:3px solid #f0d99e;outline-offset:3px}
 .planet-home .load-error{position:absolute;top:50%;padding:16px;font-size:12px;text-align:center;color:#dfd3b8}
 html.arch-design #planet-full-dialog{width:min(390px,calc(100% - 24px));font-size:14px;line-height:1.8}
-@media(min-width:431px){html.arch-design body:has(#base:not([hidden])){margin-top:24px}}
+@media(min-width:431px){html.arch-design body:has(#base:not([hidden])){margin-top:24px}html.arch-design .planet-home{height:min(844px,calc(100svh - 48px))}}
 @media(max-width:430px){html.arch-design .planet-home{height:100svh;padding-top:max(20px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}}
 @media(max-height:720px) and (max-width:430px){html.arch-design .planet-heading{height:78px}html.arch-design .planet-brand{font-size:19px}html.arch-design .planet-brand span{font-size:26px}html.arch-design .planet-home .planet-footer{margin-top:8px}html.arch-design .planet-home .planet-action{margin-top:8px}html.arch-design .planet-home .home-start{height:48px}}
+
+.planet-edition{display:block;margin-top:14px;font-size:9px;letter-spacing:2px;color:#a9b4af}
+.orbital-scenery{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
+.orbital-scenery img{position:absolute;image-rendering:pixelated;max-width:none}
+.moon-left{width:66px;left:2%;top:13%;opacity:.8}
+.moon-right{width:40px;right:4%;bottom:14%;opacity:.72}
+.satellite-upper{width:86px;right:3%;top:17%;transform:rotate(-18deg);opacity:.8}
+.satellite-lower{width:64px;left:5%;bottom:17%;transform:rotate(24deg);opacity:.62}
+.planet-home .planet-bubble{border-bottom:2px solid #526365;padding:10px 14px}
+.planet-home .planet-bubble:after{content:'';position:absolute;bottom:-6px;left:calc(50% - 4px);width:8px;height:4px;background:#526365}
+html.arch-design .planet-home .planet-footer{border-top:1px solid #38434a;padding-top:6px}
+@media(max-height:720px){.moon-left{width:48px;top:12%}.moon-right{width:32px;bottom:16%}.satellite-upper{width:64px;top:15%}.satellite-lower{width:48px;bottom:15%}.planet-edition{margin-top:9px;font-size:8px}}

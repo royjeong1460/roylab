@@ -1,13 +1,22 @@
 import {createPlanetGlobe} from './globe.js';
 import {homeRegions} from './regions.js';
+import rustMoon from './scenery/rust-moon.svg';
+import slateMoon from './scenery/slate-moon.svg';
+import satellite from './scenery/dead-satellite.svg';
 
 // Adapted from 픽셀디자인 V10. Keep the campaign's real buttons and their handlers.
 export function mountPlanetHome(doc){
  const base=doc.getElementById('base'),keep=id=>doc.getElementById(id);
  const options=keep('home-options'),enter=keep('dispatch'),upgrade=keep('workshop-open'),maps=keep('home-zones'),editor=keep('home-map-maker'),zoneLink=keep('home-zone-link'),caption=keep('start-caption');
  base.classList.add('planet-home');
- base.innerHTML=`<header class="planet-heading"><div class="planet-brand">PLANET<br><span>PATCHUP</span></div></header>
+ base.innerHTML=`<header class="planet-heading"><div class="planet-brand">PLANET<br><span>PATCHUP</span></div><span class="planet-edition">FREE</span></header>
  <section class="planet-stage" aria-label="Planet regions">
+  <div class="orbital-scenery" aria-hidden="true">
+   <img class="distant-moon moon-left" src="${rustMoon}" alt="">
+   <img class="distant-moon moon-right" src="${slateMoon}" alt="">
+   <img class="dead-satellite satellite-upper" src="${satellite}" alt="">
+   <img class="dead-satellite satellite-lower" src="${satellite}" alt="">
+  </div>
   <div class="planet-bubble" aria-live="polite"><small id="zone-number"></small><span id="zone-name"></span></div>
   <div class="planet-portrait"><canvas id="globe" width="192" height="192" role="img" aria-label="Planet with two continents"></canvas><span id="region-pin" aria-hidden="true"><i></i></span></div>
   <div class="orbit-nav"><button id="prev" aria-label="Previous region"><svg viewBox="0 0 8 12" aria-hidden="true"><path d="M6 0h2v2H6v2H4v4h2v2h2v2H6v-2H4V8H2V4h2V2h2z" fill="currentColor"/></svg></button><div id="dots" aria-label="Region list"></div><button id="next" aria-label="Next region"><svg viewBox="0 0 8 12" aria-hidden="true"><path d="M0 0h2v2h2v2h2v4H4v2H2v2H0v-2h2V8h2V4H2V2H0z" fill="currentColor"/></svg></button></div>
