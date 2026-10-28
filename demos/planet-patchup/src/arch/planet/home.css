@@ -7,10 +7,10 @@ html.arch-design .planet-brand{font-size:20px;line-height:1.3;letter-spacing:5px
 html.arch-design .planet-brand span{font-size:36px;letter-spacing:0;color:#f0d99e;text-shadow:0 3px #7b6549,0 6px #15212a}
 html.arch-design .home-options{color:#c3c4b2}
 .planet-home .home-options svg{width:20px;height:20px;shape-rendering:crispEdges}
-.planet-home .planet-stage{isolation:isolate;flex:1;min-height:0;background-image:radial-gradient(#889dad 1px,transparent 1px),radial-gradient(#a1ab9e 1px,transparent 1px);background-size:113px 139px,179px 167px;background-position:25px 61px,80px 27px}
+.planet-home .planet-stage{isolation:isolate;container-type:size;flex:1;min-height:0;background-image:radial-gradient(#889dad 1px,transparent 1px),radial-gradient(#a1ab9e 1px,transparent 1px);background-size:113px 139px,179px 167px;background-position:25px 61px,80px 27px}
 .planet-home .planet-bubble{top:0;background:#18242c;border:0;box-shadow:none;padding:8px 18px;gap:10px;text-shadow:0 2px 3px #091322;white-space:nowrap}
 .planet-home .planet-bubble small{color:#8a969e}.planet-home .planet-bubble span{font-size:16px;color:#eee3c9}
-.planet-portrait{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(390px,100%,calc(100svh - 285px));aspect-ratio:1;pointer-events:none}
+.planet-portrait{position:absolute;left:50%;top:calc(50% + 8px);transform:translate(-50%,-50%);width:min(390px,100%,calc(100cqh - 84px));aspect-ratio:1;pointer-events:none}
 .planet-home #globe{display:block;position:static;width:100%;height:auto;max-width:100%;aspect-ratio:1;transform:none;image-rendering:pixelated;touch-action:pan-y;cursor:default}
 #region-pin{position:absolute;display:grid;place-items:center;width:20px;height:20px;transform:translate(-50%,-50%);filter:drop-shadow(2px 2px #132332)}
 #region-pin:before{content:'';position:absolute;inset:0;background:#f6dda0;clip-path:polygon(27% 0,73% 0,73% 9%,91% 9%,91% 27%,100% 27%,100% 73%,91% 73%,91% 91%,73% 91%,73% 100%,27% 100%,27% 91%,9% 91%,9% 73%,0 73%,0 27%,9% 27%,9% 9%,27% 9%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;padding:2px}
