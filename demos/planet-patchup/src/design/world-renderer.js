@@ -33,6 +33,7 @@ export class WorldRenderer {
   transform() {
     const v=this.viewport;
     this.layer.setScale(v.zoom).setPosition(-v.x*v.zoom,-v.y*v.zoom);
+    this.backdropPreview?.transform?.(v);
     this.drawMinimap();
   }
   addEffect(event) {

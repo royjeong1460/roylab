@@ -1,3 +1,4 @@
+import {drawArchEnvironment,environmentStyle} from './art-background.js';
 // Texture is keyed to the original cell ID, keeping mortar and tiles attached
 // to the destructible geometry even while its fragments rotate and fall.
 const tones=[[],[0x9c7059,0xc59a76,0xe2c5a0],[0x345a70,0x54849b,0x86adba],[0xc9af88,0xead8b5,0xffedcc],[0x99523d,0xc17855,0xe3a078],[0x8e8b7d,0xb3ad98,0xd2cab3]];
@@ -11,19 +12,16 @@ export function createArchSurface(width,cells){
  }
  return {pixels,color:(id,c)=>pixels[id]||tones[c]?.[1]||0xb3ad98,css:(id,c)=>inks[id]||'#'+(tones[c]?.[1]||0xb3ad98).toString(16).padStart(6,'0')};
 }
-export function createArchBackdrop(scene,world,layer){
- const g=scene.add.graphics();layer.addAt(g,1);
- function draw(){
-  const w=world.width,f=world.floorY;g.clear();g.fillStyle(0xf2e6cd);g.fillRect(0,0,w,world.height);
-  g.fillStyle(0xffefd1);g.fillRect(w*.73,f*.13,12,12);
-  // Low-contrast distant masonry stays visually distinct from the physical art.
-  g.fillStyle(0xdfd1b7);
-  for(let x=-12;x<w;x+=48){g.fillRect(x,f*.58,35,f*.42);g.fillRect(x-2,f*.58-3,39,3);}
-  g.fillStyle(0xe7d8bb);g.fillRect(0,f-19,w,19);
-  g.lineStyle(.4,0xc7bba2,.6);for(let y=f-15;y<f;y+=6)g.lineBetween(0,y,w,y);
-  for(let x=0;x<w;x+=22)g.lineBetween(x,f-19,x+8,f);
-  g.fillStyle(0x77796f);g.fillRect(0,f,w,2);g.fillStyle(0xb8af99);g.fillRect(0,f+2,w,world.height-f-2);
-  for(let y=f+3;y<world.height;y+=4){g.fillStyle(0xd8cbb0);g.fillRect(0,y,w,1);}
- }
- draw();return {setMode:draw,destroy:()=>g.destroy()};
+export function createArchBackdrop(scene,world,layer,images={},restoration=0){
+ const scale=4,w=world.width*scale,h=world.height*scale,f=world.floorY*scale;
+ const key='arch-salvage-backdrop',texture=scene.textures.createCanvas(key,w,h);
+ drawArchEnvironment(texture.context,images,{width:w,height:h,floor:f,restoration});texture.refresh();
+ const image=scene.add.image(0,0,key).setOrigin(0).setScale(1/scale);layer.addAt(image,1);
+ const surround=scene.add.graphics().setDepth(-1),style=environmentStyle(restoration);
+ // The completed record is captured on entry; live recovery never changes scenery.
+ return {setMode(){},transform(viewport){
+  const sw=scene.scale.width,sh=scene.scale.height,floor=(world.floorY-viewport.y)*viewport.zoom;
+  surround.clear();surround.fillStyle(parseInt(style.sky.slice(1),16));surround.fillRect(0,0,sw,sh);
+  surround.fillStyle(parseInt(style.ground.slice(1),16));surround.fillRect(0,Math.max(0,floor),sw,Math.max(0,sh-floor));
+ },destroy(){surround.destroy();image.destroy();if(scene.textures.exists(key))scene.textures.remove(key);}};
 }

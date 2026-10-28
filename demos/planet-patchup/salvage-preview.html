@@ -1,0 +1,7 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>배경 복원 · 3단계</title>
+<style>
+@font-face{font-family:Pixel;src:url('./src/arch/planet/Galmuri11.woff2')}*{box-sizing:border-box}body{margin:0;padding:24px;background:#222d30;color:#e4dfcc;font:14px Pixel,monospace}header{max-width:1240px;margin:0 auto 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}h1{font-size:18px;margin:0}label{font-size:12px;cursor:pointer}a{color:#d2b77b;margin-left:auto}main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1240px;margin:auto}h2{font-size:14px;font-weight:normal}canvas{display:block;width:100%;height:auto;image-rendering:pixelated}small{display:block;margin-top:10px;color:#a9b5af;font-size:11px}@media(max-width:680px){body{padding:16px}main{grid-template-columns:1fr}article{max-width:390px;width:100%;margin:auto}}
+</style>
+<header><h1>청소 전 → 70% → 100%</h1><label><input id="targets" type="checkbox"> 기존 파괴 오브젝트 겹쳐보기</label><a href="./?qa=1">무료 버전 ↗</a></header>
+<main><article><h2>청소 전</h2><canvas width="576" height="576" data-ratio="0"></canvas><small>쓰레기에 가려진 장소</small></article><article><h2>70% 복원</h2><canvas width="576" height="576" data-ratio="0.7"></canvas><small>문화 건물 + 남은 쓰레기</small></article><article><h2>100% 복원</h2><canvas width="576" height="576" data-ratio="1"></canvas><small>쓰레기 없는 장소</small></article></main>
+<script type="module" src="./src/arch/art-preview.js"></script></html>

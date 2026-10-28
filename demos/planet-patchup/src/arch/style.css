@@ -45,3 +45,7 @@ html.arch-design #expedition{position:relative}html.arch-design #feedback[hidden
 .cleanup-complete{display:none;animation:none;top:45%;border-color:#d9c68f}
 #arch-cleanup[data-complete=true] .cleanup-complete{display:block}
 #arch-cleanup[data-complete=true] .cleanup-clock,#arch-cleanup[data-complete=true] .cleanup-intro{display:none}
+
+#arch-environment-result{position:relative;margin:10px 0 0;overflow:hidden;border:1px solid #a49a77}
+#arch-environment-result canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
+#arch-environment-result figcaption{position:absolute;right:6px;top:6px;padding:4px 6px;background:#273b3ddd;color:#f1e8ce;font-size:10px}
