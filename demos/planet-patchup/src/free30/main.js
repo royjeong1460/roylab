@@ -86,7 +86,7 @@ const notice=message=>showStep1Notice(document,message);
 function release(){scene?.pointer?.release();scene?.run?.release();if(scene)scene.working=false;}
 function closeDialogs(){for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();}
 function dispose(){release();if(game){scene?.teardown();game.destroy(true);game=null;scene=null;}}
-function screen(id){release();for(const key of ['base','workshop','expedition'])$(key).hidden=key!==id;}
+function screen(id){release();for(const key of ['base','workshop','expedition'])$(key).hidden=key!==id;campaign?.screen?.(id);}
 function profile(){
   const p=journey.profile,stats=journey.stats();$('parts').textContent=p.parts.toLocaleString();
   $('start-caption').textContent=p.tutorial==='intro'?'첫 청소 · 폭파부터 배워 볼까요?':['upgrade','next'].includes(p.tutorial)?'첫 강화하고, 다음 현장으로!':p.bossCleared?'첫 구역 클리어 · 제한 없이 계속 강화하기':'일반 현장 자유 선택 · 6곳 모두 70%면 보스 도전';
@@ -125,7 +125,7 @@ function renderOffers(){
     const help=document.createElement('p');help.className='offer-help';help.textContent=campaign?.offerHelp?.(offer)||offer.help||'새 도구를 해금한 뒤 게임 화면 왼쪽 아래에서 선택할 수 있어요.';
     const button=document.createElement('button');button.textContent=offer.available?`${offer.cost.toLocaleString()} 부품 · ${journey.profile.parts>=offer.cost?'구매':`${offer.cost-journey.profile.parts} 부족`}`:offer.max&&offer.level>=offer.max?'최대 성장 / 보유 중':'도구 해금 후 강화 가능';
     button.disabled=!offer.available||journey.profile.parts<offer.cost;
-    button.onclick=()=>guarded(async()=>{const result=await journey.buy(offer.id,{level:offer.level,cost:offer.cost});if(!result.ok)notice(failureMessage(result.reason));else notice(`${offer.name} 구매 완료`);profile();renderOffers();});
+    button.onclick=()=>guarded(async()=>{const result=await journey.buy(offer.id,{level:offer.level,cost:offer.cost});if(!result.ok)notice(failureMessage(result.reason));else{notice(`${offer.name} 구매 완료`);campaign?.purchase?.(offer);}profile();renderOffers();});
     card.append(title,description,help);
     card.append(button);return card;
   }));
@@ -144,6 +144,7 @@ function launchGame(){
 async function settle(){
   release();scene?.run.pause(true);if($('pause-dialog').open)$('pause-dialog').close();
   const journalRun=scene?.run;
+  if(typeof campaign!=='undefined')campaign?.checkpoint?.(journalRun);
   const result=await journey.finish();
   if(!result.ok){
     if(result.reason==='reset'){if(typeof campaign!=='undefined')campaign?.abandon(journalRun,'progress-reset');$('run-receipt').hidden=true;home();notice('다른 탭에서 진행이 초기화됐어요. 처음부터 다시 시작할 수 있어요.');return;}
@@ -213,7 +214,7 @@ class FreeScene extends Phaser.Scene{
     }
     if(r.finishReady&&previewId&&!this.settled){this.settled=true;release();$('feedback').textContent=artMap?`테스트 종료 · ${(r.ratio*100).toFixed(1)}% 회수 · 다시 테스트하거나 화력을 바꿔 보세요.`:'테스트 회수 완료 · 아래 링크로 편집기에 돌아가세요.';return;}
     if(r.finishReady&&!this.settled&&!this.settling&&!operating){
-      if(this.finishNoticeUntil===undefined){this.hud();this.finishNoticeUntil=now+(campaign?.finishNoticeMs?.(r)||0);}
+      if(this.finishNoticeUntil===undefined){campaign?.checkpoint?.(r);this.hud();this.finishNoticeUntil=now+(campaign?.finishNoticeMs?.(r)||0);}
       if(now<this.finishNoticeUntil)return;
       this.settling=true;guarded(async()=>{await settle();});
     }
@@ -266,6 +267,7 @@ if(!testEdition)mountTouchSettings(document,scopedStorage,contact=>{
 campaign?.settings?.(document);
 $('home-zones').onclick=maps;$('home-zone-link').onclick=maps;
 profile();notice(journey.notice||(!journey.persistent?'저장소를 사용할 수 없어요. 저장 안내를 확인해 주세요.':''));
+campaign?.screen?.('base');campaign?.ready?.();
 
 $('export-report').onclick=async()=>{const blob=new Blob([JSON.stringify((await campaign?.export(journey.profile))||{campaign:'free30',balanceVersion:BALANCE_VERSION,exportedAt:new Date().toISOString(),profile:journey.profile},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=campaign?'arch-playtest.json':'free30-playtest.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 

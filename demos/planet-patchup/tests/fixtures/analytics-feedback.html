@@ -1,0 +1,14 @@
+<!doctype html><html class="arch-design" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Local feedback QA fixture</title><style>body{font:15px system-ui;max-width:430px;margin:20px auto;padding:12px;background:#10171d;color:#eee}button{min-height:44px;margin:8px}#base .home-composition{position:relative;height:90px}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style></head><body>
+<h1>Local feedback QA</h1><p>Uses an in-memory transport only. No PostHog requests or production saves.</p>
+<section id="base"><div class="home-composition"></div></section><section id="workshop" hidden><section id="run-receipt"></section></section><section id="expedition" hidden></section>
+<dialog id="home-options-dialog"><h2>Options</h2></dialog><dialog id="pause-dialog"><h2>Paused</h2></dialog>
+<button id="qa-options">Options</button><button id="qa-fail">Transport: success</button><pre id="qa-events"></pre>
+<script type="module">
+import {FreeAnalytics} from '../../src/arch/analytics.js';
+import {mountFreeFeedback} from '../../src/arch/web-feedback.js';
+const events=[];let fail=false;
+const analytics=new FreeAnalytics({config:{token:'phc_local_fixture',endpoint:'local-fixture',surveyId:'local-survey'},storage:sessionStorage,fetchImpl:async(_url,options)=>{await new Promise(resolve=>setTimeout(resolve,300));if(fail)return {ok:false};events.push(JSON.parse(options.body));document.getElementById('qa-events').textContent=JSON.stringify(events.map(({event,properties})=>({event,properties})),null,2);return {ok:true,json:async()=>({status:1})};}});
+mountFreeFeedback(document,analytics);analytics.screen('base');analytics.ready();
+document.getElementById('qa-fail').onclick=event=>{fail=!fail;event.target.textContent=`Transport: ${fail?'failure':'success'}`;};
+document.getElementById('qa-options').onclick=()=>document.getElementById('home-options-dialog').showModal();
+</script></body></html>
