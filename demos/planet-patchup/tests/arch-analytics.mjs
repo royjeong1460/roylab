@@ -82,7 +82,7 @@ test('survey feedback is bounded, validated and retry-safe; it carries no profil
  assert.equal(await f.analytics.feedback({rating:0,issue:'bug',comment:'x'},'submission'),false);
  assert.equal(await f.analytics.feedback({rating:4,issue:'unexpected',comment:'x'},'submission'),false);
  assert.equal(await f.analytics.feedback({rating:5,issue:'none',comment:'a'.repeat(1200)},'submission'),true);
- const e=f.events.at(-1);assert.equal(e.event,'survey sent');assert.equal(e.properties.$survey_id,'survey-1');assert.equal(e.properties.$survey_submission_id,'submission');assert.equal(e.properties.$survey_response,'5');assert.deepEqual(e.properties.$survey_response_1,['none']);assert.equal(e.properties.$survey_response_2.length,1000);
+ const e=f.events.at(-1);assert.equal(e.event,'survey sent');assert.equal(e.properties.$survey_id,'survey-1');assert.equal(e.properties.$survey_submission_id,'submission');assert.equal(e.properties.$survey_response,'5');assert.equal(e.properties.$survey_response_1,'none');assert.equal(e.properties.$survey_response_2.length,1000);
  assert.equal(e.properties.$process_person_profile,false);assert.equal(e.properties.$geoip_disable,true);assert.equal(e.properties.$ip,null);assert.equal(e.properties.profile,undefined);assert.equal(e.properties.$current_url,undefined);
 });
 test('HTTP failures, ingest rejection and thrown network errors never acknowledge feedback',async()=>{

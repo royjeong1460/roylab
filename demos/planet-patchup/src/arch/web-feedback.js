@@ -35,7 +35,7 @@ export function mountFreeFeedback(doc,analytics){
  };
  const button=(parent,where)=>{
   if(!parent)return;const b=doc.createElement('button');b.type='button';b.className=`pp-feedback-open pp-feedback-${where}`;b.textContent='Feedback';b.setAttribute('aria-haspopup','dialog');
-  b.onclick=()=>{void analytics.send('pp_feedback_opened',{entry_point:where});dialog.showModal();};parent.append(b);
+  b.onclick=()=>{void analytics.send('pp_feedback_opened',{entry_point:where});if(analytics.config.surveyId)void analytics.send('survey shown',{$survey_id:analytics.config.surveyId,entry_point:where},true);dialog.showModal();};parent.append(b);
  };
  button(doc.querySelector('#base .home-composition')||doc.getElementById('base'),'home');button(doc.getElementById('pause-dialog'),'pause');button(doc.getElementById('run-receipt'),'result');button(doc.getElementById('workshop'),'workshop');
  const options=doc.getElementById('home-options-dialog'),toggle=doc.createElement('button'),note=doc.createElement('p');toggle.type='button';toggle.className='pp-statistics-toggle';note.className='pp-feedback-note';note.textContent='Share game progress and active play time to help improve the game. Feedback can be sent with statistics off.';

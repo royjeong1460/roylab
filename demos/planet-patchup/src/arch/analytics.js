@@ -70,6 +70,6 @@ export class FreeAnalytics{
   if(!this.configured)return false;
   if(this.submission?.id!==submissionId)this.submission={id:submissionId,timestamp:new Date().toISOString(),distinctId:this.identity()};
   const response={rating,issue,comment:comment.trim().slice(0,1000),submission_id:submissionId},survey=this.config.surveyId;
-  return this.send(survey?'survey sent':'pp_feedback_submitted',survey?{$survey_id:survey,$survey_submission_id:submissionId,$survey_completed:true,$survey_response:String(rating),$survey_response_1:[issue],$survey_response_2:response.comment}:response,true,this.submission);
+  return this.send(survey?'survey sent':'pp_feedback_submitted',survey?{$survey_id:survey,$survey_submission_id:submissionId,$survey_completed:true,$survey_response:String(rating),$survey_response_1:issue,$survey_response_2:response.comment}:response,true,this.submission);
  }
 }
