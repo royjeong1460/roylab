@@ -1,6 +1,7 @@
-// UV anchors are layout candidates on the selected two-continent artwork.
+// Approved desert V2 anchors, indexed by the campaign cultural art IDs.
 const Projection=(()=>{
-const anchors=[[.28,.25],[.29,.60],[.20,.70],[.60,.65],[.83,.23],[.90,.60]],tau=Math.PI*2;
+const locations=[[-38,155],[18,125],[8,-100],[32,-25],[-25,30],[46,55]];
+const anchors=locations.map(([lat,lon])=>[.5+lon/360,.5-lat/180]),tau=Math.PI*2;
 function world([x,y,z],yaw,pitch){const cp=Math.cos(pitch),sp=Math.sin(pitch),cy=Math.cos(yaw),sy=Math.sin(yaw),yy=y*cp+z*sp,zz=-y*sp+z*cp;return [x*cy+zz*sy,yy,-x*sy+zz*cy]}
 function view([x,y,z],yaw,pitch){const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch),xx=x*cy-z*sy,zz=x*sy+z*cy;return [xx,y*cp-zz*sp,y*sp+zz*cp]}
 function vector([u,v]){const lon=(u-.5)*tau,lat=(.5-v)*Math.PI;return [Math.sin(lon)*Math.cos(lat),Math.sin(lat),Math.cos(lon)*Math.cos(lat)]}
