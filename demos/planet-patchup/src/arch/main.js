@@ -17,8 +17,13 @@ import {COLLECTIBLE_STYLE} from '../blast-step1/presentation.js';
 import {loadArchArt} from './art-assets.js';
 import {restorationTier} from './art-background.js';
 import {renderEnvironmentReceipt} from './environment-receipt.js';
-let analytics,mountFeedback;
-if(import.meta.env.PP_FREE_WEB){const web=await import('./web-feedback.js');analytics=web.bootFreeAnalytics();mountFeedback=web.mountFreeFeedback;}
+import {initEffects,effects,campaignEffects} from './audio.js';
+let analytics,mountFeedback,startMusic;
+if(import.meta.env.PP_FREE_WEB){
+ const [web,music,track]=await Promise.all([import('./web-feedback.js'),import('./web-music.js'),import('../../paid-app/src/audio/journey-game-v10-64bars-preview.m4a?url')]);
+ analytics=web.bootFreeAnalytics();mountFeedback=web.mountFreeFeedback;
+ startMusic=storage=>music.bootFreeMusic(storage,track.default,document,initEffects());
+}
 const salvageArt=await loadArchArt();
 let journal,planet,entryRestoration=0;
 const warn=()=>{document.getElementById('arch-journal-warning').textContent=journal.warning;};
@@ -30,22 +35,24 @@ installCampaign({Journey:ArchJourney,Run:ArchRun,stages,BALANCE_VERSION,upgradeG
  renderer:world=>({surface:createArchSurface(world.width,world.cells),createBackdrop:(scene,w,layer)=>createArchBackdrop(scene,w,layer,salvageArt,entryRestoration),collectibleStyle:COLLECTIBLE_STYLE}),
  overlay:(scene,view)=>new ArchOverlay(scene,view),
  home(doc){planet=mountPlanetHome(doc);mountArchMenus(doc);mountFeedback?.(doc,analytics);},
- screen(view){analytics?.screen(view);},
+ screen(view){analytics?.screen(view);if(view!=='expedition')campaignEffects?.leave();},
  ready(){analytics?.ready();},
- purchase(offer){analytics?.purchase(offer);},
+ purchase(offer){analytics?.purchase(offer);void effects?.play('ui-confirm');},
+ equipped(){void effects?.play('ui-confirm');},
+ denied(){void effects?.play('ui-unavailable');},
  settings:mountArchOptions,
  soundLabel:enabled=>`Sound · ${enabled?'ON':'OFF'}`,
  renderStages:renderArchStageList,
- init(storage,{qa,previewId}){mountArchUI(document);mountMinimalHUD(document);mountSkillHUD(document);mountCleanupHUD(document);if(qa){const raw=storage,prefix='qa:';storage={get length(){return Array.from({length:raw.length},(_,i)=>raw.key(i)).filter(k=>k?.startsWith(prefix)).length;},key(i){return Array.from({length:raw.length},(_,n)=>raw.key(n)).filter(k=>k?.startsWith(prefix))[i]?.slice(prefix.length);},getItem:k=>raw.getItem(prefix+k),setItem:(k,v)=>raw.setItem(prefix+k,v),removeItem:k=>raw.removeItem(prefix+k)};}if(previewId){const m=new Map();storage={get length(){return m.size;},key:i=>[...m.keys()][i],getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};}let session;try{session=globalThis.sessionStorage;}catch{}journal=new ArchJournal({storage,sessionId:tabSession(session)});warn();},
+ init(storage,{qa,previewId}){mountArchUI(document);mountMinimalHUD(document);mountSkillHUD(document);mountCleanupHUD(document);if(qa){const raw=storage,prefix='qa:';storage={get length(){return Array.from({length:raw.length},(_,i)=>raw.key(i)).filter(k=>k?.startsWith(prefix)).length;},key(i){return Array.from({length:raw.length},(_,n)=>raw.key(n)).filter(k=>k?.startsWith(prefix))[i]?.slice(prefix.length);},getItem:k=>raw.getItem(prefix+k),setItem:(k,v)=>raw.setItem(prefix+k,v),removeItem:k=>raw.removeItem(prefix+k)};}if(previewId){const m=new Map();storage={get length(){return m.size;},key:i=>[...m.keys()][i],getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};}startMusic?.(storage);let session;try{session=globalThis.sessionStorage;}catch{}journal=new ArchJournal({storage,sessionId:tabSession(session)});warn();},
  profile(journey){renderArchProfile(document,journey,journal);planet?.update(journey.profile);warn();},
  offers(journey,equip){renderEquipment(document,journey,equip);const p=journey.profile;document.getElementById('tutorial-workshop').hidden=!['upgrade','next'].includes(p.tutorial);document.getElementById('workshop-skip').hidden=!['upgrade','next'].includes(p.tutorial);document.getElementById('workshop-random').textContent='Choose a site →';document.getElementById('tutorial-workshop').textContent=p.tutorial==='upgrade'?'Use 300 parts to buy Blast Radius. Move the suction circle over loose pixels.':p.tutorial==='next'?'Blast Radius upgraded. Choose your next site.':'The first Blast Radius upgrade costs 300 parts. Practice to earn more.';renderArchWorkshop(document,journey);},
  receipt(result){renderEnvironmentReceipt(document,salvageArt,result);const text=receiptText(result);document.getElementById('result-title').textContent=`${result.recovered.toLocaleString()} pixels recovered`;document.getElementById('result-copy').textContent=text.copy;document.getElementById('result-bonus').textContent=text.bonus;},
- start(run,flags){const record=run.profile.stageRecords?.[run.site.id];entryRestoration=restorationTier(record?record.recovered/record.total:0);journal.start(run,flags);analytics?.start(run);warn();},
- frame(run,elapsedMs,updateMs){journal.frame(elapsedMs,updateMs);analytics?.frame(run);if(Date.now()-(journal.current?.checkpointAt||0)>=5000){journal.sample(run);warn();}},
+ start(run,flags){const record=run.profile.stageRecords?.[run.site.id];entryRestoration=restorationTier(record?record.recovered/record.total:0);journal.start(run,flags);analytics?.start(run);campaignEffects?.start(run);warn();},
+ frame(run,elapsedMs,updateMs){journal.frame(elapsedMs,updateMs);analytics?.frame(run);campaignEffects?.frame(run);if(Date.now()-(journal.current?.checkpointAt||0)>=5000){journal.sample(run);warn();}},
  checkpoint(run,options){if(run){journal.checkpoint(run,options);analytics?.checkpoint(run);}warn();},
- finish(run,result,profile){journal.finish(run,result,profile);analytics?.finish(run,result);warn();},
+ finish(run,result,profile){journal.finish(run,result,profile);analytics?.finish(run,result);campaignEffects?.finish(result);warn();},
  abandon(run,reason){journal.abandon(run,reason);analytics?.abandon(run,reason);warn();},
- hud(run,activate){const feedback=document.getElementById('feedback');feedback.hidden=!run.paused;renderCleanupHUD(document,run);renderToolSwitch(document,run);renderSkillHUD(document,run,activate);document.getElementById('run-mode').textContent=run.mode==='boss'?'Crooked Bell Twins · Boss':'Arch Quarter';},
+ hud(run,activate){if(run.paused||run.finishReady)campaignEffects?.pause();const feedback=document.getElementById('feedback');feedback.hidden=!run.paused;renderCleanupHUD(document,run);renderToolSwitch(document,run);renderSkillHUD(document,run,activate);document.getElementById('run-mode').textContent=run.mode==='boss'?'Crooked Bell Twins · Boss':'Arch Quarter';},
  async export(profile){await journal.flush();warn();return journal.export(profile);}
 });
 await import('../free30/main.js');

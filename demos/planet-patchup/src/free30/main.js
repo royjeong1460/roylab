@@ -83,6 +83,7 @@ export function showStep1Notice(doc,message){
   }
 }
 const notice=message=>showStep1Notice(document,message);
+const denied=reason=>{campaign?.denied?.();notice(failureMessage(reason));};
 function release(){scene?.pointer?.release();scene?.run?.release();if(scene)scene.working=false;}
 function closeDialogs(){for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();}
 function dispose(){release();if(game){scene?.teardown();game.destroy(true);game=null;scene=null;}}
@@ -99,7 +100,7 @@ function profile(){
 }
 async function guarded(action){
   if(operating)return;operating=true;document.body.setAttribute('aria-busy','true');
-  try{await action();}catch{release();scene?.run?.pause(true);notice(failureMessage('storage'));if(scene?.run&&!$('pause-dialog').open)$('pause-dialog').showModal();}
+  try{await action();}catch{release();scene?.run?.pause(true);denied('storage');if(scene?.run&&!$('pause-dialog').open)$('pause-dialog').showModal();}
   finally{operating=false;document.body.removeAttribute('aria-busy');profile();}
 }
 function home(){closeDialogs();dispose();screen('base');profile();}
@@ -125,15 +126,15 @@ function renderOffers(){
     const help=document.createElement('p');help.className='offer-help';help.textContent=campaign?.offerHelp?.(offer)||offer.help||'새 도구를 해금한 뒤 게임 화면 왼쪽 아래에서 선택할 수 있어요.';
     const button=document.createElement('button');button.textContent=offer.available?`${offer.cost.toLocaleString()} 부품 · ${journey.profile.parts>=offer.cost?'구매':`${offer.cost-journey.profile.parts} 부족`}`:offer.max&&offer.level>=offer.max?'최대 성장 / 보유 중':'도구 해금 후 강화 가능';
     button.disabled=!offer.available||journey.profile.parts<offer.cost;
-    button.onclick=()=>guarded(async()=>{const result=await journey.buy(offer.id,{level:offer.level,cost:offer.cost});if(!result.ok)notice(failureMessage(result.reason));else{notice(`${offer.name} 구매 완료`);campaign?.purchase?.(offer);}profile();renderOffers();});
+    button.onclick=()=>guarded(async()=>{const result=await journey.buy(offer.id,{level:offer.level,cost:offer.cost});if(!result.ok)denied(result.reason);else{notice(`${offer.name} 구매 완료`);campaign?.purchase?.(offer);}profile();renderOffers();});
     card.append(title,description,help);
     card.append(button);return card;
   }));
-  campaign?.offers(journey,id=>guarded(async()=>{const result=await journey.equipSkill(id);if(!result.ok)notice(failureMessage(result.reason));renderOffers();}));
+  campaign?.offers(journey,id=>guarded(async()=>{const result=await journey.equipSkill(id);if(!result.ok)denied(result.reason);else campaign?.equipped?.(id);renderOffers();}));
 }
 function maps(){closeDialogs();profile();(campaign?.renderStages||renderStageList)($('stage-list'),journey.profile,id=>guarded(()=>dispatch('stage',id)),campaign?.stages);$('home-zones-dialog').showModal();}
 async function dispatch(mode,stageId){
-  const result=await journey.start(mode,stageId);if(!result.ok){notice(failureMessage(result.reason));return;}
+  const result=await journey.start(mode,stageId);if(!result.ok){denied(result.reason);return;}
   closeDialogs();dispose();screen('expedition');notice('');profile();
   campaign?.start(journey.currentRun,{preview:Boolean(previewId),qa});
   launchGame();
@@ -150,7 +151,7 @@ async function settle(){
     if(result.reason==='reset'){if(typeof campaign!=='undefined')campaign?.abandon(journalRun,'progress-reset');$('run-receipt').hidden=true;home();notice('다른 탭에서 진행이 초기화됐어요. 처음부터 다시 시작할 수 있어요.');return;}
     $('resume').hidden=true;$('pause-return').textContent='정산 저장 다시 시도';
     if(!$('pause-dialog').open)$('pause-dialog').showModal();
-    notice(failureMessage(result.reason));return;
+    if(typeof campaign!=='undefined')campaign?.denied?.();notice(failureMessage(result.reason));return;
   }
   $('resume').hidden=false;$('pause-return').textContent='지금까지 모으고 돌아가기';
   profile();if(scene)scene.settled=true;
@@ -170,7 +171,7 @@ class FreeScene extends Phaser.Scene{
     this.tipSeconds=0;
     if(r.site.id===FREE_TUTORIAL.id){
       this.aim={...r.site.preview[0]};this.guide=new FirstRunGuide(r.site.preview[0],{touchTap});
-      this.guideView=new TutorialOverlay(f,this.guide,()=>guarded(async()=>{const result=await journey.skipTutorial();if(result.ok)this.guide.skip();else notice(failureMessage(result.reason));}));
+      this.guideView=new TutorialOverlay(f,this.guide,()=>guarded(async()=>{const result=await journey.skipTutorial();if(result.ok)this.guide.skip();else denied(result.reason);}));
     }
     this.bindControls();
     $('site-name').textContent=r.site.name;$('run-mode').textContent=artMap?(testEdition.runLabel||'유료판 테스트'):r.mode==='boss'?'쌍봉 철탑 보스':'고물 바람골';
@@ -186,7 +187,7 @@ class FreeScene extends Phaser.Scene{
   }
   mapLabel(){$('map-label').textContent=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001?'가까이 보기':'전체 보기';}
   resize(){const f=$('playfield');if(!f.clientWidth||!f.clientHeight)return;release();const fit=Math.abs(this.viewport.zoom-this.viewport.minZoom)<.001;this.scale.resize(f.clientWidth,f.clientHeight);this.viewport.setSize(f.clientWidth,f.clientHeight);if(fit)this.viewport.fit();this.view.transform();this.mapLabel();}
-  attack(){const accepted=touchTap&&inputDevice==='touch'?pressContact(this.run,this.aim):this.run.press(this.aim);this.guide?.attack(this.aim,accepted);if(!accepted)$('feedback').textContent='건물 위를 조준하거나 남은 배터리를 확인해 주세요.';this.hud();return accepted;}
+  attack(){const accepted=touchTap&&inputDevice==='touch'?pressContact(this.run,this.aim):this.run.press(this.aim);this.guide?.attack(this.aim,accepted);if(!accepted){campaign?.denied?.();$('feedback').textContent='건물 위를 조준하거나 남은 배터리를 확인해 주세요.';}this.hud();return accepted;}
   hud(){
     const r=this.run,w=r.world,s=w.stats();$('play-tools').hidden=!journey.profile.owned.includes('blackhole');$('charge').textContent=w.unlimited?'∞':`${Math.ceil(w.charge/w.capacity*100)}%`;$('energy').max=w.capacity;$('energy').value=w.charge;
     $('recovered').textContent=`${(Math.floor(r.ratio*1000)/10).toFixed(1)}%`;$('recovery').value=r.ratio*100;
@@ -195,7 +196,7 @@ class FreeScene extends Phaser.Scene{
     $('feedback').textContent=r.paused?'청소가 잠시 멈췄어요.':r.phase==='finishing'?`배터리 소진 · 무료 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:r.qualified?r.mode==='boss'?'보스 70% 성공! 계속해서 100%에 도전하거나 Ⅱ 메뉴에서 정산하세요.':'70% 성공! 100%에 도전하거나 Ⅱ 메뉴에서 정산하고 다른 현장을 골라보세요.':w.canUseTool()&&w.charge<w.cost()?'남은 배터리로 마지막 1회 사용할 수 있어요.':gameTip(this.tipSeconds,inputDevice,touchTap);
     if(artMap)$('feedback').textContent=r.finishReady?`테스트 종료 · ${(r.ratio*100).toFixed(1)}% 회수 · 화력을 바꾸거나 다시 테스트하세요.`:r.paused?'테스트 일시정지':r.phase==='finishing'?`배터리 소진 · 마무리 수집 ${Math.ceil(r.finishRemaining)}초`:'폭파로 받침·벽면을 깨고 블랙홀로 모아 보세요. 하단에서 화력을 조절할 수 있어요.';
     if(artMap&&!r.paused&&!r.finishReady&&r.phase!=='finishing'&&testEdition.status)$('feedback').textContent=testEdition.status(w);
-    campaign?.hud(r,()=>{release();if(!operating&&!r.paused&&!r.finishReady){r.activateSkill('orbital');this.hud();}});
+    campaign?.hud(r,()=>{release();if(!operating&&!r.paused&&!r.finishReady){if(!r.activateSkill('orbital'))campaign?.denied?.();this.hud();}});
     this.guideView?.render(this.viewport,this.aim,w,inputDevice,r.paused||r.phase==='finishing');
   }
   update(time){
@@ -238,7 +239,7 @@ $('reset-confirm').onclick=()=>guarded(async()=>{
 $('dispatch').onclick=()=>!campaign&&journey.profile.tutorial==='upgrade'?workshop():maps();$('workshop-open').onclick=workshop;$('workshop-back').onclick=home;
 $('practice').onclick=()=>guarded(()=>dispatch('tutorial'));
 $('tutorial-replay').onclick=()=>guarded(()=>dispatch('tutorial'));
-$('workshop-skip').onclick=()=>guarded(async()=>{const result=await journey.skipTutorial();if(!result.ok)notice(failureMessage(result.reason));renderOffers();});
+$('workshop-skip').onclick=()=>guarded(async()=>{const result=await journey.skipTutorial();if(!result.ok)denied(result.reason);renderOffers();});
 $('pause-return').onclick=()=>guarded(settle);$('pause').onclick=pause;
 $('resume').onclick=()=>{if(document.hidden)return;$('pause-dialog').close();release();if(scene)scene.lastClock=performance.now();if(!testEdition?.modalOpen())scene?.run.pause(false);};
 $('pause-dialog').addEventListener('cancel',event=>event.preventDefault());

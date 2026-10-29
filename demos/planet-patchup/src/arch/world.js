@@ -16,7 +16,8 @@ export class ArchWorld extends ActiveIdeaWorld{
  stats(){return {...super.stats(),...this.archStats};}
  tune(id,fallback){return id==='blastReach'&&this.archStats?this.archStats.blastReach:super.tune(id,fallback);}
  // Keep the original proximity suction; optional global collection uses a separate clock.
- note(event){if(event.kind==='collect'&&Number.isInteger(event.id))this.collectedPixelIds?.add(event.id);super.note(event);}
+ note(event){if(this.silentPassive&&event.kind==='tool-blast')event={...event,audio:false};if(event.kind==='collect'&&Number.isInteger(event.id))this.collectedPixelIds?.add(event.id);super.note(event);}
+ execute(action){const previous=this.silentPassive;this.silentPassive=action.kind==='echo'||action.kind==='relay-hit';try{return super.execute(action);}finally{this.silentPassive=previous;}}
  canUseTool(){return super.canUseTool()&&(!this.allowedTools||this.allowedTools.includes(this.tool));}
  effectiveAt(x,y,radius){return [null,...this.bodies].some(piece=>this.material(piece).some(({q})=>Math.hypot(q.x-x,q.y-y)<=radius));}
  activate(x,y){const before=this.charge,tool=this.tool;const effective=tool==='blackhole'&&this.validPoint(x,y)&&this.effectiveAt(x,y,this.stats().gravityRadius);const ok=super.activate(x,y);if(ok){this.energyUsed+=before-this.charge;this.attackCounts[tool]++;if(effective)this.effectiveBlackHoles++;}return ok;}
@@ -43,8 +44,9 @@ export class ArchWorld extends ActiveIdeaWorld{
  activateDevice(id,level=1){
   if(id!=='orbital'||!Number.isInteger(level)||level<1||level>5||!super.activateDevice('orbital',1))return false;
   const a=this.activeDevice,xs=this.structureMaterial().map(v=>v.q.x).sort((a,b)=>a-b),count=5+(level>=3?1:0)+(level>=5?1:0);
-  a.targets=Array.from({length:count},(_,i)=>({x:xs[Math.floor(i*(xs.length-1)/(count-1))]}));a.archForce=1+.1*(level-1);return true;
+  a.targets=Array.from({length:count},(_,i)=>({x:xs[Math.floor(i*(xs.length-1)/(count-1))]}));a.archForce=1+.1*(level-1);this.note({kind:'sound-active-deploy'});return true;
  }
+ deviceTick(dt){const active=this.activeDevice,before=active?.next||0;super.deviceTick(dt);if(active?.id==='orbital')for(let i=before;i<active.next;i++)this.note({kind:'sound-orbital-fall',heavy:i===active.targets.length-1});}
  hitSatellite(p,y){super.hitSatellite({...p,power:p.power*(this.activeDevice?.archForce||1)},y);}
  collectLoose(limit=Infinity){
   let count=0,x=0,y=0;const ids=[],samples=[];const take=p=>{if(samples.length<8)samples.push({x:p.x,y:p.y,color:p.color||1});count++;x+=p.x||0;y+=p.y||0;ids.push(p.id);this.collectedPixelIds.add(p.id);};

@@ -15,7 +15,7 @@ export class GameSound {
  update(dt,collected,events=[],active=true){
   if(!active||!this.enabled||this.manager.locked){this.collection?.update(dt,collected,false);this.stop();return;}
   this.blast.wait=Math.max(0,this.blast.wait-dt);this.impact.wait=Math.max(0,this.impact.wait-dt);
-  if(this.blast.wait===0&&events.some(e=>e.kind==='tool-blast'&&e.phase==='blast')){
+  if(this.blast.wait===0&&events.some(e=>e.kind==='tool-blast'&&e.phase==='blast'&&e.audio!==false)){
    this.play(this.blast,.25,.98+Math.random()*.04);this.blast.wait=.09;
   }
   let hit=null;

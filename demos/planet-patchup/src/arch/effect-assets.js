@@ -1,0 +1,11 @@
+import tap from './audio/01-ui-tap.wav?url';
+import confirm from './audio/02-ui-confirm.wav?url';
+import unavailable from './audio/03-ui-unavailable.wav?url';
+import open from './audio/04-blackhole-open.wav?url';
+import loop from './audio/05-blackhole-loop.wav?url';
+import close from './audio/06-blackhole-close.wav?url';
+import ready from './audio/07-active-ready.wav?url';
+import deploy from './audio/08-active-deploy.wav?url';
+import fall from './audio/09-orbital-fall.wav?url';
+import success from './audio/10-progress-success.wav?url';
+export const EFFECT_URLS={'ui-tap':tap,'ui-confirm':confirm,'ui-unavailable':unavailable,'blackhole-open':open,'blackhole-loop':loop,'blackhole-close':close,'active-ready':ready,'active-deploy':deploy,'orbital-fall':fall,'progress-success':success};
