@@ -68,3 +68,8 @@ next-env.d.ts
 
 /demos/planet-patchup/dist-collapse-lab/
 /demos/planet-patchup/dist-collapse-fall/
+/demos/planet-patchup/godot-free/.godot/
+/demos/planet-patchup/dist-godot-free/
+/demos/planet-patchup/dist-godot-shell/
+/demos/planet-patchup/node_modules
+/.superpowers/

@@ -1,0 +1,15 @@
+What this change does: Stops automatic migration, manual profile replacement, and shared profile writes when the Web filesystem is not persistent. It keeps existing data and presents recovery guidance instead of reporting a volatile import as saved.
+
+Verdict: Approved. No blocking finding in this follow-up.
+
+Reviewed `.superpowers/sdd/free-godot-v059/task-1-storage-review.diff` once and the appended implementation report. All source paths below are relative to `/private/tmp/planet-audio-release-20261029/demos/planet-patchup/godot-free/`.
+
+- `platform/free_web_bridge.gd:20` checks persistence before shell lookup, source snapshot reads, destination absence checks, backup writes, or migration. The non-Web early return at line 17 preserves native behavior. Empty legacy snapshots and existing destination profiles cannot skip this guard.
+- `platform/free_web_bridge.gd:94` sets the store recovery notice, refreshes its blocked state, and disables Journey persistence. `campaign/profile_store.gd:28,50` keeps this block on subsequent reads. Inspection of the connected reset path confirmed `campaign/journey.gd:357` must pass `_begin()` (`:52`) before creating or committing a fresh profile, so reset cannot bypass the recovery block.
+- `campaign/profile_store.gd:115` rejects manual verified import before normalization, backup copies, either slot write, or clearing the recovery notice. The shared write helper at `:73` independently rejects unavailable storage before any file operation. `campaign/journey.gd:403` updates its in-memory profile only on successful import, so a rejected replacement leaves the loaded profile intact.
+- `campaign/profile_store.gd:12` returns the specific unavailable-storage guidance instead of the generic corruption message that suggests importing. `app/app.gd:391` maps the manual-import failure to that same guidance. The English message and Korean translation (`data/locale-ko.json:1`, actual minified source) accurately say saving/importing are blocked, request site storage permission and reload, advise exporting a loaded profile, and preserve the original browser saves.
+- Existing persistent-browser corruption recovery is unchanged: the additional guards only reject Web builds for which `OS.is_userfs_persistent()` is false. No legacy localStorage mutation or paid-project change appears in this follow-up diff.
+
+The independent builder correction to `persistentPaths: ['/userfs/PlanetPatchupGodotFreeWeb']` and its official Godot source validation were supplied by the coordinator; they were not re-reviewed or runtime-verified here. Correct mounting remains necessary for this guard to describe the actual profile filesystem.
+
+The implementer reports pinned Godot 4.6.2 compile-only exit 0 in `/private/tmp/pp-free-task1-storage-guard-final.log`; this review did not repeat compilation. No tests, scenes, world/runtime probes, browser/device launches, or gameplay checks were performed. Approval is static source approval, not durable IDBFS readback or browser-behavior verification.

@@ -33,12 +33,11 @@ emits static files into `out`.
 
 ## Planet Patchup playable demo
 
-- Open `/planet-patchup/play/`; the home page links to the free first-zone balance build. All versions are listed at `/planet-patchup/`. Older shared links redirect to their canonical entries; see `docs/planet-addresses.md`. Portrait phones are the primary target.
-- `demos/planet-patchup/` holds the standalone Vite/Phaser source; `public/games/planet-patchup/` holds its checked-in static release.
-- For the new free zone run `npm run build:game -- --free`, then `npm run build`. For the original demo use `npm run build:game`. Commit both source and public game assets. The normal Cloudflare build uses the checked-in release.
-- Game appearance: `demos/planet-patchup/src/demo/style.css` and `demo.html`. Rules and persistence: `src/free-step1/`. Physics remains shared within the standalone source tree.
-- The Figma reference is the dust-alley play UI, node `6:11` in file `dEvvNjaFdv03v2MvzaU88r`. Actual procedural background/surface rendering is reused, not a flattened screenshot.
-- No payments, ads, analytics, login, or server saves. Progress stays in this browser's local storage. QA uses `?qa=1`, with separate keys.
-- Tests: `npm test --prefix demos/planet-patchup`. Responsive desktop-browser QA does not establish real iPhone heat, touch, or sustained performance.
+- `/planet-patchup/play/` is the Godot 0.5.9 free web edition: Arch Quarter's six normal maps, boss and tutorial, three original skills, central automatic collection and unlimited upgrades. Five other regions remain locked. All routes and archives are listed at `/planet-patchup/` and in [the address guide](docs/planet-addresses.md).
+- Current free source: `demos/planet-patchup/godot-free/`; browser bridge/feedback: `demos/planet-patchup/src/godot-free/`. See [the free project README](demos/planet-patchup/godot-free/README.md) for scope, save migration and packaging.
+- Build with `npm run build:game -- --free`, then `npm run build`. Commit source and `public/games/planet-patchup-free/` together. Cloudflare's normal build publishes the checked-in export without running Godot.
+- Progress stays in the same browser/origin, using separate free Godot IndexedDB storage. Valid original Arch browser progress is imported once, with raw backups and an exact collection-upgrade refund; original localStorage remains untouched. Anonymous statistics can be disabled; feedback submission is explicit. No login, payment or server-side progress store.
+- The prior Phaser free edition is preserved at `/planet-patchup/archive/free-phaser/`, including old chunks and map editor dependencies. Legacy Vite/Phaser source remains in `demos/planet-patchup/src/`; rebuild it separately with `npm run build:free:phaser` from that demo directory.
+- Gameplay, browser and device verification is user-only. Agent checks for this release are source review, import/compile/export, static packaging and HTTP delivery. They do not establish save durability, gameplay, sound or iPhone performance.
 
-Free-zone balance, assumptions and isolated physics: [docs/free30-balance.md](docs/free30-balance.md).
+Historical free-zone balance: [docs/free30-balance.md](docs/free30-balance.md).

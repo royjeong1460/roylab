@@ -1,0 +1,35 @@
+# Planet Patchup free web — Godot 0.5.9
+
+Separate free project copied from the frozen, approved paid 0.5.9 source. Native paid code is outside this project and is not changed by the free release. The baseline file hashes are recorded in `docs/qa/2026-11-01-free-godot-v059/paid-source-baseline.json` at repository root.
+
+## Scope
+
+- Arch Quarter: tutorial, six normal maps and boss; Aftershock, Relay and Orbital; one passive and one active slot. Five other globe regions remain locked previews without packaged maps.
+- Approved 0.5.9 physics, central automatic final collection (starts after one second; at most nine seconds total), replacement collection upgrades, unlimited existing upgrades and exact historical cost/refund accounting.
+- Unchanged quiet-background v5: 94 BPM, 32 bars. Shared effects remain; passive skills have no sound.
+- Restoration requires six distinct normal best records at 70% plus boss clear. Tutorial/replays do not create restoration steps.
+
+## Save transition
+
+The canonical URL remains `/planet-patchup/play/`, on the same origin. The shell reads original Arch v1/v2 browser slots and run journals under their original Web Lock before engine startup. Original localStorage is never rewritten/deleted. Godot stores a raw recovery snapshot before a validated redundant-slot import. Existing Godot slots or recovery copies prevent automatic replacement; corrupt/conflicting legacy data blocks import and transactions visibly. The four retired collection tracks are archived and refunded exactly once.
+
+Godot uses the stable custom directory `PlanetPatchupGodotFreeWeb`, its own IDBFS mount, and free-only profile/journal/settings names. A lifetime Web Lock prevents two free Godot tabs from writing independent copies. Settings retain the original audio on/off preference; original touch and analytics keys remain untouched. Filesystem sync requests are not a claim of durable browser readback. Close older Phaser game tabs before moving to the new release; later changes in an old tab are not automatically merged into an existing Godot profile.
+
+## Build and publish
+
+From repository root:
+
+```sh
+npm run build:game -- --free
+npm run build
+```
+
+The free builder imports, checks scripts and exports the single-thread Compatibility Web target with Godot 4.6.2. Override the local binary/template with `GODOT_BIN` and `GODOT_WEB_TEMPLATE` when needed. `src/godot-free/` bundles the original anonymous analytics transport and a DOM feedback dialog using the existing public production environment configuration. Statistics can be disabled in the dialog; feedback is submitted explicitly. Raw saves/journals are not telemetry.
+
+Exported WASM/PCK are gzip bytes under content-versioned original extensions, with exact `Content-Encoding`, `Content-Type` and immutable cache headers in `public/_headers`. The 25 MiB Pages per-file limit is enforced. The original Phaser release/chunks and map editor are preserved; its archive URL is `/planet-patchup/archive/free-phaser/`. Map preview queries use that archive. Legacy source remains `src/arch/main.js`; its build command is `npm run build:free:phaser` from the demo directory.
+
+Commit source and checked-in `public/` release together. Cloudflare's normal site build uses those files; it does not need Godot installed.
+
+## Verification boundary
+
+The user performs all gameplay, browser, device, feel and thermal testing. Agents may inspect source, import/compile/export, inspect packaged files and HTTP bytes, and deploy. Do not run tests, scenes, simulations, browsers or device apps. Build/static delivery evidence does not establish gameplay, audio, save durability, feedback delivery or device behavior.

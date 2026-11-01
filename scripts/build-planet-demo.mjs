@@ -5,6 +5,13 @@ const tutorial2=process.argv.includes('--tutorial2'),structure=process.argv.incl
 const blast=process.argv.includes('--blast'),free=process.argv.includes('--free'),paid=process.argv.includes('--paid'),ideas=process.argv.includes('--ideas'),support=process.argv.includes('--support'),motion=process.argv.includes('--motion'),bearing=process.argv.includes('--bearing'),ramp=process.argv.includes('--ramp'),tilt=process.argv.includes('--tilt');
 if([tutorial2,structure,blast,free,paid,ideas,support,motion,bearing,ramp,tilt].filter(Boolean).length>1)throw Error('Choose only one edition: --blast, --free, --paid, --ideas, --support, --motion --bearing or --ramp or --tilt or --structure or --tutorial2');
 const root=new URL('../',import.meta.url),demo=new URL('demos/planet-patchup/',root),out=new URL(tutorial2?'public/games/planet-patchup-tutorial2/':structure?'public/games/planet-patchup-structure/':tilt?'public/games/planet-patchup-tilt/':ramp?'public/games/planet-patchup-ramp/':bearing?'public/games/planet-patchup-bearing/':motion?'public/games/planet-patchup-motion/':support?'public/games/planet-patchup-support/':ideas?'public/games/planet-patchup-ideas/':paid?'public/games/planet-patchup-paid-test/':free?'public/games/planet-patchup-free/':blast?'public/games/planet-patchup-blast/':'public/games/planet-patchup/',root);
+// The current free game is Godot. Its builder owns export, compression and routes.
+// Gameplay verification is user-only; legacy Phaser test runners remain separate.
+if(free){
+ if(!existsSync(new URL('node_modules/vite/package.json',demo)))execFileSync('npm',['ci'],{cwd:demo,stdio:'inherit'});
+ execFileSync('npm',['run','build:free'],{cwd:demo,stdio:'inherit'});
+ process.exit(0);
+}
 // npm ci can follow a linked node_modules and empty another working copy.
 const dependencies=new URL('node_modules',demo);
 if(existsSync(dependencies)&&lstatSync(dependencies).isSymbolicLink())unlinkSync(dependencies);

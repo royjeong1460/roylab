@@ -1,0 +1,73 @@
+{
+  "version": "0.5.9-free",
+  "sourceHash": "5e4448c5e43004ba23f16d8972f9498479b868d1c1f7ed3ba48d803e85016b5e",
+  "stem": "free-059-a8f6f62bda5d",
+  "allowedMaps": [
+    "arch-0-arch-quarter-v2",
+    "arch-1-arch-quarter-v2",
+    "arch-2-arch-quarter-v2",
+    "arch-3-arch-quarter-v2",
+    "arch-4-arch-quarter-v2",
+    "arch-5-arch-quarter-v2",
+    "arch-6-arch-quarter-v2",
+    "arch-7-arch-quarter-v2"
+  ],
+  "allowedSkills": [
+    "aftershock",
+    "orbital",
+    "relay"
+  ],
+  "shellScript": "godot-shell-assets/shell-B4F1XaDA.js",
+  "shellCss": "godot-shell-assets/shell-CehdKP2w.css",
+  "artifacts": [
+    {
+      "file": "free-059-a8f6f62bda5d.audio.position.worklet.js",
+      "encoding": "identity",
+      "bytes": 2973,
+      "decodedBytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8",
+      "decodedSha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "file": "free-059-a8f6f62bda5d.audio.worklet.js",
+      "encoding": "identity",
+      "bytes": 7298,
+      "decodedBytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3",
+      "decodedSha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "file": "free-059-a8f6f62bda5d.js",
+      "encoding": "identity",
+      "bytes": 315759,
+      "decodedBytes": 315759,
+      "sha256": "e3f56ee40e6f84371053db06692cfac15e2c8659547b11c6b2dfa1996dabd981",
+      "decodedSha256": "e3f56ee40e6f84371053db06692cfac15e2c8659547b11c6b2dfa1996dabd981"
+    },
+    {
+      "file": "free-059-a8f6f62bda5d.pck",
+      "encoding": "gzip",
+      "bytes": 16147189,
+      "decodedBytes": 19608316,
+      "sha256": "894a0372de920af641ffb6daf75c154ab2d4af17293a432adbd69d15c0dccf86",
+      "decodedSha256": "eda86b22263c7b395bb56e969cdddef45cf5f4f45c2e772b4ae120e3b43dcf5b"
+    },
+    {
+      "file": "free-059-a8f6f62bda5d.png",
+      "encoding": "identity",
+      "bytes": 21443,
+      "decodedBytes": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e",
+      "decodedSha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "file": "free-059-a8f6f62bda5d.wasm",
+      "encoding": "gzip",
+      "bytes": 9469248,
+      "decodedBytes": 37695054,
+      "sha256": "28105b24784987bf32eed7bb2d3388ad6c57e14fb603bdebc268c1e559403b87",
+      "decodedSha256": "cca8bc7c462d348aaa3f318aecf3281d99bf219e182256412711b24f0d086d80"
+    }
+  ],
+  "scope": "compile/export/static package verification only; no game/browser/save-runtime testing"
+}
