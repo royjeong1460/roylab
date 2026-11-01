@@ -20,7 +20,7 @@ import {renderEnvironmentReceipt} from './environment-receipt.js';
 import {initEffects,effects,campaignEffects} from './audio.js';
 let analytics,mountFeedback,startMusic;
 if(import.meta.env.PP_FREE_WEB){
- const [web,music,track]=await Promise.all([import('./web-feedback.js'),import('./web-music.js'),import('../../paid-app/src/audio/journey-game-v10-64bars-preview.m4a?url')]);
+ const [web,music,track]=await Promise.all([import('./web-feedback.js'),import('./web-music.js'),import('../../paid-app/src/audio/quiet-background-v5-94bpm-32bars.m4a?url')]);
  analytics=web.bootFreeAnalytics();mountFeedback=web.mountFreeFeedback;
  startMusic=storage=>music.bootFreeMusic(storage,track.default,document,initEffects());
 }

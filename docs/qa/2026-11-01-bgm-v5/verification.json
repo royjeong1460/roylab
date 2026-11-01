@@ -1,0 +1,13 @@
+{
+  "local_builds": "free Vite and static site webpack passed",
+  "music": "v5 / 94 BPM / 32 bars",
+  "music_sha256": "161876d72470d905c12d0a18a78b8c4efd2bc6254c037c2a4e2bcf8f5561355c",
+  "paths": {
+    "vite": "demos/planet-patchup/dist-free/assets/quiet-background-v5-94bpm-32bars-Ble_qQJ-.m4a",
+    "public": "public/games/planet-patchup-free/assets/quiet-background-v5-94bpm-32bars-Ble_qQJ-.m4a",
+    "site_export": "out/games/planet-patchup-free/assets/quiet-background-v5-94bpm-32bars-Ble_qQJ-.m4a"
+  },
+  "unrelated_public_files_unchanged": 138,
+  "runtime_or_auditory_testing": false,
+  "public_deployment": "pending"
+}
