@@ -91,7 +91,7 @@ for(const p of files(raw)){
  if(compressed&&!gunzipSync(bytes).equals(original))fail('Compression did not preserve '+name);
  if(bytes.length>sizeLimit)fail(`${name} exceeds Pages 25 MiB limit after packaging.`);
  writeFileSync(path.join(output,name),bytes);writeFileSync(path.join(target,name),bytes);
- artifacts.push({file:name,encoding:compressed?'gzip':'identity',bytes:bytes.length,decodedBytes:original.length,sha256:sha(bytes),decodedSha256:sha(original)});
+ artifacts.push({file:name,encoding:compressed?'gzip-payload':'identity',bytes:bytes.length,decodedBytes:original.length,sha256:sha(bytes),decodedSha256:sha(original)});
 }
 cpSync(shellOutput,output,{recursive:true});cpSync(shellOutput,target,{recursive:true});
 if(existsSync(path.join(source,'licenses'))){
@@ -115,7 +115,24 @@ if(!html.includes(engineTag))fail('Unexpected Godot engine script tag.');
 html=html.replace(engineTag,`<script src="${stem}.js" onerror="PPFreeWebEngineError()"></script>`);
 const marker='engine.startGame(';
 if(html.split(marker).length!==2)fail('Unexpected Godot HTML startup structure.');
-html=html.replace(marker,'const startAfterBridge=engine.startGame.bind(engine);\nengine.startGame=options=>globalThis.PPFreeWebReady.then(()=>startAfterBridge({...options,persistentPaths:["/userfs/PlanetPatchupGodotFreeWeb"]}));\n'+marker);
+// Pages can add its own HTTP compression. Serve gzip as payload, then decode only
+// these two assets after the browser handles the host's HTTP content coding.
+const startWithAssets=`const startAfterBridge=engine.startGame.bind(engine);
+const fetchBeforeGame=globalThis.fetch.bind(globalThis);
+const compressedTypes=new Map([["${stem}.wasm","application/wasm"],["${stem}.pck","application/octet-stream"]].map(([name,type])=>[new URL(name,document.baseURI).href,type]));
+engine.startGame=options=>globalThis.PPFreeWebReady.then(()=>{
+ if(typeof DecompressionStream!=="function")throw new Error("Please update your browser to load this game.");
+ globalThis.fetch=async(resource,options)=>{
+  const type=compressedTypes.get(new URL(resource instanceof Request?resource.url:resource,document.baseURI).href);
+  const response=await fetchBeforeGame(resource,options);
+  if(!type||!response.ok)return response;
+  const headers=new Headers(response.headers);headers.delete("Content-Encoding");headers.delete("Content-Length");headers.set("Content-Type",type);
+  return new Response(response.body.pipeThrough(new DecompressionStream("gzip")),{status:response.status,statusText:response.statusText,headers});
+ };
+ return startAfterBridge({...options,persistentPaths:["/userfs/PlanetPatchupGodotFreeWeb"]});
+});
+`;
+html=html.replace(marker,startWithAssets+marker);
 const initStart=html.indexOf('const GODOT_CONFIG ='),initEnd=html.indexOf('</script>',initStart);
 if(initStart<0||initEnd<initStart)fail('Unexpected Godot initializer.');
 html=html.slice(0,initStart)+'if(typeof Engine === "function"){\n'+html.slice(initStart,initEnd)+'}else{PPFreeWebEngineError();}\n'+html.slice(initEnd);
@@ -125,7 +142,7 @@ const headersPath=path.join(repo,'public/_headers');
 let headers=existsSync(headersPath)?readFileSync(headersPath,'utf8'):'';
 headers=headers.replace(/# BEGIN GODOT FREE\n[\s\S]*?# END GODOT FREE\n?/g,'');
 const encodedFiles=readdirSync(target).filter(n=>/^free-059-[a-f0-9]+\.(wasm|pck)$/.test(n)).sort();
-headers+='\n# BEGIN GODOT FREE\n'+encodedFiles.map(name=>`/games/planet-patchup-free/${name}\n  Content-Encoding: gzip\n  Content-Type: ${name.endsWith('.wasm')?'application/wasm':'application/octet-stream'}\n  Cache-Control: public, max-age=31536000, immutable, no-transform\n`).join('')+'# END GODOT FREE\n';
+headers+='\n# BEGIN GODOT FREE\n'+encodedFiles.map(name=>`/games/planet-patchup-free/${name}\n  Content-Type: application/gzip\n  Cache-Control: public, max-age=31536000, immutable, no-transform\n`).join('')+'# END GODOT FREE\n';
 writeFileSync(headersPath,headers);
 syncPlanetRoutes();
 const pck=readFileSync(path.join(raw,exportStem+'.pck'));

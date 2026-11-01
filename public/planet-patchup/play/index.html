@@ -109,15 +109,15 @@ body {
 		</noscript>
 
 		<div id="status">
-			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="free-059-a8f6f62bda5d.png" alt="">
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="free-059-f0aa866ea27e.png" alt="">
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="free-059-a8f6f62bda5d.js" onerror="PPFreeWebEngineError()"></script>
+		<script src="free-059-f0aa866ea27e.js" onerror="PPFreeWebEngineError()"></script>
 		<script>
 if(typeof Engine === "function"){
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"free-059-a8f6f62bda5d","experimentalVK":false,"fileSizes":{"free-059-a8f6f62bda5d.pck":19608316,"free-059-a8f6f62bda5d.wasm":37695054},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"free-059-f0aa866ea27e","experimentalVK":false,"fileSizes":{"free-059-f0aa866ea27e.pck":19608316,"free-059-f0aa866ea27e.wasm":37695054},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -206,7 +206,19 @@ const engine = new Engine(GODOT_CONFIG);
 	} else {
 		setStatusMode('progress');
 		const startAfterBridge=engine.startGame.bind(engine);
-engine.startGame=options=>globalThis.PPFreeWebReady.then(()=>startAfterBridge({...options,persistentPaths:["/userfs/PlanetPatchupGodotFreeWeb"]}));
+const fetchBeforeGame=globalThis.fetch.bind(globalThis);
+const compressedTypes=new Map([["free-059-f0aa866ea27e.wasm","application/wasm"],["free-059-f0aa866ea27e.pck","application/octet-stream"]].map(([name,type])=>[new URL(name,document.baseURI).href,type]));
+engine.startGame=options=>globalThis.PPFreeWebReady.then(()=>{
+ if(typeof DecompressionStream!=="function")throw new Error("Please update your browser to load this game.");
+ globalThis.fetch=async(resource,options)=>{
+  const type=compressedTypes.get(new URL(resource instanceof Request?resource.url:resource,document.baseURI).href);
+  const response=await fetchBeforeGame(resource,options);
+  if(!type||!response.ok)return response;
+  const headers=new Headers(response.headers);headers.delete("Content-Encoding");headers.delete("Content-Length");headers.set("Content-Type",type);
+  return new Response(response.body.pipeThrough(new DecompressionStream("gzip")),{status:response.status,statusText:response.statusText,headers});
+ };
+ return startAfterBridge({...options,persistentPaths:["/userfs/PlanetPatchupGodotFreeWeb"]});
+});
 engine.startGame({
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {

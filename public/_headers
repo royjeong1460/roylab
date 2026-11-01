@@ -1,13 +1,12 @@
 
 
 
+
 # BEGIN GODOT FREE
-/games/planet-patchup-free/free-059-a8f6f62bda5d.pck
-  Content-Encoding: gzip
-  Content-Type: application/octet-stream
+/games/planet-patchup-free/free-059-f0aa866ea27e.pck
+  Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
-/games/planet-patchup-free/free-059-a8f6f62bda5d.wasm
-  Content-Encoding: gzip
-  Content-Type: application/wasm
+/games/planet-patchup-free/free-059-f0aa866ea27e.wasm
+  Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
 # END GODOT FREE
