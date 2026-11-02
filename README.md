@@ -33,7 +33,8 @@ emits static files into `out`.
 
 ## Planet Patchup playable demo
 
-- `/planet-patchup/play/` is the Godot 0.5.9 free web edition: Arch Quarter's six normal maps, boss and tutorial, three original skills, central automatic collection and unlimited upgrades. Five other regions remain locked. All routes and archives are listed at `/planet-patchup/` and in [the address guide](docs/planet-addresses.md).
+- `/planet-patchup/play/` is the Godot 0.5.34 free web edition: Arch Quarter's six normal maps, boss and tutorial, three original skills, central automatic collection and unlimited upgrades. Five other regions remain locked. All routes and archives are listed at `/planet-patchup/` and in [the address guide](docs/planet-addresses.md).
+- The 0.5.34 update includes the revised collapse wait, optional recovery skip after three foreground seconds, recovery presentation, home/workshop layout and held parts beside the upgrade title. The v35 occupancy optimization under regression investigation is excluded. Build/static delivery checks do not establish browser gameplay or performance.
 - Current free source: `demos/planet-patchup/godot-free/`; browser bridge/feedback: `demos/planet-patchup/src/godot-free/`. See [the free project README](demos/planet-patchup/godot-free/README.md) for scope, save migration and packaging.
 - Build with `npm run build:game -- --free`, then `npm run build`. Commit source and `public/games/planet-patchup-free/` together. Cloudflare's normal build publishes the checked-in export without running Godot.
 - Progress stays in the same browser/origin, using separate free Godot IndexedDB storage. Valid original Arch browser progress is imported once, with raw backups and an exact collection-upgrade refund; original localStorage remains untouched. Anonymous statistics can be disabled; feedback submission is explicit. No login, payment or server-side progress store.

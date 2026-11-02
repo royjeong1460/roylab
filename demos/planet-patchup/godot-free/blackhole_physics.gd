@@ -10,6 +10,7 @@ var wear := {}
 var worn_pixels := 0
 var _wear_dirty := false
 var _live_dirty := false
+var _wear_ready := {}
 
 func setup(owner_world) -> void:
 	world = owner_world
@@ -19,6 +20,7 @@ func reset() -> void:
 	worn_pixels = 0
 	_wear_dirty = false
 	_live_dirty = false
+	_wear_ready.clear()
 
 func on_piece_removed(_piece) -> void:
 	# A rebuild reuses its material IDs; prune only after the children exist.
@@ -63,6 +65,9 @@ func _pull(well: Dictionary, dt: float) -> void:
 	if radius <= 0:
 		return
 	for piece in world.pieces:
+		var reach: float = radius + piece.motion_radius / S
+		if (piece.position / S).distance_squared_to(center) > reach * reach:
+			continue
 		var near := radius
 		var point := Vector2.ZERO
 		var found := false
@@ -268,6 +273,8 @@ func _sample_wear(samples: Array, dt: float) -> void:
 			var scale := minf(1.0, 48.0 * dt / total) * wear_multiplier(piece)
 			for id in pixels:
 				wear[id] = minf(1.5, float(wear.get(id, 0.0)) + float(pixels[id]) * scale)
+				if float(wear[id]) >= 1.0:
+					_wear_ready[piece.get_instance_id()] = true
 			piece.set_meta(RUBBING_META, minf(1.0, rubbing + minf(dt, 1.0 / 30.0)))
 		elif not touching.has(piece):
 			piece.set_meta(RUBBING_META, maxf(0.0, rubbing - dt))
@@ -279,6 +286,8 @@ func _flush_wear() -> void:
 	if _wear_dirty:
 		_wear_dirty = false
 		for piece in world.pieces.duplicate():
+			if not _wear_ready.has(piece.get_instance_id()):
+				continue
 			var remaining: Array = []
 			var eroded: Array = []
 			for id in piece.ids:
@@ -294,13 +303,16 @@ func _flush_wear() -> void:
 			partitions.sort_custom(func(a, b): return a.size() > b.size())
 			world._rebuild(piece, partitions)
 			removed += eroded.size()
-	var live := {}
-	for piece in world.pieces:
-		for id in piece.ids:
-			live[id] = true
-	for id in wear.keys():
-		if not live.has(id):
-			wear.erase(id)
+		_wear_ready.clear()
+	# Partial wear cannot change ownership. Prune only after bodies are removed/rebuilt.
+	if _live_dirty and not wear.is_empty():
+		var live := {}
+		for piece in world.pieces:
+			for id in piece.ids:
+				live[id] = true
+		for id in wear.keys():
+			if not live.has(id):
+				wear.erase(id)
 	_live_dirty = false
 	if removed > 0:
 		worn_pixels += removed

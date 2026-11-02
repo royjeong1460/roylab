@@ -32,14 +32,14 @@ const expansion=json(path.join(source,'data/skill_expansion.json'));
 if(Object.keys(expansion.skills).length)fail('Paid skill expansion must not ship.');
 if(existsSync(path.join(source,'data/source-manifest.json')))fail('Paid provenance and map manifest must not ship in the free project.');
 const project=readFileSync(path.join(source,'project.godot'),'utf8');
-if(!project.includes('config/version="0.5.9"')||!project.includes('config/custom_user_dir_name="PlanetPatchupGodotFreeWeb"'))fail('Incorrect free version or persistent user directory.');
+if(!project.includes('config/version="0.5.34"')||!project.includes('config/custom_user_dir_name="PlanetPatchupGodotFreeWeb"'))fail('Incorrect free version or persistent user directory.');
 
 const inputs=files(source).concat(files(path.join(demo,'src/godot-free')),fileURLToPath(import.meta.url),path.join(demo,'vite.godot-shell.config.js'));
 const content=createHash('sha256');
 for(const p of inputs){content.update(path.relative(demo,p));content.update(readFileSync(p));}
 const sourceHash=content.digest('hex');
-const exportStem='free-059-'+sourceHash.slice(0,12);
-const scratch=mkdtempSync(path.join(tmpdir(),'pp-godot-free-059-'));
+const exportStem='free-0534-'+sourceHash.slice(0,12);
+const scratch=mkdtempSync(path.join(tmpdir(),'pp-godot-free-0534-'));
 const staging=path.join(scratch,'project');
 cpSync(source,staging,{recursive:true,filter:p=>!p.split(path.sep).includes('.godot')&&!p.endsWith('.DS_Store')});
 const raw=path.join(scratch,'export');mkdirSync(raw);
@@ -68,7 +68,7 @@ run('export',['--headless','--editor','--path',staging,'--export-release','Web',
 // Include actual engine/pack bytes so immutable URLs remain safe across rebuilds and templates.
 const packageHash=createHash('sha256').update(sourceHash);
 for(const ext of ['wasm','pck'])packageHash.update(readFileSync(path.join(raw,exportStem+'.'+ext)));
-const stem='free-059-'+packageHash.digest('hex').slice(0,12);
+const stem='free-0534-'+packageHash.digest('hex').slice(0,12);
 execFileSync(process.execPath,[path.join(demo,'node_modules/vite/bin/vite.js'),'build','--config','vite.godot-shell.config.js'],{cwd:demo,stdio:'inherit'});
 const shellOutput=path.join(demo,'dist-godot-shell');
 const shellIndex=json(path.join(shellOutput,'shell-manifest.json'));
@@ -141,7 +141,7 @@ writeFileSync(path.join(output,'index.html'),html);writeFileSync(path.join(targe
 const headersPath=path.join(repo,'public/_headers');
 let headers=existsSync(headersPath)?readFileSync(headersPath,'utf8'):'';
 headers=headers.replace(/# BEGIN GODOT FREE\n[\s\S]*?# END GODOT FREE\n?/g,'');
-const encodedFiles=readdirSync(target).filter(n=>/^free-059-[a-f0-9]+\.(wasm|pck)$/.test(n)).sort();
+const encodedFiles=readdirSync(target).filter(n=>/^free-(?:059|0534)-[a-f0-9]+\.(wasm|pck)$/.test(n)).sort();
 headers+='\n# BEGIN GODOT FREE\n'+encodedFiles.map(name=>`/games/planet-patchup-free/${name}\n  Content-Type: application/gzip\n  Cache-Control: public, max-age=31536000, immutable, no-transform\n`).join('')+'# END GODOT FREE\n';
 writeFileSync(headersPath,headers);
 syncPlanetRoutes();
@@ -155,7 +155,7 @@ if(!pck.includes(assetData))fail('Filtered asset catalog missing from free PCK.'
 const assetCatalog=JSON.parse(assetData);
 if(!assetCatalog.assets.music.includes('quiet-background-v5-94bpm-32bars.wav'))fail('Incorrect background music.');
 for(const p of files(output))if(readFileSync(p).length>sizeLimit)fail('Oversized final artifact: '+path.basename(p));
-const manifest={version:'0.5.9-free',sourceHash,stem,scratch,allowedMaps:[...allowedMaps],allowedSkills,
+const manifest={version:'0.5.34-free',sourceHash,stem,scratch,allowedMaps:[...allowedMaps],allowedSkills,
  shellScript,shellCss,artifacts,scope:'compile/export/static package verification only; no game/browser/save-runtime testing'};
 writeFileSync(path.join(output,'build-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 writeFileSync(path.join(target,stem+'-manifest.json'),JSON.stringify({...manifest,scratch:undefined},null,2)+'\n');

@@ -33,9 +33,10 @@ func step(center: Vector2, dt: float, remaining: float, target_remaining: float)
 				if samples.size() < 8:
 					samples.append({"x": center.x, "y": center.y, "color": int(world.colors[grain.id])})
 			continue
-		var offset: Vector2 = grain.recovery_from - center
-		grain.p = center + offset.rotated(t * t * 2.4) * (1.0 - t * t)
+		grain.p = grain.recovery_from.lerp(center, t * t)
+		grain.recovery_visibility = clampf((1.0 - t) * 4.0, 0.0, 1.0)
 		kept.append(grain)
 	world.grains = kept
+	world.grain_roster_revision += 1
 	if count > 0:
 		world.events.append({"kind": "collect", "source": "final", "count": count, "x": center.x, "y": center.y, "samples": samples, "time": world.elapsed})

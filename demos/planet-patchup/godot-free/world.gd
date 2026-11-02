@@ -1,9 +1,13 @@
 extends Node2D
 
+const PerformanceProbe = preload("res://performance_probe.gd")
+var perf := PerformanceProbe.new()
+
 const GameSkin = preload("res://app/skin.gd")
 const PixelSurface = preload("res://presentation/pixel_surface.gd")
 
 const FractureGraph = preload("res://fracture_graph.gd")
+const FractureConnectivity = preload("res://fracture_connectivity.gd")
 const Piece = preload("res://piece.gd")
 const StructurePhysics = preload("res://structure_physics.gd")
 const BlackHolePhysics = preload("res://blackhole_physics.gd")
@@ -11,6 +15,8 @@ const SkillPhysics = preload("res://skill_physics.gd")
 const ChainPhysics = preload("res://chain_physics.gd")
 const ImpactPhysics = preload("res://impact_physics.gd")
 const GrainPhysics = preload("res://grain_physics.gd")
+const GrainSurface = preload("res://presentation/grain_surface.gd")
+var _grain_surface = GrainSurface.new()
 var structure_physics := StructurePhysics.new()
 var blackhole_physics := BlackHolePhysics.new()
 var skill_physics := SkillPhysics.new()
@@ -30,6 +36,8 @@ const S := 4.0
 const COLLECTIBLE_FILL := Color("a8dfc4")
 const COLLECTIBLE_RIM := Color("518c76")
 const BODY_LIMIT := 18
+const SAND_FRAGMENT_MAX := 16
+var sand_fragment_count := 0
 var bonds := {}
 var fracture_graph := FractureGraph.new()
 var fixture: Dictionary = {}
@@ -45,6 +53,27 @@ var settled := false
 var simulated_ms := 0.0
 var _static_cache: Array = []
 var _static_dirty := true
+var _static_revision := 0
+var _raster_static_revision := -1
+var _raster_dimensions := Vector2i.ZERO
+var _raster_order: Array = []
+var _raster_bodies := {}
+var _raster_dynamic := {}
+var _raster_valid := false
+var occupancy_revision := 0
+var _neighbor_cache: Array = []
+var _group_marks := PackedInt32Array()
+var _group_stamp := 0
+var _grounded_cells := PackedByteArray()
+var _material_pixels: Array = []
+var _material_ids: Array = []
+var _static_material: Array = []
+var _blast_depth := 0
+var _static_surface_rects: Array = []
+var _static_geometry_valid := false
+var _static_geometry_ids: Array = []
+var _static_geometry_rects: Array = []
+var _static_geometry_shapes: Array = []
 var width := 115
 var height := 157
 var floor_y := 145
@@ -54,6 +83,9 @@ var roles := PackedByteArray()
 var colors: Array = []
 var pieces: Array = []
 var grains: Array = []
+# External additions/removals invalidate GrainPhysics' settled/airborne rosters.
+# Internal landing/displacement updates those rosters synchronously.
+var grain_roster_revision := 0
 var collected := {}
 var bombs: Array = []
 var wells: Array = []
@@ -93,7 +125,7 @@ func ground_y(x: float) -> float:
 	return float(ground_surface[clampi(floori(x), 0, width - 1)]) if not ground_surface.is_empty() else float(floor_y)
 
 func grounded_id(id: int) -> bool:
-	return floori(float(id) / width) == int(ground_y(float(id % width))) - 1
+	return id >= 0 and id < _grounded_cells.size() and _grounded_cells[id] != 0
 
 func is_terrain_cell(id: int) -> bool:
 	return id >= 0 and id < width * height and floori(float(id) / width) >= ground_y(float(id % width))
@@ -114,6 +146,7 @@ func _ready() -> void:
 	chain_physics.setup(self)
 	impact_physics.setup(self)
 	grain_physics.setup(self)
+	add_child(_grain_surface)
 	terrain = fixture.get("terrain", []) if fixture.get("terrain") is Array else []
 	has_terrain = not terrain.is_empty()
 	if terrain.is_empty():
@@ -137,6 +170,7 @@ func _ready() -> void:
 	reset()
 
 func reset() -> void:
+	sand_fragment_count = 0
 	structure_physics.reset()
 	blackhole_physics.reset()
 	skill_physics.reset()
@@ -155,6 +189,7 @@ func reset() -> void:
 			connection.joint.queue_free()
 	connections.clear()
 	grains.clear()
+	grain_roster_revision += 1
 	collected.clear()
 	bombs.clear()
 	wells.clear()
@@ -175,7 +210,27 @@ func reset() -> void:
 	suction_budget = 0
 	charge = float(stats.capacity)
 	cells = PackedByteArray(fixture.cells)
+	_grounded_cells.resize(cells.size())
+	_grounded_cells.fill(0)
+	for x in range(width):
+		var id := (int(ground_y(float(x))) - 1) * width + x
+		if id >= 0 and id < cells.size():
+			_grounded_cells[id] = 1
+	_material_pixels.resize(cells.size())
+	_material_pixels.fill(null)
+	_material_ids = []
+	_static_material = []
+	if _neighbor_cache.size() != cells.size():
+		_neighbor_cache.resize(cells.size())
+		_neighbor_cache.fill(null)
+	_blast_depth = 0
+	_static_surface_rects.clear()
+	_static_geometry_valid = false
 	_static_dirty = true
+	_raster_valid = false
+	_raster_bodies.clear()
+	_raster_order.clear()
+	_raster_dynamic.clear()
 	initial = 0
 	for c in cells:
 		initial += int(c > 0)
@@ -193,12 +248,13 @@ func reset() -> void:
 	if fixture.get("layout_key") != null and not str(fixture.get("layout_key", "")).is_empty():
 		for group in groups(static_ids()):
 			var supports: Array = group.filter(func(id): return grounded_id(id))
-			var readings: Array = structure_physics.sections(group, 0.0, INF, supports)
+			var readings: Array = structure_physics.sections(group, 0.0, INF, supports, true)
 			var original_group: int = _original_groups.get(group[0], 0)
 			var reserve: float = _reserve.get(original_group, 1.0)
 			var peak: float = readings[0].utilization if not readings.is_empty() else 0.0
 			_reserve[original_group] = reserve * maxf(1.0, peak / 0.65)
 	_prepare_pixel_atlas()
+	material()
 	sync_static()
 	queue_redraw()
 
@@ -211,17 +267,22 @@ func pixel_color(id: int) -> Color:
 func collectible_color() -> Color:
 	return Color("78e3ae") if GameSkin.bright() else COLLECTIBLE_FILL
 
-func draw_collectible(point: Vector2) -> void:
+func draw_collectible(point: Vector2, visibility := 1.0) -> void:
 	# Source drawCollectible: a 4x4 mint face, with 1px right and bottom edges.
-	var top_left := (point - Vector2.ONE * 0.5) * S
+	var side := maxf(1.0, roundf(S * visibility))
+	var top_left := point * S - Vector2.ONE * side * 0.5
 	var edge := S / 4.0
 	var rim := Color("398a65") if GameSkin.bright() else COLLECTIBLE_RIM
-	draw_rect(Rect2(top_left, Vector2.ONE * S), collectible_color())
-	draw_rect(Rect2(top_left + Vector2(S - edge, 0), Vector2(edge, S)), rim)
-	draw_rect(Rect2(top_left + Vector2(0, S - edge), Vector2(S - edge, edge)), rim)
+	var face := collectible_color()
+	face.a = visibility
+	rim.a = visibility
+	draw_rect(Rect2(top_left, Vector2.ONE * side), face)
+	draw_rect(Rect2(top_left + Vector2(side - edge, 0), Vector2(edge, side)), rim)
+	draw_rect(Rect2(top_left + Vector2(0, side - edge), Vector2(side - edge, edge)), rim)
 
 func static_ids() -> Array:
 	if _static_dirty:
+		_static_revision += 1
 		_static_cache.clear()
 		for id in range(cells.size()):
 			if cells[id]:
@@ -230,6 +291,9 @@ func static_ids() -> Array:
 	return _static_cache
 
 func neighbors(id: int) -> Array:
+	# Callers only iterate these immutable original-grid neighbors.
+	if _neighbor_cache[id] != null:
+		return _neighbor_cache[id]
 	var out: Array = []
 	if id % width > 0:
 		out.append(id - 1)
@@ -239,24 +303,46 @@ func neighbors(id: int) -> Array:
 		out.append(id - width)
 	if id + width < cells.size():
 		out.append(id + width)
+	_neighbor_cache[id] = out
 	return out
 
 func bond_key(a: int, b: int) -> int:
 	return FractureGraph.bond_key(a, b, cells.size())
 
 func groups(ids: Array) -> Array:
-	var owned := {}
+	perf.begin(perf.CONNECT)
+	var result: Array = groups_unprofiled(ids)
+	perf.end()
+	return result
+
+func groups_unprofiled(ids: Array) -> Array:
+	# Scratch membership has the same FIFO traversal/seed order as the old set.
+	# Each call uses a distinct stamp, so no full-grid clear is needed per blast.
+	var cell_count := cells.size()
+	if _group_marks.size() != cell_count or _group_stamp >= 2147483647:
+		_group_marks.resize(cell_count)
+		_group_marks.fill(0)
+		_group_stamp = 0
+	_group_stamp += 1
+	var stamp := _group_stamp
 	for id in ids:
-		owned[int(id)] = true
+		_group_marks[int(id)] = stamp
 	var out: Array = []
-	while not owned.is_empty():
-		var group: Array = [owned.keys()[0]]
-		owned.erase(group[0])
+	for seed_id in ids:
+		var seed := int(seed_id)
+		if _group_marks[seed] != stamp:
+			continue
+		var group: Array = [seed]
+		_group_marks[seed] = 0
 		var head := 0
 		while head < group.size():
-			for id in neighbors(group[head]):
-				if owned.has(id) and bonds.get(bond_key(group[head], id), 0.0) < 1:
-					owned.erase(id)
+			var current: int = group[head]
+			for id in neighbors(current):
+				if _group_marks[id] != stamp:
+					continue
+				var key: int = mini(current, id) * cell_count + maxi(current, id)
+				if bonds.get(key, 0.0) < 1:
+					_group_marks[id] = 0
 					group.append(id)
 			head += 1
 		out.append(group)
@@ -301,44 +387,102 @@ func _prepare_pixel_atlas() -> void:
 		image.set_pixel(int(id)%width,floori(float(id)/width),pixel_color(id))
 	_pixel_atlas = ImageTexture.create_from_image(image)
 
-func pixel_sprite(ids: Array, center: Vector2, pixel_rects: Array) -> MeshInstance2D:
+func pixel_sprite(ids: Array, center: Vector2, pixel_rects: Array, shared_mesh: Mesh = null) -> MeshInstance2D:
 	var surface := PixelSurface.new()
-	surface.configure(_pixel_atlas,pixel_rects,center,S)
+	if shared_mesh != null:
+		surface.texture = _pixel_atlas
+		surface.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		surface.mesh = shared_mesh
+	else:
+		surface.configure(_pixel_atlas,pixel_rects,center,S)
 	return surface
 
-func _add_collider(body: StaticBody2D, rect: Rect2) -> void:
+func _add_collider(body: StaticBody2D, rect: Rect2, shared_shape: RectangleShape2D = null) -> void:
 	var collider := CollisionShape2D.new()
-	var shape := RectangleShape2D.new()
-	shape.size = rect.size * S
+	var shape := shared_shape
+	if shape == null:
+		shape = RectangleShape2D.new()
+		shape.size = rect.size * S
 	collider.shape = shape
 	collider.position = rect.get_center() * S
 	body.add_child(collider)
+	if perf.enabled:
+		perf.shapes += 1
 
 func sync_static() -> void:
+	perf.begin(perf.BODY)
+	sync_static_unprofiled()
+	perf.end()
+
+func sync_static_unprofiled() -> void:
+	var ids := static_ids()
+	var same_geometry := _static_geometry_valid and ids == _static_geometry_ids
+	if same_geometry and is_instance_valid(static_body) and not _static_has_contacts():
+		for piece in pieces:
+			piece.sleeping = false
+		return
+	if not same_geometry:
+		_static_geometry_ids = ids.duplicate()
+		_static_geometry_rects = rectangles(ids)
+		_static_geometry_shapes = []
+		for rect in _static_geometry_rects:
+			var shape := RectangleShape2D.new()
+			shape.size = rect.size * S
+			_static_geometry_shapes.append(shape)
+		_static_geometry_valid = true
 	if is_instance_valid(static_body):
 		remove_child(static_body)
 		static_body.queue_free()
 	if is_instance_valid(static_sprite):
 		static_sprite.queue_free()
+		static_sprite = null
 	static_body = StaticBody2D.new()
 	var static_material := PhysicsMaterial.new()
 	static_material.friction = 0.8
 	static_body.physics_material_override = static_material
 	add_child(static_body)
-	var ids := static_ids()
-	var pixel_rects := rectangles(ids)
-	for rect in pixel_rects:
-		_add_collider(static_body, rect)
-	if not ids.is_empty():
-		static_sprite = pixel_sprite(ids, Vector2.ZERO,pixel_rects)
-		add_child(static_sprite)
+	for index in range(_static_geometry_rects.size()):
+		_add_collider(static_body, _static_geometry_rects[index], _static_geometry_shapes[index])
+	_static_surface_rects = _static_geometry_rects
+	if _blast_depth == 0:
+		_flush_static_surface()
 	for piece in pieces:
 		piece.sleeping = false
 
-func add_piece(ids: Array, parent_piece = null):
+func _static_has_contacts() -> bool:
+	# Keep collider replacement semantics while an existing contact can re-trigger.
+	var prefix := str(static_body.get_instance_id()) + ":"
+	for piece in pieces:
+		for key in piece.previous_contacts:
+			if str(key).begins_with(prefix):
+				return true
+	for sample in pending_contacts + contact_samples + pending_impacts:
+		if sample.get("collider") == static_body:
+			return true
+	return false
+
+func _flush_static_surface() -> void:
+	if _static_surface_rects.is_empty():
+		return
+	static_sprite = pixel_sprite([], Vector2.ZERO, _static_surface_rects)
+	add_child(static_sprite)
+	_static_surface_rects = []
+
+func add_piece(ids: Array, parent_piece = null, keep_body := false):
+	perf.begin(perf.BODY)
+	var result = add_piece_unprofiled(ids, parent_piece, keep_body)
+	if perf.enabled and result != null:
+		perf.created += 1
+		perf.shapes += result.pixel_rects.size()
+	perf.end()
+	return result
+
+func add_piece_unprofiled(ids: Array, parent_piece = null, keep_body := false):
 	if ids.is_empty():
 		return null
-	if ids.size() < 4:
+	# Detached chips are collectible sand, not another rigid body and collider set.
+	if ids.size() < 4 or (ids.size() <= SAND_FRAGMENT_MAX and not keep_body and not structure_physics.fragment_is_linked(ids, parent_piece)):
+		sand_fragment_count += 1
 		for id in ids:
 			emit_grain(id, parent_piece.pixel_position(id) if parent_piece else original_point(id), parent_piece.pixel_velocity(id) if parent_piece else Vector2.ZERO)
 		return null
@@ -352,6 +496,15 @@ func add_piece(ids: Array, parent_piece = null):
 	return piece
 
 func enforce_body_budget() -> void:
+	# Wait for replacement children to inherit live joints before discarding chips.
+	var pending_links: bool = structure_physics.yield_joints.any(func(j): return j.phase == "yielding" and j.pending)
+	if not pending_links:
+		for piece in pieces.duplicate():
+			if piece.ids.size() <= SAND_FRAGMENT_MAX and not is_instance_valid(piece.hinge) and not structure_physics.fragment_is_linked(piece.ids, piece):
+				for id in piece.ids:
+					emit_grain(id, piece.pixel_position(id), piece.pixel_velocity(id))
+				sand_fragment_count += 1
+				remove_piece(piece)
 	if pieces.size() <= BODY_LIMIT:
 		return
 	var largest_first := pieces.duplicate()
@@ -364,6 +517,7 @@ func enforce_body_budget() -> void:
 func remove_piece(piece) -> void:
 	structure_physics.on_piece_removed(piece)
 	blackhole_physics.on_piece_removed(piece)
+	skill_physics.on_piece_removed(piece)
 	if is_instance_valid(piece.hinge):
 		piece.hinge.queue_free()
 	piece.hinge = null
@@ -373,6 +527,7 @@ func remove_piece(piece) -> void:
 
 func emit_grain(id: int, point: Vector2, velocity: Vector2) -> void:
 	grains.append({"id": id, "p": point, "v": velocity, "rest": false})
+	grain_roster_revision += 1
 
 func release(ids: Array):
 	for id in ids:
@@ -394,14 +549,19 @@ func attach_hinge(piece, point: Vector2, anchor: int, support: int) -> void:
 	structure_physics.register_hinge(piece)
 
 func best_section(ids: Array, damaged_only := true) -> Dictionary:
-	var sections: Array = structure_physics.sections(ids)
+	var sections: Array = structure_physics.sections(ids,0.0,INF,null,true)
 	if damaged_only:
 		sections = sections.filter(func(section): return section.utilization > 1 or absf(section.center - section.pivot) > 0.1)
 	return sections[0] if not sections.is_empty() else {}
 
 func check_supports() -> void:
-	structure_physics.release_unsupported()
-	structure_physics.check_static()
+	perf.begin(perf.SUPPORT)
+	check_supports_unprofiled()
+	perf.end()
+
+func check_supports_unprofiled() -> void:
+	var unchanged_groups: Array = structure_physics.release_unsupported()
+	structure_physics.check_static(unchanged_groups)
 	structure_physics.finish_structure_change()
 
 func configure_profile(upgrades: Dictionary, source_edition := "paid") -> void:
@@ -445,7 +605,8 @@ func attack(point: Vector2, tool := "blast") -> bool:
 func cut_at(point: Vector2, radius: float) -> int:
 	var candidates: Array = []
 	for piece in [null] + pieces:
-		for pixel in material(piece):
+		var pixels: Array = static_material_in_square(point, radius) if piece == null else material(piece)
+		for pixel in pixels:
 			var distance: float = pixel.q.distance_to(point)
 			if distance <= radius:
 				candidates.append({"piece": piece, "id": pixel.id, "q": pixel.q, "d": distance})
@@ -471,6 +632,12 @@ func cut_at(point: Vector2, radius: float) -> int:
 	return candidates.size()
 
 func blast(input) -> void:
+	perf.begin(perf.DAMAGE)
+	blast_unprofiled(input)
+	perf.end()
+
+func blast_unprofiled(input) -> void:
+	_blast_depth += 1
 	var bomb: Dictionary = input if input is Dictionary else {"p": input, "radius": stats.bombRadius, "power": stats.bombPower, "secondary": false}
 	var point: Vector2 = bomb.p
 	var radius: float = bomb.get("radius", stats.bombRadius)
@@ -511,8 +678,16 @@ func blast(input) -> void:
 	blasts += 1
 	events.append({"kind": "blast", "time": elapsed, "count": count, "x": point.x, "y": point.y, "radius": radius, "power": power, "secondary": secondary, "vfx": bomb.get("vfx", "aftershock" if bomb.get("kind") == "echo" else "relay" if bomb.get("kind") == "relay-hit" else ""), "heavy": bomb.get("heavy", false), "audio": bomb.get("audio", not bomb.get("kind", "") in ["echo", "relay-hit"])})
 	skill_physics.on_primary_blast(bomb, count > 0 or impulses > 0)
+	_blast_depth -= 1
+	if _blast_depth == 0:
+		_flush_static_surface()
 
 func _rebuild(piece, partitions: Array) -> void:
+	perf.begin(perf.BODY)
+	_rebuild_unprofiled(piece, partitions)
+	perf.end()
+
+func _rebuild_unprofiled(piece, partitions: Array) -> void:
 	var anchor: int = piece.anchor_id
 	var support: int = piece.support_id
 	var pivot := Vector2.ZERO
@@ -522,7 +697,8 @@ func _rebuild(piece, partitions: Array) -> void:
 		piece.hinge.queue_free()
 		piece.hinge = null
 	for group in partitions:
-		var child = add_piece(group, piece)
+		var keep_hinge: bool = had_hinge and group.has(anchor) and support >= 0 and cells[support]
+		var child = add_piece(group, piece, keep_hinge)
 		if child != null and had_hinge and group.has(anchor) and support >= 0 and cells[support]:
 			attach_hinge(child, pivot, anchor, support)
 			child.hinge_age = piece.hinge_age
@@ -538,12 +714,56 @@ func strain(well: Dictionary, strength: float) -> void:
 	blackhole_physics.strain_supported(well, strength)
 
 func _advance_wells(dt: float) -> void:
+	perf.begin(perf.SKILL)
+	_advance_wells_unprofiled(dt)
+	perf.end()
+
+func _advance_wells_unprofiled(dt: float) -> void:
 	blackhole_physics.step(dt)
 
 func material(piece = null) -> Array:
+	perf.begin(perf.COORDS)
+	var result: Array = material_unprofiled(piece)
+	perf.end()
+	return result
+
+func material_unprofiled(piece = null) -> Array:
+	if piece == null:
+		var ids := static_ids()
+		if ids != _material_ids:
+			_material_ids = ids.duplicate()
+			_static_material = []
+			for id in ids:
+				if _material_pixels[id] == null:
+					var pixel := {"id": id, "q": original_point(id)}
+					pixel.make_read_only()
+					_material_pixels[id] = pixel
+				_static_material.append(_material_pixels[id])
+			_static_material.make_read_only()
+		return _static_material
 	var result: Array = []
-	for id in (piece.ids if piece != null else static_ids()):
-		result.append({"id": id, "q": piece.pixel_position(id) if piece != null else original_point(id)})
+	for id in piece.ids:
+		result.append({"id": id, "q": piece.pixel_position(id)})
+	return result
+
+func static_material_in_square(point: Vector2, radius: float) -> Array:
+	# Original static IDs are row ordered. Preserve that order and the exact
+	# downstream circle/midpoint tests; this rectangle only excludes distant cells.
+	var left := maxi(0, floori(point.x - radius - 0.5))
+	var right := mini(width - 1, ceili(point.x + radius - 0.5))
+	var top := maxi(0, floori(point.y - radius - 0.5))
+	var bottom := mini(height - 1, ceili(point.y + radius - 0.5))
+	var result: Array = []
+	for y in range(top, bottom + 1):
+		for x in range(left, right + 1):
+			var id := y * width + x
+			if not cells[id]:
+				continue
+			if _material_pixels[id] == null:
+				var pixel := {"id": id, "q": original_point(id)}
+				pixel.make_read_only()
+				_material_pixels[id] = pixel
+			result.append(_material_pixels[id])
 	return result
 
 func _segment_distance(point: Vector2, segments: Array) -> float:
@@ -589,11 +809,30 @@ func _release_compression(children: Array, point: Vector2, budget: float) -> flo
 	return budget
 
 func fracture(piece, point: Vector2, speed: float, downward := true, context: Dictionary = {}) -> void:
+	perf.begin(perf.FRACTURE)
+	fracture_unprofiled(piece, point, speed, downward, context)
+	perf.end()
+
+func fracture_unprofiled(piece, point: Vector2, speed: float, downward := true, context: Dictionary = {}) -> void:
 	if piece != null and (not pieces.has(piece) or elapsed - piece.last_impact < 0.15):
 		return
-	var pixels := material(piece)
-	if pixels.is_empty():
+	if (piece.ids if piece != null else static_ids()).is_empty():
 		return
+	if piece != null:
+		# Weak hits still consume the original cooldown, even without material allocation.
+		piece.last_impact = elapsed
+	var normal: Vector2 = context.get("normal", Vector2.UP)
+	var measured_energy: float = context.get("energy", 0.0)
+	if context.is_empty() and piece != null:
+		var arm: Vector2 = point * S - piece.position
+		var inverse: float = 1.0 / piece.mass + pow(arm.cross(normal), 2) / piece.inertia
+		measured_energy = 0.5 / (inverse * 0.002) * pow(minf(speed, 180) / 60.0, 2)
+	var fall: bool = downward and speed > 14 and piece != null and not context.get("chain", false)
+	var start_speed: float = context.get("speed_start", 40.0)
+	var activation := 1 - exp(-maxf(0, speed - (14.0 if fall else start_speed)) / (10.0 if fall else start_speed) * (1.0 if fall else 10.0))
+	if activation <= 0 or measured_energy <= 0:
+		return
+	var pixels := material(piece)
 	if piece == null:
 		# A static receiver may damage only the connected original structure it hit.
 		var nearest: Dictionary = pixels[0]
@@ -608,19 +847,6 @@ func fracture(piece, point: Vector2, speed: float, downward := true, context: Di
 				break
 		pixels = pixels.filter(func(pixel): return receiver.has(pixel.id))
 	var count := pixels.size()
-	if piece != null:
-		piece.last_impact = elapsed
-	var normal: Vector2 = context.get("normal", Vector2.UP)
-	var measured_energy: float = context.get("energy", 0.0)
-	if context.is_empty() and piece != null:
-		var arm: Vector2 = point * S - piece.position
-		var inverse: float = 1.0 / piece.mass + pow(arm.cross(normal), 2) / piece.inertia
-		measured_energy = 0.5 / (inverse * 0.002) * pow(minf(speed, 180) / 60.0, 2)
-	var fall: bool = downward and speed > 14 and piece != null and not context.get("chain", false)
-	var start_speed: float = context.get("speed_start", 40.0)
-	var activation := 1 - exp(-maxf(0, speed - (14.0 if fall else start_speed)) / (10.0 if fall else start_speed) * (1.0 if fall else 10.0))
-	if activation <= 0 or measured_energy <= 0:
-		return
 	var severity := clampf((speed - 14) / 18, 0, 1) if fall else 0.0
 	var energy := minf(measured_energy, count * 6)
 	var total := energy * 0.42 * activation
@@ -659,7 +885,9 @@ func fracture(piece, point: Vector2, speed: float, downward := true, context: Di
 		if not crushed.has(pixel.id):
 			remaining.append(pixel.id)
 			remaining_material.append(pixel)
+	perf.begin(perf.FR_GRAPH)
 	var graph: Dictionary = fracture_graph.build(remaining_material if fall else pixels, width, bonds, cells.size())
+	perf.end()
 	var nearest := INF
 	for pixel in nearby:
 		if not fall or not crushed.has(pixel.id):
@@ -669,7 +897,9 @@ func fracture(piece, point: Vector2, speed: float, downward := true, context: Di
 	for pixel in nearby:
 		if (not fall or not crushed.has(pixel.id)) and pixel.d <= nearest + 1.25:
 			contact_ids.append(pixel.id)
+	perf.begin(perf.FR_WAVE)
 	var distances: Array = fracture_graph.distances(graph, contact_ids)
+	perf.end()
 	var wave_reach := reach * ((1 + severity * 5) * 3 if fall else 3.0)
 	var edges: Array = []
 	for edge in graph.edges:
@@ -690,6 +920,8 @@ func fracture(piece, point: Vector2, speed: float, downward := true, context: Di
 	var crack_budget := (fracture_budget - contact_spent) * (severity if fall else 1.0)
 	var before_groups: Array = groups(remaining)
 	var group_limit := maxi(10, before_groups.size() if fall else before_groups.filter(func(g): return g.size() >= 4).size())
+	var connectivity := FractureConnectivity.new()
+	connectivity.setup(self, remaining, before_groups, edges)
 	var crack_spent := 0.0
 	var bond_changes := 0
 	var crack_depth := 0.0
@@ -701,12 +933,15 @@ func fracture(piece, point: Vector2, speed: float, downward := true, context: Di
 			continue
 		var cost: float = edge.cost * (0.02 * maxf(1, contact_span / 3) if fall else 0.65)
 		var amount := minf(1, crack_budget / cost)
+		connectivity.prepare()
 		for bond in active:
 			bonds[bond.key] = bond.old + (1 - bond.old) * amount
-		if amount == 1 and groups(remaining).filter(func(g): return g.size() >= 4).size() > group_limit:
+		if amount == 1 and not connectivity.allows_cut(active, group_limit):
 			for bond in active:
 				bonds[bond.key] = bond.old
 			continue
+		if amount < 1:
+			connectivity.dirty = true
 		crack_budget -= cost * amount
 		crack_spent += cost * amount
 		bond_changes += active.size()
@@ -722,7 +957,14 @@ func fracture(piece, point: Vector2, speed: float, downward := true, context: Di
 				_static_dirty = true
 	var partitions := groups(remaining)
 	if piece != null:
-		_rebuild(piece, partitions)
+		# Partial bond fatigue does not change shape: retain mass, pose and contacts.
+		if not crushed.is_empty() or partitions.size() != 1:
+			_rebuild(piece, partitions)
+		else:
+			# Keep replacement traversal order for graph cuts and skill target ties.
+			piece.ids = partitions[0].duplicate()
+			pieces.erase(piece)
+			pieces.append(piece)
 	else:
 		check_supports()
 	var children: Array = pieces.filter(func(child): return not old_pieces.has(child))
@@ -752,23 +994,75 @@ func _snap_hinge(piece, section: Dictionary) -> void:
 	check_supports()
 
 func _advance_hinges(dt: float) -> void:
+	perf.begin(perf.SUPPORT)
+	_advance_hinges_unprofiled(dt)
+	perf.end()
+
+func _advance_hinges_unprofiled(dt: float) -> void:
 	structure_physics.step(dt)
 	for piece in pieces:
 		max_angle = maxf(max_angle, absf(piece.rotation))
 
-func rasterize() -> void:
-	occupancy.clear()
-	for id in static_ids():
-		occupancy[id] = true
+func rasterize(dynamic_cells: Variant = null) -> void:
+	perf.begin(perf.GRID)
+	rasterize_unprofiled(dynamic_cells)
+	perf.end()
+
+func rasterize_unprofiled(dynamic_cells: Variant = null) -> void:
+	var fixed_ids := static_ids()
+	var dimensions := Vector2i(width, floor_y)
+	var changed := not _raster_valid or _raster_static_revision != _static_revision or _raster_dimensions != dimensions
+	var order: Array = []
 	for piece in pieces:
-		for id in piece.ids:
-			var p: Vector2 = piece.pixel_position(id)
-			var x := floori(p.x)
-			var y := floori(p.y)
-			if x >= 0 and x < width and y >= 0 and y < floor_y:
-				occupancy[y * width + x] = true
+		var key: int = piece.get_instance_id()
+		order.append(key)
+		var cached: Dictionary = _raster_bodies.get(key, {})
+		var same_ids: bool = not cached.is_empty() and cached.ids == piece.ids
+		# Exact comparisons, never sleep flags/epsilons: even tiny physical motion
+		# still updates collision cells. Keep pixel_position's original arithmetic.
+		if not same_ids or cached.position != piece.position or cached.rotation != piece.rotation or cached.origin != piece.origin_center or cached.dimensions != dimensions:
+			var grid := PackedInt32Array()
+			for id in piece.ids:
+				var p: Vector2 = piece.pixel_position(id)
+				var x := floori(p.x)
+				var y := floori(p.y)
+				if x >= 0 and x < width and y >= 0 and y < floor_y:
+					grid.append(y * width + x)
+			_raster_bodies[key] = {"ids": cached.ids if same_ids else piece.ids.duplicate(), "position": piece.position, "rotation": piece.rotation, "origin": piece.origin_center, "dimensions": dimensions, "cells": grid}
+			changed = true
+		elif perf.enabled:
+			perf.body_grid_reuses += 1
+	changed = changed or order != _raster_order
+	if changed:
+		occupancy.clear()
+		_raster_dynamic.clear()
+		for id in fixed_ids:
+			occupancy[id] = true
+		# Same body/ID order as the uncached path, including overlapping cells.
+		for key in order:
+			for cell in _raster_bodies[key].cells:
+				occupancy[cell] = true
+				_raster_dynamic[cell] = true
+		for key in _raster_bodies.keys():
+			if not order.has(key):
+				_raster_bodies.erase(key)
+		_raster_order = order
+		_raster_dimensions = dimensions
+		_raster_static_revision = _static_revision
+		_raster_valid = true
+		occupancy_revision += 1
+	elif perf.enabled:
+		perf.grid_reuses += 1
+	if dynamic_cells != null:
+		dynamic_cells.clear()
+		dynamic_cells.merge(_raster_dynamic)
 
 func _advance_grains(dt: float) -> void:
+	perf.begin(perf.GRAINS)
+	_advance_grains_unprofiled(dt)
+	perf.end()
+
+func _advance_grains_unprofiled(dt: float) -> void:
 	if not final_collection_active:
 		grain_physics.step(dt)
 
@@ -791,6 +1085,7 @@ func _auto_collect(dt: float) -> void:
 					lowest = key
 					selected = i
 		var grain: Dictionary = grains.pop_at(selected)
+		grain_roster_revision += 1
 		collected[grain.id] = true
 		events.append({"kind": "collect", "source": "auto", "time": elapsed, "id": grain.id, "x": grain.p.x, "y": grain.p.y, "count": 1})
 
@@ -812,6 +1107,8 @@ func suction(from: Vector2, to: Vector2, dt: float) -> void:
 		events.append({"kind": "collect", "time": elapsed, "id": entry.grain.id, "x": entry.grain.p.x, "y": entry.grain.p.y, "count": 1})
 		taken[entry.grain.id] = true
 	grains = grains.filter(func(g): return not taken.has(g.id))
+	if not taken.is_empty():
+		grain_roster_revision += 1
 	suction_budget = clampf(suction_budget - count, 0, 0.999999)
 
 func secure_loose() -> int:
@@ -824,11 +1121,18 @@ func secure_loose() -> int:
 		if samples.size() < 8:
 			samples.append({"x": grain.p.x, "y": grain.p.y, "color": int(colors[grain.id])})
 	grains.clear()
+	grain_roster_revision += 1
 	if count > 0:
 		events.append({"kind": "collect", "mode": "rise", "count": count, "x": center.x, "y": center.y, "samples": samples, "time": elapsed})
 	return count
 
 func advance(dt: float) -> void:
+	perf.begin(perf.WORLD)
+	perf.physics_steps += 1
+	advance_unprofiled(dt)
+	perf.end()
+
+func advance_unprofiled(dt: float) -> void:
 	if settled or paused or not is_finite(dt) or dt <= 0:
 		return
 	simulated_ms += minf(0.1, dt) * 1000.0
@@ -889,9 +1193,17 @@ func _physics_process(dt: float) -> void:
 		advance(dt)
 
 func _draw() -> void:
+	perf.begin(perf.DRAW)
+	_draw_unprofiled()
+	perf.end()
+
+func _draw_unprofiled() -> void:
+	_grain_surface.sync(self)
+	if not final_collection_active:
+		return
 	var stride := maxi(1, ceili(float(grains.size()) / 2400.0)) if final_collection_active else 1
 	for i in range(0, grains.size(), stride):
-		draw_collectible(grains[i].p)
+		draw_collectible(grains[i].p, float(grains[i].get("recovery_visibility", 1.0)))
 
 func ledger() -> Dictionary:
 	var chunks := 0

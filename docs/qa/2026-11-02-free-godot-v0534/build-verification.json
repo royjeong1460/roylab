@@ -1,0 +1,21 @@
+{
+  "checked_at": "2026-11-02T13:22:17.830786+00:00",
+  "free_build_exit_code": 0,
+  "site_build_exit_code": 0,
+  "godot_log_errors": 0,
+  "output_paths_exactly_match_public": [
+    "public/_headers",
+    "public/planet-patchup/play/index.html",
+    "public/planet-patchup/archive/free-phaser/index.html",
+    "public/planet-patchup/tools/map-editor/index.html",
+    "public/games/planet-patchup-free/free-0534-f4dda62c94b4.audio.position.worklet.js",
+    "public/games/planet-patchup-free/free-0534-f4dda62c94b4.audio.worklet.js",
+    "public/games/planet-patchup-free/free-0534-f4dda62c94b4.js",
+    "public/games/planet-patchup-free/free-0534-f4dda62c94b4.pck",
+    "public/games/planet-patchup-free/free-0534-f4dda62c94b4.png",
+    "public/games/planet-patchup-free/free-0534-f4dda62c94b4.wasm",
+    "public/games/planet-patchup-free/godot-shell-assets/shell-EFCEtf4b.js",
+    "public/games/planet-patchup-free/godot-shell-assets/shell-CehdKP2w.css"
+  ],
+  "source_game_runtime_or_tests_executed": false
+}

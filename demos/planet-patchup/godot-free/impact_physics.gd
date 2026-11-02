@@ -6,6 +6,12 @@ func setup(owner_world) -> void:
 	world = owner_world
 
 func apply(point: Vector2, strength: float, context: Dictionary) -> int:
+	world.perf.begin(world.perf.DAMAGE)
+	var result: int = apply_unprofiled(point, strength, context)
+	world.perf.end()
+	return result
+
+func apply_unprofiled(point: Vector2, strength: float, context: Dictionary) -> int:
 	var piece = context.get("piece")
 	if piece != null and (not is_instance_valid(piece) or not world.pieces.has(piece)):
 		return 0
@@ -33,6 +39,10 @@ func apply(point: Vector2, strength: float, context: Dictionary) -> int:
 		for id in world.neighbors(pixel.id):
 			if id < pixel.id or not by_id.has(id):
 				continue
+			var key: int = world.bond_key(pixel.id, id)
+			var old: float = world.bonds.get(key, 0.0)
+			if old >= 1:
+				continue
 			var other: Vector2 = by_id[id]
 			var delta: Vector2 = (pixel.q + other) / 2 - point
 			var along: float = delta.dot(direction)
@@ -45,10 +55,6 @@ func apply(point: Vector2, strength: float, context: Dictionary) -> int:
 			var side_b := axis.cross(second) - sin(second.dot(axis) * 0.45) * 0.3
 			var on_crack := propagates and depth >= -0.75 and side_a * side_b <= 0
 			if distance >= radius and not on_crack:
-				continue
-			var key: int = world.bond_key(pixel.id, id)
-			var old: float = world.bonds.get(key, 0.0)
-			if old >= 1:
 				continue
 			var alignment: float = absf((other - pixel.q).dot(direction))
 			var toughness: float = 0.85 + ((((int(pixel.id) + 1) * 31) ^ int(id)) & 15) / 50.0
@@ -70,6 +76,12 @@ func apply(point: Vector2, strength: float, context: Dictionary) -> int:
 	return changed
 
 func blast_halo(point: Vector2, radius: float, power: float, efficiency := 1.0) -> int:
+	world.perf.begin(world.perf.DAMAGE)
+	var result: int = blast_halo_unprofiled(point, radius, power, efficiency)
+	world.perf.end()
+	return result
+
+func blast_halo_unprofiled(point: Vector2, radius: float, power: float, efficiency := 1.0) -> int:
 	# CrumbleWorld.blast: the removed core and the surrounding bond damage are distinct.
 	var force := clampf((power / efficiency - 1) * 4, 0, 5)
 	var reach := radius + 2 + force * 1.6
@@ -79,7 +91,7 @@ func blast_halo(point: Vector2, radius: float, power: float, efficiency := 1.0) 
 	for piece in [null] + world.pieces.duplicate():
 		if piece != null and not world.pieces.has(piece):
 			continue
-		var material: Array = world.material(piece)
+		var material: Array = world.static_material_in_square(point, reach + 1.0) if piece == null else world.material(piece)
 		var by_id := {}
 		for pixel in material:
 			by_id[pixel.id] = pixel.q

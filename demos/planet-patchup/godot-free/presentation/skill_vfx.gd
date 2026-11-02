@@ -160,16 +160,10 @@ func _relay_marks() -> void:
 	for mark in world.skill_physics.marks:
 		if mark.get("used",false) or float(mark.get("remaining",0))<=0:
 			continue
-		var ids: Dictionary=mark.get("ids",{})
 		for piece in world.pieces:
 			if not is_instance_valid(piece):
 				continue
-			var owns_id:=false
-			for id in piece.ids:
-				if ids.has(id):
-					owns_id=true
-					break
-			if owns_id:
+			if world.skill_physics.mark_has_piece(mark,piece):
 				_sprite("relay-mark",piece.position/4,5,clock,1,piece.rotation,-1,true)
 
 func _orbital() -> void:

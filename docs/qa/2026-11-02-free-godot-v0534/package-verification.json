@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-11-02T13:21:40.185876+00:00",
+  "version": "0.5.34-free",
+  "stem": "free-0534-f4dda62c94b4",
+  "pck_entries": 290,
+  "map_paths": [
+    "data/maps/arch-0-arch-quarter-v2.json",
+    "data/maps/arch-1-arch-quarter-v2.json",
+    "data/maps/arch-2-arch-quarter-v2.json",
+    "data/maps/arch-3-arch-quarter-v2.json",
+    "data/maps/arch-4-arch-quarter-v2.json",
+    "data/maps/arch-5-arch-quarter-v2.json",
+    "data/maps/arch-6-arch-quarter-v2.json",
+    "data/maps/arch-7-arch-quarter-v2.json"
+  ],
+  "skills": [
+    "aftershock",
+    "orbital",
+    "relay"
+  ],
+  "stable_free_source_paths": 23,
+  "source_count": 296,
+  "source_drift": [],
+  "old_public_files_preserved": 271,
+  "expected_old_mutable_entries_changed": [
+    "public/games/planet-patchup-free/index.html",
+    "public/games/planet-patchup-free/shell-manifest.json"
+  ],
+  "sourceHash": "a79c0ea36bf2c544df17f82f086472c3b0bfce1b2f1b6e66a0917a70a905b830",
+  "package_payloads_and_decoded_hashes": "all match",
+  "max_asset_bytes": 16202232,
+  "game_tests_browser_or_device_executed": false
+}

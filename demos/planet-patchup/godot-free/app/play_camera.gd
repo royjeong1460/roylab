@@ -11,10 +11,6 @@ var _map_size := Vector2.ONE
 var _minimum_zoom := 1.0
 var _maximum_zoom := 2.0
 var _collection_mode := false
-var _collection_elapsed := 0.0
-var _fit_origin := Vector2.ZERO
-var _fit_zoom := 1.0
-const COLLECTION_FIT_SECONDS := 0.75
 
 func setup(source_world, play_area: Rect2) -> void:
 	world = source_world
@@ -42,9 +38,7 @@ func set_area(play_area: Rect2) -> void:
 	area = play_area
 	_limits()
 	if _collection_mode:
-		_fit_origin = _origin
-		_fit_zoom = zoom.x
-		_collection_elapsed = 0.0
+		_sync_transform()
 		return
 	if fitted:
 		fit()
@@ -63,19 +57,6 @@ func fit() -> void:
 func begin_collection() -> void:
 	if _collection_mode: return
 	_collection_mode = true
-	_collection_elapsed = 0.0
-	_fit_origin = _origin
-	_fit_zoom = zoom.x
-
-func advance_collection_fit(dt: float) -> void:
-	if not _collection_mode: return
-	_collection_elapsed = minf(COLLECTION_FIT_SECONDS,_collection_elapsed+maxf(0.0,dt))
-	var t := smoothstep(0.0,COLLECTION_FIT_SECONDS,_collection_elapsed)
-	zoom = Vector2.ONE*lerpf(_fit_zoom,_minimum_zoom,t)
-	var target := (_map_size-area.size/_minimum_zoom)/2.0
-	_origin = _fit_origin.lerp(target,t)
-	fitted = _collection_elapsed >= COLLECTION_FIT_SECONDS
-	_sync_transform()
 
 func toggle_fit() -> void:
 	if _collection_mode: return

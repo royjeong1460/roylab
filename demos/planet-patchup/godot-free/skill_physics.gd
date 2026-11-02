@@ -233,6 +233,26 @@ func _spaced(candidates: Array, chosen: Array, gap: float) -> Array:
 			available.append(candidate)
 	return available
 
+func mark_has_piece(mark: Dictionary, piece) -> bool:
+	# Pixel membership is immutable for a live piece; fractures create new instances.
+	if not mark.has("_piece_owners"):
+		mark._piece_owners = {}
+	var owners: Dictionary = mark._piece_owners
+	var instance_id: int = piece.get_instance_id()
+	if not owners.has(instance_id):
+		owners[instance_id] = false
+		for id in piece.ids:
+			if mark.ids.has(id):
+				owners[instance_id] = true
+				break
+	return owners[instance_id]
+
+func on_piece_removed(piece) -> void:
+	var instance_id: int = piece.get_instance_id()
+	for mark in marks:
+		if mark.has("_piece_owners"):
+			mark._piece_owners.erase(instance_id)
+
 func on_contact(hit: Dictionary) -> void:
 	# Call before fracturing/removing the contact body. Marks survive via original IDs.
 	var piece = hit.get("piece")
@@ -241,13 +261,11 @@ func on_contact(hit: Dictionary) -> void:
 	for mark in marks:
 		if mark.used or clock < mark.armed_at or mark.remaining <= 0.0:
 			continue
-		for id in piece.ids:
-			if mark.ids.has(id):
-				mark.used = true
-				var point: Vector2 = hit.point
-				point.y = minf(world.ground_y(point.x) - 1.0, point.y)
-				_schedule("relay-hit", 0.0, point, 3.0, mark.tuning.power)
-				break
+		if mark_has_piece(mark, piece):
+			mark.used = true
+			var point: Vector2 = hit.point
+			point.y = minf(world.ground_y(point.x) - 1.0, point.y)
+			_schedule("relay-hit", 0.0, point, 3.0, mark.tuning.power)
 
 func _structure_material() -> Array:
 	var material: Array = []
@@ -317,6 +335,19 @@ func _secondary_blast(action: Dictionary) -> void:
 	world.blast(bomb)
 	_record({"kind": action.get("kind", "orbital"), "p": action.p})
 
+func _orbital_columns() -> Dictionary:
+	# Only position is needed for the vertical sweep. Snapshot current geometry,
+	# including rebuilt bodies after each impact, and inspect nearby columns only.
+	var columns := {}
+	for piece in [null] + world.pieces:
+		for id in (piece.ids if piece != null else world.static_ids()):
+			var point: Vector2 = piece.pixel_position(id) if piece != null else world.original_point(id)
+			var column := floori(point.x)
+			if not columns.has(column):
+				columns[column] = []
+			columns[column].append(point)
+	return columns
+
 func _orbital_step(dt: float) -> void:
 	if active.is_empty():
 		return
@@ -327,20 +358,23 @@ func _orbital_step(dt: float) -> void:
 		world.events.append({"kind": "sound-orbital-fall", "heavy": heavy})
 	if active.projectiles.is_empty():
 		return
-	var material := _structure_material()
+	var columns := _orbital_columns()
 	var survivors: Array = []
-	for projectile in active.projectiles:
+	for index in range(active.projectiles.size()):
+		var projectile: Dictionary = active.projectiles[index]
 		var previous: float = projectile.y
 		projectile.vy = minf(230.0, projectile.vy + 130.0 * dt)
 		projectile.y += projectile.vy * dt
 		var hit: float = world.ground_y(projectile.x)
-		for entry in material:
-			var point: Vector2 = entry.q
-			if absf(point.x - projectile.x) <= projectile.radius and point.y >= previous - projectile.radius and point.y <= projectile.y + projectile.radius:
-				hit = minf(hit, point.y)
+		for column in range(floori(projectile.x - projectile.radius), floori(projectile.x + projectile.radius) + 1):
+			for point: Vector2 in columns.get(column, []):
+				if absf(point.x - projectile.x) <= projectile.radius and point.y >= previous - projectile.radius and point.y <= projectile.y + projectile.radius:
+					hit = minf(hit, point.y)
 		if hit <= projectile.y + projectile.radius:
 			_secondary_blast({"kind": "orbital", "vfx": "orbital", "p": Vector2(projectile.x, minf(world.ground_y(projectile.x) - 1.0, hit)), "radius": projectile.radius, "power": projectile.power, "heavy": projectile.heavy})
-			material = _structure_material()
+			# Later projectiles need the new geometry; the next tick rebuilds its own index.
+			if index + 1 < active.projectiles.size():
+				columns = _orbital_columns()
 		else:
 			survivors.append(projectile)
 	active.projectiles = survivors
@@ -361,6 +395,13 @@ func _execute(action: Dictionary) -> void:
 		_secondary_blast(action)
 
 func step(dt: float) -> void:
+	if world == null:
+		return
+	world.perf.begin(world.perf.SKILL)
+	step_unprofiled(dt)
+	world.perf.end()
+
+func step_unprofiled(dt: float) -> void:
 	if world == null or world.paused or not is_finite(dt) or dt <= 0.0:
 		return
 	var left := minf(0.1, dt)

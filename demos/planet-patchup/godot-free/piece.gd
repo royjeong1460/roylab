@@ -18,13 +18,20 @@ var anchor_id := -1
 var hinge_age := 0.0
 var damage := 0.0
 var motion_radius := 1.0
+var pixel_rects: Array = []
+var pixel_shapes: Array = []
+var pixel_mesh: Mesh
 
 func configure(world: Node, pixels: Array, parent_piece = null) -> void:
 	owner_world = world
 	ids = pixels.duplicate()
-	for id in ids:
-		origin_center += world.original_point(id)
-	origin_center /= ids.size()
+	var same_geometry: bool = parent_piece != null and ids == parent_piece.ids
+	if same_geometry:
+		origin_center = parent_piece.origin_center
+	else:
+		for id in ids:
+			origin_center += world.original_point(id)
+		origin_center /= ids.size()
 	position = origin_center * S
 	mass = ids.size() * 0.002
 	custom_integrator = true
@@ -41,21 +48,33 @@ func configure(world: Node, pixels: Array, parent_piece = null) -> void:
 	material.friction = 0.7
 	material.bounce = 0.08
 	physics_material_override = material
-	var moment := 0.0
-	for id in ids:
-		var local: Vector2 = (world.original_point(id) - origin_center) * S
-		moment += 0.008 * (local.length_squared() + S * S / 6.0)
-		motion_radius = maxf(motion_radius, local.length() + 0.75 * S)
-	inertia = moment
-	var pixel_rects: Array = world.rectangles(ids)
-	for rect in pixel_rects:
+	if same_geometry:
+		inertia = parent_piece.inertia
+		motion_radius = parent_piece.motion_radius
+		pixel_rects = parent_piece.pixel_rects
+		pixel_shapes = parent_piece.pixel_shapes
+		pixel_mesh = parent_piece.pixel_mesh
+	else:
+		var moment := 0.0
+		for id in ids:
+			var local: Vector2 = (world.original_point(id) - origin_center) * S
+			moment += 0.008 * (local.length_squared() + S * S / 6.0)
+			motion_radius = maxf(motion_radius, local.length() + 0.75 * S)
+		inertia = moment
+		pixel_rects = world.rectangles(ids)
+		for rect in pixel_rects:
+			var shape := RectangleShape2D.new()
+			shape.size = rect.size * S
+			pixel_shapes.append(shape)
+	for index in range(pixel_rects.size()):
+		var rect: Rect2 = pixel_rects[index]
 		var collider := CollisionShape2D.new()
-		var shape := RectangleShape2D.new()
-		shape.size = rect.size * S
-		collider.shape = shape
+		collider.shape = pixel_shapes[index]
 		collider.position = (rect.get_center() - origin_center) * S
 		add_child(collider)
-	add_child(world.pixel_sprite(ids, origin_center,pixel_rects))
+	var surface: MeshInstance2D = world.pixel_sprite(ids, origin_center, pixel_rects, pixel_mesh)
+	pixel_mesh = surface.mesh
+	add_child(surface)
 	if parent_piece != null:
 		rotation = parent_piece.rotation
 		var offset: Vector2 = ((origin_center - parent_piece.origin_center) * S).rotated(rotation)
@@ -105,6 +124,13 @@ func solve_bearing(state: PhysicsDirectBodyState2D) -> void:
 		state.angular_velocity *= 180 * S / travel
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	if owner_world == null or owner_world.paused:
+		return
+	owner_world.perf.begin(owner_world.perf.COLLISION)
+	_integrate_forces_unprofiled(state)
+	owner_world.perf.end()
+
+func _integrate_forces_unprofiled(state: PhysicsDirectBodyState2D) -> void:
 	if owner_world == null or owner_world.paused:
 		return
 	state.integrate_forces()

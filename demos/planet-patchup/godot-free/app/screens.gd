@@ -36,6 +36,7 @@ var _tab := "weapons"
 var _workshop_scroll: Dictionary = {}
 var _offer_popup: Control
 var _settings_from := "home"
+var _performance_updated := 0
 
 func setup(application, source_catalog, source_journey, source_feedback) -> void:
 	app = application
@@ -137,7 +138,7 @@ func _composition(home := false) -> Dictionary:
 	root.ready.connect(fit)
 	return {"root": root, "fixed": fixed}
 
-func _page(title: String, kicker := "", back := "home") -> Dictionary:
+func _page(title: String, kicker := "", back := "home", footer_height := 0.0) -> Dictionary:
 	var page := _composition()
 	var fixed: Control = page.fixed
 	_place(fixed, _label(kicker, 9, UITheme.GOLD), Rect2(22,24,300,18))
@@ -162,6 +163,9 @@ func _page(title: String, kicker := "", back := "home") -> Dictionary:
 		close.position.x = fixed.size.x-66
 		scroll.size.x = maxf(100,fixed.size.x-44)
 		scroll.size.y = minf(711,maxf(80,page.root.size.y / factor - 133))
+		if footer_height > 0.0:
+			var available: float = (page.root.size.y-footer_height-12.0-fixed.position.y)/factor-scroll.position.y
+			scroll.size.y = minf(scroll.size.y,maxf(0.0,available))
 	page.root.resized.connect(fit_scroll)
 	page.root.ready.connect(fit_scroll)
 	page.root.ready.connect(func():
@@ -229,14 +233,14 @@ func _home() -> Control:
 	title.add_theme_color_override("font_shadow_color", Color("84593b"))
 	title.add_theme_constant_override("shadow_offset_y", 3)
 	_place(fixed, title, Rect2(0,112,390,92))
-	var progress: Dictionary = journey.region_progress(app.selected_region)
-	var summary := _label(L10n.format("Region · %s       Planet · %s",[_percent(float(progress.get("ratio",0))),_percent(journey.planet_progress())]),10,Color("bfcdc2"))
-	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var summary_panel := PanelContainer.new()
-	summary_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	summary_panel.add_theme_stylebox_override("panel",UITheme.box(Color(0.098,0.169,0.196,0.69),Color("56716a"),1,8))
-	summary_panel.add_child(summary)
-	_place(fixed, summary_panel, Rect2(52,591,286,32))
+	var footer := VBoxContainer.new()
+	footer.mouse_filter = Control.MOUSE_FILTER_PASS
+	footer.add_theme_constant_override("separation",6)
+	_place(fixed,footer,Rect2(24,598,342,230))
+	var selector := HBoxContainer.new()
+	selector.add_theme_constant_override("separation",8)
+	selector.custom_minimum_size.y = 44
+	footer.add_child(selector)
 	var previous_region := _button("‹",func(): app.select_region(posmod(app.selected_region-1,6)))
 	var next_region := _button("›",func(): app.select_region(posmod(app.selected_region+1,6)))
 	for arrow in [previous_region,next_region]:
@@ -245,21 +249,44 @@ func _home() -> Control:
 		arrow.add_theme_stylebox_override("normal",UITheme.box(Color("20313d"),UITheme.MINT,1,0))
 		arrow.add_theme_stylebox_override("hover",UITheme.box(Color("314652"),UITheme.TEXT,1,0))
 		arrow.add_theme_stylebox_override("pressed",UITheme.box(Color("14242e"),UITheme.GOLD,1,0))
-	_place(fixed,previous_region,Rect2(30,626,44,44))
-	_place(fixed,next_region,Rect2(316,626,44,44))
+	previous_region.custom_minimum_size = Vector2(44,44)
+	next_region.custom_minimum_size = Vector2(44,44)
+	selector.add_child(previous_region)
 	var region: Dictionary = catalog.region(app.selected_region)
 	var name_label := _label(str(region.get("name", "")) if journey.region_open(app.selected_region) else "?", 14, Color("f4dfaf"))
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_place(fixed, name_label, Rect2(74,626,242,25))
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	name_label.clip_text = true
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.tooltip_text = name_label.text
+	name_label.mouse_filter = Control.MOUSE_FILTER_PASS
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	selector.add_child(name_label)
+	selector.add_child(next_region)
 	var open: bool = journey.region_open(app.selected_region)
-	var status := _label(_region_status(app.selected_region) if open else "Undiscovered · available in the full game", 9, Color("a5b5a9"))
-	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_place(fixed, status, Rect2(60,655,270,20))
+	var region_status := _region_status(app.selected_region) if open else L10n.text("Undiscovered · available in the full game")
+	var summary := _label(L10n.format("%s · Planet %s",[region_status,_percent(journey.planet_progress())]),10,Color("bfcdc2"))
+	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	summary.custom_minimum_size.y = 22
+	summary.autowrap_mode = TextServer.AUTOWRAP_OFF
+	summary.clip_text = true
+	summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	summary.tooltip_text = summary.text
+	summary.mouse_filter = Control.MOUSE_FILTER_PASS
+	footer.add_child(summary)
+	var markers := HBoxContainer.new()
+	markers.add_theme_constant_override("separation",0)
+	markers.custom_minimum_size.y = 44
+	footer.add_child(markers)
 	var dots: Array[Button] = []
 	for index in range(6):
 		var marker := "━" if index == app.selected_region else "·"
 		var dot := _flat(_button(marker,func(): app.select_region(index)),Color("edbf76") if index == app.selected_region else Color("718482"))
-		_place(fixed,dot,Rect2(75+index*40,678,40,44))
+		dot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		dot.clip_text = true
+		markers.add_child(dot)
 		dots.append(dot)
 	var enter := _button("Enter     →" if open else "Locked", func():
 		if journey.profile.tutorial == "intro": app.start_run("tutorial")
@@ -271,13 +298,23 @@ func _home() -> Control:
 	enter_style.shadow_offset = Vector2(0,4)
 	enter.add_theme_stylebox_override("normal", enter_style)
 	enter.add_theme_stylebox_override("disabled",UITheme.box(Color("334750"),Color("718589"),2))
-	_place(fixed, enter, Rect2(41,716,308,52))
+	enter.custom_minimum_size.y = 52
+	footer.add_child(enter)
 	var upgrades := _flat(_button("Upgrades",func(): app.navigate("workshop")),Color("bdcdc0"))
 	var regions := _flat(_button("Regions",func(): app.navigate("regions")),Color("bdcdc0"))
 	var achievements := _flat(_button("Feedback" if app.web_bridge.available() else "Achievements\nComing soon",func(): app.open_feedback(),not app.web_bridge.available()),Color("bdcdc0"))
-	_place(fixed,upgrades,Rect2(30,786,90,44))
-	_place(fixed,regions,Rect2(150,786,90,44))
-	_place(fixed,achievements,Rect2(265,786,105,44))
+	var menu := HBoxContainer.new()
+	menu.add_theme_constant_override("separation",8)
+	menu.custom_minimum_size.y = 44
+	footer.add_child(menu)
+	for button in [upgrades,regions,achievements]:
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.clip_text = true
+		button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		button.tooltip_text = button.text
+		button.add_theme_font_size_override("font_size",10)
+		button.add_theme_stylebox_override("disabled",StyleBoxEmpty.new())
+		menu.add_child(button)
 	var home_notice: Label
 	if not app.notice.is_empty():
 		home_notice = _label(app.notice,11,Color("ffdf86"))
@@ -294,21 +331,12 @@ func _home() -> Control:
 		title.position.y = 90 if compact else 100
 		title.size = Vector2(width,66 if compact else 72)
 		title.add_theme_font_size_override("font_size",26 if compact else 30)
-		summary_panel.position = Vector2((width-286)/2.0,height-253)
-		previous_region.position = Vector2(30,height-218)
-		next_region.position = Vector2(width-74,height-218)
-		name_label.position = Vector2(74,height-218)
-		name_label.size.x = maxf(80,width-148)
+		# One measured stack owns the footer; no overlapping absolute child positions.
+		var margin := 16.0 if width < 350 else 24.0
+		footer.position = Vector2(margin,height-246)
+		footer.size = Vector2(maxf(1,width-margin*2),230)
 		name_label.add_theme_font_size_override("font_size",13 if width < 350 else 14)
-		status.position = Vector2(60,height-189)
-		status.size.x = maxf(100,width-120)
-		for index in range(dots.size()):
-			dots[index].position = Vector2((width-240)/2.0+index*40,height-170)
-		enter.position = Vector2(41,height-120)
-		enter.size.x = maxf(160,width-82)
-		upgrades.position = Vector2(30,height-58)
-		regions.position = Vector2((width-90)/2.0,height-58)
-		achievements.position = Vector2(width-125,height-58)
+		summary.add_theme_font_size_override("font_size",9 if width < 350 else 10)
 		if home_notice != null:
 			home_notice.position.y = 180 if compact else 207
 			home_notice.size.x = width-48
@@ -619,9 +647,15 @@ func _offer_card(offer: Dictionary) -> PanelContainer:
 
 func _workshop(payload: Dictionary) -> Control:
 	_tab = str(payload.get("tab",_tab))
-	var page := _page("Upgrades","FIELD WORKSHOP")
+	var page := _page("Upgrades","FIELD WORKSHOP","home",72.0)
+	page.heading.text = L10n.format("Upgrades · %s parts",[_number(journey.profile.parts)])
+	page.heading.add_theme_font_size_override("font_size",20)
+	page.heading.autowrap_mode = TextServer.AUTOWRAP_OFF
+	page.heading.clip_text = true
+	page.heading.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	page.heading.tooltip_text = page.heading.text
+	page.heading.mouse_filter = Control.MOUSE_FILTER_PASS
 	var content: VBoxContainer = page.content
-	content.add_child(_label(L10n.format("%s parts",[_number(journey.profile.parts)]),17,UITheme.GOLD))
 	if journey.profile.tutorial == "upgrade":
 		content.add_child(_label("FIRST UPGRADE · Spend your first 300 parts to improve Blast.",11,UITheme.GOLD))
 		content.add_child(_button("Skip upgrade guide",func(): app.skip_tutorial()))
@@ -657,12 +691,31 @@ func _workshop(payload: Dictionary) -> Control:
 				var card := _offer_card(offer)
 				card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				grid.add_child(card)
-	content.add_child(_button("Choose a map →",func(): app.navigate("maps"),false,true))
-	content.add_child(_button("Retry this map",func(): app.start_run("retry"),journey.last_run_site==null))
-	var region: Dictionary = catalog.region(journey.selected_region())
-	if not region.get("sites",[]).is_empty():
-		var boss_id := str(region.sites[-1])
-		content.add_child(_button("Challenge Boss",func(): app.start_run("stage",boss_id),not journey.stage_open(boss_id)))
+	var footer := PanelContainer.new()
+	var footer_style := UITheme.box(UITheme.BG,UITheme.BORDER,1,0)
+	footer_style.border_width_left = 0
+	footer_style.border_width_right = 0
+	footer_style.border_width_bottom = 0
+	footer_style.content_margin_left = 22
+	footer_style.content_margin_right = 22
+	footer_style.content_margin_top = 10
+	footer_style.content_margin_bottom = 14
+	footer.add_theme_stylebox_override("panel",footer_style)
+	page.root.add_child(footer)
+	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	footer.offset_top = -72
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation",8)
+	footer.add_child(actions)
+	var choose := _button("Choose a site",func(): app.navigate("maps"),false,true)
+	var retry := _button("Retry this map",func(): app.start_run("retry"),journey.last_run_site==null)
+	for button in [choose,retry]:
+		button.custom_minimum_size.y = 48
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.add_theme_font_size_override("font_size",12)
+		button.clip_text = true
+		button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		actions.add_child(button)
 	return page.root
 
 func _receipt(payload: Dictionary) -> Control:
@@ -822,7 +875,7 @@ func _error(payload: Dictionary) -> Control:
 
 func _build_info() -> Control:
 	var page := _page("Build information","PLANET PATCHUP · GODOT","settings")
-	page.content.add_child(_label(L10n.format("Free web edition · 0.5.9\nGodot 4.6.2 · Compatibility\nArch Quarter · 7 maps + tutorial\n%d upgrade tracks · %d skills",[catalog.tracks.size(),catalog.skills.size()]),14))
+	page.content.add_child(_label(L10n.format("Free web edition · 0.5.34\nGodot 4.6.2 · Compatibility\nArch Quarter · 7 maps + tutorial\n%d upgrade tracks · %d skills",[catalog.tracks.size(),catalog.skills.size()]),14))
 	page.content.add_child(_label("Content source hashes are included with this build. Gameplay and device confirmation are recorded separately.",12,UITheme.MUTED))
 	page.content.add_child(_button("Export records",func(): app.export_profile()))
 	return page.root
@@ -890,6 +943,15 @@ func _play_hud() -> Control:
 	notice_scroll.add_child(notice_label)
 	notice_panel.visible = false
 	root.add_child(notice_panel)
+	var performance_panel := PanelContainer.new()
+	performance_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	performance_panel.add_theme_stylebox_override("panel",UITheme.box(Color(0.035,0.065,0.09,0.94),Color("bca367"),1,6))
+	var performance := _label("성능 진단 v33 · 측정 대기",11,Color("fff0cd"))
+	performance.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	performance_panel.add_child(performance)
+	performance_panel.visible = bool(ProjectSettings.get_setting("diagnostics/performance_overlay",false))
+	root.add_child(performance_panel)
+	_performance_updated = 0
 	var tool := _button("",func():
 		if app.play_view!=null: app.play_view.toggle_tool())
 	UITheme.hud_button(tool,true)
@@ -968,6 +1030,12 @@ func _play_hud() -> Control:
 		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tip_panel.add_child(tip)
 	root.add_child(tip_panel)
+	var skip_wait := _button("Skip now",func():
+		if journey.current_run != null and journey.current_run.skip_collection_wait() and _hud.has("skip_wait"):
+			_hud.skip_wait.hide(),false,true)
+	skip_wait.visible = false
+	skip_wait.tooltip_text = L10n.text("Start pixel recovery")
+	root.add_child(skip_wait)
 	var layout := func():
 		var width: float = root.size.x
 		var height: float = root.size.y
@@ -976,6 +1044,8 @@ func _play_hud() -> Control:
 		var finishing: bool = journey.current_run!=null and journey.current_run.phase=="finishing"
 		var controls_height := PlayLayout.controls_height(root.size,finishing)
 		var controls_top := height-controls_height
+		skip_wait.size = Vector2(minf(180,width-32),48)
+		skip_wait.position = Vector2((width-skip_wait.size.x)/2.0,(PlayLayout.TOP+controls_top-skip_wait.size.y)/2.0)
 		control_strip.position = Vector2(0,controls_top)
 		control_strip.size = Vector2(width,controls_height)
 		battery_icon.position = Vector2(12,15)
@@ -990,9 +1060,12 @@ func _play_hud() -> Control:
 		metric.size = Vector2(80,14)
 		pause.position = Vector2(width-56,10)
 		pause.size = Vector2(44,44)
-		fit.position = Vector2(width-80,62)
+		performance_panel.position = Vector2(8,PlayLayout.TOP+4)
+		performance_panel.size = Vector2(width-16,184)
+		var diagnostic_height := performance_panel.size.y+4 if performance_panel.visible else 0.0
+		fit.position = Vector2(width-80,62+diagnostic_height)
 		fit.size = Vector2(72,50)
-		notice_panel.position = Vector2(16,64)
+		notice_panel.position = Vector2(16,64+diagnostic_height)
 		notice_panel.size = Vector2(minf(245,maxf(120,width-145)),68)
 		var tip_height := 24.0 if bright else clampf(tip.get_minimum_size().y+16,30,maxf(30,controls_height-76))
 		tip_panel.position = Vector2(8,height-8-tip_height)
@@ -1034,8 +1107,10 @@ func _play_hud() -> Control:
 				active_slots[slot].button.size = Vector2(44,48)
 				active_slots[slot].icon.position.x = 8
 		var tutorial_y := 72.0 if width > height else 164.0
+		if performance_panel.visible:
+			tutorial_y = maxf(tutorial_y,PlayLayout.TOP+diagnostic_height+12)
 		if notice_panel.visible:
-			tutorial_y = maxf(tutorial_y,144)
+			tutorial_y = maxf(tutorial_y,144+diagnostic_height)
 		tutorial.position = Vector2(16,tutorial_y)
 		var skip_x := minf(240,maxf(160,width-150))
 		tutorial.size = Vector2(skip_x-28 if skip.visible else minf(350,width-32),78)
@@ -1043,20 +1118,34 @@ func _play_hud() -> Control:
 		skip.size = Vector2(120,44)
 	root.resized.connect(layout)
 	root.ready.connect(layout)
-	_hud.merge({"recovery":recovery,"metric":metric,"battery":battery,"recovery_bar":recovery_bar,"battery_bar":battery_bar,"tool":tool,"tool_name":tool_name,"tool_icon":tool_icon,"switch_icon":switch_icon,"passives":passive_slots,"actives":active_slots,"tutorial":tutorial,"minimap":minimap,"fit":fit,"tip":tip,"notice":notice_label,"notice_panel":notice_panel,"skip_guide":skip,"layout":layout})
+	_hud["performance"] = performance
+	_hud.merge({"recovery":recovery,"metric":metric,"battery":battery,"recovery_bar":recovery_bar,"battery_bar":battery_bar,"tool":tool,"tool_name":tool_name,"tool_icon":tool_icon,"switch_icon":switch_icon,"passives":passive_slots,"actives":active_slots,"tutorial":tutorial,"minimap":minimap,"fit":fit,"tip":tip,"notice":notice_label,"notice_panel":notice_panel,"skip_guide":skip,"skip_wait":skip_wait,"layout":layout})
 	return root
 
 func update_hud(play_view) -> void:
+	if play_view == null or not is_instance_valid(play_view.world):
+		return
+	var probe = play_view.world.perf
+	probe.begin(probe.HUD)
+	_update_hud_unprofiled(play_view)
+	probe.end()
+
+func _update_hud_unprofiled(play_view) -> void:
 	if _hud.is_empty() or play_view==null or play_view.world==null or not is_instance_valid(_hud.get("recovery")):
 		return
 	var world = play_view.world
+	if world.perf.enabled and Time.get_ticks_msec() - _performance_updated >= 250:
+		_performance_updated = Time.get_ticks_msec()
+		_hud.performance.text = world.perf.report()
 	var run = play_view.run
 	var finishing: bool = run!=null and run.phase=="finishing"
+	var preparing: bool = finishing and not run.collection_started()
+	_hud.skip_wait.visible = preparing and run.can_skip_collection_wait()
 	var pixel_count: int = run.recovered() if finishing else run.pixelized() if run!=null else 0
 	var pixel_total: int = maxi(1,run.total()) if run!=null else 1
 	var progress := float(pixel_count)/pixel_total
-	_hud.recovery.text = "%d%%" % clampi(floori(float(pixel_count)*100.0/pixel_total),0,100)
-	_hud.metric.text = L10n.text("RECOVERED" if finishing else "PIXELIZED")
+	_hud.recovery.text = "" if preparing else "%d%%" % clampi(floori(float(pixel_count)*100.0/pixel_total),0,100)
+	_hud.metric.text = L10n.text("Settling debris" if preparing else "RECOVERED" if finishing else "PIXELIZED")
 	_hud.tool.visible = not finishing
 	_hud.fit.visible = not finishing
 	_hud.battery.text = "%d%%" % ceili(float(world.charge)/maxf(1,float(world.stats.capacity))*100)
@@ -1120,7 +1209,7 @@ func update_hud(play_view) -> void:
 	if complete:
 		_hud.tip.text = L10n.text("Collection complete · Returning to camp…")
 	elif finishing:
-		_hud.tip.text = L10n.text("Recovering pixels" if run.collection_started() else "Watching the last collapse")
+		_hud.tip.text = L10n.text("Recovering pixels" if run.collection_started() else "Settling debris")
 	elif run!=null:
 		var tips: Array = BRIGHT_PLAY_TIPS if GameSkin.bright() else PLAY_TIPS
 		var index := floori(float(run.work_ms)/5000.0)%tips.size()

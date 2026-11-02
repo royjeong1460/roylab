@@ -4,7 +4,6 @@ const World = preload("res://world.gd")
 const GameSkin = preload("res://app/skin.gd")
 const Camera = preload("res://app/play_camera.gd")
 const PlayInput = preload("res://app/play_input.gd")
-const PlayLayout = preload("res://app/play_layout.gd")
 const ArchBackdrop = preload("res://background.gd")
 const CultureBackdrop = preload("res://presentation/culture_backdrop.gd")
 const SkillVfx = preload("res://presentation/skill_vfx.gd")
@@ -32,6 +31,7 @@ var recent_events: Array = []
 var _checkpointed := false
 var _checkpoint_retry_at := 0.0
 var _finish_queued := false
+var _result_fade_started := false
 var _minimap: ImageTexture
 var _minimap_age := 1.0
 var _minimap_rect := Rect2()
@@ -132,8 +132,10 @@ func toggle_fit() -> void:
 		controls.cancel()
 
 func _physics_process(dt: float) -> void:
-	if run == null or run.paused or not is_instance_valid(world):
+	if run == null or run.paused or _result_fade_started or not is_instance_valid(world):
 		return
+	world.perf.begin(world.perf.OTHER)
+	run.collection_center = camera.to_map(play_area.get_center())
 	run.update(dt, controls.aim, controls.previous, false)
 	controls.previous = controls.aim
 	if run.phase=="finishing":
@@ -141,8 +143,7 @@ func _physics_process(dt: float) -> void:
 			_collection_camera_started = true
 			controls.cancel()
 			camera.begin_collection()
-			set_area(PlayLayout.play_area(app.safe_rect,true))
-		camera.advance_collection_fit(minf(dt,0.1))
+	world.perf.begin(world.perf.EFFECTS)
 	var events: Array = world.events.duplicate()
 	world.events.clear()
 	recent_events.append_array(events)
@@ -158,7 +159,8 @@ func _physics_process(dt: float) -> void:
 	app.feedback.set_well_count(world.wells.size())
 	app.feedback.process_events(events, dt, world.collected.size(), true)
 	app.haptics.setup(app.feedback.settings)
-	app.haptics.process_events(events, dt, world.collected.size(), true)
+	app.haptics.process_events(events, dt, world.collected.size(), true, run.ratio())
+	world.perf.end()
 	if run.qualified() and not _checkpointed and mode != "tutorial" and world.elapsed >= _checkpoint_retry_at:
 		var saved: Dictionary = journey.checkpoint_stage()
 		if saved.ok:
@@ -166,13 +168,25 @@ func _physics_process(dt: float) -> void:
 		else:
 			_checkpoint_retry_at = world.elapsed + 10.0
 			app.show_notice("Could not save the 70% checkpoint. Your current run is still available.")
-	if run.finish_ready and not _finish_queued:
-		_finish_queued = true
-		app.call_deferred("finish_run")
+	if run.finish_ready and not _result_fade_started:
+		_result_fade_started = true
+		controls.cancel()
+		collection_overlay.begin_fade(0.5)
 	_minimap_age += dt
 	queue_redraw()
+	world.perf.end()
 
 func _process(dt: float) -> void:
+	if is_instance_valid(world):
+		if run != null and not run.paused and not _result_fade_started:
+			world.perf.frame(world)
+		else:
+			world.perf.suspend()
+	if run != null and not run.paused and _result_fade_started:
+		if collection_overlay.fade_complete() and not _finish_queued:
+			_finish_queued = true
+			app.call_deferred("finish_run")
+		return
 	if run != null and not run.paused and not run.finish_ready:
 		journey.journal.frame(dt * 1000.0, world.last_cpu_us / 1000.0)
 
@@ -184,6 +198,14 @@ func _draw() -> void:
 		draw_arc(point * 4.0, 3.5 * 4, 0, TAU, 24, Color("ffe49e"), 2)
 
 func minimap_texture() -> Texture2D:
+	if world == null or camera == null:
+		return null
+	world.perf.begin(world.perf.MINIMAP)
+	var result: Texture2D = _minimap_texture_unprofiled()
+	world.perf.end()
+	return result
+
+func _minimap_texture_unprofiled() -> Texture2D:
 	if world == null or camera == null:
 		return null
 	var visible: Rect2 = camera.visible_map_rect()

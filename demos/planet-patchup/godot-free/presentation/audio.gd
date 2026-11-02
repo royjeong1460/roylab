@@ -7,8 +7,8 @@ const SETTINGS_PATH := "user://free-web-audio-v1.json"
 const DEFAULTS := {"music":true,"musicVolume":0.5,"effects":true,"effectsVolume":1.0,"haptics":true}
 const SKILL_AUDIO := {"battery-recharge":"res://assets/audio/16-battery-recharge.wav"}
 const TIMED_SKILLS := []
-const COLLECTION_AUDIO := {"collection-start":"blackhole-open","collection-tier":"progress-success","collection-rise":"active-ready","collection-complete":"battery-recharge"}
-const GAPS := {"ui-tap":0.055,"ui-confirm":0.16,"ui-unavailable":0.22,"blackhole-open":0.18,"blackhole-close":0.18,"active-ready":0.3,"active-deploy":0.4,"orbital-fall":0.18,"progress-success":0.8,"blast":0.09,"debris-impact":0.06,"pixel-collect":0.09,"collection-start":0.0,"collection-tier":0.0,"collection-rise":0.0,"collection-complete":0.0}
+const COLLECTION_AUDIO := {"collection-start":"ui-confirm","collection-tick":"debris-impact","collection-tier":"progress-success","collection-rise":"active-ready","collection-complete":"battery-recharge"}
+const GAPS := {"ui-tap":0.055,"ui-confirm":0.16,"ui-unavailable":0.22,"blackhole-open":0.18,"blackhole-close":0.18,"active-ready":0.3,"active-deploy":0.4,"orbital-fall":0.18,"progress-success":0.8,"blast":0.09,"debris-impact":0.06,"pixel-collect":0.09,"collection-start":0.0,"collection-tick":0.05,"collection-tier":0.0,"collection-rise":0.0,"collection-complete":0.0}
 const LEVELS := {"blackhole-loop":0.75,"active-ready":0.85,"orbital-fall":0.85}
 const GAMEPLAY := ["blackhole-open","blackhole-loop","blackhole-close","active-ready","active-deploy","orbital-fall","blast","debris-impact","pixel-collect","battery-recharge"]
 var settings: Dictionary = DEFAULTS.duplicate()
@@ -28,7 +28,6 @@ var _mix := {}
 var _wells := 0
 var _soft_order: Array[String] = []
 var _run_id := ""
-var _run_phase := ""
 var _run_ready := false
 var _run_qualified := false
 var _run_complete := false
@@ -36,6 +35,7 @@ var _timed_started := {}
 var _collection_started := false
 var _collection_tier := 0
 var _collection_final_tick := false
+var _collection_ratio := 0.0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -173,7 +173,7 @@ func _stream(key: String, loop: bool) -> AudioStream:
 func _prepare_voices(key: String) -> void:
 	if _voices.has(key): return
 	_voices[key] = []
-	var count := 6 if key == "pixel-collect" else 2 if key in ["blast","debris-impact"] else 1
+	var count := 6 if key == "pixel-collect" else 2 if key in ["blast","debris-impact","collection-tick"] else 1
 	for i in range(count):
 		var player := AudioStreamPlayer.new()
 		player.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -185,6 +185,7 @@ func prepare_sortie() -> void:
 	_collection_started=false
 	_collection_tier=0
 	_collection_final_tick=false
+	_collection_ratio=0.0
 	for key in COLLECTION_AUDIO:
 		stop_effect(key)
 	# Preload streams and voices without starting any sound.
@@ -211,7 +212,7 @@ func play_effect(key: String, volume := -1.0, rate := 1.0, loop := false, from_p
 		return
 	if key in ["ui-confirm","ui-unavailable"]:
 		stop_effect("ui-tap")
-	if key not in ["blast","debris-impact","pixel-collect"]:
+	if key not in ["blast","debris-impact","pixel-collect","collection-tick"]:
 		_soft_order = _soft_order.filter(func(id):return id!=key and _playing(id))
 		if _soft_order.size()>=6:
 			stop_effect(_soft_order.pop_front())
@@ -276,13 +277,13 @@ func sync_campaign(run: RefCounted) -> void:
 	if _run_id!=str(run.id):
 		leave_campaign()
 		_run_id=str(run.id)
-		_run_phase="working"
 		_run_ready=false
 		_run_qualified=run.qualified()
 		_run_complete=run.ratio()>=1.0
 		_collection_started=false
 		_collection_tier=0
 		play_effect("ui-confirm")
+	_collection_ratio=clampf(run.ratio(),0.0,1.0)
 	_collection_final_tick=run.finish_ready and not run.paused
 	if game_paused != (run.paused or run.finish_ready):
 		set_game_paused(run.paused or run.finish_ready,_collection_final_tick)
@@ -294,11 +295,8 @@ func sync_campaign(run: RefCounted) -> void:
 	if not _run_ready and ready and not _playing("ui-confirm"):
 		_run_ready=true
 		play_effect("active-ready")
-	if _run_phase!="finishing" and run.phase=="finishing":
-		play_effect("ui-unavailable")
 	if not run.world.final_collection and (run.qualified() and not _run_qualified or run.ratio()>=1.0 and not _run_complete):
 		play_effect("progress-success")
-	_run_phase=run.phase
 	_run_qualified=run.qualified()
 	_run_complete=run.ratio()>=1.0
 
@@ -309,7 +307,7 @@ func finish_campaign(result: Dictionary) -> void:
 	if not announced:
 		play_effect("progress-success" if success else "ui-confirm")
 
-func _process_collection_events(events: Array) -> void:
+func _process_collection_events(events: Array) -> bool:
 	var starting := false
 	var tier := _collection_tier
 	for event in events:
@@ -321,21 +319,24 @@ func _process_collection_events(events: Array) -> void:
 				tier=maxi(tier,candidate)
 	if starting:
 		_collection_started=true
+		stop_effect("pixel-collect")
 		if tier==0:
-			play_effect("collection-start",0.14,1.12)
+			play_effect("collection-start",0.1,1.15)
 	if tier<=_collection_tier:
-		return
+		return false
+	var first_clear := _collection_tier<70
 	_collection_tier=tier
 	stop_effect("pixel-collect")
-	for key in COLLECTION_AUDIO:
+	for key in ["collection-start","collection-tick","collection-rise","collection-complete"]:
 		stop_effect(key)
-	# Higher tiers replace the prior cue; all layers finish within 0.9 seconds.
-	var step := float(tier-70)/10.0
-	play_effect("collection-tier",0.24+step*0.02,1.0+step*0.09)
+	# Let CLEAR resolve once; higher tiers add accents without restarting its fanfare.
+	if first_clear:
+		play_effect("collection-tier",0.3,1.0)
 	if tier>=80:
-		play_effect("collection-rise",0.1+step*0.025,1.05+step*0.12)
+		play_effect("collection-rise",0.17 if tier==80 else 0.23 if tier==90 else 0.28,1.08 if tier==80 else 1.28 if tier==90 else 1.5)
 	if tier==100:
-		play_effect("collection-complete",0.22,1.1)
+		play_effect("collection-complete",0.32,1.05)
+	return true
 
 func process_events(events: Array, _dt := 0.0, collected_total := -1, active := true) -> void:
 	if not active or paused or game_paused and not _collection_final_tick:
@@ -346,7 +347,7 @@ func process_events(events: Array, _dt := 0.0, collected_total := -1, active := 
 		if collected_total>=0:
 			collected=collected_total
 		return
-	_process_collection_events(events)
+	var milestone := _process_collection_events(events)
 	# The final physics tick may announce a tier after gameplay has frozen.
 	if game_paused:
 		if collected_total>=0:
@@ -376,8 +377,15 @@ func process_events(events: Array, _dt := 0.0, collected_total := -1, active := 
 	var blasting := _playing("blast")
 	var colliding := _playing("debris-impact")
 	var celebrating := _playing("collection-tier")
-	if gained and not celebrating:
-		play_effect("pixel-collect",0.04 if blasting else 0.09 if colliding else 0.15,randf_range(0.96,1.04))
+	if gained and not milestone:
+		if _collection_started:
+			var gap := lerpf(0.16,0.05,_collection_ratio)
+			if clock-float(_last.get("collection-tick",-INF))>=gap:
+				var pitch := pow(2.0,float(floori(_collection_ratio*12.0)-3)/12.0)
+				var volume := lerpf(0.055,0.11,_collection_ratio)+(0.015 if _collection_tier>=80 else 0.0)+(0.015 if _collection_tier>=90 else 0.0)
+				play_effect("collection-tick",volume*(0.4 if celebrating else 1.0),pitch)
+		elif not celebrating:
+			play_effect("pixel-collect",0.04 if blasting else 0.09 if colliding else 0.15,randf_range(0.96,1.04))
 	for voice in _voices.get("debris-impact",[]):
 		voice.volume_linear=minf(float(_mix.get(voice.get_instance_id(),0)),0.04 if celebrating else 0.08 if blasting else 0.12)*float(settings.effectsVolume)
 	for voice in _voices.get("pixel-collect",[]):

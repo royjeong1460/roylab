@@ -1,9 +1,10 @@
 # Planet Patchup Godot free web
 
-This is the separate free edition based on the approved paid Godot 0.5.9 source. Do not edit or reinstall the paid project from this task.
+This is the separate free edition based on the frozen paid Godot 0.5.34 source. This release excludes v35 while its regression is investigated; do not source game code from the live paid tree. Do not edit or reinstall the paid project from this task.
 
 - Scope: Arch Quarter only, original six normal maps plus boss and tutorial, original aftershock/relay/orbital skills, one passive and one active slot. Five other planet regions remain visible and permanently locked. Do not package their maps or seven paid skill definitions.
-- Keep v0.5.9 central automatic recovery (start 1 second after exhaustion, max 9 seconds total), both replacement collection upgrades, and unlimited existing tool/skill upgrades with historical costs and one-time exact legacy collection refund.
+- Keep the approved v34 collection flow: wait for meaningful motion/new breakage to settle (0.6 seconds stable with a minimum 1-second wait), or begin after 2 foreground seconds without actual progress. After 3 foreground seconds, the optional centered skip button starts normal absorption. Paused time does not count. Absorption/fade is separate from preparation: below 70% at 3 seconds gives a 0.5-second fade; successful recovery lasts at most 9 seconds including fade. Preserve both collection upgrades, unlimited existing upgrades, historical costs and the one-time exact legacy refund.
+- Keep public diagnostics off: `diagnostics/performance_overlay=false`; `PerformanceProbe.enabled` must continue reading that flag. Preserve shared v34 physics/presentation without new tuning or performance claims.
 - Preserve existing free browser progress, records and settings; never delete or rewrite legacy localStorage. Use separate free Godot profiles/journal/settings namespaces. Import only when Godot free slots are genuinely absent; preserve raw backups and reject corrupt/conflicting legacy input instead of silently resetting.
 - User performs all gameplay/device/web/feel/thermal testing. Do not run tests, scenes, gameplay/replays, browsers or device apps. Code reads, compilation/import/export, static package/HTTP checks and deployment are allowed. No unsupported runtime/save/visual/performance claims.
 - Package assets with a physical allowlist. Preserve archived Phaser free assets and map editor dependencies. Publish only the isolated release branch; preserve the unrelated dirty main checkout.

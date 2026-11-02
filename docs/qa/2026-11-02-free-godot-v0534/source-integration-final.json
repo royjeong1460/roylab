@@ -1,0 +1,575 @@
+{
+  "scope": "Task 1 static integration; source-integration.json preserved as inherited draft, superseded by these final decisions",
+  "generatedAt": "2026-11-02T13:23:41.538889+00:00",
+  "freeFiles": 296,
+  "gdFiles": 54,
+  "files": [
+    {
+      "path": "app/app.gd",
+      "freeBefore": "f20e5ff1aeff4c30ae762d420692d5558e6b57c346ab079474d4c18b02905227",
+      "paid059": "a6ec971a6a0df2db6c450f6d23006a4ee63911f54ae42fb0e0470a5e2ff7d7d6",
+      "paid034": "0d666453f475ac9b2f5a85886a6a3714809e517ee6e10f3d1375d8b423acd672",
+      "decision": "resolved three-way merge: common resume feedback plus existing free Web bridge/lifecycle/settings/analytics",
+      "freeAfter": "a37dba3b8bff4a944d6d4ee56bf7d66dea3b153513adb8b96b9c7351d2945af8",
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "app/chain_feedback.gd",
+      "freeBefore": "08d4b0be46831a467606d5c30576e59d0e396bff15951cfc5ea10bea6bef25fe",
+      "paid059": "08d4b0be46831a467606d5c30576e59d0e396bff15951cfc5ea10bea6bef25fe",
+      "paid034": "08d4b0be46831a467606d5c30576e59d0e396bff15951cfc5ea10bea6bef25fe",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "08d4b0be46831a467606d5c30576e59d0e396bff15951cfc5ea10bea6bef25fe",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "app/localization.gd",
+      "freeBefore": "12c04c09f44e1d50ff9b8412da5a4c285c7bcac7041ed34e260f0df30b9d139f",
+      "paid059": "93001bdcc8cef182ae9f9b9fca47e3eb6f863e8aba922adda0e0f6d22c4f9239",
+      "paid034": "93001bdcc8cef182ae9f9b9fca47e3eb6f863e8aba922adda0e0f6d22c4f9239",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "12c04c09f44e1d50ff9b8412da5a4c285c7bcac7041ed34e260f0df30b9d139f",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "app/offer_popup.gd",
+      "freeBefore": "14f9c84c767561482d641ea66fb7d4207b1ba077e3f77fac9c7fadd0e97457ef",
+      "paid059": "14f9c84c767561482d641ea66fb7d4207b1ba077e3f77fac9c7fadd0e97457ef",
+      "paid034": "14f9c84c767561482d641ea66fb7d4207b1ba077e3f77fac9c7fadd0e97457ef",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "14f9c84c767561482d641ea66fb7d4207b1ba077e3f77fac9c7fadd0e97457ef",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "app/play_camera.gd",
+      "freeBefore": "61a2f5c0537d2975d93e7b6f27e3e03ef384f3d7113742c5ad34536a006bbf76",
+      "paid059": "61a2f5c0537d2975d93e7b6f27e3e03ef384f3d7113742c5ad34536a006bbf76",
+      "paid034": "579c751aac4d05f383463171c6b57490953228828520d2b6d4afcddd4346483c",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "579c751aac4d05f383463171c6b57490953228828520d2b6d4afcddd4346483c",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "app/play_input.gd",
+      "freeBefore": "10ff1519028e515404c685161ad77c08bc63c83488402b52509ce53146987ee7",
+      "paid059": "10ff1519028e515404c685161ad77c08bc63c83488402b52509ce53146987ee7",
+      "paid034": "10ff1519028e515404c685161ad77c08bc63c83488402b52509ce53146987ee7",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "10ff1519028e515404c685161ad77c08bc63c83488402b52509ce53146987ee7",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "app/play_layout.gd",
+      "freeBefore": "cb0b592df7660b72b0087c49a79042bf607f2d87cd0e7677baeff27aba572d48",
+      "paid059": "cb0b592df7660b72b0087c49a79042bf607f2d87cd0e7677baeff27aba572d48",
+      "paid034": "3f14891b5d89914f243b29f7abfb6e075e525d6cbd6b61853f75407f53f85fa0",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "3f14891b5d89914f243b29f7abfb6e075e525d6cbd6b61853f75407f53f85fa0",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "app/play_view.gd",
+      "freeBefore": "927dedd570faabcad3dc5e5e8ee3c6500960c98a1a6ff49c2e73c335a8de8fe6",
+      "paid059": "927dedd570faabcad3dc5e5e8ee3c6500960c98a1a6ff49c2e73c335a8de8fe6",
+      "paid034": "aca3764f5e4ce9e7e98b4b8434a2bad6fa3f294a714c05ca8f59b360f3f296e0",
+      "decision": "v34 collection camera/fade/perf integration; retain free CultureBackdrop two-argument API and existing skin style",
+      "freeAfter": "2310675bd1ce3fdd51738a39c7014c570b6949c19878d177f36d175c48c6a80c",
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "app/screens.gd",
+      "freeBefore": "4339add0338215deeb0a25d272acbf5929a25a48f6cedbe469a800b686c2b66c",
+      "paid059": "fa256ce6b49e132a0e705332f09152e852f52e10ecc737ea9b38b73188ce1efc",
+      "paid034": "190c8dfddb052f9c6f5b49b7b7fe05f39697970a5d527d9c3bdd1c6d75f17a1c",
+      "decision": "resolved three-way merge: common collection preparation/skip, wallet header, footer/result UI; retain locked free regions, three skills, one slot per kind, free feedback/reset and build information",
+      "freeAfter": "890d4ab71db064d8ab0b30c0211ba8eb3b296ffba394bcee4de00dc39e267143",
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "app/skin.gd",
+      "freeBefore": "e7327cb8927f9c4698927d68b65c8238e37829a177303819f171bff5dd35b744",
+      "paid059": "d53a203bd7fe8d2b38c6db92508ede1f71b0806ed65be5715cceaae29873bbae",
+      "paid034": "d53a203bd7fe8d2b38c6db92508ede1f71b0806ed65be5715cceaae29873bbae",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "e7327cb8927f9c4698927d68b65c8238e37829a177303819f171bff5dd35b744",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "app/ui_theme.gd",
+      "freeBefore": "0caa4ae41aeae777c3d184a7255d5b262f046d32d0742b29e4c75ac3f4f85544",
+      "paid059": "0caa4ae41aeae777c3d184a7255d5b262f046d32d0742b29e4c75ac3f4f85544",
+      "paid034": "0caa4ae41aeae777c3d184a7255d5b262f046d32d0742b29e4c75ac3f4f85544",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "0caa4ae41aeae777c3d184a7255d5b262f046d32d0742b29e4c75ac3f4f85544",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "background.gd",
+      "freeBefore": "12160e31ca1bca5dfaabbcc69cd1d7daf2fbe8628d17f26a54e75e0187ca7d23",
+      "paid059": "12160e31ca1bca5dfaabbcc69cd1d7daf2fbe8628d17f26a54e75e0187ca7d23",
+      "paid034": "12160e31ca1bca5dfaabbcc69cd1d7daf2fbe8628d17f26a54e75e0187ca7d23",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "12160e31ca1bca5dfaabbcc69cd1d7daf2fbe8628d17f26a54e75e0187ca7d23",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "bearing_constraint.gd",
+      "freeBefore": "3b96a172ab8d41421d392ffff2a3234925c9d7e799aa7a34a048acb5a32de403",
+      "paid059": "3b96a172ab8d41421d392ffff2a3234925c9d7e799aa7a34a048acb5a32de403",
+      "paid034": "3b96a172ab8d41421d392ffff2a3234925c9d7e799aa7a34a048acb5a32de403",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "3b96a172ab8d41421d392ffff2a3234925c9d7e799aa7a34a048acb5a32de403",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "blackhole_physics.gd",
+      "freeBefore": "51951f655f13589b72b287f09657b9e1c2115d4749bb3f079ee39136ec406cae",
+      "paid059": "51951f655f13589b72b287f09657b9e1c2115d4749bb3f079ee39136ec406cae",
+      "paid034": "472c3b99f25f65f891619886441d88999289e72f3c081688393abb68cb7876a8",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "472c3b99f25f65f891619886441d88999289e72f3c081688393abb68cb7876a8",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "campaign/catalog.gd",
+      "freeBefore": "3239a2454b64b8f1e2f231ca8639158de2174e1bf2e6185df08349bc9917c53b",
+      "paid059": "463c0a1bfd7871bb1f4f1913cd4ab0c38676646d2b55638aa0a858733bb0e772",
+      "paid034": "463c0a1bfd7871bb1f4f1913cd4ab0c38676646d2b55638aa0a858733bb0e772",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "3239a2454b64b8f1e2f231ca8639158de2174e1bf2e6185df08349bc9917c53b",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/economy.gd",
+      "freeBefore": "7f0a8334f0ebfc850d30be1ef1d863eb7d3c5ae8000fa7939a154c64d2a9afc2",
+      "paid059": "6586c95c097b3c068423b85c7ef719511785ae036595e7014fca112e96ab42f0",
+      "paid034": "6586c95c097b3c068423b85c7ef719511785ae036595e7014fca112e96ab42f0",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "7f0a8334f0ebfc850d30be1ef1d863eb7d3c5ae8000fa7939a154c64d2a9afc2",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/final_collection.gd",
+      "freeBefore": "3083b57c54c9d021e6bc2bbc3ef64dd850c86f649e17409458a94151a270f507",
+      "paid059": "3083b57c54c9d021e6bc2bbc3ef64dd850c86f649e17409458a94151a270f507",
+      "paid034": "4b7c5d49aaf8a91d3cb3cd2d26d653adada1c23cba092792ea4aefb35300963a",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "4b7c5d49aaf8a91d3cb3cd2d26d653adada1c23cba092792ea4aefb35300963a",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "campaign/free_edition.gd",
+      "freeBefore": "060c1f1f7a41403c9dafbda49a6d101a631156137efb3a1de66ba7988bc5273b",
+      "paid059": null,
+      "paid034": null,
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "060c1f1f7a41403c9dafbda49a6d101a631156137efb3a1de66ba7988bc5273b",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/journey.gd",
+      "freeBefore": "3c72842eb62aecccee4c6f6db98cff79314cc9d08fcccf69475add51e9a00f75",
+      "paid059": "9235c033a2b604cc34e47535de84da1f21c113fa0dd51e7fcd6b72af663c9263",
+      "paid034": "9235c033a2b604cc34e47535de84da1f21c113fa0dd51e7fcd6b72af663c9263",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "3c72842eb62aecccee4c6f6db98cff79314cc9d08fcccf69475add51e9a00f75",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/money.gd",
+      "freeBefore": "89c45b9fd76c7b8b07d5ff452af1b4c579ca9803ddcfc585acaa7fc09d9b7d33",
+      "paid059": "89c45b9fd76c7b8b07d5ff452af1b4c579ca9803ddcfc585acaa7fc09d9b7d33",
+      "paid034": "89c45b9fd76c7b8b07d5ff452af1b4c579ca9803ddcfc585acaa7fc09d9b7d33",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "89c45b9fd76c7b8b07d5ff452af1b4c579ca9803ddcfc585acaa7fc09d9b7d33",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "campaign/profile_schema.gd",
+      "freeBefore": "6e2a41bcc6760a1fe20f21999e900b4bb0bfad61f5304aff60968eb32c573a42",
+      "paid059": "f36e7cccaaaf02f98af12816d85611d213d0fef328ae0fa74c7d3750b92c4b48",
+      "paid034": "f36e7cccaaaf02f98af12816d85611d213d0fef328ae0fa74c7d3750b92c4b48",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "6e2a41bcc6760a1fe20f21999e900b4bb0bfad61f5304aff60968eb32c573a42",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/profile_store.gd",
+      "freeBefore": "3aa1d1e7c3c5a3200f97c757016d1a2c955a8958d2ae07d7cd669b34f93352a5",
+      "paid059": "60502ca5e0b6ce824758130a80921964f957347526d2fd7f289f9f1e3851f89a",
+      "paid034": "60502ca5e0b6ce824758130a80921964f957347526d2fd7f289f9f1e3851f89a",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "3aa1d1e7c3c5a3200f97c757016d1a2c955a8958d2ae07d7cd669b34f93352a5",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/progression.gd",
+      "freeBefore": "30be1bb3c4494fed1618fa2ee0c4f5dd9ea3fd0e0975ed517683f5d086a7a997",
+      "paid059": "eb98ac9f05514a446958cf454fff1a46b8065454e76f54740b11c2e36c82d19c",
+      "paid034": "eb98ac9f05514a446958cf454fff1a46b8065454e76f54740b11c2e36c82d19c",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "30be1bb3c4494fed1618fa2ee0c4f5dd9ea3fd0e0975ed517683f5d086a7a997",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/run_journal.gd",
+      "freeBefore": "9d5f5f71017f6e53851281a7a508234539838b92ef78cab694ff7525f8a89e05",
+      "paid059": "c07ee520b4fd533b4fa9e00d41338d27dd75060c36afd8807d2a2e8566e3c4cd",
+      "paid034": "c07ee520b4fd533b4fa9e00d41338d27dd75060c36afd8807d2a2e8566e3c4cd",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "9d5f5f71017f6e53851281a7a508234539838b92ef78cab694ff7525f8a89e05",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/run_session.gd",
+      "freeBefore": "4c04a1c4776b344ec693feebca50fd060dfa71f12d3f7b75124524830e501a94",
+      "paid059": "83216453d3e187c93964b07aaa948d785ae403c761a56a13f74f5fb14cf0cfda",
+      "paid034": "0025384f3c3d53b0681a3bebbd5ad891b544c085271ac4b384f920273ac7c2d4",
+      "decision": "resolved three-way merge: frozen-v34 collection lifecycle and timers; preserve orbital-only skill-use ledger",
+      "freeAfter": "82e1c66944cf2a086c0f58e3e5fd8c802b73a995e3a161609707deac73dac16f",
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "campaign/tutorial.gd",
+      "freeBefore": "6bdb5810fd2fe5d54547b8ec83ab1d40355fee39964cdea29e2bf4f0b919a228",
+      "paid059": "6bdb5810fd2fe5d54547b8ec83ab1d40355fee39964cdea29e2bf4f0b919a228",
+      "paid034": "6bdb5810fd2fe5d54547b8ec83ab1d40355fee39964cdea29e2bf4f0b919a228",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "6bdb5810fd2fe5d54547b8ec83ab1d40355fee39964cdea29e2bf4f0b919a228",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "chain_physics.gd",
+      "freeBefore": "563fba377de3a7a69f020f90aa5b8896ab1818b935e0773246b6c7f9b0de4513",
+      "paid059": "563fba377de3a7a69f020f90aa5b8896ab1818b935e0773246b6c7f9b0de4513",
+      "paid034": "563fba377de3a7a69f020f90aa5b8896ab1818b935e0773246b6c7f9b0de4513",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "563fba377de3a7a69f020f90aa5b8896ab1818b935e0773246b6c7f9b0de4513",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "fracture_connectivity.gd",
+      "freeBefore": null,
+      "paid059": null,
+      "paid034": "6749bde3dc14fd96093cd049648e84765e5ff3b5449e95b1da61ca232c8698cb",
+      "decision": "add frozen v34 helper",
+      "freeAfter": "6749bde3dc14fd96093cd049648e84765e5ff3b5449e95b1da61ca232c8698cb",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "fracture_graph.gd",
+      "freeBefore": "22120cffeeee299a18169b775b0c9dee5af76f901dff23217b79eaf203733b48",
+      "paid059": "22120cffeeee299a18169b775b0c9dee5af76f901dff23217b79eaf203733b48",
+      "paid034": "22120cffeeee299a18169b775b0c9dee5af76f901dff23217b79eaf203733b48",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "22120cffeeee299a18169b775b0c9dee5af76f901dff23217b79eaf203733b48",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "grain_physics.gd",
+      "freeBefore": "b2620d7bd2f89fe22e83d5a78332bdcfd21430ce0695a4f46fce894cbeca19d9",
+      "paid059": "b2620d7bd2f89fe22e83d5a78332bdcfd21430ce0695a4f46fce894cbeca19d9",
+      "paid034": "ec801795f82eaba14e34aa917b05385dec15d327528314e24054b54e167c3eab",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "ec801795f82eaba14e34aa917b05385dec15d327528314e24054b54e167c3eab",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "impact_physics.gd",
+      "freeBefore": "df17cdfc4919146f5254d310bfe0ee59d709b93338d7373157328ecf780b2eda",
+      "paid059": "df17cdfc4919146f5254d310bfe0ee59d709b93338d7373157328ecf780b2eda",
+      "paid034": "4fb8a35a244e0ff4a9d2b81ec23a1b65972dfc541187b827e9f362a254d06718",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "4fb8a35a244e0ff4a9d2b81ec23a1b65972dfc541187b827e9f362a254d06718",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "performance_probe.gd",
+      "freeBefore": null,
+      "paid059": null,
+      "paid034": "d5cac6f0e732de58437c08cecafa39a21ebf69564867aeb1b29d9e195789a45b",
+      "decision": "copy frozen v34 helper unchanged; actual enabled reads diagnostics/performance_overlay, false in free project",
+      "freeAfter": "d5cac6f0e732de58437c08cecafa39a21ebf69564867aeb1b29d9e195789a45b",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "piece.gd",
+      "freeBefore": "fa64cb3c26d4bb92db54c4b861b9d240020b830f8ff1ae21bfd0d5247236415a",
+      "paid059": "fa64cb3c26d4bb92db54c4b861b9d240020b830f8ff1ae21bfd0d5247236415a",
+      "paid034": "38cf9e51dbd5991c8c480f53d3519087382054eb52ec0396a6ec70ccaad45f4b",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "38cf9e51dbd5991c8c480f53d3519087382054eb52ec0396a6ec70ccaad45f4b",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "platform/export_report.gd",
+      "freeBefore": "61da836edaf881d0a677e4a21f5b4f6ca05bcc8f1b45295466bd9078648592dd",
+      "paid059": "61da836edaf881d0a677e4a21f5b4f6ca05bcc8f1b45295466bd9078648592dd",
+      "paid034": "61da836edaf881d0a677e4a21f5b4f6ca05bcc8f1b45295466bd9078648592dd",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "61da836edaf881d0a677e4a21f5b4f6ca05bcc8f1b45295466bd9078648592dd",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "platform/free_web_bridge.gd",
+      "freeBefore": "f51df2b82bdf0a373f57a5dfc5b568d4e08dac47ce1a0eecfba784a3e68cbf6f",
+      "paid059": null,
+      "paid034": null,
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "f51df2b82bdf0a373f57a5dfc5b568d4e08dac47ce1a0eecfba784a3e68cbf6f",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "platform/haptics.gd",
+      "freeBefore": "88e6b5ca99b6888737920c32c671d8e7adbfb2205ad500ae6dbd3a0b8b3fe494",
+      "paid059": "88e6b5ca99b6888737920c32c671d8e7adbfb2205ad500ae6dbd3a0b8b3fe494",
+      "paid034": "af273d380e1292f908e72d4881abcfdbc51f6bdcac13cf8894991e40ae8bca9c",
+      "decision": "copy common v34 collection haptics; browser boundary remains iOS/Android-only vibration",
+      "freeAfter": "af273d380e1292f908e72d4881abcfdbc51f6bdcac13cf8894991e40ae8bca9c",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "platform/import_export.gd",
+      "freeBefore": "b62f03430f29eaec45efaba7166b588f25b5a01c7f25aa3eda8decb537ce1323",
+      "paid059": "2ec39cad09dc5ebfe8415fe40695d6cbc6ef30172782d534ae0fe548d393eb0f",
+      "paid034": "2ec39cad09dc5ebfe8415fe40695d6cbc6ef30172782d534ae0fe548d393eb0f",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "b62f03430f29eaec45efaba7166b588f25b5a01c7f25aa3eda8decb537ce1323",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "platform/legacy_profile.gd",
+      "freeBefore": "38b6852d8b915502984d4f5b52cb844392bd80323f98903ca3264c75667a8103",
+      "paid059": "dec94f072ea5a533db9975bb282c3d4670749a4fa38813512efa20a73f931a13",
+      "paid034": "dec94f072ea5a533db9975bb282c3d4670749a4fa38813512efa20a73f931a13",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "38b6852d8b915502984d4f5b52cb844392bd80323f98903ca3264c75667a8103",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "platform/lifecycle.gd",
+      "freeBefore": "0f31f376438c805edf0a827ea7e91e9fd90fa9f5e17af40d2dd38e57f137616f",
+      "paid059": "0f31f376438c805edf0a827ea7e91e9fd90fa9f5e17af40d2dd38e57f137616f",
+      "paid034": "0f31f376438c805edf0a827ea7e91e9fd90fa9f5e17af40d2dd38e57f137616f",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "0f31f376438c805edf0a827ea7e91e9fd90fa9f5e17af40d2dd38e57f137616f",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "presentation/audio.gd",
+      "freeBefore": "6f91f3a5a5d5dc19c172f3962a518df77e69921bac5bb662eeb5c66bd5617d1f",
+      "paid059": "d15a27a1507b74c32dbf55bf4b0848634501541750c6d2d8f297101e9b2ce95b",
+      "paid034": "2f63008e30a19cb997acab80ed9a4a5e4a363b63e08eae4728834a3798e7c141",
+      "decision": "merge common v34 collection cues; preserve free settings namespace, allowed skill/audio list and existing quiet-v5 music assets",
+      "freeAfter": "6e1ff3e7e06fafef1b4ae9072954dbfcd344d2492f5f8727b11ed09d4c42b8d6",
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "presentation/cloud_layer.gd",
+      "freeBefore": "df11e57caee66100fb2c68cbae202780ba9149a5dca84f0b8e161762637b1e24",
+      "paid059": "df11e57caee66100fb2c68cbae202780ba9149a5dca84f0b8e161762637b1e24",
+      "paid034": "df11e57caee66100fb2c68cbae202780ba9149a5dca84f0b8e161762637b1e24",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "df11e57caee66100fb2c68cbae202780ba9149a5dca84f0b8e161762637b1e24",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "presentation/collection_overlay.gd",
+      "freeBefore": "4d3503d0345dc1d1aeb6067a890cbcd647488cf424148573749b32cd5adfed97",
+      "paid059": "4d3503d0345dc1d1aeb6067a890cbcd647488cf424148573749b32cd5adfed97",
+      "paid034": "d9d912f5534a8ddb3be3f57b063d8da2b48616c0eae9a0b3b98236cb0abd5fcf",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "d9d912f5534a8ddb3be3f57b063d8da2b48616c0eae9a0b3b98236cb0abd5fcf",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "presentation/culture_backdrop.gd",
+      "freeBefore": "8f2f76347cd88a59615835a71992f257b666655df60b6ac33aa947d19b6c94b5",
+      "paid059": "8f2f76347cd88a59615835a71992f257b666655df60b6ac33aa947d19b6c94b5",
+      "paid034": "a6c5c8945ee6326c52bb4ec0780e086d2fc476fae27e5a50912ad198637b2206",
+      "decision": "preserve original free renderer; no paid culture terrain/assets integration",
+      "freeAfter": "8f2f76347cd88a59615835a71992f257b666655df60b6ac33aa947d19b6c94b5",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "presentation/culture_ground.gd",
+      "freeBefore": null,
+      "paid059": null,
+      "paid034": "ce36b8fb9bdc50290b7029846854f101f8699c76a2a2b931cbddf2494eda58c3",
+      "decision": "exclude: unrelated paid culture helper not present in free project",
+      "freeAfter": null,
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "presentation/culture_scrap_bank.gd",
+      "freeBefore": null,
+      "paid059": null,
+      "paid034": "5b6e28e5d409bfae466e7b4f1dcbab2c0216d3a068cbb6b4808a23a484c2f9f1",
+      "decision": "exclude: unrelated paid culture helper not present in free project",
+      "freeAfter": null,
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "presentation/environment_receipt.gd",
+      "freeBefore": "82dd5a920932dabc870039f291a700b796b307201cdc86d7eff22dafbf60a871",
+      "paid059": "82dd5a920932dabc870039f291a700b796b307201cdc86d7eff22dafbf60a871",
+      "paid034": "82dd5a920932dabc870039f291a700b796b307201cdc86d7eff22dafbf60a871",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "82dd5a920932dabc870039f291a700b796b307201cdc86d7eff22dafbf60a871",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "presentation/grain_surface.gd",
+      "freeBefore": null,
+      "paid059": null,
+      "paid034": "cd966e21fe9aa10291e2dfe5c5393ef3c278b0eee17a18827c30be0a64d48801",
+      "decision": "add frozen v34 helper",
+      "freeAfter": "cd966e21fe9aa10291e2dfe5c5393ef3c278b0eee17a18827c30be0a64d48801",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "presentation/pixel_surface.gd",
+      "freeBefore": "6c74e063333e8b7233912077a79d87a24773ffafff33f7a806969feab03fe640",
+      "paid059": "6c74e063333e8b7233912077a79d87a24773ffafff33f7a806969feab03fe640",
+      "paid034": "6c74e063333e8b7233912077a79d87a24773ffafff33f7a806969feab03fe640",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "6c74e063333e8b7233912077a79d87a24773ffafff33f7a806969feab03fe640",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "presentation/planet_home.gd",
+      "freeBefore": "0cfd51c66c8e8c71ab64c1635a2e786c350ef2fb6204fb338c5a9b9c934cc147",
+      "paid059": "8d70fd535c929cb25a77cd22ae83251b3359337313668178831c6cfe20474a82",
+      "paid034": "8d70fd535c929cb25a77cd22ae83251b3359337313668178831c6cfe20474a82",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "0cfd51c66c8e8c71ab64c1635a2e786c350ef2fb6204fb338c5a9b9c934cc147",
+      "unchangedFromFree": true,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "presentation/skill_vfx.gd",
+      "freeBefore": "c647e29a8ae60afd31d1d937615f28588dc73332ebfb9e1b8fe59052b851b176",
+      "paid059": "5090a62efb1cc79aa47b6998baef1499c44eb314bb380aacfb838fd1535187b2",
+      "paid034": "40133915900cc8af24fd2d214fffad6c6422c151ceeb76a353237d9b3e30df21",
+      "decision": "resolved three-way merge: v34 Relay membership lookup; retain three-skill free VFX allowlist",
+      "freeAfter": "5fece911a35234505128c456e58319d5d80090a077566e84150ccc87c0691912",
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "section_graph.gd",
+      "freeBefore": null,
+      "paid059": null,
+      "paid034": "75da44182d066d0c20ab03498cc8d489b3c44a460e7447c5b5973f64bbac798a",
+      "decision": "add frozen v34 helper",
+      "freeAfter": "75da44182d066d0c20ab03498cc8d489b3c44a460e7447c5b5973f64bbac798a",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "skill_physics.gd",
+      "freeBefore": "60a47eabd80f484eb2d8c5760a8a61e426aa35fed14d51814072b5a82930de89",
+      "paid059": "fb247c6e8c6db6120a44c5c0795ae1c80e1eede940dc6f4da7d7a8bb192d39e6",
+      "paid034": "945d9727b9be0eace7aa5fd4ff765953a58d626f4a9210d7dd6393755e5af912",
+      "decision": "resolved three-way merge: common Aftershock/Relay/Orbital changes; preserve three-skill allowlist and one-slot-per-kind",
+      "freeAfter": "4df7b62e52e78d80b04c0c43dafcb10160b0f3250cc965a2e72c41ed4638b2f5",
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "source_random.gd",
+      "freeBefore": "bdafac0d85f07fe134f08f6e5a915bed83d38737f1e887444f642cba153ce8ce",
+      "paid059": "bdafac0d85f07fe134f08f6e5a915bed83d38737f1e887444f642cba153ce8ce",
+      "paid034": "adf1a8604f607c0f69298fa7f1c8ddc71de07af3baa7aa329b3f8848047d09f9",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "adf1a8604f607c0f69298fa7f1c8ddc71de07af3baa7aa329b3f8848047d09f9",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "structure_physics.gd",
+      "freeBefore": "013a6291f1ca338c42626454cb9bd1c121cc64a7198cf7f577a1a42c43a7406c",
+      "paid059": "013a6291f1ca338c42626454cb9bd1c121cc64a7198cf7f577a1a42c43a7406c",
+      "paid034": "9eda599cf6751c73416b14c24d6f17b65f60cb3901793134f22d36ebda06b759",
+      "decision": "copy frozen v34 shared source",
+      "freeAfter": "9eda599cf6751c73416b14c24d6f17b65f60cb3901793134f22d36ebda06b759",
+      "unchangedFromFree": false,
+      "equalsFrozen034": true
+    },
+    {
+      "path": "world.gd",
+      "freeBefore": "09f61e0c73f9baf9d065a7b9ea2fca110d55330963e176d8024414e991c54d71",
+      "paid059": "95f6da33a1e2dba6f238d918f94c58e47a603ac17ebe0bbcc4fa6f2d0e111b88",
+      "paid034": "daa1ebe143c8d4ac1583453588e035256330ba405afaf821c55d32ef0141f0d9",
+      "decision": "resolved three-way merge: frozen v34 world/physics; preserve free fallback Arch map path",
+      "freeAfter": "dc5f5bbc3d8ead260446a959304b92cebc57c4ba5288a690d2fdd6534092b4c6",
+      "unchangedFromFree": false,
+      "equalsFrozen034": false
+    },
+    {
+      "path": "yield_joint.gd",
+      "freeBefore": "cb666244dfff6d97a5ba292ac0ab84c4c4383cf87b303add21026a438f8375d7",
+      "paid059": "cb666244dfff6d97a5ba292ac0ab84c4c4383cf87b303add21026a438f8375d7",
+      "paid034": "cb666244dfff6d97a5ba292ac0ab84c4c4383cf87b303add21026a438f8375d7",
+      "decision": "preserve free (paid unchanged or free-only)",
+      "freeAfter": "cb666244dfff6d97a5ba292ac0ab84c4c4383cf87b303add21026a438f8375d7",
+      "unchangedFromFree": true,
+      "equalsFrozen034": true
+    }
+  ],
+  "metadata": {
+    "projectVersion": "0.5.34",
+    "buildManifestVersion": "0.5.34-free",
+    "stem": "free-0534-",
+    "retainedStem": "free-059-",
+    "publicProfiler": false
+  }
+}

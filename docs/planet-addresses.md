@@ -4,7 +4,7 @@ Single entry: https://roylab.pages.dev/planet-patchup/
 
 | Purpose | Canonical path |
 | --- | --- |
-| Current Godot 0.5.9 free campaign | /planet-patchup/play/ |
+| Current Godot 0.5.34 free campaign | /planet-patchup/play/ |
 | Paid map and power testing | /planet-patchup/test/paid/ |
 | Wide/tall/open maps and skill effects | /planet-patchup/lab/maps/ |
 | Pillar/body/roof and load inspection | /planet-patchup/lab/structure/ |

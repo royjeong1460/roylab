@@ -210,13 +210,13 @@ func resume_run() -> void:
 	if journey.current_run == null or not is_instance_valid(play_view):
 		navigate("home")
 		return
-	if journey.current_run.settling or journey.current_run.finish_ready:
+	if journey.current_run.settling:
 		finish_run()
 		return
 	journey.current_run.pause(false)
 	play_view.controls.cancel()
 	play_view.vfx.active = true
-	feedback.set_game_paused(false)
+	feedback.set_game_paused(journey.current_run.finish_ready)
 	get_tree().paused = false
 	navigate("play")
 
