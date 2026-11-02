@@ -1,0 +1,11 @@
+{
+  "source_frames": 3603064,
+  "decoded_mp3_valid_frames": 3603064,
+  "sample_rate": 44100,
+  "channels": 2,
+  "source_duration_seconds": 81.70213151927437,
+  "decoded_mp3_duration_seconds": 81.70213151927437,
+  "frame_counts_match": true,
+  "inspection": "Offline file decode/count only, no sound played and no game runtime",
+  "mp3_inspection_exit_code": 0
+}

@@ -1,0 +1,12 @@
+{
+  "existing_public_files": 418,
+  "unchanged": 415,
+  "allowed_changed": [
+    "public/_headers",
+    "public/games/planet-patchup-free/index.html",
+    "public/planet-patchup/play/index.html"
+  ],
+  "archives_and_editor_preserved": true,
+  "primary_snapshot_paths": 469,
+  "primary_changed_since_snapshot": []
+}

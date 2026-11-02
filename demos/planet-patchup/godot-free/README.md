@@ -9,7 +9,7 @@ Separate free project retaining the original free edition contracts while synchr
 - Collection preparation waits for meaningful movement/new breakage to settle (0.6 seconds stable, minimum one second) or for two foreground seconds without actual progress. A centered optional skip button appears after three foreground seconds and starts normal absorption. Preparation shows “잔해 정리 중” instead of a 0% recovery count; paused/background time does not advance the optional wait timer.
 - Recovery timing starts at absorption: fewer than 70% pixelized at three seconds proceeds to a 0.5-second fade; successful recovery lasts at most nine seconds including fade. Keep both replacement collection upgrades, unlimited existing upgrades and exact historical cost/refund accounting.
 - Held parts appear beside the workshop Upgrades header. Upgrade prices and the fixed two-button workshop footer remain intact.
-- Unchanged quiet-background v5: 94 BPM, 32 bars. Shared effects remain; passive skills have no sound.
+- Same quiet-background v5 composition:94BPM,32bars. Free web delivers a192kb/s,44.1kHz stereo MP3 through the existing Godot AudioStreamPlayer with full-track looping. The original WAV is preserved as source and excluded from the free export. Effects and all audio controls retain their existing code.
 - Restoration requires six distinct normal best records at 70% plus boss clear. Tutorial/replays do not create restoration steps.
 
 ## Save transition

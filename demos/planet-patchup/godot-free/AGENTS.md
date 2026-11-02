@@ -8,3 +8,5 @@ This is the separate free edition based on the frozen paid Godot 0.5.34 source. 
 - Preserve existing free browser progress, records and settings; never delete or rewrite legacy localStorage. Use separate free Godot profiles/journal/settings namespaces. Import only when Godot free slots are genuinely absent; preserve raw backups and reject corrupt/conflicting legacy input instead of silently resetting.
 - User performs all gameplay/device/web/feel/thermal testing. Do not run tests, scenes, gameplay/replays, browsers or device apps. Code reads, compilation/import/export, static package/HTTP checks and deployment are allowed. No unsupported runtime/save/visual/performance claims.
 - Package assets with a physical allowlist. Preserve archived Phaser free assets and map editor dependencies. Publish only the isolated release branch; preserve the unrelated dirty main checkout.
+
+- 2026-11-03 music resource update: use the same v5 composition as192kb/s MP3 with loop=true and loop_offset=0. Preserve source WAV but exclude it from the free PCK. Keep existing Godot audio/settings/pause/effect code and browser bridge; do not add browser/M4A playback.

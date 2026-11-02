@@ -1,0 +1,12 @@
+{
+  "initial_next_build_exit": 1,
+  "cause": "Copied shared node_modules symlink outside Turbopack filesystem root",
+  "fix": "Clone resolved dependency directories into this isolated worktree; no Next code/config or package changes",
+  "paths": [
+    {
+      "path": "node_modules",
+      "previous_symlink": "/Users/roy/Developer/roylab/node_modules",
+      "resolved_source": "/Users/roy/Developer/roylab/node_modules"
+    }
+  ]
+}

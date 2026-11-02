@@ -153,7 +153,12 @@ if(JSON.stringify(packagedMaps)!==JSON.stringify([...allowedMaps].sort()))fail('
 const assetData=readFileSync(path.join(staging,'data/assets.json'));
 if(!pck.includes(assetData))fail('Filtered asset catalog missing from free PCK.');
 const assetCatalog=JSON.parse(assetData);
-if(!assetCatalog.assets.music.includes('quiet-background-v5-94bpm-32bars.wav'))fail('Incorrect background music.');
+const musicFile='quiet-background-v5-94bpm-32bars.mp3';
+if(assetCatalog.assets.music!==`res://assets/audio/${musicFile}`)fail('Incorrect background music.');
+const musicImport=readFileSync(path.join(source,'assets/audio',musicFile+'.import'),'utf8');
+if(!/^loop=true$/m.test(musicImport)||!/^loop_offset=0(?:\.0)?$/m.test(musicImport))fail('Background music must loop from the beginning.');
+if(!pck.includes(readFileSync(path.join(source,'assets/audio',musicFile))))fail('MP3 music bytes missing from free PCK.');
+if(pck.includes(Buffer.from('quiet-background-v5-94bpm-32bars.wav-')))fail('Original large WAV sample must not ship in the free PCK.');
 for(const p of files(output))if(readFileSync(p).length>sizeLimit)fail('Oversized final artifact: '+path.basename(p));
 const manifest={version:'0.5.34-free',sourceHash,stem,scratch,allowedMaps:[...allowedMaps],allowedSkills,
  shellScript,shellCss,artifacts,scope:'compile/export/static package verification only; no game/browser/save-runtime testing'};

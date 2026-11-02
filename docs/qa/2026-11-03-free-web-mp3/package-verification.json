@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-11-02T17:10:30.657885+00:00",
+  "stem": "free-0534-c5a7a90dd912",
+  "version": "0.5.34-free",
+  "pck_entries": 290,
+  "identical_shared_entries": 285,
+  "changed_package_paths": [
+    ".godot/exported/133200997/export-da3d2b29be011000ecf2ffbfcf527f17-app.scn",
+    ".godot/imported/quiet-background-v5-94bpm-32bars.mp3-ba71476cc9034ba49a6c0d6ac706fc79.mp3str",
+    ".godot/imported/quiet-background-v5-94bpm-32bars.wav-9385706d3623c93964bde38b852a01f7.sample",
+    ".godot/uid_cache.bin",
+    "assets/audio/quiet-background-v5-94bpm-32bars.mp3.import",
+    "assets/audio/quiet-background-v5-94bpm-32bars.wav.import",
+    "data/assets.json"
+  ],
+  "gdc_changes": [],
+  "generated_scene_difference": {
+    "field": "PackedScene._bundled.node_ids[0]",
+    "offsets": [
+      503,
+      504,
+      505,
+      506
+    ],
+    "source_scene_unchanged": true
+  },
+  "native_mp3_loop_serialized": true,
+  "loop_offset_default": 0,
+  "original_wav_preserved_and_excluded": true,
+  "free_source_files": 298,
+  "free_maps": 8,
+  "free_skills": 3,
+  "wasm_bytes_identical": true,
+  "pck_before_bytes": 16202232,
+  "pck_after_bytes": 5432455,
+  "initial_main_files_before_bytes": 25671480,
+  "initial_main_files_after_bytes": 14901703,
+  "initial_main_file_reduction_percent": 41.95230271102406,
+  "free_build_exit_code": 0,
+  "site_build_final_exit_code": 0,
+  "initial_site_build_exit_code": 1,
+  "runtime_audio_game_or_browser_executed": false
+}

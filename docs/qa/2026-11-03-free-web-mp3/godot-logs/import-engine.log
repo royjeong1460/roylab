@@ -1,0 +1,329 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started 프로젝트 초기화 (5 steps)
+[   0% ] first_scan_filesystem | 파일 구조 스캔 중...
+[  16% ] first_scan_filesystem | 전역 클래스 이름을 불러오는 중...
+[  33% ] first_scan_filesystem | GDExtensions 검증 중...
+[  50% ] first_scan_filesystem | 오토로드 스크립트를 만드는 중...
+[  66% ] first_scan_filesystem | 플러그인을 초기화 중...
+[  83% ] first_scan_filesystem | 파일 스캔 시작 중...
+[ DONE ] first_scan_filesystem
+
+[   0% ] update_scripts_classes | Started 전역 클래스를 등록하는 중... (54 steps)
+[   0% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  20% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[ DONE ] update_scripts_classes
+
+[   0% ] _update_scan_actions | Started 액션 스캔 중... (81 steps)
+[   0% ] _update_scan_actions | 01-ui-tap.wav
+[   1% ] _update_scan_actions | 02-ui-confirm.wav
+[   2% ] _update_scan_actions | 03-ui-unavailable.wav
+[   3% ] _update_scan_actions | 04-blackhole-open.wav
+[   4% ] _update_scan_actions | 05-blackhole-loop.wav
+[   6% ] _update_scan_actions | 06-blackhole-close.wav
+[   7% ] _update_scan_actions | 07-active-ready.wav
+[   8% ] _update_scan_actions | 08-active-deploy.wav
+[   9% ] _update_scan_actions | 09-orbital-fall.wav
+[  10% ] _update_scan_actions | 10-progress-success.wav
+[  12% ] _update_scan_actions | 16-battery-recharge.wav
+[  13% ] _update_scan_actions | blast-peoeong.wav
+[  14% ] _update_scan_actions | metal-tick-single.wav
+[  15% ] _update_scan_actions | pixel-metal-chak.wav
+[  17% ] _update_scan_actions | quiet-background-v5-94bpm-32bars.mp3
+[  18% ] _update_scan_actions | quiet-background-v5-94bpm-32bars.wav
+[  19% ] _update_scan_actions | Galmuri11.ttf
+[  20% ] _update_scan_actions | active-orbital-drop.svg
+[  21% ] _update_scan_actions | hud-battery.svg
+[  23% ] _update_scan_actions | hud-pause.svg
+[  24% ] _update_scan_actions | hud-recovery.svg
+[  25% ] _update_scan_actions | hud-switch.svg
+[  26% ] _update_scan_actions | passive-aftershock.svg
+[  28% ] _update_scan_actions | passive-impact-relay.svg
+[  29% ] _update_scan_actions | tool-blackhole.svg
+[  30% ] _update_scan_actions | tool-blast.svg
+[  31% ] _update_scan_actions | landmark-1.png
+[  32% ] _update_scan_actions | landmark-2.png
+[  34% ] _update_scan_actions | landmark-3.png
+[  35% ] _update_scan_actions | landmark-4.png
+[  36% ] _update_scan_actions | landmark-5.png
+[  37% ] _update_scan_actions | landmark-6.png
+[  39% ] _update_scan_actions | rubble.png
+[  40% ] _update_scan_actions | sky.png
+[  41% ] _update_scan_actions | worldmap.png
+[  42% ] _update_scan_actions | 01-compacted.png
+[  43% ] _update_scan_actions | 02-panels.png
+[  45% ] _update_scan_actions | 03-pipes.png
+[  46% ] _update_scan_actions | 04-appliances.png
+[  47% ] _update_scan_actions | 05-drums.png
+[  48% ] _update_scan_actions | 06-mixed.png
+[  50% ] _update_scan_actions | arch-building-a.png
+[  51% ] _update_scan_actions | arch-building-b.png
+[  52% ] _update_scan_actions | arch-building-c.png
+[  53% ] _update_scan_actions | arch-ground-a.png
+[  54% ] _update_scan_actions | arch-ground-b.png
+[  56% ] _update_scan_actions | arch-ground-c.png
+[  57% ] _update_scan_actions | prop-bench.png
+[  58% ] _update_scan_actions | prop-fountain.png
+[  59% ] _update_scan_actions | prop-lamp.png
+[  60% ] _update_scan_actions | prop-stairs.png
+[  62% ] _update_scan_actions | shared-cloud-a.png
+[  63% ] _update_scan_actions | shared-cloud-b.png
+[  64% ] _update_scan_actions | shared-cloud-c.png
+[  65% ] _update_scan_actions | shared-mesa-a.png
+[  67% ] _update_scan_actions | shared-mesa-b.png
+[  68% ] _update_scan_actions | shared-mesa-c.png
+[  69% ] _update_scan_actions | shared-scrap-a.png
+[  70% ] _update_scan_actions | shared-scrap-b.png
+[  71% ] _update_scan_actions | shared-scrap-c.png
+[  73% ] _update_scan_actions | broken-array.svg
+[  74% ] _update_scan_actions | dead-satellite.svg
+[  75% ] _update_scan_actions | dish-satellite.svg
+[  76% ] _update_scan_actions | rust-moon.svg
+[  78% ] _update_scan_actions | slate-moon.svg
+[  79% ] _update_scan_actions | spent-probe.svg
+[  80% ] _update_scan_actions | blackhole-close.png
+[  81% ] _update_scan_actions | blackhole-loop.png
+[  82% ] _update_scan_actions | blackhole-open.png
+[  84% ] _update_scan_actions | blast.png
+[  85% ] _update_scan_actions | collect.png
+[  86% ] _update_scan_actions | impact.png
+[  87% ] _update_scan_actions | relay-mark.png
+[  89% ] _update_scan_actions | satellite-heavy.png
+[  90% ] _update_scan_actions | satellite-normal.png
+[  91% ] _update_scan_actions | satellite-trail.png
+[  92% ] _update_scan_actions | satellite-wreck.png
+[  93% ] _update_scan_actions | shockwave.png
+[  95% ] _update_scan_actions | smoke.png
+[  96% ] _update_scan_actions | spark.png
+[  97% ] _update_scan_actions | icon.svg
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started 애셋 (다시) 가져오는 중 (81 steps)
+[   0% ] reimport | 다시 가져올 파일을 준비 중...
+[   1% ] reimport | 다시 가져올 파일을 준비 중...
+[   2% ] reimport | 다시 가져올 파일을 준비 중...
+[   3% ] reimport | 다시 가져올 파일을 준비 중...
+[   4% ] reimport | 다시 가져올 파일을 준비 중...
+[   6% ] reimport | 다시 가져올 파일을 준비 중...
+[   7% ] reimport | 다시 가져올 파일을 준비 중...
+[   8% ] reimport | 다시 가져올 파일을 준비 중...
+[   9% ] reimport | 다시 가져올 파일을 준비 중...
+[  10% ] reimport | 다시 가져올 파일을 준비 중...
+[  12% ] reimport | 다시 가져올 파일을 준비 중...
+[  13% ] reimport | 다시 가져올 파일을 준비 중...
+[  14% ] reimport | 다시 가져올 파일을 준비 중...
+[  15% ] reimport | 다시 가져올 파일을 준비 중...
+[  17% ] reimport | 다시 가져올 파일을 준비 중...
+[  18% ] reimport | 다시 가져올 파일을 준비 중...
+[  19% ] reimport | 다시 가져올 파일을 준비 중...
+[  20% ] reimport | 다시 가져올 파일을 준비 중...
+[  21% ] reimport | 다시 가져올 파일을 준비 중...
+[  23% ] reimport | 다시 가져올 파일을 준비 중...
+[  24% ] reimport | 다시 가져올 파일을 준비 중...
+[  25% ] reimport | 다시 가져올 파일을 준비 중...
+[  26% ] reimport | 다시 가져올 파일을 준비 중...
+[  28% ] reimport | 다시 가져올 파일을 준비 중...
+[  29% ] reimport | 다시 가져올 파일을 준비 중...
+[  30% ] reimport | 다시 가져올 파일을 준비 중...
+[  31% ] reimport | 다시 가져올 파일을 준비 중...
+[  32% ] reimport | 다시 가져올 파일을 준비 중...
+[  34% ] reimport | 다시 가져올 파일을 준비 중...
+[  35% ] reimport | 다시 가져올 파일을 준비 중...
+[  36% ] reimport | 다시 가져올 파일을 준비 중...
+[  37% ] reimport | 다시 가져올 파일을 준비 중...
+[  39% ] reimport | 다시 가져올 파일을 준비 중...
+[  40% ] reimport | 다시 가져올 파일을 준비 중...
+[  41% ] reimport | 다시 가져올 파일을 준비 중...
+[  42% ] reimport | 다시 가져올 파일을 준비 중...
+[  43% ] reimport | 다시 가져올 파일을 준비 중...
+[  45% ] reimport | 다시 가져올 파일을 준비 중...
+[  46% ] reimport | 다시 가져올 파일을 준비 중...
+[  47% ] reimport | 다시 가져올 파일을 준비 중...
+[  48% ] reimport | 다시 가져올 파일을 준비 중...
+[  50% ] reimport | 다시 가져올 파일을 준비 중...
+[  51% ] reimport | 다시 가져올 파일을 준비 중...
+[  52% ] reimport | 다시 가져올 파일을 준비 중...
+[  53% ] reimport | 다시 가져올 파일을 준비 중...
+[  54% ] reimport | 다시 가져올 파일을 준비 중...
+[  56% ] reimport | 다시 가져올 파일을 준비 중...
+[  57% ] reimport | 다시 가져올 파일을 준비 중...
+[  58% ] reimport | 다시 가져올 파일을 준비 중...
+[  59% ] reimport | 다시 가져올 파일을 준비 중...
+[  60% ] reimport | 다시 가져올 파일을 준비 중...
+[  62% ] reimport | 다시 가져올 파일을 준비 중...
+[  63% ] reimport | 다시 가져올 파일을 준비 중...
+[  64% ] reimport | 다시 가져올 파일을 준비 중...
+[  65% ] reimport | 다시 가져올 파일을 준비 중...
+[  67% ] reimport | 다시 가져올 파일을 준비 중...
+[  68% ] reimport | 다시 가져올 파일을 준비 중...
+[  69% ] reimport | 다시 가져올 파일을 준비 중...
+[  70% ] reimport | 다시 가져올 파일을 준비 중...
+[  71% ] reimport | 다시 가져올 파일을 준비 중...
+[  73% ] reimport | 다시 가져올 파일을 준비 중...
+[  74% ] reimport | 다시 가져올 파일을 준비 중...
+[  75% ] reimport | 다시 가져올 파일을 준비 중...
+[  76% ] reimport | 다시 가져올 파일을 준비 중...
+[  78% ] reimport | 다시 가져올 파일을 준비 중...
+[  79% ] reimport | 다시 가져올 파일을 준비 중...
+[  80% ] reimport | 다시 가져올 파일을 준비 중...
+[  81% ] reimport | 다시 가져올 파일을 준비 중...
+[  82% ] reimport | 다시 가져올 파일을 준비 중...
+[  84% ] reimport | 다시 가져올 파일을 준비 중...
+[  85% ] reimport | 다시 가져올 파일을 준비 중...
+[  86% ] reimport | 다시 가져올 파일을 준비 중...
+[  87% ] reimport | 다시 가져올 파일을 준비 중...
+[  89% ] reimport | 다시 가져올 파일을 준비 중...
+[  90% ] reimport | 다시 가져올 파일을 준비 중...
+[  91% ] reimport | 다시 가져올 파일을 준비 중...
+[  92% ] reimport | 다시 가져올 파일을 준비 중...
+[  93% ] reimport | 다시 가져올 파일을 준비 중...
+[  95% ] reimport | 다시 가져올 파일을 준비 중...
+[  96% ] reimport | 다시 가져올 파일을 준비 중...
+[  97% ] reimport | 다시 가져올 파일을 준비 중...
+[   0% ] reimport | 다시 가져오기 전 작업을 수행 중...
+[   0% ] reimport | Galmuri11.ttf
+res://assets/fonts/Galmuri11.ttf: Pixel font detected, disabling subpixel positioning.
+[   1% ] reimport | quiet-background-v5-94bpm-32bars.mp3
+[   2% ] reimport | Galmuri11.ttf
+[   3% ] reimport | quiet-background-v5-94bpm-32bars.mp3
+[   4% ] reimport | broken-array.svg
+[   6% ] reimport | shared-scrap-c.png
+[   7% ] reimport | shared-scrap-b.png
+[   8% ] reimport | shared-scrap-a.png
+[   9% ] reimport | shared-mesa-c.png
+[  10% ] reimport | shared-mesa-b.png
+[  12% ] reimport | shared-mesa-a.png
+[  13% ] reimport | shared-cloud-c.png
+[  14% ] reimport | shared-cloud-b.png
+[  15% ] reimport | shared-cloud-a.png
+[  17% ] reimport | prop-stairs.png
+[  18% ] reimport | prop-lamp.png
+[  19% ] reimport | prop-fountain.png
+[  20% ] reimport | prop-bench.png
+[  21% ] reimport | arch-ground-c.png
+[  23% ] reimport | arch-ground-b.png
+[  24% ] reimport | arch-ground-a.png
+[  25% ] reimport | arch-building-c.png
+[  26% ] reimport | arch-building-b.png
+[  28% ] reimport | icon.svg
+[  29% ] reimport | spark.png
+[  30% ] reimport | smoke.png
+[  31% ] reimport | shockwave.png
+[  32% ] reimport | satellite-wreck.png
+[  34% ] reimport | satellite-trail.png
+[  35% ] reimport | satellite-normal.png
+[  36% ] reimport | satellite-heavy.png
+[  37% ] reimport | relay-mark.png
+[  39% ] reimport | impact.png
+[  40% ] reimport | collect.png
+[  41% ] reimport | blast.png
+[  42% ] reimport | blackhole-open.png
+[  43% ] reimport | blackhole-loop.png
+[  45% ] reimport | blackhole-close.png
+[  46% ] reimport | spent-probe.svg
+[  47% ] reimport | slate-moon.svg
+[  48% ] reimport | rust-moon.svg
+[  50% ] reimport | dish-satellite.svg
+[  51% ] reimport | dead-satellite.svg
+[  52% ] reimport | active-orbital-drop.svg
+[  53% ] reimport | hud-battery.svg
+[  54% ] reimport | hud-pause.svg
+[  56% ] reimport | hud-recovery.svg
+[  57% ] reimport | hud-switch.svg
+[  58% ] reimport | passive-aftershock.svg
+[  59% ] reimport | passive-impact-relay.svg
+[  60% ] reimport | tool-blackhole.svg
+[  62% ] reimport | tool-blast.svg
+[  63% ] reimport | landmark-1.png
+[  64% ] reimport | landmark-2.png
+[  65% ] reimport | landmark-3.png
+[  67% ] reimport | arch-building-a.png
+[  68% ] reimport | 06-mixed.png
+[  69% ] reimport | 05-drums.png
+[  70% ] reimport | 04-appliances.png
+[  71% ] reimport | 03-pipes.png
+[  73% ] reimport | 02-panels.png
+[  74% ] reimport | 01-compacted.png
+[  75% ] reimport | worldmap.png
+[  76% ] reimport | sky.png
+[  78% ] reimport | rubble.png
+[  79% ] reimport | landmark-6.png
+[  80% ] reimport | Galmuri11.ttf
+[  81% ] reimport | quiet-background-v5-94bpm-32bars.mp3
+[  82% ] reimport | broken-array.svg
+[  84% ] reimport | shared-scrap-c.png
+[  85% ] reimport | shared-scrap-b.png
+[  86% ] reimport | shared-scrap-a.png
+[  87% ] reimport | shared-mesa-c.png
+[  89% ] reimport | shared-mesa-b.png
+[  90% ] reimport | shared-mesa-a.png
+[  91% ] reimport | shared-cloud-c.png
+[  92% ] reimport | shared-cloud-b.png
+[  93% ] reimport | shared-cloud-a.png
+[  95% ] reimport | prop-stairs.png
+[  96% ] reimport | prop-lamp.png
+[  97% ] reimport | prop-fountain.png
+[  98% ] reimport | 애셋 가져오기 마무리 중...
+[ DONE ] reimport
+
+[   0% ] reimport | Started 애셋 (다시) 가져오는 중 (81 steps)
+[   0% ] reimport | 다시 가져오기 후 작업을 수행 중...
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started 편집기를 불러오는 중 (5 steps)
+[   0% ] loading_editor_layout | 편집기 레이아웃을 불러오는 중...
+[  16% ] loading_editor_layout | 독을 불러오는 중...
+[ DONE ] loading_editor_layout
+
