@@ -98,7 +98,7 @@ body {
  notice.textContent='Game files could not be loaded. Reload to try again.';
  const reload=document.createElement('button');reload.type='button';reload.textContent='Reload';reload.onclick=()=>location.reload();
  notice.append(document.createElement('br'),reload);notice.style.display='block';overlay.style.visibility='visible';
-};</script><link rel="stylesheet" href="./godot-shell-assets/shell-CehdKP2w.css"><script type="module" src="./godot-shell-assets/shell-EFCEtf4b.js" onerror="PPFreeWebReject(new Error('Game interface could not be loaded. Please reload.'))"></script></head>
+};</script><link rel="stylesheet" href="./godot-shell-assets/shell-CehdKP2w.css"><script type="module" src="./godot-shell-assets/shell-d00lwLHI.js" onerror="PPFreeWebReject(new Error('Game interface could not be loaded. Please reload.'))"></script></head>
 	<body>
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
@@ -109,15 +109,15 @@ body {
 		</noscript>
 
 		<div id="status">
-			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="free-0534-c5a7a90dd912.png" alt="">
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="free-0540-4cd73924be76.png" alt="">
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="free-0534-c5a7a90dd912.js" onerror="PPFreeWebEngineError()"></script>
+		<script src="free-0540-4cd73924be76.js" onerror="PPFreeWebEngineError()"></script>
 		<script>
 if(typeof Engine === "function"){
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"free-0534-c5a7a90dd912","experimentalVK":false,"fileSizes":{"free-0534-c5a7a90dd912.pck":7214876,"free-0534-c5a7a90dd912.wasm":37695054},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"free-0540-4cd73924be76","experimentalVK":false,"fileSizes":{"free-0540-4cd73924be76.pck":7170420,"free-0540-4cd73924be76.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libpp_core-g40-933aa18db7e2de4a.wasm"],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -207,7 +207,7 @@ const engine = new Engine(GODOT_CONFIG);
 		setStatusMode('progress');
 		const startAfterBridge=engine.startGame.bind(engine);
 const fetchBeforeGame=globalThis.fetch.bind(globalThis);
-const compressedTypes=new Map([["free-0534-c5a7a90dd912.wasm","application/wasm"],["free-0534-c5a7a90dd912.pck","application/octet-stream"]].map(([name,type])=>[new URL(name,document.baseURI).href,type]));
+const compressedTypes=new Map([["free-0540-4cd73924be76.pck","application/octet-stream"],["free-0540-4cd73924be76.side.wasm","application/wasm"],["free-0540-4cd73924be76.wasm","application/wasm"],["libpp_core-g40-933aa18db7e2de4a.wasm","application/wasm"]].map(([name,type])=>[new URL(name,document.baseURI).href,type]));
 engine.startGame=options=>globalThis.PPFreeWebReady.then(()=>{
  if(typeof DecompressionStream!=="function")throw new Error("Please update your browser to load this game.");
  globalThis.fetch=async(resource,options)=>{

@@ -15,6 +15,7 @@ func begin() -> void:
 func step(center: Vector2, dt: float, remaining: float, target_remaining: float) -> void:
 	age += dt
 	var kept: Array = []
+	var removed: Array = []
 	var count := 0
 	var samples: Array = []
 	for grain in world.grains:
@@ -27,6 +28,7 @@ func step(center: Vector2, dt: float, remaining: float, target_remaining: float)
 			grain.rest = false
 		var t := clampf((age - float(grain.recovery_birth) - float(grain.recovery_delay)) / float(grain.recovery_life), 0.0, 1.0)
 		if t >= 1.0:
+			removed.append(grain)
 			if not world.collected.has(grain.id):
 				world.collected[grain.id] = true
 				count += 1
@@ -37,6 +39,7 @@ func step(center: Vector2, dt: float, remaining: float, target_remaining: float)
 		grain.recovery_visibility = clampf((1.0 - t) * 4.0, 0.0, 1.0)
 		kept.append(grain)
 	world.grains = kept
-	world.grain_roster_revision += 1
+	if not removed.is_empty():
+		world.grain_roster_changed([], removed)
 	if count > 0:
 		world.events.append({"kind": "collect", "source": "final", "count": count, "x": center.x, "y": center.y, "samples": samples, "time": world.elapsed})

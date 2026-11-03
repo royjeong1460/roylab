@@ -1,0 +1,498 @@
+--- perf-g39-2026-11-03/project/performance_probe.gd
++++ perf-g40-2026-11-03/project/performance_probe.gd
+@@ -76,7 +76,7 @@
+ 	return {"physics_ms": Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
+ 		"active": int(Performance.get_monitor(Performance.PHYSICS_2D_ACTIVE_OBJECTS)),
+ 		"pairs": int(Performance.get_monitor(Performance.PHYSICS_2D_COLLISION_PAIRS)),
+-		"draw_calls": RenderingServer.viewport_get_render_info(rid, RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME),
++		"draw_calls": RenderingServer.viewport_get_render_info(rid, RenderingServer.VIEWPORT_RENDER_INFO_TYPE_CANVAS, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME),
+ 		"render_setup_ms": RenderingServer.get_frame_setup_time_cpu(),
+ 		"render_cpu_ms": RenderingServer.viewport_get_measured_render_time_cpu(rid),
+ 		"render_gpu_ms": RenderingServer.viewport_get_measured_render_time_gpu(rid)}
+@@ -206,6 +206,10 @@
+ 			recent.roster_added = world.grain_physics.roster_added
+ 			recent.roster_removed = world.grain_physics.roster_removed
+ 			recent.render_full = world._grain_surface._native.full_rebuilds
++			recent.render_cached = int(world._grain_surface._native.cached_grains) if not world.final_collection_active else 0
++			recent.render_moving = int(world._grain_surface._native.moving_grains) if not world.final_collection_active else 0
++			recent.render_chunks = int(world._grain_surface._native.chunk_count) if not world.final_collection_active else 0
++			recent.chunk_uploads = int(world._grain_surface._native.chunk_uploads)
+ 			_clear_window()
+ 	_last_frame = now
+ 	_last_blasts = int(world.blasts)
+@@ -225,7 +229,7 @@
+ 
+ func report() -> String:
+ 	if recent.is_empty():
+-		return "Godot C++/g39 · 최근 FPS/계산 측정 중…\n0.5초 이상 모아서 같은 구간끼리 비교해요."
++		return "Godot C++/g40 · 최근 FPS/계산 측정 중…\n0.5초 이상 모아서 같은 구간끼리 비교해요."
+ 	var frames := float(recent.frames)
+ 	var seconds: float = recent.usec / 1000000.0
+ 	var ranked := _ranked(recent.times)
+@@ -233,7 +237,7 @@
+ 	for item in ranked:
+ 		measured += int(item.usec)
+ 	var lines: Array[String] = [
+-		"Godot C++/g39 · 최근 %.1fs · FPS %.1f · %.1fms/화면" % [seconds, frames / seconds, recent.usec / frames / 1000.0],
++		"Godot C++/g40 · 최근 %.1fs · FPS %.1f · %.1fms/화면" % [seconds, frames / seconds, recent.usec / frames / 1000.0],
+ 		"코드 %.1fms · 미계측 %.1fms" % [measured / frames / 1000.0, maxf(0.0, recent.usec - measured) / frames / 1000.0],
+ 		"물리 %.1f회/화면 · 월드1회 %.1fms" % [recent.steps / frames, recent.world_usec / float(maxi(1, recent.steps)) / 1000.0],
+ 	]
+@@ -251,7 +255,7 @@
+ 	var cpu_ms: float = engine.get("render_cpu_ms", 0.0)
+ 	var gpu_ms: float = engine.get("render_gpu_ms", 0.0)
+ 	lines.append("렌더 CPU %s · GPU %s · 준비 %.1fms" % ["%.1fms" % cpu_ms if cpu_ms > 0 else "미제공", "%.1fms" % gpu_ms if gpu_ms > 0 else "미제공", float(engine.get("render_setup_ms", 0.0))])
+-	lines.append("목록누적 전체 %d · 증분 +%d/-%d · 렌더전체 %d" % [int(recent.get("roster_full", 0)), int(recent.get("roster_added", 0)), int(recent.get("roster_removed", 0)), int(recent.get("render_full", 0))])
++	lines.append("표시 묶음 %d · 개별 %d · 구역 %d · 갱신누적 %d" % [int(recent.get("render_cached", 0)), int(recent.get("render_moving", 0)), int(recent.get("render_chunks", 0)), int(recent.get("chunk_uploads", 0))])
+ 	var input_age := "공격 전" if recent.input_age < 0 else "공격 뒤 %.1fs" % recent.input_age
+ 	lines.append("%s · 폭발 호출 %d회/구간" % [input_age, recent.blasts])
+ 	lines.append("조각 %d · 잔해 %d · 새조각/충돌체 %d/%d" % [recent.bodies, recent.grains, recent.created, recent.shapes])
+--- perf-g39-2026-11-03/project/presentation/grain_surface.gd
++++ perf-g40-2026-11-03/project/presentation/grain_surface.gd
+@@ -1,10 +1,12 @@
+ extends MultiMeshInstance2D
+ 
+-# Retain all collectible IDs; only changed positions cross the rendering API.
++# Sleeping grains share chunk images; only the moving subset uses instances.
+ const GameSkin = preload("res://app/skin.gd")
++const CHUNK_PIXELS := 32 * 4
+ var _revision := -1
+ var _reset := -1
+-var _slots: Dictionary = {}
++var _chunks: Dictionary = {}
++var _tile := PackedByteArray()
+ var _palette := -1
+ var _native = ClassDB.instantiate("PPRenderKernel")
+ 
+@@ -25,11 +27,21 @@
+ 
+ func sync(world) -> void:
+ 	visible = not world.final_collection_active
++	var dirty: Dictionary = world.grain_physics.draw_dirty
++	var added: Dictionary = world.grain_render_added
++	var removed: Dictionary = world.grain_render_removed
+ 	if not visible:
++		if _revision >= 0:
++			_native.clear_grains(multimesh)
++			_clear_chunks()
++		dirty.clear()
++		added.clear()
++		removed.clear()
+ 		_revision = -1
+ 		return
+ 	var palette := 1 if GameSkin.bright() else 0
+-	if palette != _palette:
++	var palette_changed := palette != _palette
++	if palette_changed:
+ 		var face: Color = world.collectible_color()
+ 		var rim := Color("398a65") if palette == 1 else Color("518c76")
+ 		var image := Image.create(4, 4, false, Image.FORMAT_RGBA8)
+@@ -37,11 +49,39 @@
+ 		image.fill_rect(Rect2i(3, 0, 1, 4), rim)
+ 		image.fill_rect(Rect2i(0, 3, 3, 1), rim)
+ 		texture = ImageTexture.create_from_image(image)
++		_tile = image.get_data()
+ 		_palette = palette
+-	var dirty: Dictionary = world.grain_physics.draw_dirty
+-	var rebuild: bool = _revision < 0 or _reset != world.grain_render_reset or world.grain_render_revision != world.grain_roster_revision
+-	if _revision != world.grain_roster_revision and world.grain_render_added.is_empty() and world.grain_render_removed.is_empty():
++	var rebuild: bool = palette_changed or _revision < 0 or _reset != world.grain_render_reset or world.grain_render_revision != world.grain_roster_revision
++	if _revision != world.grain_roster_revision and added.is_empty() and removed.is_empty():
+ 		rebuild = true
+-	_native.sync_grains(multimesh, world.grains, dirty, _slots, world.grain_render_added, world.grain_render_removed, rebuild, world.width, world.height)
++	if rebuild:
++		_clear_chunks()
++	var updates: Array = _native.sync_grains(multimesh, world.grains, dirty, added, removed, world.grain_physics._blocked, world.grain_physics.settled, rebuild, world.width, world.height, _tile)
++	for update: Dictionary in updates:
++		var key: Vector2i = update.chunk
++		var image: Image = update.image
++		var sprite: Sprite2D = _chunks.get(key)
++		if image == null:
++			if sprite != null:
++				sprite.hide()
++				sprite.queue_free()
++				_chunks.erase(key)
++		elif sprite == null:
++			sprite = Sprite2D.new()
++			sprite.centered = false
++			sprite.position = Vector2(key) * CHUNK_PIXELS
++			sprite.show_behind_parent = true
++			sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
++			sprite.texture = ImageTexture.create_from_image(image)
++			add_child(sprite)
++			_chunks[key] = sprite
++		else:
++			(sprite.texture as ImageTexture).update(image)
+ 	_revision = world.grain_roster_revision
+ 	_reset = world.grain_render_reset
++
++func _clear_chunks() -> void:
++	for sprite: Sprite2D in _chunks.values():
++		sprite.hide()
++		sprite.queue_free()
++	_chunks.clear()
+--- perf-g39-2026-11-03/extension/src/render_kernel.cpp
++++ perf-g40-2026-11-03/extension/src/render_kernel.cpp
+@@ -1,5 +1,8 @@
+ #include "render_kernel.h"
+ #include <algorithm>
++#include <cmath>
++#include <cstring>
++#include <godot_cpp/classes/image.hpp>
+ #include <godot_cpp/classes/mesh.hpp>
+ #include <godot_cpp/core/class_db.hpp>
+ #include <godot_cpp/variant/aabb.hpp>
+@@ -7,79 +10,237 @@
+ #include <godot_cpp/variant/packed_vector2_array.hpp>
+ #include <godot_cpp/variant/rect2.hpp>
+ #include <godot_cpp/variant/transform2d.hpp>
++#include <godot_cpp/variant/vector2i.hpp>
++#include <unordered_set>
+ namespace godot {
+ void PPRenderKernel::_bind_methods() {
+-  ClassDB::bind_method(D_METHOD("get_full_rebuilds"), &PPRenderKernel::get_full_rebuilds);
+-  ClassDB::bind_method(D_METHOD("get_dirty_updates"), &PPRenderKernel::get_dirty_updates);
+-  ADD_PROPERTY(PropertyInfo(Variant::INT, "full_rebuilds"), "", "get_full_rebuilds");
+-  ADD_PROPERTY(PropertyInfo(Variant::INT, "dirty_updates"), "", "get_dirty_updates");
+-  ClassDB::bind_method(D_METHOD("sync_grains", "mesh", "grains", "dirty",
+-                                "slots", "added", "removed", "rebuild", "width", "height"),
++#define METRIC(name) \
++  ClassDB::bind_method(D_METHOD("get_" #name), &PPRenderKernel::get_##name); \
++  ADD_PROPERTY(PropertyInfo(Variant::INT, #name), "", "get_" #name)
++  METRIC(full_rebuilds);
++  METRIC(dirty_updates);
++  METRIC(cached_grains);
++  METRIC(moving_grains);
++  METRIC(chunk_count);
++  METRIC(chunk_uploads);
++#undef METRIC
++  ClassDB::bind_method(D_METHOD("clear_grains", "mesh"), &PPRenderKernel::clear_grains);
++  ClassDB::bind_method(D_METHOD("sync_grains", "mesh", "grains", "dirty", "added",
++                                "removed", "blocked", "settled", "rebuild", "width", "height", "tile"),
+                        &PPRenderKernel::sync_grains);
+   ClassDB::bind_method(D_METHOD("pixel_mesh_arrays", "rectangles", "center",
+                                 "pixel_scale", "extent"),
+                        &PPRenderKernel::pixel_mesh_arrays);
+ }
+-void PPRenderKernel::sync_grains(const Ref<MultiMesh> &mesh,
+-                                 const Array &grains, Dictionary dirty,
+-                                 Dictionary slots, Dictionary added, Dictionary removed, bool rebuild, int64_t width,
+-                                 int64_t height) {
+-  int64_t next_slot = mesh->get_visible_instance_count();
+-  rebuild = rebuild || next_slot + added.size() > mesh->get_instance_count();
++int64_t PPRenderKernel::cell(Vector2 point) const {
++  if (source_width <= 0 || source_height <= 0 || !point.is_finite() ||
++      point.x < 0 || point.y < 0 || point.x >= source_width || point.y >= source_height)
++    return -1;
++  return int64_t(std::floor(point.y)) * source_width + int64_t(std::floor(point.x));
++}
++bool PPRenderKernel::asleep(int64_t id, const Grain &grain,
++                           const Dictionary &blocked, const Dictionary &settled) const {
++  int64_t at = cell(grain.source["p"]);
++  return bool(grain.source.get("rest", false)) && at >= 0 && blocked.has(at) &&
++         settled.has(at) && int64_t(Dictionary(settled[at])["id"]) == id;
++}
++void PPRenderKernel::erase_cell(int64_t id, Grain &grain) {
++  int64_t at = grain.cached_cell;
++  grain.cached_cell = -1;
++  // A stale removal must never erase a replacement grain's cell.
++  auto owner = cell_owners.find(at);
++  if (at < 0 || owner == cell_owners.end() || owner->second != id)
++    return;
++  int64_t x = at % source_width, y = at / source_width;
++  auto found = chunks.find({x / CHUNK_CELLS, y / CHUNK_CELLS});
++  if (found != chunks.end()) {
++    Chunk &chunk = found->second;
++    int64_t start = ((y % CHUNK_CELLS) * CELL_PIXELS * CHUNK_PIXELS +
++                     (x % CHUNK_CELLS) * CELL_PIXELS) * 4;
++    for (int row = 0; row < CELL_PIXELS; ++row)
++      std::memset(chunk.rgba.data() + start + row * CHUNK_PIXELS * 4, 0, CELL_PIXELS * 4);
++    --chunk.cells;
++    chunk.dirty = true;
++  }
++  cell_owners.erase(owner);
++}
++void PPRenderKernel::cache_cell(int64_t id, Grain &grain, const uint8_t *tile) {
++  int64_t at = cell(grain.source["p"]);
++  int64_t x = at % source_width, y = at / source_width;
++  Chunk &chunk = chunks[{x / CHUNK_CELLS, y / CHUNK_CELLS}];
++  if (cell_owners.find(at) == cell_owners.end())
++    ++chunk.cells;
++  cell_owners[at] = id;
++  int64_t start = ((y % CHUNK_CELLS) * CELL_PIXELS * CHUNK_PIXELS +
++                   (x % CHUNK_CELLS) * CELL_PIXELS) * 4;
++  for (int row = 0; row < CELL_PIXELS; ++row)
++    std::memcpy(chunk.rgba.data() + start + row * CHUNK_PIXELS * 4,
++                tile + row * CELL_PIXELS * 4, CELL_PIXELS * 4);
++  chunk.dirty = true;
++  grain.cached_cell = at;
++  grain.point = grain.source["p"];
++  grain.slot = -1;
++}
++void PPRenderKernel::clear_grains(const Ref<MultiMesh> &mesh) {
++  live.clear();
++  moving.clear();
++  cell_owners.clear();
++  chunks.clear();
++  next_ordinal = 0;
++  source_width = source_height = 0;
++  if (mesh->get_visible_instance_count() != 0)
++    mesh->set_visible_instance_count(0);
++}
++Array PPRenderKernel::sync_grains(const Ref<MultiMesh> &mesh,
++                                  const Array &grains, Dictionary dirty,
++                                  Dictionary added, Dictionary removed,
++                                  const Dictionary &blocked, const Dictionary &settled,
++                                  bool rebuild, int64_t width, int64_t height,
++                                  const PackedByteArray &tile) {
++  Array updates;
++  // The caller supplies the same exact RGBA8 tile used by the moving texture.
++  ERR_FAIL_COND_V(tile.size() != CELL_PIXELS * CELL_PIXELS * 4, updates);
++  const uint8_t *tile_data = tile.ptr();
++  rebuild = rebuild || source_width != width || source_height != height;
++  bool membership_changed = rebuild;
++  std::unordered_set<int64_t> moved;
+   if (rebuild) {
+     ++full_rebuilds;
+-    int64_t count = grains.size();
++    // Also cover a native size fallback that the surface did not request.
++    for (const auto &item : chunks) {
++      Dictionary update;
++      update["chunk"] = Vector2i(item.first.first, item.first.second);
++      update["image"] = Variant();
++      updates.append(update);
++    }
++    clear_grains(mesh);
++    source_width = width;
++    source_height = height;
++    for (int64_t i = 0; i < grains.size(); ++i) {
++      Dictionary source = grains[i];
++      int64_t id = source["id"];
++      Grain grain;
++      grain.source = source;
++      grain.ordinal = next_ordinal++;
++      grain.point = source["p"];
++      live[id] = grain;
++      moving[grain.ordinal] = id;
++    }
++    mesh->set_custom_aabb(AABB(Vector3(-4, -4, -1),
++                               Vector3((width + 2) * 4, (height + 2) * 4, 2)));
++  } else {
++    dirty_updates += added.size() + removed.size() + dirty.size();
++    Array ids = removed.keys();
++    for (int64_t i = 0; i < ids.size(); ++i) {
++      int64_t id = ids[i];
++      auto found = live.find(id);
++      if (found == live.end())
++        continue;
++      Grain &grain = found->second;
++      if (grain.cached_cell >= 0)
++        erase_cell(id, grain);
++      else {
++        moving.erase(grain.ordinal);
++        membership_changed = true;
++      }
++      live.erase(found);
++    }
++    ids = added.keys();
++    for (int64_t i = 0; i < ids.size(); ++i) {
++      int64_t id = ids[i];
++      if (live.find(id) != live.end())
++        continue;
++      Grain grain;
++      grain.source = added[id];
++      grain.ordinal = next_ordinal++;
++      grain.point = grain.source["p"];
++      live[id] = grain;
++      moving[grain.ordinal] = id;
++      membership_changed = true;
++    }
++    ids = dirty.keys();
++    for (int64_t i = 0; i < ids.size(); ++i) {
++      int64_t id = ids[i];
++      auto found = live.find(id);
++      if (found == live.end())
++        continue;
++      Grain &grain = found->second;
++      grain.source = dirty[id];
++      Vector2 point = grain.source["p"];
++      if (point == grain.point)
++        continue;
++      if (grain.cached_cell >= 0) {
++        erase_cell(id, grain);
++        moving[grain.ordinal] = id;
++        membership_changed = true;
++      }
++      grain.point = point;
++      moved.insert(id);
++    }
++  }
++  // Only the moving roster is inspected. A woken cached grain stays fixed until
++  // draw_dirty reports actual movement, avoiding an idle scan of sleeping IDs.
++  for (auto it = moving.begin(); it != moving.end();) {
++    int64_t id = it->second;
++    Grain &grain = live.at(id);
++    if (asleep(id, grain, blocked, settled)) {
++      cache_cell(id, grain, tile_data);
++      it = moving.erase(it);
++      membership_changed = true;
++    } else
++      ++it;
++  }
++  if (membership_changed) {
++    int64_t count = moving.size();
+     if (count > mesh->get_instance_count()) {
+       int64_t capacity = std::max<int64_t>(128, mesh->get_instance_count());
+       while (capacity < count)
+         capacity *= 2;
+       mesh->set_instance_count(capacity);
+     }
+-    mesh->set_custom_aabb(AABB(Vector3(-4, -4, -1),
+-                               Vector3((width + 2) * 4, (height + 2) * 4, 2)));
+-    slots.clear();
+-    for (int64_t i = 0; i < count; ++i) {
+-      Dictionary grain = grains[i];
+-      slots[grain["id"]] = i;
+-      Vector2 point = grain["p"];
+-      mesh->set_instance_transform_2d(i, Transform2D(0.0, point * 4.0));
+-    }
+-    mesh->set_visible_instance_count(count);
++    int64_t slot = 0;
++    // Ordinals follow source append order; original map pixel IDs do not.
++    for (const auto &item : moving) {
++      Grain &grain = live.at(item.second);
++      grain.slot = slot;
++      mesh->set_instance_transform_2d(slot++, Transform2D(0.0, grain.point * 4.0));
++    }
++    if (mesh->get_visible_instance_count() != count)
++      mesh->set_visible_instance_count(count);
+   } else {
+-    const Transform2D hidden{Vector2(), Vector2(), Vector2()};
+-    dirty_updates += added.size() + removed.size() + dirty.size();
+-    Array removed_ids = removed.keys();
+-    for (int64_t i = 0; i < removed_ids.size(); ++i) {
+-      Variant id = removed_ids[i];
+-      if (slots.has(id)) {
+-        mesh->set_instance_transform_2d(int64_t(slots[id]), hidden);
+-        slots.erase(id);
+-      }
+-    }
+-    Array added_ids = added.keys();
+-    for (int64_t i = 0; i < added_ids.size(); ++i) {
+-      Variant id = added_ids[i];
+-      if (!slots.has(id))
+-        slots[id] = next_slot++;
+-      Dictionary grain = added[id];
+-      Vector2 point = grain["p"];
+-      mesh->set_instance_transform_2d(int64_t(slots[id]), Transform2D(0.0, point * 4.0));
+-    }
+-    mesh->set_visible_instance_count(next_slot);
+-    Array ids = dirty.keys();
+-    for (int64_t i = 0; i < ids.size(); ++i) {
+-      Variant id = ids[i];
+-      if (slots.has(id)) {
+-        Dictionary grain = dirty[id];
+-        Vector2 point = grain["p"];
+-        mesh->set_instance_transform_2d(int64_t(slots[id]),
+-                                        Transform2D(0.0, point * 4.0));
+-      }
+-    }
++    for (int64_t id : moved) {
++      const Grain &grain = live.at(id);
++      if (grain.cached_cell < 0)
++        mesh->set_instance_transform_2d(grain.slot, Transform2D(0.0, grain.point * 4.0));
++    }
++  }
++  for (auto it = chunks.begin(); it != chunks.end();) {
++    Chunk &chunk = it->second;
++    if (!chunk.dirty) {
++      ++it;
++      continue;
++    }
++    Dictionary update;
++    update["chunk"] = Vector2i(it->first.first, it->first.second);
++    if (chunk.cells == 0) {
++      update["image"] = Variant();
++      updates.append(update);
++      it = chunks.erase(it);
++      continue;
++    }
++    PackedByteArray data;
++    data.resize(chunk.rgba.size());
++    std::memcpy(data.ptrw(), chunk.rgba.data(), chunk.rgba.size());
++    update["image"] = Image::create_from_data(CHUNK_PIXELS, CHUNK_PIXELS, false, Image::FORMAT_RGBA8, data);
++    updates.append(update);
++    ++chunk_uploads;
++    chunk.dirty = false;
++    ++it;
+   }
+   dirty.clear();
+   added.clear();
+   removed.clear();
++  return updates;
+ }
+ Array PPRenderKernel::pixel_mesh_arrays(const Array &rectangles, Vector2 center,
+                                         double pixel_scale,
+--- perf-g39-2026-11-03/extension/src/render_kernel.h
++++ perf-g40-2026-11-03/extension/src/render_kernel.h
+@@ -3,20 +3,57 @@
+ #include <godot_cpp/classes/ref_counted.hpp>
+ #include <godot_cpp/variant/array.hpp>
+ #include <godot_cpp/variant/dictionary.hpp>
++#include <godot_cpp/variant/packed_byte_array.hpp>
+ #include <godot_cpp/variant/vector2.hpp>
++#include <map>
++#include <unordered_map>
++#include <vector>
+ namespace godot {
+ class PPRenderKernel : public RefCounted {
+   GDCLASS(PPRenderKernel, RefCounted)
++  static constexpr int CHUNK_CELLS = 32, CELL_PIXELS = 4,
++                       CHUNK_PIXELS = CHUNK_CELLS * CELL_PIXELS;
++  struct Grain {
++    Dictionary source;
++    uint64_t ordinal = 0;
++    Vector2 point;
++    int64_t cached_cell = -1, slot = -1;
++  };
++  struct Chunk {
++    std::vector<uint8_t> rgba = std::vector<uint8_t>(CHUNK_PIXELS * CHUNK_PIXELS * 4, 0);
++    int64_t cells = 0;
++    bool dirty = false;
++  };
++  using ChunkKey = std::pair<int64_t, int64_t>;
++  std::unordered_map<int64_t, Grain> live;
++  std::map<uint64_t, int64_t> moving;
++  std::unordered_map<int64_t, int64_t> cell_owners;
++  std::map<ChunkKey, Chunk> chunks;
++  uint64_t next_ordinal = 0;
+   int64_t full_rebuilds = 0, dirty_updates = 0;
++  int64_t chunk_uploads = 0;
++  int64_t source_width = 0, source_height = 0;
++  int64_t cell(Vector2 point) const;
++  bool asleep(int64_t id, const Grain &grain, const Dictionary &blocked,
++              const Dictionary &settled) const;
++  void erase_cell(int64_t id, Grain &grain);
++  void cache_cell(int64_t id, Grain &grain, const uint8_t *tile);
+ protected:
+   static void _bind_methods();
+ 
+ public:
+   int64_t get_full_rebuilds() const { return full_rebuilds; }
+   int64_t get_dirty_updates() const { return dirty_updates; }
+-  void sync_grains(const Ref<MultiMesh> &mesh, const Array &grains,
+-                   Dictionary dirty, Dictionary slots, Dictionary added, Dictionary removed, bool rebuild,
+-                   int64_t width, int64_t height);
++  int64_t get_cached_grains() const { return cell_owners.size(); }
++  int64_t get_moving_grains() const { return moving.size(); }
++  int64_t get_chunk_count() const { return chunks.size(); }
++  int64_t get_chunk_uploads() const { return chunk_uploads; }
++  void clear_grains(const Ref<MultiMesh> &mesh);
++  Array sync_grains(const Ref<MultiMesh> &mesh, const Array &grains,
++                    Dictionary dirty, Dictionary added, Dictionary removed,
++                    const Dictionary &blocked, const Dictionary &settled,
++                    bool rebuild, int64_t width, int64_t height,
++                    const PackedByteArray &tile);
+   Array pixel_mesh_arrays(const Array &rectangles, Vector2 center,
+                           double pixel_scale, Vector2 extent) const;
+ };

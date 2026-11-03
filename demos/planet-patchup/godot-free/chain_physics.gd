@@ -1,5 +1,7 @@
 extends RefCounted
 
+var _native = ClassDB.instantiate("PPEffectKernel")
+
 # Port of arch/chain-world.js. Extra work is restricted to causal cross-building hits.
 var world
 var power := 10.0
@@ -21,9 +23,7 @@ func reset() -> void:
 func arm(point: Vector2, radius: float) -> void:
 	var seeds := {}
 	for piece in [null] + world.pieces:
-		for pixel in world.material(piece):
-			if pixel.q.distance_to(point) <= radius:
-				seeds[world._original_groups.get(pixel.id, -1)] = true
+		seeds.merge(_native.seed_groups(world.material(piece), world._original_groups, point, radius), true)
 	seeds.erase(-1)
 	if seeds.is_empty():
 		return
@@ -40,14 +40,7 @@ func group_at(piece, point: Vector2, collider = null) -> int:
 		return world._original_groups.get(piece.ids[0], -1)
 	if collider != world.static_body:
 		return 0 if point.y >= world.ground_y(point.x) - 1 else -1
-	var distance := INF
-	var group := -1
-	for id in world.static_ids():
-		var d: float = world.original_point(id).distance_squared_to(point)
-		if d < distance:
-			distance = d
-			group = world._original_groups.get(id, -1)
-	return group
+	return _native.nearest_group(world.static_ids(), world._original_groups, world.width, point)
 
 func prepare(hit: Dictionary) -> Dictionary:
 	if power <= 0 or hit.speed < 12 or hit.energy < 1.2:

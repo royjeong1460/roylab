@@ -1,0 +1,624 @@
+--- cpp-core-2026-11-03/project/campaign/final_collection.gd
++++ perf-g39-2026-11-03/project/campaign/final_collection.gd
+@@ -15,6 +15,7 @@
+ func step(center: Vector2, dt: float, remaining: float, target_remaining: float) -> void:
+ 	age += dt
+ 	var kept: Array = []
++	var removed: Array = []
+ 	var count := 0
+ 	var samples: Array = []
+ 	for grain in world.grains:
+@@ -27,6 +28,7 @@
+ 			grain.rest = false
+ 		var t := clampf((age - float(grain.recovery_birth) - float(grain.recovery_delay)) / float(grain.recovery_life), 0.0, 1.0)
+ 		if t >= 1.0:
++			removed.append(grain)
+ 			if not world.collected.has(grain.id):
+ 				world.collected[grain.id] = true
+ 				count += 1
+@@ -37,6 +39,7 @@
+ 		grain.recovery_visibility = clampf((1.0 - t) * 4.0, 0.0, 1.0)
+ 		kept.append(grain)
+ 	world.grains = kept
+-	world.grain_roster_revision += 1
++	if not removed.is_empty():
++		world.grain_roster_changed([], removed)
+ 	if count > 0:
+ 		world.events.append({"kind": "collect", "source": "final", "count": count, "x": center.x, "y": center.y, "samples": samples, "time": world.elapsed})
+--- cpp-core-2026-11-03/project/impact_physics.gd
++++ perf-g39-2026-11-03/project/impact_physics.gd
+@@ -22,13 +22,15 @@
+ 	var radius: float = context.get("radius", 5.0)
+ 	if radius <= 0 or strength <= 0:
+ 		return 0
+-	var material: Array = world.material(piece)
++	var material: Array = context._material if context.has("_material") else world.material(piece)
+ 	var changed: int = _native.pressure_bonds(material, world.bonds, world.width, world.cells.size(), point, strength, direction, radius, piece != null and strength >= 1.25, piece.position if piece != null else Vector2.ZERO)
+ 	if changed == 0:
+ 		return 0
+ 	if piece != null:
+ 		piece.last_impact = world.elapsed
+ 		piece.damage = minf(1, piece.damage + strength * 0.1)
++		# Section release can create a disconnected body; keep the legacy scan even
++		# when this hit did not cross a bond threshold.
+ 		var groups: Array = world.groups(piece.ids)
+ 		if groups.size() > 1:
+ 			world._rebuild(piece, groups)
+--- cpp-core-2026-11-03/project/performance_probe.gd
++++ perf-g39-2026-11-03/project/performance_probe.gd
+@@ -46,6 +46,40 @@
+ var _window_shapes := 0
+ var _window_grid_rebuilds := 0
+ var _window_projected_pixels := 0
++var _window_details: Dictionary = {}
++var _window_detail_calls: Dictionary = {}
++var _render_viewport: WeakRef
++
++# Secondary inclusive intervals; never added to the exclusive code totals.
++func note_detail(name: String, usec: int) -> void:
++	if enabled:
++		_window_details[name] = int(_window_details.get(name, 0)) + usec
++		_window_detail_calls[name] = int(_window_detail_calls.get(name, 0)) + 1
++
++func _disable_render_probe() -> void:
++	if _render_viewport != null:
++		var viewport = _render_viewport.get_ref()
++		if is_instance_valid(viewport):
++			RenderingServer.viewport_set_measure_render_time(viewport.get_viewport_rid(), false)
++	_render_viewport = null
++
++func _sync_render_probe(world) -> void:
++	var viewport: Viewport = world.get_viewport()
++	if _render_viewport == null or _render_viewport.get_ref() != viewport:
++		_disable_render_probe()
++		_render_viewport = weakref(viewport)
++		RenderingServer.viewport_set_measure_render_time(viewport.get_viewport_rid(), true)
++
++func _engine_snapshot(world) -> Dictionary:
++	var viewport: Viewport = world.get_viewport()
++	var rid: RID = viewport.get_viewport_rid()
++	return {"physics_ms": Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
++		"active": int(Performance.get_monitor(Performance.PHYSICS_2D_ACTIVE_OBJECTS)),
++		"pairs": int(Performance.get_monitor(Performance.PHYSICS_2D_COLLISION_PAIRS)),
++		"draw_calls": RenderingServer.viewport_get_render_info(rid, RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME),
++		"render_setup_ms": RenderingServer.get_frame_setup_time_cpu(),
++		"render_cpu_ms": RenderingServer.viewport_get_measured_render_time_cpu(rid),
++		"render_gpu_ms": RenderingServer.viewport_get_measured_render_time_gpu(rid)}
+ 
+ func _init() -> void:
+ 	_times.resize(SIZE)
+@@ -117,12 +151,15 @@
+ 	_window_shapes = 0
+ 	_window_grid_rebuilds = 0
+ 	_window_projected_pixels = 0
++	_window_details.clear()
++	_window_detail_calls.clear()
+ 
+ func note_input() -> void:
+ 	if enabled:
+ 		_last_input = Time.get_ticks_usec()
+ 
+ func suspend() -> void:
++	_disable_render_probe()
+ 	_last_frame = 0
+ 	_clear()
+ 	_clear_window()
+@@ -131,6 +168,7 @@
+ func frame(world) -> void:
+ 	if not enabled:
+ 		return
++	_sync_render_probe(world)
+ 	var now := Time.get_ticks_usec()
+ 	if _last_frame != 0:
+ 		var gap := now - _last_frame
+@@ -161,6 +199,13 @@
+ 				"sleeping": world.grain_physics._blocked.size(), "surface": world.grain_physics.surface.size(),
+ 				"tiny_fragments": world.sand_fragment_count,
+ 				"input_age": -1.0 if _last_input == 0 else (now - _last_input) / 1000000.0}
++			recent.details = _window_details.duplicate()
++			recent.detail_calls = _window_detail_calls.duplicate()
++			recent.engine = _engine_snapshot(world)
++			recent.roster_full = world.grain_physics.roster_full_rebuilds
++			recent.roster_added = world.grain_physics.roster_added
++			recent.roster_removed = world.grain_physics.roster_removed
++			recent.render_full = world._grain_surface._native.full_rebuilds
+ 			_clear_window()
+ 	_last_frame = now
+ 	_last_blasts = int(world.blasts)
+@@ -180,7 +225,7 @@
+ 
+ func report() -> String:
+ 	if recent.is_empty():
+-		return "Godot C++/g38 · 최근 FPS/계산 측정 중…\n0.5초 이상 모아서 같은 구간끼리 비교해요."
++		return "Godot C++/g39 · 최근 FPS/계산 측정 중…\n0.5초 이상 모아서 같은 구간끼리 비교해요."
+ 	var frames := float(recent.frames)
+ 	var seconds: float = recent.usec / 1000000.0
+ 	var ranked := _ranked(recent.times)
+@@ -188,25 +233,30 @@
+ 	for item in ranked:
+ 		measured += int(item.usec)
+ 	var lines: Array[String] = [
+-		"Godot C++/g38 · 최근 %.1fs · FPS %.1f · %.1fms/화면" % [seconds, frames / seconds, recent.usec / frames / 1000.0],
++		"Godot C++/g39 · 최근 %.1fs · FPS %.1f · %.1fms/화면" % [seconds, frames / seconds, recent.usec / frames / 1000.0],
+ 		"코드 %.1fms · 미계측 %.1fms" % [measured / frames / 1000.0, maxf(0.0, recent.usec - measured) / frames / 1000.0],
+ 		"물리 %.1f회/화면 · 월드1회 %.1fms" % [recent.steps / frames, recent.world_usec / float(maxi(1, recent.steps)) / 1000.0],
+-		"큰 코드 비용 순위 (ms/화면 · 중복 제외)"
+ 	]
+ 	var shown := 0
+-	for index in range(4):
++	for index in range(3):
+ 		var item: Dictionary = ranked[index]
+ 		shown += int(item.usec)
+ 		lines.append("%d. %s %.1fms" % [index + 1, NAMES[item.stage], item.usec / frames / 1000.0])
+-	lines.append("나머지 합 %.1fms · 미계측=다른코드/엔진/대기" % ((measured - shown) / frames / 1000.0))
++	var details: Dictionary = recent.get("details", {})
++	lines.append("압력상세/화면(중복포함): 후보 %.1f · 탐색 %.1f" % [float(details.get("pressure_candidates", 0)) / frames / 1000.0, float(details.get("pressure_nearest", 0)) / frames / 1000.0])
++	lines.append("압력상세: 손상 %.1f · 밀기 %.1f ms" % [float(details.get("pressure_apply", 0)) / frames / 1000.0, float(details.get("pressure_kick", 0)) / frames / 1000.0])
++	var engine: Dictionary = recent.get("engine", {})
++	lines.append("엔진참고 물리/회 %.1fms(코드포함)" % float(engine.get("physics_ms", 0.0)))
++	lines.append("활성몸체 %d · 충돌쌍 %d · 드로콜 %d" % [int(engine.get("active", 0)), int(engine.get("pairs", 0)), int(engine.get("draw_calls", 0))])
++	var cpu_ms: float = engine.get("render_cpu_ms", 0.0)
++	var gpu_ms: float = engine.get("render_gpu_ms", 0.0)
++	lines.append("렌더 CPU %s · GPU %s · 준비 %.1fms" % ["%.1fms" % cpu_ms if cpu_ms > 0 else "미제공", "%.1fms" % gpu_ms if gpu_ms > 0 else "미제공", float(engine.get("render_setup_ms", 0.0))])
++	lines.append("목록누적 전체 %d · 증분 +%d/-%d · 렌더전체 %d" % [int(recent.get("roster_full", 0)), int(recent.get("roster_added", 0)), int(recent.get("roster_removed", 0)), int(recent.get("render_full", 0))])
+ 	var input_age := "공격 전" if recent.input_age < 0 else "공격 뒤 %.1fs" % recent.input_age
+ 	lines.append("%s · 폭발 호출 %d회/구간" % [input_age, recent.blasts])
+ 	lines.append("조각 %d · 잔해 %d · 새조각/충돌체 %d/%d" % [recent.bodies, recent.grains, recent.created, recent.shapes])
+-	lines.append("격자 재작성 %d회 · 좌표변환 %dpx/구간" % [recent.grid_rebuilds, recent.projected_pixels])
+ 	lines.append("낙하 %d · 활동모래 %d · 휴면 %d" % [recent.flying, maxi(0, recent.sand - recent.sleeping), recent.sleeping])
+-	lines.append("표면 %d · 내부 %d · 작은조각→모래 %d" % [recent.surface, maxi(0, recent.sand - recent.surface), recent.tiny_fragments])
+ 	if not peak.is_empty():
+ 		var worst: Dictionary = _ranked(peak.times)[0]
+-		lines.append("별도 최악 %.1fms @%s %.1fs" % [peak.gap / 1000.0, peak.phase, peak.time])
+-		lines.append("그때 1위 %s %.1fms · 물리 %d회" % [NAMES[worst.stage], worst.usec / 1000.0, peak.physics_steps])
++		lines.append("최악 %.1fms · %s %.1fms · 물리%d회" % [peak.gap / 1000.0, NAMES[worst.stage], worst.usec / 1000.0, peak.physics_steps])
+ 	return "\n".join(lines)
+--- cpp-core-2026-11-03/project/presentation/grain_surface.gd
++++ perf-g39-2026-11-03/project/presentation/grain_surface.gd
+@@ -3,6 +3,7 @@
+ # Retain all collectible IDs; only changed positions cross the rendering API.
+ const GameSkin = preload("res://app/skin.gd")
+ var _revision := -1
++var _reset := -1
+ var _slots: Dictionary = {}
+ var _palette := -1
+ var _native = ClassDB.instantiate("PPRenderKernel")
+@@ -38,7 +39,9 @@
+ 		texture = ImageTexture.create_from_image(image)
+ 		_palette = palette
+ 	var dirty: Dictionary = world.grain_physics.draw_dirty
+-	var rebuild: bool = _revision != world.grain_roster_revision
+-	_native.sync_grains(multimesh, world.grains, dirty, _slots, rebuild, world.width, world.height)
+-	if rebuild:
+-		_revision = world.grain_roster_revision
++	var rebuild: bool = _revision < 0 or _reset != world.grain_render_reset or world.grain_render_revision != world.grain_roster_revision
++	if _revision != world.grain_roster_revision and world.grain_render_added.is_empty() and world.grain_render_removed.is_empty():
++		rebuild = true
++	_native.sync_grains(multimesh, world.grains, dirty, _slots, world.grain_render_added, world.grain_render_removed, rebuild, world.width, world.height)
++	_revision = world.grain_roster_revision
++	_reset = world.grain_render_reset
+--- cpp-core-2026-11-03/project/skill_physics.gd
++++ perf-g39-2026-11-03/project/skill_physics.gd
+@@ -335,17 +335,31 @@
+ 		_impulse(piece, piece.position / world.S, away * strength * piece.mass / (0.6 + piece.mass))
+ 	_native.kick_grains(world.grains, point, radius, direction, strength, ids)
+ 
+-func _pressure(point: Vector2, radius: float, strength: float) -> void:
+-	for piece in [null] + _near_pieces(point, radius):
++func _pressure(point: Vector2, radius: float, strength: float, detail := false) -> void:
++	var stamp: int = Time.get_ticks_usec() if detail else 0
++	var candidates: Array = [null] + _near_pieces(point, radius)
++	if detail:
++		world.perf.note_detail("pressure_candidates", Time.get_ticks_usec() - stamp)
++	for piece in candidates:
+ 		if piece != null and (not is_instance_valid(piece) or not world.pieces.has(piece)):
+ 			continue
+-		var found: Dictionary = _native.nearest(world.material(piece), point, radius, false)
++		if detail:
++			stamp = Time.get_ticks_usec()
++		var material: Array = world.material(piece)
++		var found: Dictionary = _native.nearest(material, point, radius, false)
++		if detail:
++			world.perf.note_detail("pressure_nearest", Time.get_ticks_usec() - stamp)
+ 		if not found.is_empty():
+ 			var closest: Vector2 = found.q
+ 			var direction := closest - point
+ 			if absf(direction.y) < 0.00000001:
+ 				direction.y = -0.1
+-			world.impact_physics.apply(closest, strength, {"piece": piece, "direction": direction, "source": "pressure", "radius": 4.0})
++			if detail:
++				stamp = Time.get_ticks_usec()
++			# Nearest is read-only; apply consumes this material before any rebuild.
++			world.impact_physics.apply(closest, strength, {"piece": piece, "direction": direction, "source": "pressure", "radius": 4.0, "_material": material})
++			if detail:
++				world.perf.note_detail("pressure_apply", Time.get_ticks_usec() - stamp)
+ 
+ func _visual(kind: String, point: Vector2, radius: float, life := 0.6) -> void:
+ 	world.events.append({"kind": "skill-vfx", "effect": kind, "p": point, "radius": radius, "life": life})
+@@ -520,8 +534,12 @@
+ 			field.tick += field.tuning.pulse_interval
+ 			if world.perf.enabled:
+ 				world.perf.pulses += 1
+-			_pressure(field.p, field.radius, field.tuning.pressure)
++			var detail: bool = world.perf.enabled
++			_pressure(field.p, field.radius, field.tuning.pressure, detail)
++			var stamp: int = Time.get_ticks_usec() if detail else 0
+ 			_kick(field.p, field.radius, Vector2.ZERO, field.tuning.outward_power)
++			if detail:
++				world.perf.note_detail("pressure_kick", Time.get_ticks_usec() - stamp)
+ 		if field.age >= field.duration:
+ 			_secondary_blast({"kind": "expand", "vfx": "expand", "audio": false, "p": field.p, "radius": field.tuning.final_radius, "power": field.tuning.final_power})
+ 			_visual("expand", field.p, field.radius, 0.7)
+--- cpp-core-2026-11-03/project/world.gd
++++ perf-g39-2026-11-03/project/world.gd
+@@ -84,9 +84,13 @@
+ var colors: Array = []
+ var pieces: Array = []
+ var grains: Array = []
+-# External additions/removals invalidate GrainPhysics' settled/airborne rosters.
++# External additions/removals notify GrainPhysics and a separate render journal.
+ # Internal landing/displacement updates those rosters synchronously.
+ var grain_roster_revision := 0
++var grain_render_added: Dictionary = {}
++var grain_render_removed: Dictionary = {}
++var grain_render_reset := 0
++var grain_render_revision := 0
+ var collected := {}
+ var bombs: Array = []
+ var wells: Array = []
+@@ -196,6 +200,10 @@
+ 	connections.clear()
+ 	grains.clear()
+ 	grain_roster_revision += 1
++	grain_render_revision = grain_roster_revision
++	grain_render_reset += 1
++	grain_render_added.clear()
++	grain_render_removed.clear()
+ 	collected.clear()
+ 	bombs.clear()
+ 	wells.clear()
+@@ -470,8 +478,9 @@
+ 	piece.queue_free()
+ 
+ func emit_grain(id: int, point: Vector2, velocity: Vector2) -> void:
+-	grains.append({"id": id, "p": point, "v": velocity, "rest": false})
+-	grain_roster_revision += 1
++	var grain := {"id": id, "p": point, "v": velocity, "rest": false}
++	grains.append(grain)
++	grain_roster_changed([grain], [])
+ 
+ func release(ids: Array):
+ 	cells = native_world.clear_ids(cells, ids)
+@@ -848,6 +857,20 @@
+ 	_advance_grains_unprofiled(dt)
+ 	perf.end()
+ 
++# Physics consumes synchronously; renderer owns separate pending changes until sync.
++func grain_roster_changed(added: Array, removed: Array) -> void:
++	grain_roster_revision += 1
++	grain_physics.roster_changed(added, removed, grain_roster_revision)
++	# A skipped notification invalidates both consumers until an explicit rebuild.
++	if grain_render_revision != grain_roster_revision - 1:
++		grain_render_reset += 1
++	grain_render_revision = grain_roster_revision
++	for grain in added:
++		grain_render_added[grain.id] = grain
++	for grain in removed:
++		grain_render_added.erase(grain.id)
++		grain_render_removed[grain.id] = true
++
+ func _advance_grains_unprofiled(dt: float) -> void:
+ 	if not final_collection_active:
+ 		grain_physics.step(dt)
+@@ -857,15 +880,19 @@
+ 		return
+ 	auto_collect_clock += dt
+ 	var interval: float = 1.0 / stats.autoCollectRate
++	var removed: Array = []
+ 	while auto_collect_clock >= interval:
+ 		auto_collect_clock -= interval
+ 		if grains.is_empty():
+ 			continue
+ 		var selected: int = native_world.auto_index(grains, width)
+ 		var grain: Dictionary = grains.pop_at(selected)
+-		grain_roster_revision += 1
++		removed.append(grain)
+ 		collected[grain.id] = true
+ 		events.append({"kind": "collect", "source": "auto", "time": elapsed, "id": grain.id, "x": grain.p.x, "y": grain.p.y, "count": 1})
++
++	if not removed.is_empty():
++		grain_roster_changed([], removed)
+ 
+ func suction(from: Vector2, to: Vector2, dt: float) -> void:
+ 	if final_collection or dt <= 0 or not from.is_finite() or not to.is_finite():
+@@ -878,7 +905,7 @@
+ 		events.append({"kind": "collect", "time": elapsed, "id": grain.id, "x": grain.p.x, "y": grain.p.y, "count": 1})
+ 	grains = selection.remaining
+ 	if not selection.taken.is_empty():
+-		grain_roster_revision += 1
++		grain_roster_changed([], selection.selected)
+ 	suction_budget = clampf(suction_budget - count, 0, 0.999999)
+ 
+ func secure_loose() -> int:
+@@ -886,8 +913,11 @@
+ 	var selection: Dictionary = native_world.secure(grains, collected, colors)
+ 	var center: Vector2 = selection.center
+ 	var samples: Array = selection.samples
++	grain_roster_changed([], grains)
+ 	grains.clear()
+-	grain_roster_revision += 1
++	grain_render_reset += 1
++	grain_render_added.clear()
++	grain_render_removed.clear()
+ 	if count > 0:
+ 		events.append({"kind": "collect", "mode": "rise", "count": count, "x": center.x, "y": center.y, "samples": samples, "time": elapsed})
+ 	return count
+@@ -995,3 +1025,6 @@
+ 			return false
+ 		ids[id] = true
+ 	return ids.size() == initial
++
++func _exit_tree() -> void:
++	perf.suspend()
+--- cpp-core-2026-11-03/extension/src/effect_kernel.cpp
++++ perf-g39-2026-11-03/extension/src/effect_kernel.cpp
+@@ -12,13 +12,18 @@
+ static double clamp(double x, double lo, double hi) {
+   return x < lo ? lo : (x > hi ? hi : x);
+ }
+-static Vector2 pixel(Object *world, Object *piece, int64_t id) {
+-  PackedVector2Array points = world->get("_original_points");
+-  Vector2 origin = piece->get("origin_center"),
+-          position = piece->get("position");
+-  double rotation = piece->get("rotation");
+-  return (position + ((points[id] - origin) * 4.0).rotated(rotation)) / 4.0;
+-}
++// A scan never calls script code or mutates geometry; capture its source pose once.
++struct PixelScan {
++  PackedVector2Array points;
++  Vector2 origin, position;
++  double rotation;
++  PixelScan(Object *world, Object *piece)
++      : points(world->get("_original_points")), origin(piece->get("origin_center")),
++        position(piece->get("position")), rotation(piece->get("rotation")) {}
++  Vector2 pixel(int64_t id) const {
++    return (position + ((points[id] - origin) * 4.0).rotated(rotation)) / 4.0;
++  }
++};
+ void PPEffectKernel::_bind_methods() {
+ #define B(name, ...)                                                           \
+   ClassDB::bind_method(D_METHOD(#name, __VA_ARGS__), &PPEffectKernel::name)
+@@ -187,8 +192,9 @@
+   if ((position / 4).distance_squared_to(point) > reach * reach)
+     return false;
+   Array ids = piece->get("ids");
++  PixelScan scan(world, piece);
+   for (int k = 0; k < ids.size(); k++)
+-    if (pixel(world, piece, ids[k]).distance_to(point) <= radius)
++    if (scan.pixel(ids[k]).distance_to(point) <= radius)
+       return true;
+   return false;
+ }
+@@ -210,11 +216,12 @@
+   if ((position / 4).distance_squared_to(center) > reach * reach)
+     return out;
+   Array ids = piece->get("ids");
++  PixelScan scan(world, piece);
+   double near = radius;
+   Vector2 point;
+   bool found = false;
+   for (int k = 0; k < ids.size(); k++) {
+-    Vector2 pos = pixel(world, piece, ids[k]);
++    Vector2 pos = scan.pixel(ids[k]);
+     double distance = pos.distance_to(center);
+     if (distance < near) {
+       near = distance;
+@@ -329,15 +336,15 @@
+   Array ids = piece->get("ids"), out;
+   Dictionary have = owned(ids);
+   int64_t width = world->get("width");
+-  PackedVector2Array original = world->get("_original_points");
++  PixelScan scan(world, piece);
+   for (int k = 0; k < ids.size(); k++) {
+     int64_t id = ids[k];
+-    Array ns = PPFractureGraph::neighbors(id, width, original.size());
++    Array ns = PPFractureGraph::neighbors(id, width, scan.points.size());
+     for (int j = 0; j < ns.size(); j++)
+       if (!have.has(ns[j])) {
+         Dictionary cell;
+         cell["id"] = id;
+-        cell["q"] = pixel(world, piece, id);
++        cell["q"] = scan.pixel(id);
+         out.append(cell);
+         break;
+       }
+--- cpp-core-2026-11-03/extension/src/grain_kernel.cpp
++++ perf-g39-2026-11-03/extension/src/grain_kernel.cpp
+@@ -14,9 +14,13 @@
+                        &PPGrainPhysics::setup);
+   ClassDB::bind_method(D_METHOD("reset"), &PPGrainPhysics::reset);
+   ClassDB::bind_method(D_METHOD("step", "dt"), &PPGrainPhysics::step);
++  ClassDB::bind_method(D_METHOD("roster_changed", "added", "removed", "revision"), &PPGrainPhysics::roster_changed);
+ #define PROP(name, method, type)                                               \
+   ClassDB::bind_method(D_METHOD("get_" name), &PPGrainPhysics::method);        \
+   ADD_PROPERTY(PropertyInfo(type, name), "", "get_" name)
++  PROP("roster_full_rebuilds", get_roster_full_rebuilds, Variant::INT);
++  PROP("roster_added", get_roster_added, Variant::INT);
++  PROP("roster_removed", get_roster_removed, Variant::INT);
+   PROP("settled", get_settled, Variant::DICTIONARY);
+   PROP("draw_dirty", get_draw_dirty, Variant::DICTIONARY);
+   PROP("surface", get_surface, Variant::DICTIONARY);
+@@ -70,6 +74,7 @@
+   reset();
+ }
+ void PPGrainPhysics::reset() {
++  roster_full_rebuilds = roster_added = roster_removed = 0;
+   flying_elapsed = 0;
+   sand_elapsed = 0;
+   tick = 0;
+@@ -101,6 +106,7 @@
+     end();
+     return;
+   }
++  ++roster_full_rebuilds;
+   Dictionary previous = settled;
+   settled = Dictionary();
+   flying = Array();
+@@ -139,6 +145,48 @@
+   }
+   roster_revision = revision;
+   end();
++}
++void PPGrainPhysics::roster_changed(const Array &added, const Array &removed, int64_t revision) {
++  // Unknown/reset revisions retain the full source reconciliation on next step.
++  if (roster_revision != revision - 1)
++    return;
++  cache_world();
++  roster_added += added.size();
++  roster_removed += removed.size();
++  Dictionary removed_ids;
++  PackedInt64Array removed_cells;
++  for (int64_t i = 0; i < removed.size(); ++i) {
++    Dictionary g = removed[i];
++    removed_ids[g["id"]] = true;
++    draw_dirty.erase(g["id"]);
++    int64_t c = cell(g["p"]);
++    if (settled.has(c) && Dictionary(settled[c])["id"] == g["id"]) {
++      settled.erase(c);
++      removed_cells.append(c);
++    }
++  }
++  // Frontier refresh observes the complete post-removal occupancy, as rebuild did.
++  for (int64_t i = 0; i < removed_cells.size(); ++i)
++    remove_sand_cell(removed_cells[i]);
++  if (!removed_ids.is_empty()) {
++    Array survivors;
++    for (int64_t i = 0; i < flying.size(); ++i) {
++      Dictionary g = flying[i];
++      if (!removed_ids.has(g["id"]))
++        survivors.append(g);
++    }
++    flying = survivors;
++  }
++  for (int64_t i = 0; i < added.size(); ++i) {
++    Dictionary g = added[i];
++    // Emission appends airborne grains; unexpected rested inserts use fallback.
++    if (bool(g.get("rest", false))) {
++      roster_revision = -1;
++      return;
++    }
++    flying.append(g);
++  }
++  roster_revision = revision;
+ }
+ int64_t PPGrainPhysics::sand_row(int64_t c) const { return c / width; }
+ void PPGrainPhysics::add_sand_cell(int64_t c) {
+--- cpp-core-2026-11-03/extension/src/grain_kernel.h
++++ perf-g39-2026-11-03/extension/src/grain_kernel.h
+@@ -10,6 +10,7 @@
+ class PPGrainPhysics : public RefCounted {
+   GDCLASS(PPGrainPhysics, RefCounted)
+   Object *world = nullptr;
++  int64_t roster_full_rebuilds = 0, roster_added = 0, roster_removed = 0;
+   double flying_elapsed = 0, sand_elapsed = 0;
+   int64_t tick = 0, motion_revision = 0, roster_revision = -1,
+           occupancy_revision = -1, overlap_fixes = 0, surface_wakes = 0;
+@@ -50,9 +51,13 @@
+   static void _bind_methods();
+ 
+ public:
++  int64_t get_roster_full_rebuilds() const { return roster_full_rebuilds; }
++  int64_t get_roster_added() const { return roster_added; }
++  int64_t get_roster_removed() const { return roster_removed; }
+   void setup(Object *owner);
+   void reset();
+   void step(double dt);
++  void roster_changed(const Array &added, const Array &removed, int64_t revision);
+   Dictionary get_settled() const { return settled; }
+   Dictionary get_draw_dirty() const { return draw_dirty; }
+   Dictionary get_surface() const { return surface; }
+--- cpp-core-2026-11-03/extension/src/render_kernel.cpp
++++ perf-g39-2026-11-03/extension/src/render_kernel.cpp
+@@ -9,8 +9,12 @@
+ #include <godot_cpp/variant/transform2d.hpp>
+ namespace godot {
+ void PPRenderKernel::_bind_methods() {
++  ClassDB::bind_method(D_METHOD("get_full_rebuilds"), &PPRenderKernel::get_full_rebuilds);
++  ClassDB::bind_method(D_METHOD("get_dirty_updates"), &PPRenderKernel::get_dirty_updates);
++  ADD_PROPERTY(PropertyInfo(Variant::INT, "full_rebuilds"), "", "get_full_rebuilds");
++  ADD_PROPERTY(PropertyInfo(Variant::INT, "dirty_updates"), "", "get_dirty_updates");
+   ClassDB::bind_method(D_METHOD("sync_grains", "mesh", "grains", "dirty",
+-                                "slots", "rebuild", "width", "height"),
++                                "slots", "added", "removed", "rebuild", "width", "height"),
+                        &PPRenderKernel::sync_grains);
+   ClassDB::bind_method(D_METHOD("pixel_mesh_arrays", "rectangles", "center",
+                                 "pixel_scale", "extent"),
+@@ -18,9 +22,12 @@
+ }
+ void PPRenderKernel::sync_grains(const Ref<MultiMesh> &mesh,
+                                  const Array &grains, Dictionary dirty,
+-                                 Dictionary slots, bool rebuild, int64_t width,
++                                 Dictionary slots, Dictionary added, Dictionary removed, bool rebuild, int64_t width,
+                                  int64_t height) {
++  int64_t next_slot = mesh->get_visible_instance_count();
++  rebuild = rebuild || next_slot + added.size() > mesh->get_instance_count();
+   if (rebuild) {
++    ++full_rebuilds;
+     int64_t count = grains.size();
+     if (count > mesh->get_instance_count()) {
+       int64_t capacity = std::max<int64_t>(128, mesh->get_instance_count());
+@@ -39,6 +46,26 @@
+     }
+     mesh->set_visible_instance_count(count);
+   } else {
++    const Transform2D hidden{Vector2(), Vector2(), Vector2()};
++    dirty_updates += added.size() + removed.size() + dirty.size();
++    Array removed_ids = removed.keys();
++    for (int64_t i = 0; i < removed_ids.size(); ++i) {
++      Variant id = removed_ids[i];
++      if (slots.has(id)) {
++        mesh->set_instance_transform_2d(int64_t(slots[id]), hidden);
++        slots.erase(id);
++      }
++    }
++    Array added_ids = added.keys();
++    for (int64_t i = 0; i < added_ids.size(); ++i) {
++      Variant id = added_ids[i];
++      if (!slots.has(id))
++        slots[id] = next_slot++;
++      Dictionary grain = added[id];
++      Vector2 point = grain["p"];
++      mesh->set_instance_transform_2d(int64_t(slots[id]), Transform2D(0.0, point * 4.0));
++    }
++    mesh->set_visible_instance_count(next_slot);
+     Array ids = dirty.keys();
+     for (int64_t i = 0; i < ids.size(); ++i) {
+       Variant id = ids[i];
+@@ -51,6 +78,8 @@
+     }
+   }
+   dirty.clear();
++  added.clear();
++  removed.clear();
+ }
+ Array PPRenderKernel::pixel_mesh_arrays(const Array &rectangles, Vector2 center,
+                                         double pixel_scale,
+--- cpp-core-2026-11-03/extension/src/render_kernel.h
++++ perf-g39-2026-11-03/extension/src/render_kernel.h
+@@ -7,12 +7,15 @@
+ namespace godot {
+ class PPRenderKernel : public RefCounted {
+   GDCLASS(PPRenderKernel, RefCounted)
++  int64_t full_rebuilds = 0, dirty_updates = 0;
+ protected:
+   static void _bind_methods();
+ 
+ public:
++  int64_t get_full_rebuilds() const { return full_rebuilds; }
++  int64_t get_dirty_updates() const { return dirty_updates; }
+   void sync_grains(const Ref<MultiMesh> &mesh, const Array &grains,
+-                   Dictionary dirty, Dictionary slots, bool rebuild,
++                   Dictionary dirty, Dictionary slots, Dictionary added, Dictionary removed, bool rebuild,
+                    int64_t width, int64_t height);
+   Array pixel_mesh_arrays(const Array &rectangles, Vector2 center,
+                           double pixel_scale, Vector2 extent) const;

@@ -2,6 +2,8 @@ extends Node2D
 
 const PerformanceProbe = preload("res://performance_probe.gd")
 var perf := PerformanceProbe.new()
+var native_pixels = ClassDB.instantiate("PPPixelKernel")
+var native_world = ClassDB.instantiate("PPWorldKernel")
 
 const GameSkin = preload("res://app/skin.gd")
 const PixelSurface = preload("res://presentation/pixel_surface.gd")
@@ -58,12 +60,11 @@ var _raster_static_revision := -1
 var _raster_dimensions := Vector2i.ZERO
 var _raster_order: Array = []
 var _raster_bodies := {}
-var _raster_dynamic := {}
+var _raster_dynamic := PackedByteArray()
 var _raster_valid := false
 var occupancy_revision := 0
 var _neighbor_cache: Array = []
-var _group_marks := PackedInt32Array()
-var _group_stamp := 0
+var _original_points := PackedVector2Array()
 var _grounded_cells := PackedByteArray()
 var _material_pixels: Array = []
 var _material_ids: Array = []
@@ -83,9 +84,13 @@ var roles := PackedByteArray()
 var colors: Array = []
 var pieces: Array = []
 var grains: Array = []
-# External additions/removals invalidate GrainPhysics' settled/airborne rosters.
+# External additions/removals notify GrainPhysics and a separate render journal.
 # Internal landing/displacement updates those rosters synchronously.
 var grain_roster_revision := 0
+var grain_render_added: Dictionary = {}
+var grain_render_removed: Dictionary = {}
+var grain_render_reset := 0
+var grain_render_revision := 0
 var collected := {}
 var bombs: Array = []
 var wells: Array = []
@@ -107,7 +112,7 @@ var impact_samples: Array = []
 var static_body: StaticBody2D
 var static_sprite: MeshInstance2D
 var _pixel_atlas: ImageTexture
-var occupancy := {}
+var occupancy := PackedByteArray()
 var grain_occupancy := {}
 var boundary: StaticBody2D
 var rng = preload("res://source_random.gd").new()
@@ -137,6 +142,11 @@ func _ready() -> void:
 	width = int(fixture.width)
 	height = int(fixture.height)
 	floor_y = int(fixture.floor_y)
+	# Map coordinates never change when a body moves or breaks. Preserve the
+	# original expression once, including its float division and half-cell offset.
+	_original_points.resize(width * height)
+	for id in range(_original_points.size()):
+		_original_points[id] = Vector2(id % width + 0.5, floori(float(id) / width) + 0.5)
 	colors = fixture.colors
 	roles = PackedByteArray(fixture.roles)
 	stats = starting_stats.duplicate(true) if not starting_stats.is_empty() else SkillPhysics.profile_stats(profile_upgrades, edition)
@@ -190,6 +200,10 @@ func reset() -> void:
 	connections.clear()
 	grains.clear()
 	grain_roster_revision += 1
+	grain_render_revision = grain_roster_revision
+	grain_render_reset += 1
+	grain_render_added.clear()
+	grain_render_removed.clear()
 	collected.clear()
 	bombs.clear()
 	wells.clear()
@@ -259,7 +273,7 @@ func reset() -> void:
 	queue_redraw()
 
 func original_point(id: int) -> Vector2:
-	return Vector2(id % width + 0.5, floori(float(id) / width) + 0.5)
+	return _original_points[id]
 
 func pixel_color(id: int) -> Color:
 	return GameSkin.art(Color.hex((int(colors[id]) << 8) | 255))
@@ -283,10 +297,7 @@ func draw_collectible(point: Vector2, visibility := 1.0) -> void:
 func static_ids() -> Array:
 	if _static_dirty:
 		_static_revision += 1
-		_static_cache.clear()
-		for id in range(cells.size()):
-			if cells[id]:
-				_static_cache.append(id)
+		_static_cache = native_pixels.static_ids(cells)
 		_static_dirty = false
 	return _static_cache
 
@@ -316,69 +327,10 @@ func groups(ids: Array) -> Array:
 	return result
 
 func groups_unprofiled(ids: Array) -> Array:
-	# Scratch membership has the same FIFO traversal/seed order as the old set.
-	# Each call uses a distinct stamp, so no full-grid clear is needed per blast.
-	var cell_count := cells.size()
-	if _group_marks.size() != cell_count or _group_stamp >= 2147483647:
-		_group_marks.resize(cell_count)
-		_group_marks.fill(0)
-		_group_stamp = 0
-	_group_stamp += 1
-	var stamp := _group_stamp
-	for id in ids:
-		_group_marks[int(id)] = stamp
-	var out: Array = []
-	for seed_id in ids:
-		var seed := int(seed_id)
-		if _group_marks[seed] != stamp:
-			continue
-		var group: Array = [seed]
-		_group_marks[seed] = 0
-		var head := 0
-		while head < group.size():
-			var current: int = group[head]
-			for id in neighbors(current):
-				if _group_marks[id] != stamp:
-					continue
-				var key: int = mini(current, id) * cell_count + maxi(current, id)
-				if bonds.get(key, 0.0) < 1:
-					_group_marks[id] = 0
-					group.append(id)
-			head += 1
-		out.append(group)
-	out.sort_custom(func(a, b): return a.size() > b.size())
-	return out
+	return native_pixels.groups(ids, width, cells.size(), bonds)
 
 func rectangles(ids: Array) -> Array:
-	var rows := {}
-	for id in ids:
-		var y := floori(float(id) / width)
-		if not rows.has(y):
-			rows[y] = []
-		rows[y].append(int(id) % width)
-	var ys: Array = rows.keys()
-	ys.sort()
-	var rects: Array = []
-	var active := {}
-	for y in ys:
-		var xs: Array = rows[y]
-		xs.sort()
-		var n := 0
-		while n < xs.size():
-			var start: int = xs[n]
-			var end := start
-			n += 1
-			while n < xs.size() and xs[n] == end + 1:
-				end = xs[n]
-				n += 1
-			var key := Vector2i(start, end)
-			var previous: int = active.get(key, -1)
-			if previous >= 0 and int(rects[previous].end.y) == y:
-				rects[previous].size.y += 1
-			else:
-				active[key] = rects.size()
-				rects.append(Rect2(start, y, end - start + 1, 1))
-	return rects
+	return native_pixels.rectangles(ids, width)
 
 func _prepare_pixel_atlas() -> void:
 	# Upload the original map once at entry; fragments share it after every cut.
@@ -526,12 +478,12 @@ func remove_piece(piece) -> void:
 	piece.queue_free()
 
 func emit_grain(id: int, point: Vector2, velocity: Vector2) -> void:
-	grains.append({"id": id, "p": point, "v": velocity, "rest": false})
-	grain_roster_revision += 1
+	var grain := {"id": id, "p": point, "v": velocity, "rest": false}
+	grains.append(grain)
+	grain_roster_changed([grain], [])
 
 func release(ids: Array):
-	for id in ids:
-		cells[id] = 0
+	cells = native_world.clear_ids(cells, ids)
 	_static_dirty = true
 	released += ids.size()
 	return add_piece(ids)
@@ -603,33 +555,20 @@ func attack(point: Vector2, tool := "blast") -> bool:
 	return true
 
 func cut_at(point: Vector2, radius: float) -> int:
-	var candidates: Array = []
-	for piece in [null] + pieces:
-		var pixels: Array = static_material_in_square(point, radius) if piece == null else material(piece)
-		for pixel in pixels:
-			var distance: float = pixel.q.distance_to(point)
-			if distance <= radius:
-				candidates.append({"piece": piece, "id": pixel.id, "q": pixel.q, "d": distance})
-	candidates.sort_custom(func(a, b): return a.d < b.d)
-	var changed := {}
-	var static_cut := false
-	for pixel in candidates:
-		var piece = pixel.piece
-		emit_grain(pixel.id, pixel.q, piece.pixel_velocity(pixel.id) if piece != null else Vector2.ZERO)
-		if piece != null:
-			if not changed.has(piece):
-				changed[piece] = {}
-			changed[piece][pixel.id] = true
-		else:
-			cells[pixel.id] = 0
-			_static_dirty = true
-			static_cut = true
-	for piece in changed:
-		var remaining: Array = piece.ids.filter(func(id): return not changed[piece].has(id))
-		_rebuild(piece, groups(remaining))
-	if static_cut:
+	var materials: Array = [{"piece": null, "pixels": static_material_in_square(point, radius)}]
+	for piece in pieces:
+		materials.append({"piece": piece, "ids": piece.ids, "pixels": material(piece), "original": _original_points, "origin": piece.origin_center, "rotation": piece.rotation, "velocity": piece.linear_velocity, "angular": piece.angular_velocity})
+	var result: Dictionary = native_world.cut(materials, point, radius, cells)
+	for pixel in result.candidates:
+		emit_grain(pixel.id, pixel.q, pixel.velocity)
+	cells = result.cells
+	if result.static_cut:
+		_static_dirty = true
+	for command in result.rebuild:
+		_rebuild(command.piece, groups(command.remaining))
+	if result.static_cut:
 		check_supports()
-	return candidates.size()
+	return result.candidates.size()
 
 func blast(input) -> void:
 	perf.begin(perf.DAMAGE)
@@ -646,32 +585,17 @@ func blast_unprofiled(input) -> void:
 	if not secondary:
 		chain_physics.arm(point, radius + 1)
 	var count := cut_at(point, radius)
-	var impulses := 0
+	var snapshots: Array = []
 	for piece in pieces:
-		var near := false
-		for id in piece.ids:
-			if piece.pixel_position(id).distance_to(point) <= stats.blastReach:
-				near = true
-				break
-		if near:
-			var direction: Vector2 = piece.position / S - point
-			if direction.length() < 0.01:
-				direction = Vector2.UP
-			var impulse: Vector2 = direction.normalized() * 0.45 * power * S * 60
-			piece.linear_velocity += impulse / piece.mass
-			piece.angular_velocity += (point * S - piece.position).cross(impulse) / piece.inertia
-			piece.sleeping = false
-			piece.limit_motion()
-			if power > 0:
-				impulses += 1
-	for grain in grains:
-		if grain.rest:
-			continue
-		var d: float = grain.p.distance_to(point)
-		if d <= stats.blastReach:
-			var direction: Vector2 = (grain.p - point).normalized() if d >= 0.01 else Vector2.UP
-			var velocity: Vector2 = grain.v + direction * 32 * power * (1 - 0.5 * d / stats.blastReach)
-			grain.v = Vector2(clampf(velocity.x, -240, 240), clampf(velocity.y, -240, 240))
+		snapshots.append({"piece": piece, "pixels": material(piece), "position": piece.position, "velocity": piece.linear_velocity, "angular": piece.angular_velocity, "mass": piece.mass, "inertia": piece.inertia})
+	var commands: Array = native_world.blast(snapshots, grains, point, stats.blastReach, power)
+	var impulses: int = commands.size() if power > 0 else 0
+	for command in commands:
+		var piece = command.piece
+		piece.linear_velocity = command.velocity
+		piece.angular_velocity = command.angular
+		piece.sleeping = false
+		piece.limit_motion()
 	enforce_body_budget()
 	var efficiency := float(bomb.get("fracture_efficiency", 1.0)) if secondary else float(stats.get("blastFractureEfficiency", 1.0))
 	impact_physics.blast_halo(point, radius, power, efficiency)
@@ -732,81 +656,22 @@ func material_unprofiled(piece = null) -> Array:
 		var ids := static_ids()
 		if ids != _material_ids:
 			_material_ids = ids.duplicate()
-			_static_material = []
-			for id in ids:
-				if _material_pixels[id] == null:
-					var pixel := {"id": id, "q": original_point(id)}
-					pixel.make_read_only()
-					_material_pixels[id] = pixel
-				_static_material.append(_material_pixels[id])
-			_static_material.make_read_only()
+			_static_material = native_world.static_material(ids, _material_pixels, _original_points)
 		return _static_material
-	var result: Array = []
-	for id in piece.ids:
-		result.append({"id": id, "q": piece.pixel_position(id)})
-	return result
+	return native_pixels.material(piece.ids, _original_points, piece.origin_center, piece.position, piece.rotation)
 
 func static_material_in_square(point: Vector2, radius: float) -> Array:
-	# Original static IDs are row ordered. Preserve that order and the exact
-	# downstream circle/midpoint tests; this rectangle only excludes distant cells.
-	var left := maxi(0, floori(point.x - radius - 0.5))
-	var right := mini(width - 1, ceili(point.x + radius - 0.5))
-	var top := maxi(0, floori(point.y - radius - 0.5))
-	var bottom := mini(height - 1, ceili(point.y + radius - 0.5))
-	var result: Array = []
-	for y in range(top, bottom + 1):
-		for x in range(left, right + 1):
-			var id := y * width + x
-			if not cells[id]:
-				continue
-			if _material_pixels[id] == null:
-				var pixel := {"id": id, "q": original_point(id)}
-				pixel.make_read_only()
-				_material_pixels[id] = pixel
-			result.append(_material_pixels[id])
-	return result
-
-func _segment_distance(point: Vector2, segments: Array) -> float:
-	var distance := INF
-	for segment in segments:
-		distance = minf(distance, point.distance_to(Geometry2D.get_closest_point_to_segment(point, segment.a, segment.b)))
-	return distance
+	return native_world.static_square(point, radius, width, height, cells, _material_pixels, _original_points)
 
 func _release_compression(children: Array, point: Vector2, budget: float) -> float:
-	if children.size() < 2 or budget <= 0:
-		return 0
-	var total_mass := 0.0
-	var center := Vector2.ZERO
+	var snapshots: Array = []
 	for child in children:
-		total_mass += child.mass
-	for child in children:
-		center += child.position / S * child.mass / total_mass
-	var rows: Array = []
-	var mean := Vector2.ZERO
-	for child in children:
-		var away: Vector2 = (child.position / S - point).normalized()
-		rows.append({"body": child, "r": child.position / S - center, "a": away})
-		mean += away * child.mass / total_mass
-	var torque := 0.0
-	var moment := 0.0
-	for row in rows:
-		row.a -= mean
-		torque += row.body.mass * row.r.cross(row.a)
-		moment += row.body.mass * row.r.length_squared()
-	var rotation := torque / moment if moment > 0 else 0.0
-	var a := 0.0
-	var b := 0.0
-	for row in rows:
-		row.a += Vector2(row.r.y, -row.r.x) * rotation
-		a += 0.5 * row.body.mass * row.a.length_squared()
-		b += row.body.mass * (row.body.linear_velocity / (S * 60)).dot(row.a)
-	if a < 0.000000000001:
-		return 0
-	var scale := (-b + sqrt(b * b + 4 * a * budget * 0.002)) / (2 * a)
-	for row in rows:
-		row.body.linear_velocity += row.a * scale * S * 60
-		row.body.limit_motion()
-	return budget
+		snapshots.append({"body": child, "mass": child.mass, "position": child.position, "velocity": child.linear_velocity})
+	var result: Dictionary = native_world.compression(snapshots, point, budget)
+	for command in result.commands:
+		command.body.linear_velocity = command.velocity
+		command.body.limit_motion()
+	return result.spent
 
 func fracture(piece, point: Vector2, speed: float, downward := true, context: Dictionary = {}) -> void:
 	perf.begin(perf.FRACTURE)
@@ -834,18 +699,7 @@ func fracture_unprofiled(piece, point: Vector2, speed: float, downward := true, 
 		return
 	var pixels := material(piece)
 	if piece == null:
-		# A static receiver may damage only the connected original structure it hit.
-		var nearest: Dictionary = pixels[0]
-		for pixel in pixels:
-			if pixel.q.distance_squared_to(point) < nearest.q.distance_squared_to(point):
-				nearest = pixel
-		var receiver := {}
-		for group in groups(static_ids()):
-			if group.has(nearest.id):
-				for id in group:
-					receiver[id] = true
-				break
-		pixels = pixels.filter(func(pixel): return receiver.has(pixel.id))
+		pixels = native_world.receiver(pixels, point, groups(static_ids()))
 	var count := pixels.size()
 	var severity := clampf((speed - 14) / 18, 0, 1) if fall else 0.0
 	var energy := minf(measured_energy, count * 6)
@@ -863,98 +717,39 @@ func fracture_unprofiled(piece, point: Vector2, speed: float, downward := true, 
 	var segments: Array = context.get("segments", [{"a": point, "b": point}])
 	if segments.is_empty():
 		segments = [{"a": point, "b": point}]
-	var contact_span := 0.0
-	for segment in segments:
-		contact_span = maxf(contact_span, segment.a.distance_to(segment.b))
-	var nearby: Array = []
-	for pixel in pixels:
-		nearby.append({"id": pixel.id, "q": pixel.q, "d": _segment_distance(pixel.q, segments)})
-	nearby.sort_custom(func(a, b): return a.d < b.d if not is_equal_approx(a.d, b.d) else a.id < b.id)
-	var crushed := {}
-	for pixel in nearby:
-		if pixel.d >= reach or crushed.size() >= pixel_limit:
-			break
-		var cost: float = 1 + 3 * pow(pixel.d / reach, 2)
-		if contact_budget < cost:
-			break
-		contact_budget -= cost
-		crushed[pixel.id] = true
-	var remaining: Array = []
-	var remaining_material: Array = []
-	for pixel in pixels:
-		if not crushed.has(pixel.id):
-			remaining.append(pixel.id)
-			remaining_material.append(pixel)
+	var crushing: Dictionary = native_world.crush(pixels, segments, reach, pixel_limit, contact_budget, fall)
+	var contact_span: float = crushing.contact_span
+	contact_budget = crushing.budget
+	var crushed: Dictionary = crushing.crushed
+	var remaining: Array = crushing.remaining
+	var remaining_material: Array = crushing.remaining_material
 	perf.begin(perf.FR_GRAPH)
 	var graph: Dictionary = fracture_graph.build(remaining_material if fall else pixels, width, bonds, cells.size())
 	perf.end()
-	var nearest := INF
-	for pixel in nearby:
-		if not fall or not crushed.has(pixel.id):
-			nearest = pixel.d
-			break
-	var contact_ids: Array = []
-	for pixel in nearby:
-		if (not fall or not crushed.has(pixel.id)) and pixel.d <= nearest + 1.25:
-			contact_ids.append(pixel.id)
+	var contact_ids: Array = crushing.contacts
 	perf.begin(perf.FR_WAVE)
 	var distances: Array = fracture_graph.distances(graph, contact_ids)
 	perf.end()
 	var wave_reach := reach * ((1 + severity * 5) * 3 if fall else 3.0)
-	var edges: Array = []
-	for edge in graph.edges:
-		var distance: float = (distances[edge.a] + distances[edge.b]) / 2
-		var span: Vector2 = graph.nodes[edge.b].center - graph.nodes[edge.a].center
-		var alignment := absf(span.normalized().dot(normal.normalized()))
-		var score := maxf(0, 1 - distance / wave_reach) * (0.65 + 0.35 * alignment) / sqrt(edge.cost)
-		if (fall and distance <= wave_reach) or (not fall and score > 0):
-			var candidate: Dictionary = edge.duplicate()
-			candidate.distance = distance
-			candidate.score = score
-			edges.append(candidate)
-	if fall:
-		edges.sort_custom(func(a, b): return a.distance < b.distance if not is_equal_approx(a.distance, b.distance) else a.cost < b.cost)
-	else:
-		edges.sort_custom(func(a, b): return a.score > b.score if not is_equal_approx(a.score, b.score) else (a.a < b.a if a.a != b.a else a.b < b.b))
+	var edges: Array = native_world.edges(graph, distances, normal, wave_reach, fall)
 	var contact_spent := contact_allowance - contact_budget
 	var crack_budget := (fracture_budget - contact_spent) * (severity if fall else 1.0)
 	var before_groups: Array = groups(remaining)
-	var group_limit := maxi(10, before_groups.size() if fall else before_groups.filter(func(g): return g.size() >= 4).size())
-	var connectivity := FractureConnectivity.new()
-	connectivity.setup(self, remaining, before_groups, edges)
-	var crack_spent := 0.0
-	var bond_changes := 0
-	var crack_depth := 0.0
-	for edge in edges:
-		if crack_budget <= 0:
-			break
-		var active: Array = edge.bonds.filter(func(b): return not crushed.has(b.id) and not crushed.has(b.other))
-		if active.is_empty():
-			continue
-		var cost: float = edge.cost * (0.02 * maxf(1, contact_span / 3) if fall else 0.65)
-		var amount := minf(1, crack_budget / cost)
-		connectivity.prepare()
-		for bond in active:
-			bonds[bond.key] = bond.old + (1 - bond.old) * amount
-		if amount == 1 and not connectivity.allows_cut(active, group_limit):
-			for bond in active:
-				bonds[bond.key] = bond.old
-			continue
-		if amount < 1:
-			connectivity.dirty = true
-		crack_budget -= cost * amount
-		crack_spent += cost * amount
-		bond_changes += active.size()
-		crack_depth = maxf(crack_depth, edge.distance)
+	var cracking: Dictionary = native_world.crack(self, remaining, before_groups, edges, crushed, bonds, crack_budget, contact_span, fall)
+	var crack_spent: float = cracking.spent
+	var bond_changes: int = cracking.changes
+	var crack_depth: float = cracking.depth
 	if crushed.is_empty() and bond_changes == 0:
 		return
 	var old_pieces: Array = pieces.duplicate()
-	for pixel in pixels:
-		if crushed.has(pixel.id):
-			emit_grain(pixel.id, pixel.q, piece.pixel_velocity(pixel.id) if piece != null else Vector2.ZERO)
-			if piece == null:
-				cells[pixel.id] = 0
-				_static_dirty = true
+	var emissions: Array = crushing.removed
+	if piece != null:
+		emissions = native_world.emissions(emissions, _original_points, piece.origin_center, piece.rotation, piece.linear_velocity, piece.angular_velocity)
+	for pixel in emissions:
+		emit_grain(pixel.id, pixel.q, pixel.velocity if piece != null else Vector2.ZERO)
+	if piece == null and not crushing.removed.is_empty():
+		cells = native_world.remove_cells(cells, crushing.removed)
+		_static_dirty = true
 	var partitions := groups(remaining)
 	if piece != null:
 		# Partial bond fatigue does not change shape: retain mass, pose and contacts.
@@ -969,8 +764,9 @@ func fracture_unprofiled(piece, point: Vector2, speed: float, downward := true, 
 		check_supports()
 	var children: Array = pieces.filter(func(child): return not old_pieces.has(child))
 	var motion_spent := _release_compression(children, point, motion_budget)
+	var partition_stats: Dictionary = native_world.group_stats(partitions)
 	fractures += 1
-	events.append({"kind": "fall-fracture" if fall else "speed-fracture", "source": "collision", "time": elapsed, "x": point.x, "y": point.y, "speed": speed, "energy": energy, "count": crushed.size(), "bodyPixels": count, "pixelLimit": pixel_limit, "fraction": fraction, "severity": severity, "contactSpan": contact_span, "crackDepth": crack_depth, "bonds": bond_changes, "fragments": partitions.filter(func(g): return g.size() >= 4).size() if fall else partitions.size(), "totalGroups": partitions.size(), "largest": partitions.map(func(g): return g.size()).max() if not partitions.is_empty() else 0, "nodes": graph.nodes.size(), "motionBudget": motion_budget, "motionSpent": motion_spent, "spent": contact_spent + crack_spent + motion_spent, "budget": total})
+	events.append({"kind": "fall-fracture" if fall else "speed-fracture", "source": "collision", "time": elapsed, "x": point.x, "y": point.y, "speed": speed, "energy": energy, "count": crushed.size(), "bodyPixels": count, "pixelLimit": pixel_limit, "fraction": fraction, "severity": severity, "contactSpan": contact_span, "crackDepth": crack_depth, "bonds": bond_changes, "fragments": partition_stats.large if fall else partitions.size(), "totalGroups": partitions.size(), "largest": partition_stats.largest, "nodes": graph.nodes.size(), "motionBudget": motion_budget, "motionSpent": motion_spent, "spent": contact_spent + crack_spent + motion_spent, "budget": total})
 
 func live_hinge_section(piece) -> Dictionary:
 	return structure_physics.live_hinge_section(piece)
@@ -981,14 +777,13 @@ func _snap_hinge(piece, section: Dictionary) -> void:
 	piece.hinge = null
 	piece.bearing_constraint.clear()
 	piece.remove_meta("section")
-	var emitted := 0
-	for bearing in section.cuts:
-		var id: int = bearing.id + width
-		if id >= 0 and id < cells.size() and cells[id]:
-			cells[id] = 0
-			_static_dirty = true
-			emit_grain(id, original_point(id), Vector2.ZERO)
-			emitted += 1
+	var snapping: Dictionary = native_world.snap(cells, section.cuts, width, _original_points)
+	cells = snapping.cells
+	var emitted: int = snapping.emitted.size()
+	if emitted > 0:
+		_static_dirty = true
+	for pixel in snapping.emitted:
+		emit_grain(pixel.id, pixel.q, Vector2.ZERO)
 	events.append({"kind": "pillar-snap", "time": elapsed, "x": section.pivot, "y": section.y + 1, "width": section.width, "utilization": section.utilization, "count": emitted})
 	released += emitted
 	check_supports()
@@ -1021,28 +816,23 @@ func rasterize_unprofiled(dynamic_cells: Variant = null) -> void:
 		# Exact comparisons, never sleep flags/epsilons: even tiny physical motion
 		# still updates collision cells. Keep pixel_position's original arithmetic.
 		if not same_ids or cached.position != piece.position or cached.rotation != piece.rotation or cached.origin != piece.origin_center or cached.dimensions != dimensions:
-			var grid := PackedInt32Array()
-			for id in piece.ids:
-				var p: Vector2 = piece.pixel_position(id)
-				var x := floori(p.x)
-				var y := floori(p.y)
-				if x >= 0 and x < width and y >= 0 and y < floor_y:
-					grid.append(y * width + x)
+			var grid: PackedInt32Array = native_pixels.project(piece.ids, _original_points, piece.origin_center, piece.position, piece.rotation, width, floor_y)
+			if perf.enabled:
+				perf.projected_pixels += piece.ids.size()
 			_raster_bodies[key] = {"ids": cached.ids if same_ids else piece.ids.duplicate(), "position": piece.position, "rotation": piece.rotation, "origin": piece.origin_center, "dimensions": dimensions, "cells": grid}
 			changed = true
 		elif perf.enabled:
 			perf.body_grid_reuses += 1
 	changed = changed or order != _raster_order
 	if changed:
-		occupancy.clear()
-		_raster_dynamic.clear()
-		for id in fixed_ids:
-			occupancy[id] = true
-		# Same body/ID order as the uncached path, including overlapping cells.
+		# Flat membership avoids allocating/hash-inserting every occupied cell
+		# on each moving-body update. Full rebuild retains overlap semantics.
+		var grids: Array = []
 		for key in order:
-			for cell in _raster_bodies[key].cells:
-				occupancy[cell] = true
-				_raster_dynamic[cell] = true
+			grids.append(_raster_bodies[key].cells)
+		var buffers: Dictionary = native_pixels.occupancy(fixed_ids, grids, width * height)
+		occupancy = buffers.all
+		_raster_dynamic = buffers.dynamic
 		for key in _raster_bodies.keys():
 			if not order.has(key):
 				_raster_bodies.erase(key)
@@ -1051,16 +841,35 @@ func rasterize_unprofiled(dynamic_cells: Variant = null) -> void:
 		_raster_static_revision = _static_revision
 		_raster_valid = true
 		occupancy_revision += 1
+		if perf.enabled:
+			perf.grid_rebuilds += 1
 	elif perf.enabled:
 		perf.grid_reuses += 1
 	if dynamic_cells != null:
 		dynamic_cells.clear()
-		dynamic_cells.merge(_raster_dynamic)
+		# Preserve the optional Dictionary export and its original insertion order.
+		for key in order:
+			for cell in _raster_bodies[key].cells:
+				dynamic_cells[cell] = true
 
 func _advance_grains(dt: float) -> void:
 	perf.begin(perf.GRAINS)
 	_advance_grains_unprofiled(dt)
 	perf.end()
+
+# Physics consumes synchronously; renderer owns separate pending changes until sync.
+func grain_roster_changed(added: Array, removed: Array) -> void:
+	grain_roster_revision += 1
+	grain_physics.roster_changed(added, removed, grain_roster_revision)
+	# A skipped notification invalidates both consumers until an explicit rebuild.
+	if grain_render_revision != grain_roster_revision - 1:
+		grain_render_reset += 1
+	grain_render_revision = grain_roster_revision
+	for grain in added:
+		grain_render_added[grain.id] = grain
+	for grain in removed:
+		grain_render_added.erase(grain.id)
+		grain_render_removed[grain.id] = true
 
 func _advance_grains_unprofiled(dt: float) -> void:
 	if not final_collection_active:
@@ -1071,57 +880,44 @@ func _auto_collect(dt: float) -> void:
 		return
 	auto_collect_clock += dt
 	var interval: float = 1.0 / stats.autoCollectRate
+	var removed: Array = []
 	while auto_collect_clock >= interval:
 		auto_collect_clock -= interval
 		if grains.is_empty():
 			continue
-		# ArchWorld.collectLoose walks settled sand by cell before flying pixels.
-		var selected := 0
-		var lowest := 2147483647
-		for i in range(grains.size()):
-			if grains[i].rest:
-				var key: int = floori(grains[i].p.y) * width + floori(grains[i].p.x)
-				if key < lowest:
-					lowest = key
-					selected = i
+		var selected: int = native_world.auto_index(grains, width)
 		var grain: Dictionary = grains.pop_at(selected)
-		grain_roster_revision += 1
+		removed.append(grain)
 		collected[grain.id] = true
 		events.append({"kind": "collect", "source": "auto", "time": elapsed, "id": grain.id, "x": grain.p.x, "y": grain.p.y, "count": 1})
+
+	if not removed.is_empty():
+		grain_roster_changed([], removed)
 
 func suction(from: Vector2, to: Vector2, dt: float) -> void:
 	if final_collection or dt <= 0 or not from.is_finite() or not to.is_finite():
 		return
 	suction_budget += stats.suctionRate * minf(dt, 0.1)
-	var nearby: Array = []
-	for grain in grains:
-		var closest: Vector2 = Geometry2D.get_closest_point_to_segment(grain.p, from, to)
-		var distance: float = grain.p.distance_squared_to(closest)
-		if distance <= pow(stats.suctionRadius, 2):
-			nearby.append({"grain": grain, "d": distance})
-	nearby.sort_custom(func(a, b): return a.d < b.d)
-	var count := mini(floori(suction_budget + 0.00000001), nearby.size())
-	var taken := {}
-	for entry in nearby.slice(0, count):
-		collected[entry.grain.id] = true
-		events.append({"kind": "collect", "time": elapsed, "id": entry.grain.id, "x": entry.grain.p.x, "y": entry.grain.p.y, "count": 1})
-		taken[entry.grain.id] = true
-	grains = grains.filter(func(g): return not taken.has(g.id))
-	if not taken.is_empty():
-		grain_roster_revision += 1
+	var selection: Dictionary = native_world.suction(grains, from, to, stats.suctionRadius, floori(suction_budget + 0.00000001))
+	var count: int = selection.count
+	for grain in selection.selected:
+		collected[grain.id] = true
+		events.append({"kind": "collect", "time": elapsed, "id": grain.id, "x": grain.p.x, "y": grain.p.y, "count": 1})
+	grains = selection.remaining
+	if not selection.taken.is_empty():
+		grain_roster_changed([], selection.selected)
 	suction_budget = clampf(suction_budget - count, 0, 0.999999)
 
 func secure_loose() -> int:
 	var count := grains.size()
-	var samples: Array = []
-	var center := Vector2.ZERO
-	for grain in grains:
-		collected[grain.id] = true
-		center += grain.p / maxf(1.0, count)
-		if samples.size() < 8:
-			samples.append({"x": grain.p.x, "y": grain.p.y, "color": int(colors[grain.id])})
+	var selection: Dictionary = native_world.secure(grains, collected, colors)
+	var center: Vector2 = selection.center
+	var samples: Array = selection.samples
+	grain_roster_changed([], grains)
 	grains.clear()
-	grain_roster_revision += 1
+	grain_render_reset += 1
+	grain_render_added.clear()
+	grain_render_removed.clear()
 	if count > 0:
 		events.append({"kind": "collect", "mode": "rise", "count": count, "x": center.x, "y": center.y, "samples": samples, "time": elapsed})
 	return count
@@ -1229,3 +1025,6 @@ func balanced() -> bool:
 			return false
 		ids[id] = true
 	return ids.size() == initial
+
+func _exit_tree() -> void:
+	perf.suspend()

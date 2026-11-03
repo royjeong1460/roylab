@@ -3,6 +3,7 @@ extends RefCounted
 const SectionGraph = preload("res://section_graph.gd")
 const YieldJoint = preload("res://yield_joint.gd")
 const S := 4.0
+var _native = ClassDB.instantiate("PPStructureKernel")
 var _section_cache := {}
 var _section_bonds := {}
 var _topology_cache := {}
@@ -46,48 +47,16 @@ func reset() -> void:
 	snap_count = 0
 	_body_rows.clear()
 	_body_bounds.clear()
-	# Compare live body necks to their authored width, including authored openings.
-	var original: Array = world.fixture.cells
-	var module_of: Array = world.fixture.get("module_of", [])
-	for id in range(original.size() - world.width):
-		var below: int = id + world.width
-		if not original[id] or not original[below] or world.roles[id] != 2 or world.roles[below] != 2 or module_of.size() != original.size():
-			continue
-		var module_id := int(module_of[id])
-		if module_id < 0 or int(module_of[below]) != module_id:
-			continue
-		var y := _row(id)
-		var key := Vector2i(module_id, y)
-		_body_rows[key] = int(_body_rows.get(key, 0)) + 1
-		var bounds: Vector2i = _body_bounds.get(module_id, Vector2i(y, y))
-		_body_bounds[module_id] = Vector2i(mini(bounds.x,y),maxi(bounds.y,y))
+	# Authored row widths are calculated in the native bulk kernel.
+	var baseline: Dictionary = _native.baseline(world.fixture.cells, world.roles, world.fixture.get("module_of", []), world.width)
+	_body_rows = baseline.rows
+	_body_bounds = baseline.bounds
 
 func _damaged_body_support(bearings: Array, y: int) -> bool:
-	if not column_failure:
-		return false
-	var module_of: Array = world.fixture.get("module_of", [])
-	var live_widths := {}
-	for bearing in bearings:
-		var id: int = bearing.id
-		if world.roles[id] != 2 or world.roles[id + world.width] != 2 or module_of.is_empty():
-			continue
-		var module_id := int(module_of[id])
-		if int(module_of[id + world.width]) != module_id or not _body_bounds.has(module_id):
-			continue
-		var bounds: Vector2i = _body_bounds[module_id]
-		if y < (bounds.x + bounds.y) / 2.0:
-			continue
-		live_widths[module_id] = float(live_widths.get(module_id, 0.0)) + float(bearing.strength)
-	for module_id in live_widths:
-		if float(live_widths[module_id]) < int(_body_rows.get(Vector2i(module_id,y),0)) - 0.000001:
-			return true
-	return false
+	return _native.damaged(bearings, y, world.roles, world.fixture.get("module_of", []), world.width, _body_rows, _body_bounds, column_failure)
 
 func _owned(ids: Array) -> Dictionary:
-	var result := {}
-	for id in ids:
-		result[id] = true
-	return result
+	return _native.owned(ids)
 
 func _row(id: int) -> int:
 	return floori(float(id) / world.width)
@@ -99,44 +68,10 @@ func _strength(id: int) -> float:
 	return maxf(0.0, 1.0 - float(world.bonds.get(world.bond_key(id, id + world.width), 0.0)))
 
 func pillar_lengths(ids: Array) -> Dictionary:
-	var owned := _owned(ids)
-	var lengths := {}
-	for id in ids:
-		if world.roles[id] != 1 or lengths.has(id):
-			continue
-		var top: int = id
-		while owned.has(top - world.width) and world.roles[top - world.width] == 1 and float(world.bonds.get(world.bond_key(top, top - world.width), 0.0)) < 1.0:
-			top -= world.width
-		var run: Array = [top]
-		while owned.has(run[-1] + world.width) and world.roles[run[-1] + world.width] == 1 and float(world.bonds.get(world.bond_key(run[-1], run[-1] + world.width), 0.0)) < 1.0:
-			run.append(run[-1] + world.width)
-		for member in run:
-			lengths[member] = run.size()
-	return lengths
+	return _native.pillar_lengths(ids, world.roles, world.bonds, world.width, world.cells.size())
 
 func column_load(bearings: Array, lengths: Dictionary, load_count: float, lever: float, angle: float) -> float:
-	if not column_failure:
-		return 0.0
-	var posts: Array = []
-	for bearing in bearings:
-		if not bearing.pillar:
-			return 0.0
-		var length := maxi(int(lengths.get(bearing.id, 0)), int(lengths.get(bearing.id + world.width, 0)))
-		if length == 0:
-			return 0.0
-		if posts.is_empty() or bearing.x - posts[-1].right > 1.0:
-			posts.append({"width": 0.0, "length": 0, "right": bearing.x})
-		posts[-1].width += bearing.strength
-		posts[-1].length = maxi(posts[-1].length, length)
-		posts[-1].right = bearing.x
-	var axial := 0.0
-	var bending := 0.0
-	for post in posts:
-		axial += pow(post.width, 3) / pow(post.length, 2)
-		bending += pow(post.width, 2)
-	if axial <= 0.0 or bending <= 0.0:
-		return 0.0
-	return load_count * (absf(cos(angle)) / (180000.0 * axial) + lever / (1200.0 * bending))
+	return _native.column_load(bearings, lengths, load_count, lever, angle, world.width, column_failure)
 
 func _invalidate_section_cache() -> void:
 	world.perf.begin(world.perf.CACHE)
@@ -144,59 +79,7 @@ func _invalidate_section_cache() -> void:
 	world.perf.end()
 
 func _invalidate_section_cache_unprofiled() -> void:
-	if world.bonds == _section_bonds:
-		return
-	var changed := {}
-	var disconnected := {}
-	var vertical := {}
-	var cell_count: int = world.cells.size()
-	for key in world.bonds:
-		if world.bonds[key] != _section_bonds.get(key, 0.0):
-			var a: int = int(key) / cell_count
-			var b: int = int(key) % cell_count
-			changed[a] = true
-			changed[b] = true
-			if (float(world.bonds[key]) >= 1.0) != (float(_section_bonds.get(key, 0.0)) >= 1.0):
-				disconnected[a] = true
-				disconnected[b] = true
-			if b - a == world.width:
-				vertical[a] = true
-	for key in _section_bonds:
-		if not world.bonds.has(key) and _section_bonds[key] != 0.0:
-			var a: int = int(key) / cell_count
-			var b: int = int(key) % cell_count
-			changed[a] = true
-			changed[b] = true
-			if float(_section_bonds[key]) >= 1.0:
-				disconnected[a] = true
-				disconnected[b] = true
-			if b - a == world.width:
-				vertical[a] = true
-	for key in _section_cache.keys():
-		var owned: Dictionary = _section_cache[key].owned
-		for id in changed:
-			if owned.has(id):
-				_section_cache.erase(key)
-				break
-	for key in _topology_cache.keys():
-		var cached: Dictionary = _topology_cache[key]
-		var invalid := false
-		for id in disconnected:
-			if cached.owned.has(id):
-				invalid = true
-				break
-		if invalid:
-			_topology_cache.erase(key)
-			continue
-		# Partial damage changes bearing strength, not connectivity or pixel mass.
-		for id in vertical:
-			if not cached.bearing_indices.has(id):
-				continue
-			var slot: Vector2i = cached.bearing_indices[id]
-			var bearing: Dictionary = cached.rows[slot.y][slot.x].duplicate()
-			bearing.strength = _strength(id)
-			cached.rows[slot.y][slot.x] = bearing
-			cached.cuts.erase(slot.y)
+	_native.invalidate(world.bonds, _section_bonds, _section_cache, _topology_cache, world.width, world.cells.size())
 	_section_bonds = world.bonds.duplicate()
 
 func sections(ids: Array, angle := 0.0, cut_limit := INF, support_ids = null, selected_only := false) -> Array:
@@ -219,34 +102,7 @@ func sections_unprofiled(ids: Array, angle := 0.0, cut_limit := INF, support_ids
 		if _section_cache.size() >= 64 and not _section_cache.has(key):
 			_section_cache.erase(_section_cache.keys()[0])
 		_section_cache[key] = cached
-	var lengths: Dictionary = cached.geometry.lengths
-	var candidates: Array = []
-	for record in cached.geometry.records:
-		var center: Vector2 = record.center2
-		var pivot: float = record.pivot
-		var width: float = record.width
-		var bearings: Array = record.bearings
-		var load_count: int = record.count
-		var signed_lever: float = (center.x - pivot) * cos(angle) + (record.y + 1 - center.y) * sin(angle)
-		var lever := absf(signed_lever)
-		var reserve: float = world._reserve.get(world._original_groups.get(bearings[0].id, 0), 1.0)
-		var load := float(load_count)
-		var utilization := maxf(load / (1800.0 * width) + load * lever / (7000.0 * width * width), column_load(bearings, lengths, load, lever, angle)) / reserve
-		var axial_utilization := maxf(load / (1800.0 * width), column_load(bearings, lengths, load, 0.0, angle)) / reserve
-		candidates.append({"y": record.y, "bearings": bearings, "cuts": record.cuts, "width": width, "above": [], "center": center.x, "pivot": pivot, "load": load_count, "utilization": utilization, "axialUtilization": axial_utilization, "signedLever": signed_lever, "lever": lever, "reserve": reserve, "_record": record})
-	candidates.sort_custom(func(a, b): return a.utilization > b.utilization)
-	var selected := false
-	for index in range(candidates.size()):
-		var candidate: Dictionary = candidates[index]
-		var qualifies: bool = candidate.utilization > 1.0 or absf(candidate.center - candidate.pivot) > 0.1
-		# Runtime consumers only retain the peak and first qualifying section.
-		# Other callers retain the full public result by default.
-		if not selected_only or index == 0 or (not selected and qualifies):
-			var record: Dictionary = candidate._record
-			candidate.above = cached.geometry.graph.members(record.tag, record.y)
-		selected = selected or qualifies
-		candidate.erase("_record")
-	return candidates
+	return _native.candidates(cached.geometry, world._reserve, world._original_groups, angle, world.width, column_failure, selected_only)
 
 func _section_topology(ids: Array, support_ids) -> Dictionary:
 	world.perf.begin(world.perf.TOPOLOGY)
@@ -261,24 +117,8 @@ func _section_topology_unprofiled(ids: Array, support_ids) -> Dictionary:
 		if world.perf.enabled:
 			world.perf.topology_reuses += 1
 		return cached
-	var owned := _owned(ids)
-	var rows := {}
-	var bearing_indices := {}
-	for id in ids:
-		var next: int = id + world.width
-		if not owned.has(next):
-			continue
-		var strength := _strength(id)
-		if strength <= 0.0:
-			continue
-		var y := _row(id)
-		if not rows.has(y):
-			rows[y] = []
-		bearing_indices[id] = Vector2i(rows[y].size(), y)
-		rows[y].append({"id": id, "x": world.original_point(id).x, "strength": strength, "pillar": world.roles[id] == 1 or world.roles[next] == 1})
-	var ys: Array = rows.keys()
-	ys.sort()
-	cached = {"ids": ids.duplicate(), "owned": owned, "supports": null if support_ids == null else support_ids.duplicate(), "column_failure": column_failure, "rows": rows, "ys": ys, "bearing_indices": bearing_indices, "lengths": pillar_lengths(ids), "cuts": {}, "graph": null}
+	cached = _native.topology(ids, world.roles, world.bonds, world.width, world.cells.size(), world._original_points)
+	cached.merge({"ids": ids.duplicate(), "supports": null if support_ids == null else support_ids.duplicate(), "column_failure": column_failure, "cuts": {}, "graph": null})
 	if _topology_cache.size() >= 64 and not _topology_cache.has(key):
 		_topology_cache.erase(_topology_cache.keys()[0])
 	_topology_cache[key] = cached
@@ -292,62 +132,7 @@ func _section_geometry(ids: Array, cut_limit: float, support_ids) -> Dictionary:
 
 func _section_geometry_unprofiled(ids: Array, cut_limit: float, support_ids) -> Dictionary:
 	var topology := _section_topology(ids, support_ids)
-	var records: Array = []
-	var cuts: Array = []
-	var previous: Dictionary = {}
-	for y in topology.ys:
-		if y + 1 > cut_limit:
-			break
-		if not topology.cuts.has(y):
-			var original: Array = topology.rows[y]
-			var body_support := _damaged_body_support(original, y)
-			var cut := {}
-			if original.any(func(b): return b.pillar) or body_support:
-				var bearings: Array = original.duplicate()
-				bearings.sort_custom(func(a, b): return a.x < b.x)
-				var signatures: PackedStringArray = []
-				for bearing in bearings:
-					signatures.append("%s:%.4f" % [bearing.x, bearing.strength])
-				cut = {"y": y, "bearings": bearings, "signature": ",".join(signatures), "body_support": body_support}
-			topology.cuts[y] = cut
-		var cut: Dictionary = topology.cuts[y]
-		if cut.is_empty():
-			previous = {}
-			continue
-		if not previous.is_empty() and previous.y == y - 1 and previous.signature == cut.signature and previous.body_support == cut.body_support:
-			cuts[-1] = cut
-		else:
-			cuts.append(cut)
-		previous = cut
-	if topology.graph == null:
-		topology.graph = SectionGraph.new()
-		if not cuts.is_empty():
-			topology.graph.setup(world, ids, support_ids)
-		else:
-			# A later partial hit can create the first load-bearing body cut.
-			topology.graph = null
-	elif topology.supports != support_ids:
-		topology.graph.update_supports(support_ids)
-	if topology.supports != support_ids:
-		topology.supports = null if support_ids == null else support_ids.duplicate()
-	var graph = topology.graph
-	for cut in cuts:
-		for component in graph.summaries(cut.y):
-			if component.count < 40:
-				continue
-			var bearings: Array = cut.bearings.filter(func(b): return graph.belongs(b.id, component.tag) and (support_ids == null or graph.supported(b.id + world.width, cut.y)))
-			if bearings.is_empty():
-				continue
-			if world.has_terrain and ((support_ids != null and support_ids.any(func(id): return graph.belongs(id, component.tag))) or (not cut.body_support and not bearings.any(func(b): return b.pillar))):
-				continue
-			var width_left := 0.0
-			var center: Vector2 = component.center_sum
-			for bearing in bearings:
-				width_left += bearing.strength
-			center /= component.count
-			var pivot := clampf(center.x, bearings[0].x - 0.5, bearings[-1].x + 0.5)
-			records.append({"y": cut.y, "bearings": bearings, "cuts": bearings.map(func(b): return b.id), "width": width_left, "count": component.count, "tag": component.tag, "center2": center, "pivot": pivot})
-	return {"lengths": topology.lengths, "records": records, "graph": graph, "owned": topology.owned}
+	return _native.geometry(topology, world, ids, cut_limit, support_ids, column_failure, _body_rows, _body_bounds)
 
 func live_hinge_section(piece) -> Dictionary:
 	world.perf.begin(world.perf.HINGE)
@@ -359,15 +144,7 @@ func live_hinge_section_unprofiled(piece) -> Dictionary:
 	var previous: Dictionary = piece.get_meta("section", {})
 	if previous.is_empty():
 		return {}
-	var owned := _owned(piece.ids)
-	var bearings: Array = []
-	for bearing in previous.bearings:
-		if not owned.has(bearing.id) or not _live_static(bearing.id + world.width):
-			continue
-		var copy: Dictionary = bearing.duplicate()
-		copy.strength = _strength(bearing.id)
-		if copy.strength > 0:
-			bearings.append(copy)
+	var bearings: Array = _native.live_bearings(previous.bearings, piece.ids, world.cells, world.bonds, world.width)
 	var width_left := 0.0
 	for bearing in bearings:
 		width_left += bearing.strength
@@ -380,12 +157,7 @@ func live_hinge_section_unprofiled(piece) -> Dictionary:
 	if width_left > 0:
 		axial_utilization = load_count / (1800.0 * width_left) / reserve
 		utilization = (load_count / (1800.0 * width_left) + load_count * lever / (7000.0 * width_left * width_left)) / reserve
-		var ids: Array = piece.ids.duplicate()
-		for bearing in bearings:
-			var id: int = bearing.id + world.width
-			while _live_static(id) and world.roles[id] == 1:
-				ids.append(id)
-				id += world.width
+		var ids: Array = _native.hinge_ids(piece.ids, bearings, world.cells, world.roles, world.width)
 		var lengths := pillar_lengths(ids)
 		utilization = maxf(utilization, column_load(bearings, lengths, load_count, lever, piece.rotation) / reserve)
 		axial_utilization = maxf(axial_utilization, column_load(bearings, lengths, load_count, 0.0, piece.rotation) / reserve)
@@ -400,27 +172,11 @@ func support_bodies() -> Dictionary:
 	return result
 
 func support_bodies_unprofiled() -> Dictionary:
-	var supported := {}
-	if is_instance_valid(world.static_body):
-		supported[world.static_body] = true
-	if is_instance_valid(world.boundary):
-		supported[world.boundary] = true
-	for pass_index in range(world.pieces.size() + 1):
-		var changed := false
-		for sample in world.contact_samples:
-			var piece = sample.piece
-			if not is_instance_valid(piece) or not world.pieces.has(piece) or supported.has(piece):
-				continue
-			var base = sample.other if sample.other != null else sample.collider
-			if not is_instance_valid(base) or not supported.has(base) or sample.normal.y > -0.7:
-				continue
-			if not sample.points.any(func(q): return q.y >= piece.position.y / S - 0.5):
-				continue
-			supported[piece] = true
-			changed = true
-		if not changed:
-			break
-	return supported
+	var initial := _support_initial()
+	var piece_y := {}
+	for piece in world.pieces:
+		piece_y[piece] = piece.position.y / S
+	return _native.support_bodies(_contact_records(), piece_y, initial, world.pieces.size() + 1)
 
 func support_pixels(piece, supported: Dictionary) -> Array:
 	world.perf.begin(world.perf.CONTACT)
@@ -429,44 +185,15 @@ func support_pixels(piece, supported: Dictionary) -> Array:
 	return result
 
 func support_pixels_unprofiled(piece, supported: Dictionary) -> Array:
-	var ids := {}
+	var initial: Array = []
 	if is_instance_valid(piece.hinge) and _live_static(piece.support_id):
-		ids[piece.anchor_id] = true
-	for sample in world.contact_samples:
-		if sample.piece != piece:
-			continue
-		var base = sample.other if sample.other != null else sample.collider
-		if not is_instance_valid(base) or not supported.has(base) or sample.normal.y > -0.7:
-			continue
-		for point in sample.points:
-			if point.y < piece.position.y / S - 0.5:
-				continue
-			var nearest := -1
-			var distance := INF
-			for id in piece.ids:
-				var d: float = piece.pixel_position(id).distance_squared_to(point)
-				if d < distance:
-					distance = d
-					nearest = id
-			if nearest >= 0:
-				ids[nearest] = true
-	return ids.keys()
+		initial.append(piece.anchor_id)
+	return _native.nearest_pixels(piece.ids, world._original_points, piece.origin_center, piece.position, piece.rotation, _support_points(piece, supported), initial)
 
 func support_cut_limit(piece, supported: Dictionary) -> float:
 	if is_instance_valid(piece.hinge) and _live_static(piece.support_id):
 		return _row(piece.anchor_id) + 1.0
-	var limit := INF
-	for sample in world.contact_samples:
-		if sample.piece != piece:
-			continue
-		var base = sample.other if sample.other != null else sample.collider
-		if not is_instance_valid(base) or not supported.has(base) or sample.normal.y > -0.7:
-			continue
-		for point in sample.points:
-			if point.y >= piece.position.y / S - 0.5:
-				var relative: Vector2 = (point - piece.position / S).rotated(-piece.rotation)
-				limit = minf(limit, piece.origin_center.y + relative.y + 0.5)
-	return limit
+	return _native.cut_limit(_support_points(piece, supported), piece.origin_center, piece.position, piece.rotation)
 
 func release_unsupported() -> Array:
 	var groups: Array = world.groups(world.static_ids())
@@ -528,58 +255,7 @@ func finish_structure_change() -> void:
 	finishing = false
 
 func column_breaks(piece, section: Dictionary) -> Array:
-	var owned := _owned(piece.ids)
-	var visited := {}
-	var cuts: Array = []
-	for bearing in section.bearings:
-		var seed: int = bearing.id if world.roles[bearing.id] == 1 else bearing.id + world.width
-		if visited.has(seed):
-			continue
-		if not owned.has(seed) or world.roles[seed] != 1:
-			cuts.append(bearing)
-			continue
-		var shaft: Array = [seed]
-		visited[seed] = true
-		var n := 0
-		while n < shaft.size():
-			for id in world.neighbors(shaft[n]):
-				if not owned.has(id) or visited.has(id) or world.roles[id] != 1 or float(world.bonds.get(world.bond_key(shaft[n], id), 0.0)) >= 1.0:
-					continue
-				visited[id] = true
-				shaft.append(id)
-			n += 1
-		var rows := {}
-		var left: int = world.width
-		var right := 0
-		for id in shaft:
-			left = mini(left, int(id) % world.width)
-			right = maxi(right, int(id) % world.width)
-			for upper in [id - world.width, id]:
-				if not owned.has(upper) or not owned.has(upper + world.width):
-					continue
-				var y := _row(upper)
-				if not rows.has(y):
-					rows[y] = {}
-				rows[y][upper] = {"id": upper, "x": world.original_point(upper).x, "strength": _strength(upper), "pillar": true}
-		var options: Array = []
-		for y in rows:
-			var bearings: Array = rows[y].values().filter(func(b): return b.strength > 0.0)
-			if bearings.is_empty():
-				continue
-			var width_left := 0.0
-			for b in bearings:
-				width_left += b.strength
-			var original := 0
-			for x in range(left, right + 1):
-				if world.fixture.cells[y * world.width + x] and world.fixture.cells[(y + 1) * world.width + x]:
-					original += 1
-			options.append({"bearings": bearings, "y": y, "ratio": width_left / maxi(1, original), "joint": bearings.any(func(b): return world.roles[b.id] != 1 and world.roles[b.id + world.width] == 1)})
-		var weak: Array = options.filter(func(s): return s.ratio < 0.999)
-		weak.sort_custom(func(a, b): return a.ratio < b.ratio if not is_equal_approx(a.ratio, b.ratio) else a.y < b.y)
-		var joints: Array = options.filter(func(s): return s.joint)
-		joints.sort_custom(func(a, b): return a.y < b.y)
-		cuts.append_array(weak[0].bearings if not weak.is_empty() else (joints[0].bearings if not joints.is_empty() else [bearing]))
-	return cuts
+	return _native.column_breaks(piece.ids, section.bearings, world.roles, world.fixture.cells, world.bonds, world.width, world.cells.size(), world._original_points)
 
 func load_strain(state: Dictionary, piece, section: Dictionary, dt: float) -> float:
 	var xs: PackedStringArray = []
@@ -716,24 +392,13 @@ func begin_yield(piece, section: Dictionary, cuts: Array) -> void:
 	reconcile_joints()
 
 func _owners(pieces: Array) -> Dictionary:
-	var result := {}
+	var snapshots: Array = []
 	for piece in pieces:
-		for id in piece.ids:
-			result[id] = piece
-	return result
+		snapshots.append({"piece": piece, "ids": piece.ids})
+	return _native.owners(snapshots)
 
 func _seams(cuts: Array, owners: Dictionary) -> Dictionary:
-	var seams := {}
-	for cut in cuts:
-		var upper = owners.get(cut.id)
-		var lower = owners.get(cut.id + world.width)
-		if upper == null or lower == null or upper == lower:
-			continue
-		var key := "%d:%d" % [upper.get_instance_id(), lower.get_instance_id()]
-		if not seams.has(key):
-			seams[key] = {"upper": upper, "lower": lower, "cuts": []}
-		seams[key].cuts.append(cut)
-	return seams
+	return _native.seams(cuts, owners, world.width)
 
 func fragment_is_linked(ids: Array, parent) -> bool:
 	if parent == null:
@@ -821,25 +486,11 @@ func _refresh_joint_filters_unprofiled() -> void:
 			if not links.has(pair[0]):
 				links[pair[0]] = []
 			links[pair[0]].append(pair[1])
-	var seen := {}
-	for first in links:
-		if seen.has(first):
-			continue
-		var queue: Array = [first]
-		seen[first] = true
-		var n := 0
-		while n < queue.size():
-			for other in links[queue[n]]:
-				if not seen.has(other):
-					seen[other] = true
-					queue.append(other)
-			n += 1
-		# Matter's negative group suppresses every pair in a connected articulation.
-		for i in range(queue.size()):
-			for j in range(i + 1, queue.size()):
-				queue[i].add_collision_exception_with(queue[j])
-				queue[j].add_collision_exception_with(queue[i])
-				collision_exceptions.append([queue[i], queue[j]])
+	# Native BFS preserves connected articulation and pair insertion order.
+	for pair in _native.collision_pairs(links):
+		pair[0].add_collision_exception_with(pair[1])
+		pair[1].add_collision_exception_with(pair[0])
+		collision_exceptions.append(pair)
 
 func grounded_joints() -> Dictionary:
 	world.perf.begin(world.perf.SUPPORT)
@@ -852,15 +503,11 @@ func grounded_joints_unprofiled() -> Dictionary:
 	for piece in world.pieces:
 		if is_instance_valid(piece.hinge) and _live_static(piece.support_id):
 			supported[piece] = true
-	for pass_index in range(yield_joints.size()):
-		var changed := false
-		for joint in yield_joints:
-			if joint.phase == "yielding" and not joint.pending and supported.has(joint.lower) and not supported.has(joint.upper):
-				supported[joint.upper] = true
-				changed = true
-		if not changed:
-			break
-	return supported
+	var edges: Array = []
+	for joint in yield_joints:
+		if joint.phase == "yielding" and not joint.pending:
+			edges.append([joint.upper, joint.lower])
+	return _native.propagate(supported, edges, yield_joints.size())
 
 func _release_joint(joint, reason: String) -> void:
 	if joint.phase != "yielding":
@@ -885,11 +532,7 @@ func _release_angle(piece) -> float:
 	var joint: Dictionary = piece.get_meta("support_joint", {})
 	if joint.is_empty() or joint.original == 0:
 		return 0.5
-	var remaining := 0
-	for id in joint.lower:
-		remaining += int(_live_static(id))
-	var fraction: float = float(remaining) / joint.original
-	return 0.5 * (0.24 + 0.76 * fraction * fraction)
+	return _native.release_angle(joint.lower, world.cells, joint.original)
 
 func register_hinge(piece) -> void:
 	world.perf.begin(world.perf.HINGE)
@@ -899,15 +542,7 @@ func register_hinge(piece) -> void:
 func register_hinge_unprofiled(piece) -> void:
 	var row := _row(piece.support_id) - 1
 	var group: int = world._original_groups.get(piece.anchor_id, 0)
-	var bearings: Array = []
-	for id in world._original_groups:
-		if world._original_groups[id] == group and _row(id) == row and world.fixture.cells[id + world.width]:
-			bearings.append(id)
-	var lower: Array = []
-	for id in bearings:
-		if piece.ids.has(id):
-			lower.append(id + world.width)
-	piece.set_meta("support_joint", {"original": bearings.size(), "lower": lower})
+	piece.set_meta("support_joint", _native.register_hinge(world._original_groups, group, row, world.fixture.cells, piece.ids, world.width))
 
 func _update_hinges() -> void:
 	world.perf.begin(world.perf.HINGE)
@@ -939,16 +574,8 @@ func _assist_tilt_unprofiled(dt: float) -> void:
 		if bool(piece.get_meta("tilt_stopped", false)) or piece.sleeping:
 			continue
 		var pivot: Vector2 = piece.hinge.position / S
-		for sample in world.contact_samples:
-			if sample.piece != piece:
-				continue
-			var pivot_only: bool = sample.collider == world.static_body and not sample.points.is_empty()
-			for point in sample.points:
-				if point.distance_to(pivot) > 2.0:
-					pivot_only = false
-			if not pivot_only:
-				piece.set_meta("tilt_stopped", true)
-				break
+		if not _native.pivot_only(world.contact_samples, piece, world.static_body, pivot):
+			piece.set_meta("tilt_stopped", true)
 		if bool(piece.get_meta("tilt_stopped", false)):
 			continue
 		# Source .00007 gravity in ms² is 70 cells/s²; native torque uses px².
@@ -968,66 +595,14 @@ func _update_resting(dt: float) -> void:
 	world.perf.end()
 
 func _update_resting_unprofiled(dt: float) -> void:
-	var live := _owned(world.pieces)
-	if is_instance_valid(world.static_body):
-		live[world.static_body] = true
-	if is_instance_valid(world.boundary):
-		live[world.boundary] = true
-	var contacts := {}
+	var bodies := {}
 	for piece in world.pieces:
-		var id: int = piece.get_instance_id()
-		if not piece.sleeping or not rest_contacts.has(id):
-			continue
-		var retained: Array = []
-		for contact in rest_contacts[id]:
-			var base = contact.base
-			if not is_instance_valid(base) or not live.has(base):
-				continue
-			var radius: float = base.motion_radius / S if base is RigidBody2D else 1.0
-			if (base.position / S).distance_to(contact.position) + absf(base.rotation - contact.angle) * radius < 0.01:
-				retained.append(contact)
-		contacts[id] = retained
-	for sample in world.contact_samples:
-		var piece = sample.piece
-		var base = sample.other if sample.other != null else sample.collider
-		if not is_instance_valid(piece) or not live.has(piece) or piece.sleeping or not is_instance_valid(base) or not live.has(base) or sample.normal.y > -0.7:
-			continue
-		var points: Array = sample.points.filter(func(q): return q.y > piece.position.y / S)
-		if points.is_empty():
-			continue
-		var left := INF
-		var right := -INF
-		for point in points:
-			left = minf(left, point.x)
-			right = maxf(right, point.x)
-		var id: int = piece.get_instance_id()
-		if not contacts.has(id):
-			contacts[id] = []
-		contacts[id].append({"base": base, "position": base.position / S, "angle": base.rotation, "left": left, "right": right})
-	var supported := {}
-	if is_instance_valid(world.static_body):
-		supported[world.static_body] = true
-	if is_instance_valid(world.boundary):
-		supported[world.boundary] = true
-	for pass_index in range(world.pieces.size()):
-		var changed := false
-		for piece in world.pieces:
-			if supported.has(piece) or not _quiet(piece):
-				continue
-			var bases: Array = contacts.get(piece.get_instance_id(), []).filter(func(c): return supported.has(c.base))
-			if bases.is_empty():
-				continue
-			var left := INF
-			var right := -INF
-			for contact in bases:
-				left = minf(left, contact.left)
-				right = maxf(right, contact.right)
-			if piece.position.x / S < left + 0.1 or piece.position.x / S > right - 0.1:
-				continue
-			supported[piece] = true
-			changed = true
-		if not changed:
-			break
+		bodies[piece] = {"id": piece.get_instance_id(), "position": piece.position / S, "rotation": piece.rotation, "radius": piece.motion_radius / S, "sleeping": piece.sleeping, "quiet": _quiet(piece)}
+	var initial := _support_initial()
+	for base in initial:
+		bodies[base] = {"position": base.position / S, "rotation": base.rotation, "radius": 1.0}
+	var result: Dictionary = _native.resting(world.pieces, bodies, _contact_records(), rest_contacts, initial)
+	var supported: Dictionary = result.supported
 	for piece in world.pieces:
 		piece.can_sleep = false
 		if not supported.has(piece):
@@ -1038,7 +613,7 @@ func _update_resting_unprofiled(dt: float) -> void:
 			piece.set_meta("rest_frames", frames)
 			if frames >= 45.0:
 				piece.sleeping = true
-	rest_contacts = contacts
+	rest_contacts = result.contacts
 
 func step(dt: float) -> void:
 	if dt <= 0.0:
@@ -1074,3 +649,31 @@ func _record_snap(section: Dictionary, record_event := true) -> void:
 func _note(event: Dictionary) -> void:
 	event.time = world.elapsed
 	world.events.append(event)
+
+# Engine object validity and contact ownership remain at the GDScript boundary.
+func _support_points(piece, supported: Dictionary) -> Array:
+	var points: Array = []
+	for sample in world.contact_samples:
+		if sample.piece != piece:
+			continue
+		var base = sample.other if sample.other != null else sample.collider
+		if not is_instance_valid(base) or not supported.has(base) or sample.normal.y > -0.7:
+			continue
+		points.append_array(sample.points)
+	return points
+
+func _support_initial() -> Dictionary:
+	var supported := {}
+	if is_instance_valid(world.static_body):
+		supported[world.static_body] = true
+	if is_instance_valid(world.boundary):
+		supported[world.boundary] = true
+	return supported
+
+func _contact_records() -> Array:
+	var records: Array = []
+	for sample in world.contact_samples:
+		var base = sample.other if sample.other != null else sample.collider
+		if is_instance_valid(sample.piece) and world.pieces.has(sample.piece) and is_instance_valid(base):
+			records.append({"piece": sample.piece, "base": base, "normal": sample.normal, "points": sample.points})
+	return records

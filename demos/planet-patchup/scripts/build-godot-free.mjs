@@ -32,14 +32,14 @@ const expansion=json(path.join(source,'data/skill_expansion.json'));
 if(Object.keys(expansion.skills).length)fail('Paid skill expansion must not ship.');
 if(existsSync(path.join(source,'data/source-manifest.json')))fail('Paid provenance and map manifest must not ship in the free project.');
 const project=readFileSync(path.join(source,'project.godot'),'utf8');
-if(!project.includes('config/version="0.5.34"')||!project.includes('config/custom_user_dir_name="PlanetPatchupGodotFreeWeb"'))fail('Incorrect free version or persistent user directory.');
+if(!project.includes('config/version="0.5.40"')||!project.includes('config/custom_user_dir_name="PlanetPatchupGodotFreeWeb"'))fail('Incorrect free version or persistent user directory.');
 
 const inputs=files(source).concat(files(path.join(demo,'src/godot-free')),fileURLToPath(import.meta.url),path.join(demo,'vite.godot-shell.config.js'));
 const content=createHash('sha256');
 for(const p of inputs){content.update(path.relative(demo,p));content.update(readFileSync(p));}
 const sourceHash=content.digest('hex');
-const exportStem='free-0534-'+sourceHash.slice(0,12);
-const scratch=mkdtempSync(path.join(tmpdir(),'pp-godot-free-0534-'));
+const exportStem='free-0540-'+sourceHash.slice(0,12);
+const scratch=mkdtempSync(path.join(tmpdir(),'pp-godot-free-0540-'));
 const staging=path.join(scratch,'project');
 cpSync(source,staging,{recursive:true,filter:p=>!p.split(path.sep).includes('.godot')&&!p.endsWith('.DS_Store')});
 const raw=path.join(scratch,'export');mkdirSync(raw);
@@ -47,9 +47,10 @@ const logs=path.join(scratch,'logs');mkdirSync(logs);
 const pinned='/Users/roy/Developer/breakout/.tools/Godot.app/Contents/MacOS/Godot';
 const godot=process.env.GODOT_BIN||(existsSync(pinned)?pinned:'godot');
 const templates=[process.env.GODOT_WEB_TEMPLATE,
- '/Users/roy/Developer/breakout/orbrixcopy/.tools/web_nothreads_release.zip',
- path.join(homedir(),'Library/Application Support/Godot/export_templates/4.6.2.stable/web_nothreads_release.zip')].filter(Boolean);
+ '/Users/roy/Developer/sand/.local-tools/web-g40/web_dlink_nothreads_release.zip',
+ path.join(homedir(),'Library/Application Support/Godot/export_templates/4.6.2.stable/web_dlink_nothreads_release.zip')].filter(Boolean);
 const template=templates.find(p=>existsSync(p));
+if(!template||!readFileSync(template).includes(Buffer.from('godot.side.wasm')))fail('Godot4.6.2 single-thread GDExtension web template required.');
 if(template){
  const preset=path.join(staging,'export_presets.cfg');
  writeFileSync(preset,readFileSync(preset,'utf8').replace('[preset.0.options]',`[preset.0.options]\ncustom_template/debug=${JSON.stringify(template)}\ncustom_template/release=${JSON.stringify(template)}`));
@@ -67,8 +68,8 @@ run('compile',['--headless','--path',staging,'--check-only','--script','res://ap
 run('export',['--headless','--editor','--path',staging,'--export-release','Web',path.join(raw,exportStem+'.html')]);
 // Include actual engine/pack bytes so immutable URLs remain safe across rebuilds and templates.
 const packageHash=createHash('sha256').update(sourceHash);
-for(const ext of ['wasm','pck'])packageHash.update(readFileSync(path.join(raw,exportStem+'.'+ext)));
-const stem='free-0534-'+packageHash.digest('hex').slice(0,12);
+for(const file of files(raw).filter(p=>/\.(wasm|pck)$/.test(p))){packageHash.update(path.relative(raw,file));packageHash.update(readFileSync(file));}
+const stem='free-0540-'+packageHash.digest('hex').slice(0,12);
 execFileSync(process.execPath,[path.join(demo,'node_modules/vite/bin/vite.js'),'build','--config','vite.godot-shell.config.js'],{cwd:demo,stdio:'inherit'});
 const shellOutput=path.join(demo,'dist-godot-shell');
 const shellIndex=json(path.join(shellOutput,'shell-manifest.json'));
@@ -116,10 +117,10 @@ html=html.replace(engineTag,`<script src="${stem}.js" onerror="PPFreeWebEngineEr
 const marker='engine.startGame(';
 if(html.split(marker).length!==2)fail('Unexpected Godot HTML startup structure.');
 // Pages can add its own HTTP compression. Serve gzip as payload, then decode only
-// these two assets after the browser handles the host's HTTP content coding.
+// the explicitly packaged WASM/PCK assets after host HTTP content coding.
 const startWithAssets=`const startAfterBridge=engine.startGame.bind(engine);
 const fetchBeforeGame=globalThis.fetch.bind(globalThis);
-const compressedTypes=new Map([["${stem}.wasm","application/wasm"],["${stem}.pck","application/octet-stream"]].map(([name,type])=>[new URL(name,document.baseURI).href,type]));
+const compressedTypes=new Map(${JSON.stringify(artifacts.filter(a=>a.encoding==='gzip-payload').map(a=>[a.file,a.file.endsWith('.wasm')?'application/wasm':'application/octet-stream']))}.map(([name,type])=>[new URL(name,document.baseURI).href,type]));
 engine.startGame=options=>globalThis.PPFreeWebReady.then(()=>{
  if(typeof DecompressionStream!=="function")throw new Error("Please update your browser to load this game.");
  globalThis.fetch=async(resource,options)=>{
@@ -141,7 +142,7 @@ writeFileSync(path.join(output,'index.html'),html);writeFileSync(path.join(targe
 const headersPath=path.join(repo,'public/_headers');
 let headers=existsSync(headersPath)?readFileSync(headersPath,'utf8'):'';
 headers=headers.replace(/# BEGIN GODOT FREE\n[\s\S]*?# END GODOT FREE\n?/g,'');
-const encodedFiles=readdirSync(target).filter(n=>/^free-(?:059|0534)-[a-f0-9]+\.(wasm|pck)$/.test(n)).sort();
+const encodedFiles=readdirSync(target).filter(n=>/^(?:free-(?:059|0534|0540)-[a-f0-9]+(?:\.side)?\.(?:wasm|pck)|libpp_core-g40-[a-f0-9]+\.wasm)$/.test(n)).sort();
 headers+='\n# BEGIN GODOT FREE\n'+encodedFiles.map(name=>`/games/planet-patchup-free/${name}\n  Content-Type: application/gzip\n  Cache-Control: public, max-age=31536000, immutable, no-transform\n`).join('')+'# END GODOT FREE\n';
 writeFileSync(headersPath,headers);
 syncPlanetRoutes();
@@ -160,7 +161,7 @@ if(!/^loop=true$/m.test(musicImport)||!/^loop_offset=0(?:\.0)?$/m.test(musicImpo
 if(!pck.includes(readFileSync(path.join(source,'assets/audio',musicFile))))fail('MP3 music bytes missing from free PCK.');
 if(pck.includes(Buffer.from('quiet-background-v5-94bpm-32bars.wav-')))fail('Original large WAV sample must not ship in the free PCK.');
 for(const p of files(output))if(readFileSync(p).length>sizeLimit)fail('Oversized final artifact: '+path.basename(p));
-const manifest={version:'0.5.34-free',sourceHash,stem,scratch,allowedMaps:[...allowedMaps],allowedSkills,
+const manifest={version:'0.5.40-free',commonBaseline:'g40',nativeCore:json(path.join(source,'native_core/provenance.json')),templateSha256:sha(readFileSync(template)),sourceHash,stem,scratch,allowedMaps:[...allowedMaps],allowedSkills,
  shellScript,shellCss,artifacts,scope:'compile/export/static package verification only; no game/browser/save-runtime testing'};
 writeFileSync(path.join(output,'build-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 writeFileSync(path.join(target,stem+'-manifest.json'),JSON.stringify({...manifest,scratch:undefined},null,2)+'\n');

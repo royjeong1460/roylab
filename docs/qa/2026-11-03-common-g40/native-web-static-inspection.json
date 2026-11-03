@@ -1,0 +1,279 @@
+[
+  {
+    "path": "qa/web-release-g40-2026-11-03/native-build/project/native_core/bin/libpp_core.web.template_release.wasm32.wasm",
+    "bytes": 1653903,
+    "sha256": "933aa18db7e2de4a19c87ab439960650474a783da188de42cf901347db25f2d7",
+    "sections": [
+      {
+        "id": 0,
+        "bytes": 18,
+        "name": "dylink.0"
+      },
+      {
+        "id": 1,
+        "bytes": 807
+      },
+      {
+        "id": 2,
+        "bytes": 626
+      },
+      {
+        "id": 3,
+        "bytes": 1353
+      },
+      {
+        "id": 7,
+        "bytes": 64
+      },
+      {
+        "id": 8,
+        "bytes": 1
+      },
+      {
+        "id": 9,
+        "bytes": 2265
+      },
+      {
+        "id": 10,
+        "bytes": 1604272
+      },
+      {
+        "id": 11,
+        "bytes": 44292
+      },
+      {
+        "id": 0,
+        "bytes": 168,
+        "name": "target_features"
+      }
+    ],
+    "imports": [
+      {
+        "module": "env",
+        "name": "memory",
+        "kind": 2,
+        "limits": {
+          "flags": 0,
+          "shared": false,
+          "minimum": 1
+        }
+      },
+      {
+        "module": "env",
+        "name": "__indirect_function_table",
+        "kind": 1,
+        "element_type": 112,
+        "limits": {
+          "flags": 0,
+          "shared": false,
+          "minimum": 1163
+        }
+      },
+      {
+        "module": "env",
+        "name": "__stack_pointer",
+        "kind": 3,
+        "value_type": 127,
+        "mutable": 1
+      },
+      {
+        "module": "env",
+        "name": "__memory_base",
+        "kind": 3,
+        "value_type": 127,
+        "mutable": 0
+      },
+      {
+        "module": "env",
+        "name": "__table_base",
+        "kind": 3,
+        "value_type": 127,
+        "mutable": 0
+      },
+      {
+        "module": "env",
+        "name": "__cxa_atexit",
+        "kind": 0,
+        "type_index": 10
+      },
+      {
+        "module": "env",
+        "name": "_ZdlPvm",
+        "kind": 0,
+        "type_index": 3
+      },
+      {
+        "module": "env",
+        "name": "__dynamic_cast",
+        "kind": 0,
+        "type_index": 73
+      },
+      {
+        "module": "env",
+        "name": "abort",
+        "kind": 0,
+        "type_index": 47
+      },
+      {
+        "module": "env",
+        "name": "_Znwm",
+        "kind": 0,
+        "type_index": 5
+      },
+      {
+        "module": "env",
+        "name": "_ZNSt3__212__next_primeEm",
+        "kind": 0,
+        "type_index": 5
+      },
+      {
+        "module": "env",
+        "name": "snprintf",
+        "kind": 0,
+        "type_index": 73
+      },
+      {
+        "module": "env",
+        "name": "realloc",
+        "kind": 0,
+        "type_index": 2
+      },
+      {
+        "module": "env",
+        "name": "free",
+        "kind": 0,
+        "type_index": 4
+      },
+      {
+        "module": "env",
+        "name": "puts",
+        "kind": 0,
+        "type_index": 5
+      },
+      {
+        "module": "env",
+        "name": "_ZNSt3__25mutexD1Ev",
+        "kind": 0,
+        "type_index": 5
+      },
+      {
+        "module": "env",
+        "name": "_ZNSt3__25mutex4lockEv",
+        "kind": 0,
+        "type_index": 4
+      },
+      {
+        "module": "env",
+        "name": "_ZNSt3__25mutex6unlockEv",
+        "kind": 0,
+        "type_index": 4
+      },
+      {
+        "module": "env",
+        "name": "fflush",
+        "kind": 0,
+        "type_index": 5
+      },
+      {
+        "module": "env",
+        "name": "__cxa_pure_virtual",
+        "kind": 0,
+        "type_index": 47
+      },
+      {
+        "module": "env",
+        "name": "cos",
+        "kind": 0,
+        "type_index": 74
+      },
+      {
+        "module": "env",
+        "name": "sin",
+        "kind": 0,
+        "type_index": 74
+      },
+      {
+        "module": "env",
+        "name": "cosf",
+        "kind": 0,
+        "type_index": 75
+      },
+      {
+        "module": "env",
+        "name": "sinf",
+        "kind": 0,
+        "type_index": 75
+      },
+      {
+        "module": "env",
+        "name": "exp",
+        "kind": 0,
+        "type_index": 74
+      },
+      {
+        "module": "env",
+        "name": "__multi3",
+        "kind": 0,
+        "type_index": 76
+      },
+      {
+        "module": "env",
+        "name": "pow",
+        "kind": 0,
+        "type_index": 77
+      },
+      {
+        "module": "GOT.mem",
+        "name": "stdout",
+        "kind": 3,
+        "value_type": 127,
+        "mutable": 1
+      },
+      {
+        "module": "GOT.mem",
+        "name": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+        "kind": 3,
+        "value_type": 127,
+        "mutable": 1
+      },
+      {
+        "module": "GOT.func",
+        "name": "__cxa_pure_virtual",
+        "kind": 3,
+        "value_type": 127,
+        "mutable": 1
+      },
+      {
+        "module": "GOT.mem",
+        "name": "_ZTVN10__cxxabiv117__class_type_infoE",
+        "kind": 3,
+        "value_type": 127,
+        "mutable": 1
+      }
+    ],
+    "exports": [
+      {
+        "name": "__wasm_call_ctors",
+        "kind": 0,
+        "index": 22
+      },
+      {
+        "name": "pp_core_init",
+        "kind": 0,
+        "index": 655
+      },
+      {
+        "name": "__wasm_apply_data_relocs",
+        "kind": 0,
+        "index": 23
+      }
+    ],
+    "memories": [
+      {
+        "flags": 0,
+        "shared": false,
+        "minimum": 1
+      }
+    ]
+  }
+]

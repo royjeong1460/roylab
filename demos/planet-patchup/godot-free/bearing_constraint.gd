@@ -1,4 +1,4 @@
-extends RefCounted
+extends PPBearingKernel
 
 # Fixed-world-anchor port of Matter.Constraint preSolveAll/solve/postSolveAll.
 # The MIT License (MIT)
@@ -22,40 +22,3 @@ extends RefCounted
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-
-func phase(body: Dictionary, constraint: Dictionary, iterations := 4, time_scale := 1.0) -> void:
-	var impulse: Dictionary = body.constraintImpulse
-	body.position.x += impulse.x
-	body.position.y += impulse.y
-	body.angle += impulse.angle
-	for i in range(iterations):
-		var angle: float = body.angle - constraint.angleB
-		var c := cos(angle)
-		var s := sin(angle)
-		var old_x: float = constraint.pointB.x
-		constraint.pointB.x = old_x * c - constraint.pointB.y * s
-		constraint.pointB.y = old_x * s + constraint.pointB.y * c
-		constraint.angleB = body.angle
-		var dx: float = constraint.pointA.x - body.position.x - constraint.pointB.x
-		var dy: float = constraint.pointA.y - body.position.y - constraint.pointB.y
-		var length := maxf(0.000001, sqrt(dx * dx + dy * dy))
-		var stiffness: float = constraint.stiffness * time_scale
-		var fx: float = dx * (length - constraint.length) / length * stiffness
-		var fy: float = dy * (length - constraint.length) / length * stiffness
-		var damping: float = constraint.damping * time_scale
-		if damping > 0:
-			var nx := dx / length
-			var ny := dy / length
-			var normal_velocity: float = nx * (body.position.x - body.positionPrev.x) + ny * (body.position.y - body.positionPrev.y)
-			body.positionPrev.x += damping * nx * normal_velocity
-			body.positionPrev.y += damping * ny * normal_velocity
-		impulse.x += fx
-		impulse.y += fy
-		body.position.x += fx
-		body.position.y += fy
-		var torque: float = (constraint.pointB.x * fy - constraint.pointB.y * fx) / (body.inverseMass + body.inverseInertia) * body.inverseInertia
-		impulse.angle += torque
-		body.angle += torque
-	impulse.x *= 0.4
-	impulse.y *= 0.4
-	impulse.angle *= 0.4

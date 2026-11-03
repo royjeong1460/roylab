@@ -1,5 +1,7 @@
 extends RefCounted
 
+var _native = ClassDB.instantiate("PPEffectKernel")
+
 # ArchWorld + IdeaWorld + ActiveIdeaWorld; paid Aftershock uses aftershock.js.
 # All positions and projectile velocities are logical cells and cells/second.
 const Catalog = preload("res://campaign/catalog.gd")
@@ -182,14 +184,10 @@ func _trigger_passive(id: String, bomb: Dictionary) -> void:
 		for piece in world.pieces:
 			if piece.ids.size() < 8 or (chosen != null and piece.ids.size() <= chosen.ids.size()):
 				continue
-			for pixel_id in piece.ids:
-				if piece.pixel_position(pixel_id).distance_to(point) <= float(world.stats.get("blastReach", 18.0)):
-					chosen = piece
-					break
+			if _native.near_piece(world, piece, point, float(world.stats.get("blastReach", 18.0))):
+				chosen = piece
 		if chosen != null:
-			var ids := {}
-			for pixel_id in chosen.ids:
-				ids[pixel_id] = true
+			var ids: Dictionary = _native.owned(chosen.ids)
 			marks.append({"kind": id, "ids": ids, "gain": gain, "tuning": tuning, "remaining": 12.0, "armed_at": clock + 0.18, "used": false})
 			marks = marks.slice(maxi(0, marks.size() - 8))
 	world.events.append({"kind": "skill-trigger", "id": id, "p": point})
@@ -222,16 +220,7 @@ func _paid_aftershock(bomb: Dictionary, point: Vector2, skill_level: int) -> voi
 		_schedule("echo", 0.4 + i * 0.3, chosen[i], radius, power)
 
 func _spaced(candidates: Array, chosen: Array, gap: float) -> Array:
-	var available: Array = []
-	for candidate in candidates:
-		var spaced := true
-		for previous in chosen:
-			if candidate.distance_to(previous) < gap:
-				spaced = false
-				break
-		if spaced:
-			available.append(candidate)
-	return available
+	return _native.spaced(candidates, chosen, gap)
 
 func mark_has_piece(mark: Dictionary, piece) -> bool:
 	# Pixel membership is immutable for a live piece; fractures create new instances.
@@ -240,11 +229,7 @@ func mark_has_piece(mark: Dictionary, piece) -> bool:
 	var owners: Dictionary = mark._piece_owners
 	var instance_id: int = piece.get_instance_id()
 	if not owners.has(instance_id):
-		owners[instance_id] = false
-		for id in piece.ids:
-			if mark.ids.has(id):
-				owners[instance_id] = true
-				break
+		owners[instance_id] = _native.intersects(piece.ids, mark.ids)
 	return owners[instance_id]
 
 func on_piece_removed(piece) -> void:
@@ -268,11 +253,7 @@ func on_contact(hit: Dictionary) -> void:
 			_schedule("relay-hit", 0.0, point, 3.0, mark.tuning.power)
 
 func _structure_material() -> Array:
-	var material: Array = []
-	for piece in [null] + world.pieces:
-		for pixel in world.material(piece):
-			material.append({"id": pixel.id, "q": pixel.q, "piece": piece})
-	return material
+	return _native.structure_material(world)
 
 func can_activate(id: String) -> bool:
 	if world == null or world.paused or world.settled or world.charge <= 0.00000001 or not active_ids.has(id) or bool(uses.get(id, false)):
@@ -288,18 +269,14 @@ func activate(id := "") -> bool:
 	if material.is_empty():
 		return false
 	# Quantiles are captured once at deployment; later fracture does not retarget.
-	var xs: Array = []
-	for entry in material:
-		xs.append(entry.q.x)
-	xs.sort()
+	var geometry: Dictionary = _native.bounds(material)
+	var xs: Array = geometry.xs
 	var skill_level := int(levels.get(id, 0))
 	var tuning := _effect(id)
 	var count := int(tuning.payloads)
 	var left := float(xs[0])
 	var right := float(xs[-1])
-	var top := INF
-	for entry in material:
-		top = minf(top, entry.q.y)
+	var top: float = geometry.top
 	var targets: Array = []
 	for i in range(count):
 		targets.append(float(xs[floori(float(i) * (xs.size() - 1) / (count - 1))]))
@@ -336,17 +313,7 @@ func _secondary_blast(action: Dictionary) -> void:
 	_record({"kind": action.get("kind", "orbital"), "p": action.p})
 
 func _orbital_columns() -> Dictionary:
-	# Only position is needed for the vertical sweep. Snapshot current geometry,
-	# including rebuilt bodies after each impact, and inspect nearby columns only.
-	var columns := {}
-	for piece in [null] + world.pieces:
-		for id in (piece.ids if piece != null else world.static_ids()):
-			var point: Vector2 = piece.pixel_position(id) if piece != null else world.original_point(id)
-			var column := floori(point.x)
-			if not columns.has(column):
-				columns[column] = []
-			columns[column].append(point)
-	return columns
+	return _native.columns(world)
 
 func _orbital_step(dt: float) -> void:
 	if active.is_empty():
@@ -365,11 +332,7 @@ func _orbital_step(dt: float) -> void:
 		var previous: float = projectile.y
 		projectile.vy = minf(230.0, projectile.vy + 130.0 * dt)
 		projectile.y += projectile.vy * dt
-		var hit: float = world.ground_y(projectile.x)
-		for column in range(floori(projectile.x - projectile.radius), floori(projectile.x + projectile.radius) + 1):
-			for point: Vector2 in columns.get(column, []):
-				if absf(point.x - projectile.x) <= projectile.radius and point.y >= previous - projectile.radius and point.y <= projectile.y + projectile.radius:
-					hit = minf(hit, point.y)
+		var hit: float = _native.orbital_hit(columns, projectile.x, projectile.radius, previous, projectile.y, world.ground_y(projectile.x))
 		if hit <= projectile.y + projectile.radius:
 			_secondary_blast({"kind": "orbital", "vfx": "orbital", "p": Vector2(projectile.x, minf(world.ground_y(projectile.x) - 1.0, hit)), "radius": projectile.radius, "power": projectile.power, "heavy": projectile.heavy})
 			# Later projectiles need the new geometry; the next tick rebuilds its own index.

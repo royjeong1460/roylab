@@ -1,0 +1,21 @@
+{
+  "commonVersion": "0.5.40",
+  "freeVersion": "0.5.40-free",
+  "paidVersion": "0.5.40(49)",
+  "stem": "free-0540-4cd73924be76",
+  "baseCommit": "bda560151008e9288cbe1059b4f27d1cd6062938",
+  "freeBuild": "passed import/check-only/export and Vite",
+  "siteBuild": "passed Next static build",
+  "nativeWebBuild": "passed pinned Emscripten4.0.20",
+  "packageVerification": "passed; all8artifacts/4gzip and native hashes",
+  "deployment": "pending",
+  "publicHttpVerification": "pending",
+  "paidInstalled": true,
+  "paidInstalledSequence": 3716,
+  "userAppFeedback": "not bad; unrecorded stop deferred",
+  "gameplayByAssistant": false,
+  "browserByAssistant": false,
+  "testsByAssistant": false,
+  "userWebVerification": "pending",
+  "rollback": "rollback-web.py (guarded entry-only, immutable artifacts retained)"
+}

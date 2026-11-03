@@ -1,0 +1,11 @@
+{
+  "baseCommit": "bda560151008e9288cbe1059b4f27d1cd6062938",
+  "previousVersion": "0.5.34-free",
+  "currentVersion": "0.5.40-free",
+  "currentEntryHashes": {
+    "public/games/planet-patchup-free/index.html": "1ed18fc4fa65b8c0ff0a2eab0cfc9d93c306a665b0b6ad28e577c16c1f787add",
+    "public/planet-patchup/play/index.html": "5f03d6386935c7a131bb04e80d0b6bfa79af342f1bf639536a28b005ebaeb23d",
+    "public/games/planet-patchup-free/shell-manifest.json": "2fb4135aa1e06659dcb3be834146f4b12759369e56aa57b45855765df9d2355b"
+  },
+  "preserve": "allimmutableassetsandheaders; no save resets"
+}

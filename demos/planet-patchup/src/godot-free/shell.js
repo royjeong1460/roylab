@@ -32,7 +32,7 @@ function bootAnalytics(){
  try{
   let storage;try{storage=localStorage;}catch{}
   analytics=new FreeAnalytics({config:posthogConfig(import.meta.env),storage,excluded:isTestVisit(url),properties:{
-   edition:'free',campaign:'arch',build_version:'godot-free-0.5.34',balance_version:balanceVersion,
+   edition:'free',campaign:'arch',build_version:'godot-free-0.5.40',balance_version:balanceVersion,
    map_version:tutorial.replace(/^arch-0-/,''),device_type:matchMedia('(pointer:coarse)').matches?'touch':'desktop',source:visitSource(url,document.referrer)
   }});
  }catch{}

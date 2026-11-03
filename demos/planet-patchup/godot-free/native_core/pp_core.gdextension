@@ -1,0 +1,8 @@
+[configuration]
+entry_symbol = "pp_core_init"
+compatibility_minimum = "4.6"
+reloadable = false
+
+[libraries]
+macos = "res://native_core/bin/libpp_core.macos.template_release.arm64.dylib"
+web.release.nothreads.wasm32 = "res://native_core/bin/libpp_core-g40-933aa18db7e2de4a.wasm"

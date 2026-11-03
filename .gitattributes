@@ -1,0 +1,4 @@
+
+# Preserve exact archived patch context and generated evidence output.
+docs/qa/2026-11-03-common-g40/*.patch -whitespace
+docs/qa/2026-11-03-common-g40/*.log -whitespace

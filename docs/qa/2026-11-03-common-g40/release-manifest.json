@@ -1,0 +1,110 @@
+{
+  "version": "0.5.40-free",
+  "commonBaseline": "g40",
+  "nativeCore": {
+    "commonVersion": "0.5.40",
+    "baseline": "g40 / iOS0.5.40(49)",
+    "source": "../godot-core-native/src",
+    "godot": "4.6.2.stable",
+    "godotCpp": "e103d348c4b2d8df7b819126d855e19381cb9a87",
+    "emscripten": "4.0.20",
+    "threads": false,
+    "wasm": {
+      "file": "libpp_core-g40-933aa18db7e2de4a.wasm",
+      "sha256": "933aa18db7e2de4a19c87ab439960650474a783da188de42cf901347db25f2d7"
+    },
+    "macos": {
+      "file": "libpp_core.macos.template_release.arm64.dylib",
+      "sha256": "786748abb43e66cbd8e066eabfb1108894fc852ef9a2194cdc5d2ee0471fcac4"
+    },
+    "templateSha256": "d19564ebc3602f80e78d6b9c3951affc90b5512d0471f8ac74f6c603c912aab5",
+    "runtimeVerified": false
+  },
+  "templateSha256": "d19564ebc3602f80e78d6b9c3951affc90b5512d0471f8ac74f6c603c912aab5",
+  "sourceHash": "1b806d3dcc27598012a30f1c76e5f094c3f88d2ffabeee2f8236d2fb771d8b7c",
+  "stem": "free-0540-4cd73924be76",
+  "allowedMaps": [
+    "arch-0-arch-quarter-v2",
+    "arch-1-arch-quarter-v2",
+    "arch-2-arch-quarter-v2",
+    "arch-3-arch-quarter-v2",
+    "arch-4-arch-quarter-v2",
+    "arch-5-arch-quarter-v2",
+    "arch-6-arch-quarter-v2",
+    "arch-7-arch-quarter-v2"
+  ],
+  "allowedSkills": [
+    "aftershock",
+    "orbital",
+    "relay"
+  ],
+  "shellScript": "godot-shell-assets/shell-d00lwLHI.js",
+  "shellCss": "godot-shell-assets/shell-CehdKP2w.css",
+  "artifacts": [
+    {
+      "file": "free-0540-4cd73924be76.audio.position.worklet.js",
+      "encoding": "identity",
+      "bytes": 2973,
+      "decodedBytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8",
+      "decodedSha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "file": "free-0540-4cd73924be76.audio.worklet.js",
+      "encoding": "identity",
+      "bytes": 7298,
+      "decodedBytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3",
+      "decodedSha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "file": "free-0540-4cd73924be76.js",
+      "encoding": "identity",
+      "bytes": 5552570,
+      "decodedBytes": 5552570,
+      "sha256": "f3ec2db2acf90e2413035417a6d2ded643248791c1de7987ff68492a4610de27",
+      "decodedSha256": "f3ec2db2acf90e2413035417a6d2ded643248791c1de7987ff68492a4610de27"
+    },
+    {
+      "file": "free-0540-4cd73924be76.pck",
+      "encoding": "gzip-payload",
+      "bytes": 5386713,
+      "decodedBytes": 7170420,
+      "sha256": "375ebe582f3b69f1ac75d812bdc9192afc02a2362f54da5584fcbc22d917fb7b",
+      "decodedSha256": "170534f00d4ea942f8cce48c586f490c4938f4519e94c634963ac2b5ba03f408"
+    },
+    {
+      "file": "free-0540-4cd73924be76.png",
+      "encoding": "identity",
+      "bytes": 21443,
+      "decodedBytes": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e",
+      "decodedSha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "file": "free-0540-4cd73924be76.side.wasm",
+      "encoding": "gzip-payload",
+      "bytes": 10041388,
+      "decodedBytes": 41124149,
+      "sha256": "1bd41b05eddbd1f86f95b703d8f5d99159d02a95a63321e0c0165900431bbc8d",
+      "decodedSha256": "6cf851a8cab85aba0770b76a838cea5e2f63fbe02b1b95963e0d6582d42d17e1"
+    },
+    {
+      "file": "free-0540-4cd73924be76.wasm",
+      "encoding": "gzip-payload",
+      "bytes": 584666,
+      "decodedBytes": 1509558,
+      "sha256": "183fabbbe7ff9f5dc237d3273b6c198daca484bde8b9e5e081a0ba6d2113058b",
+      "decodedSha256": "9c50d494628b80586f585292048331268076b74c403bcb066519f8ce2102cc35"
+    },
+    {
+      "file": "libpp_core-g40-933aa18db7e2de4a.wasm",
+      "encoding": "gzip-payload",
+      "bytes": 313237,
+      "decodedBytes": 1653903,
+      "sha256": "49e0ce9f2cdf4e44c5a246ffadc298d31fb6f5a48d44b4b52ee285120adac734",
+      "decodedSha256": "933aa18db7e2de4a19c87ab439960650474a783da188de42cf901347db25f2d7"
+    }
+  ],
+  "scope": "compile/export/static package verification only; no game/browser/save-runtime testing"
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+import os
+from SCons.Script import *
+env = SConscript('vendor/godot-cpp/SConstruct', {'api_version':'4.6'})
+env.Append(CPPPATH=['src'])
+env.Append(CXXFLAGS=['-ffp-contract=off'])
+sources = Glob('src/*.cpp')
+if env['platform'] == 'ios':
+    lib = env.StaticLibrary('build/libpp_core.ios.' + env['target'] + '.' + env['arch'], sources)
+else:
+    name = '../project/native_core/bin/libpp_core.' + env['platform'] + '.' + env['target'] + '.' + env['arch']
+    lib = env.SharedLibrary(name + ('.dylib' if env['platform'] == 'macos' else '.wasm' if env['platform'] == 'web' else ''), sources)
+Default(lib)

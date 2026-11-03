@@ -1,5 +1,7 @@
 extends RefCounted
 
+var _native = ClassDB.instantiate("PPEffectKernel")
+
 # Frozen ThreeToolWorld.pull/strainSupported, BlackHoleLabWorld.pull and
 # BlackHoleWearWorld.sampleWear/flushWear. Coordinates here are source cells.
 const S := 4.0
@@ -65,99 +67,28 @@ func _pull(well: Dictionary, dt: float) -> void:
 	if radius <= 0:
 		return
 	for piece in world.pieces:
-		var reach: float = radius + piece.motion_radius / S
-		if (piece.position / S).distance_squared_to(center) > reach * reach:
-			continue
-		var near := radius
-		var point := Vector2.ZERO
-		var found := false
-		for id in piece.ids:
-			var q: Vector2 = piece.pixel_position(id)
-			var distance := q.distance_to(center)
-			if distance < near:
-				near = distance
-				point = q
-				found = true
-		if not found:
-			continue
-		var direction: Vector2 = center - piece.position / S
-		if direction.length() < 0.25:
-			continue
-		var acceleration: float = 0.18 * power * (1.0 - 0.5 * near / radius) / (0.5 + piece.mass)
-		_impulse(piece, point, direction.normalized() * acceleration * dt * SOURCE_HZ * piece.mass)
-	for grain in world.grains:
-		if grain.rest:
-			continue
-		var direction: Vector2 = center - grain.p
-		var distance := direction.length()
-		if distance < 0.25 or distance > radius:
-			continue
-		var speed := 55.0 * power * (1.0 - 0.5 * distance / radius) * dt
-		var velocity: Vector2 = grain.v + direction / distance * speed
-		grain.v = Vector2(clampf(velocity.x, -240.0, 240.0), clampf(velocity.y, -240.0, 240.0))
-		grain.rest = false
+		var pull: Dictionary = _native.pull_piece(world, piece, center, radius, power, dt)
+		if not pull.is_empty():
+			_impulse(piece, pull.point, pull.impulse)
+	_native.pull_grains(world.grains, center, radius, power, dt)
 	var mix: float = well.get("coreMix", world.stats.get("coreMix", 1.0))
 	if mix == 0:
 		return
-	var core_radius := radius * 0.4
 	var cycle := sin((float(well.duration) - float(well.remaining)) * 8.0)
 	for piece in world.pieces:
 		var offset: Vector2 = piece.position / S - center
 		var distance := offset.length()
 		if distance < 0.25 or distance >= radius:
 			continue
-		var normal := offset / distance
-		var edge := minf(1.0, (radius - distance) / maxf(1.0, radius - core_radius))
-		var strength := power * mix
-		var velocity: Vector2 = piece.linear_velocity / (S * SOURCE_HZ)
-		var outward := maxf(0.0, velocity.dot(normal))
-		var brake := outward * (1.0 - exp(-50.0 * strength * edge * dt))
-		var acceleration: float = 0.18 * strength / (0.5 + piece.mass)
-		var inward := acceleration * 5.0 * minf(1.0, distance / core_radius) * edge * dt * SOURCE_HZ + brake
-		var stir := acceleration * 0.8 * maxf(0.0, 1.0 - distance / core_radius) * cycle * dt * SOURCE_HZ
-		_impulse(piece, piece.position / S, (-normal * inward + Vector2(-normal.y, normal.x) * stir) * piece.mass)
+		var source_impulse: Vector2 = _native.core_impulse(piece.position, piece.linear_velocity, piece.mass, center, radius, power, mix, cycle, dt)
+		_impulse(piece, piece.position / S, source_impulse)
 
 func strain_supported(well: Dictionary, strength: float) -> void:
-	var structures := {}
-	for id in world.static_ids():
-		var group: int = world._original_groups.get(id, 0)
-		var y := floori(float(id) / world.width)
-		if not structures.has(group):
-			structures[group] = {}
-		if not structures[group].has(y):
-			structures[group][y] = []
-		structures[group][y].append(int(id) % world.width)
-	for rows in structures.values():
-		var support := {}
-		for y in rows:
-			var xs: Array = rows[y]
-			var points: Array = []
-			var n := 0
-			while n < xs.size():
-				var first: int = xs[n]
-				var last := first
-				n += 1
-				while n < xs.size() and xs[n] == last + 1:
-					last = xs[n]
-					n += 1
-				var point := Vector2((first + last + 1) / 2.0, float(y) + 0.5)
-				if point.distance_to(well.p) < float(well.radius):
-					points.append(point)
-			if points.is_empty():
-				continue
-			var distance := INF
-			for point in points:
-				distance = minf(distance, point.distance_to(well.p))
-			if support.is_empty() or xs.size() < int(support.width) or (xs.size() == int(support.width) and distance < float(support.distance)):
-				support = {"width": xs.size(), "distance": distance, "points": points}
-		if support.is_empty():
-			continue
-		for point in support.points:
-			var direction: Vector2 = well.p - point
-			if direction.length() < 0.01:
-				direction.y = -1.0
-			# The source strains bonds; its support solver decides what releases.
-			world.apply_source_impact(point, strength * float(well.power), {"piece": null, "direction": direction, "source": "gravity", "radius": 6.0})
+	for point: Vector2 in _native.strain_points(world.static_ids(), world._original_groups, world.width, well.p, well.radius):
+		var direction: Vector2 = well.p - point
+		if direction.length() < 0.01:
+			direction.y = -1.0
+		world.apply_source_impact(point, strength * float(well.power), {"piece": null, "direction": direction, "source": "gravity", "radius": 6.0})
 	world.enforce_body_budget()
 
 func wear_multiplier(piece) -> float:
@@ -180,16 +111,7 @@ func _pair_key(sample: Dictionary, a, b) -> String:
 	return "%d:%d:%s" % [lo, hi, ";".join(points)]
 
 func _surface(piece) -> Array:
-	var owned := {}
-	for id in piece.ids:
-		owned[id] = true
-	var surface: Array = []
-	for id in piece.ids:
-		for neighbor in world.neighbors(id):
-			if not owned.has(neighbor):
-				surface.append({"id": id, "q": piece.pixel_position(id)})
-				break
-	return surface
+	return _native.surface(world, piece)
 
 func _friction(sample: Dictionary, a, b) -> float:
 	if sample.has("friction"):
@@ -205,8 +127,6 @@ func _sample_wear(samples: Array, dt: float) -> void:
 			piece.set_meta(RUBBING_META, 0.0)
 		return
 	var additions := {}
-	var surfaces := {}
-	var touching := {}
 	var pairs := {}
 	for sample in samples:
 		var a = sample.piece
@@ -217,64 +137,17 @@ func _sample_wear(samples: Array, dt: float) -> void:
 		# Both Godot bodies report the same manifold; its impulse is not additive.
 		if not pairs.has(key) or float(sample.normal_impulse) > float(pairs[key].normal_impulse):
 			pairs[key] = sample
-	for sample in pairs.values():
-		var a = sample.piece
-		var b = sample.other
-		var friction := _friction(sample, a, b)
-		if friction <= 0:
-			continue
-		var reduced_mass: float = 1.0 / (1.0 / a.mass + 1.0 / b.mass)
-		var pressure := minf(2.0, maxf(0.0, float(sample.normal_impulse)) / (reduced_mass * 0.08))
-		var normal: Vector2 = sample.normal
-		var tangent := Vector2(-normal.y, normal.x)
-		for point in sample.get("points", [sample.point]):
-			var well := {}
-			for active in wells:
-				if point.distance_to(active.p) < float(active.radius) * 0.4:
-					well = active
-					break
-			if well.is_empty():
-				continue
-			touching[a] = true
-			touching[b] = true
-			if pressure <= 0:
-				continue
-			var relative: Vector2 = sample.relative_velocity
-			var offset: Vector2 = point - sample.point
-			relative += Vector2(-offset.y, offset.x) * (a.angular_velocity - b.angular_velocity)
-			var slip := absf(relative.dot(tangent))
-			if slip <= 3.0:
-				continue
-			var amount := minf(48.0, (slip - 3.0) * pressure * 8.0 * minf(1.0, friction / 0.7)) * minf(dt, 1.0 / 30.0)
-			for piece in [a, b]:
-				if not surfaces.has(piece):
-					surfaces[piece] = _surface(piece)
-				var closest := -1
-				var distance := 2.25
-				for cell in surfaces[piece]:
-					var d: float = cell.q.distance_to(point)
-					if d < distance and cell.q.distance_to(well.p) < float(well.radius) * 0.4:
-						distance = d
-						closest = cell.id
-				if closest < 0:
-					continue
-				if not additions.has(piece):
-					additions[piece] = {}
-				additions[piece][closest] = maxf(float(additions[piece].get(closest, 0.0)), amount)
+	var sampled: Dictionary = _native.wear_additions(world, pairs.values(), wells, dt)
+	additions = sampled.additions
+	var touching: Dictionary = sampled.touching
 	if not additions.is_empty():
 		_wear_dirty = true
 	for piece in world.pieces:
 		var rubbing: float = piece.get_meta(RUBBING_META, 0.0)
 		if additions.has(piece):
 			var pixels: Dictionary = additions[piece]
-			var total := 0.0
-			for amount in pixels.values():
-				total += float(amount)
-			var scale := minf(1.0, 48.0 * dt / total) * wear_multiplier(piece)
-			for id in pixels:
-				wear[id] = minf(1.5, float(wear.get(id, 0.0)) + float(pixels[id]) * scale)
-				if float(wear[id]) >= 1.0:
-					_wear_ready[piece.get_instance_id()] = true
+			if _native.apply_wear(wear, pixels, dt, wear_multiplier(piece)):
+				_wear_ready[piece.get_instance_id()] = true
 			piece.set_meta(RUBBING_META, minf(1.0, rubbing + minf(dt, 1.0 / 30.0)))
 		elif not touching.has(piece):
 			piece.set_meta(RUBBING_META, maxf(0.0, rubbing - dt))
@@ -288,13 +161,9 @@ func _flush_wear() -> void:
 		for piece in world.pieces.duplicate():
 			if not _wear_ready.has(piece.get_instance_id()):
 				continue
-			var remaining: Array = []
-			var eroded: Array = []
-			for id in piece.ids:
-				if float(wear.get(id, 0.0)) >= 1.0:
-					eroded.append(id)
-				else:
-					remaining.append(id)
+			var partition: Dictionary = _native.split_wear(piece.ids, wear)
+			var remaining: Array = partition.remaining
+			var eroded: Array = partition.eroded
 			if eroded.is_empty():
 				continue
 			for id in eroded:
@@ -306,13 +175,7 @@ func _flush_wear() -> void:
 		_wear_ready.clear()
 	# Partial wear cannot change ownership. Prune only after bodies are removed/rebuilt.
 	if _live_dirty and not wear.is_empty():
-		var live := {}
-		for piece in world.pieces:
-			for id in piece.ids:
-				live[id] = true
-		for id in wear.keys():
-			if not live.has(id):
-				wear.erase(id)
+		_native.prune_wear(wear, world.pieces)
 	_live_dirty = false
 	if removed > 0:
 		worn_pixels += removed

@@ -1,0 +1,19 @@
+{
+  "commonVersion": "0.5.40",
+  "baseline": "g40 / iOS0.5.40(49)",
+  "source": "../godot-core-native/src",
+  "godot": "4.6.2.stable",
+  "godotCpp": "e103d348c4b2d8df7b819126d855e19381cb9a87",
+  "emscripten": "4.0.20",
+  "threads": false,
+  "wasm": {
+    "file": "libpp_core-g40-933aa18db7e2de4a.wasm",
+    "sha256": "933aa18db7e2de4a19c87ab439960650474a783da188de42cf901347db25f2d7"
+  },
+  "macos": {
+    "file": "libpp_core.macos.template_release.arm64.dylib",
+    "sha256": "786748abb43e66cbd8e066eabfb1108894fc852ef9a2194cdc5d2ee0471fcac4"
+  },
+  "templateSha256": "d19564ebc3602f80e78d6b9c3951affc90b5512d0471f8ac74f6c603c912aab5",
+  "runtimeVerified": false
+}

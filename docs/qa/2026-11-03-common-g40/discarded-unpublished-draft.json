@@ -1,0 +1,14 @@
+{
+  "reason": "Discard only never-published intermediate0540package; all034/059andarchive assets retained",
+  "paths": [
+    "public/games/planet-patchup-free/free-0540-12d5f3263529.audio.position.worklet.js",
+    "public/games/planet-patchup-free/free-0540-12d5f3263529.audio.worklet.js",
+    "public/games/planet-patchup-free/free-0540-12d5f3263529.js",
+    "public/games/planet-patchup-free/free-0540-12d5f3263529.pck",
+    "public/games/planet-patchup-free/free-0540-12d5f3263529.png",
+    "public/games/planet-patchup-free/free-0540-12d5f3263529.side.wasm",
+    "public/games/planet-patchup-free/free-0540-12d5f3263529.wasm",
+    "public/games/planet-patchup-free/godot-shell-assets/shell-mgwJPVSf.js",
+    "public/games/planet-patchup-free/free-0540-12d5f3263529-manifest.json"
+  ]
+}

@@ -4,6 +4,8 @@
 
 
 
+
+
 # BEGIN GODOT FREE
 /games/planet-patchup-free/free-0534-c5a7a90dd912.pck
   Content-Type: application/gzip
@@ -17,10 +19,22 @@
 /games/planet-patchup-free/free-0534-f4dda62c94b4.wasm
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/free-0540-4cd73924be76.pck
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/free-0540-4cd73924be76.side.wasm
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/free-0540-4cd73924be76.wasm
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
 /games/planet-patchup-free/free-059-f0aa866ea27e.pck
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
 /games/planet-patchup-free/free-059-f0aa866ea27e.wasm
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/libpp_core-g40-933aa18db7e2de4a.wasm
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
 # END GODOT FREE

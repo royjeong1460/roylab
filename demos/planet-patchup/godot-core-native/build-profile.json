@@ -1,0 +1,1 @@
+{"enabled_classes": ["RefCounted", "Node", "Node2D", "RigidBody2D", "Geometry2D", "OS", "Engine", "ClassDB", "ProjectSettings", "FileAccess", "Image", "WorkerThreadPool", "XMLParser", "SceneTree", "MultiMesh", "Mesh", "PhysicsDirectBodyState2D"]}

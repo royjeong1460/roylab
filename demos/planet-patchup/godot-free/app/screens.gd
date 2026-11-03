@@ -6,6 +6,7 @@ const EnvironmentReceipt = preload("res://presentation/environment_receipt.gd")
 const L10n = preload("res://app/localization.gd")
 const GameSkin = preload("res://app/skin.gd")
 const PlayLayout = preload("res://app/play_layout.gd")
+const Diagnostics = preload("res://platform/diagnostics.gd")
 const OfferPopup = preload("res://app/offer_popup.gd")
 const PLAY_TIPS := [
 	"Tap and release without moving to attack. Two fingers move and zoom.",
@@ -37,6 +38,7 @@ var _workshop_scroll: Dictionary = {}
 var _offer_popup: Control
 var _settings_from := "home"
 var _performance_updated := 0
+var _diagnostic_taps: Array[int] = []
 
 func setup(application, source_catalog, source_journey, source_feedback) -> void:
 	app = application
@@ -875,12 +877,33 @@ func _error(payload: Dictionary) -> Control:
 
 func _build_info() -> Control:
 	var page := _page("Build information","PLANET PATCHUP · GODOT","settings")
-	page.content.add_child(_label(L10n.format("Free web edition · 0.5.34\nGodot 4.6.2 · Compatibility\nArch Quarter · 7 maps + tutorial\n%d upgrade tracks · %d skills",[catalog.tracks.size(),catalog.skills.size()]),14))
+	page.content.add_child(_label(L10n.format("Free web edition · 0.5.40\nGodot 4.6.2 · Compatibility\nArch Quarter · 7 maps + tutorial\n%d upgrade tracks · %d skills",[catalog.tracks.size(),catalog.skills.size()]),14))
 	page.content.add_child(_label("Content source hashes are included with this build. Gameplay and device confirmation are recorded separately.",12,UITheme.MUTED))
 	page.content.add_child(_button("Export records",func(): app.export_profile()))
 	return page.root
 
+func _diagnostic_tap() -> void:
+	var now := Time.get_ticks_msec()
+	while not _diagnostic_taps.is_empty() and now - _diagnostic_taps[0] > 3000:
+		_diagnostic_taps.pop_front()
+	_diagnostic_taps.append(now)
+	if _diagnostic_taps.size() == 5:
+		_diagnostic_taps.clear()
+		_apply_diagnostics_toggle.call_deferred()
+
+func _apply_diagnostics_toggle() -> void:
+	var enabled := not Diagnostics.is_enabled()
+	Diagnostics.set_enabled(enabled)
+	if is_instance_valid(app.play_view) and is_instance_valid(app.play_view.world):
+		app.play_view.world.perf.set_enabled(enabled)
+	if is_instance_valid(_hud.get("performance_panel")):
+		_hud.performance_panel.visible = enabled
+		_hud.performance.text = "성능 진단 · 측정 대기"
+		_performance_updated = 0
+		_hud.layout.call()
+
 func _play_hud() -> Control:
+	_diagnostic_taps.clear()
 	var bright := GameSkin.bright()
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -906,6 +929,14 @@ func _play_hud() -> Control:
 	battery.autowrap_mode = TextServer.AUTOWRAP_OFF
 	root.add_child(recovery)
 	root.add_child(battery)
+	var diagnostic_button := Button.new()
+	diagnostic_button.flat = true
+	diagnostic_button.focus_mode = Control.FOCUS_NONE
+	diagnostic_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	for state in ["normal", "hover", "pressed", "focus"]:
+		diagnostic_button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	diagnostic_button.pressed.connect(_diagnostic_tap)
+	root.add_child(diagnostic_button)
 	var recovery_bar := ProgressBar.new()
 	recovery_bar.show_percentage = false
 	recovery_bar.visible = false
@@ -946,10 +977,10 @@ func _play_hud() -> Control:
 	var performance_panel := PanelContainer.new()
 	performance_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	performance_panel.add_theme_stylebox_override("panel",UITheme.box(Color(0.035,0.065,0.09,0.94),Color("bca367"),1,6))
-	var performance := _label("성능 진단 v33 · 측정 대기",11,Color("fff0cd"))
+	var performance := _label("성능 진단 Godot C++/g40 · 측정 대기",11,Color("fff0cd"))
 	performance.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	performance_panel.add_child(performance)
-	performance_panel.visible = bool(ProjectSettings.get_setting("diagnostics/performance_overlay",false))
+	performance_panel.visible = Diagnostics.is_enabled()
 	root.add_child(performance_panel)
 	_performance_updated = 0
 	var tool := _button("",func():
@@ -1052,6 +1083,8 @@ func _play_hud() -> Control:
 		battery_icon.size = Vector2(24,24)
 		battery.position = Vector2(43,13)
 		battery.size = Vector2(72,28)
+		diagnostic_button.position = Vector2(36,5)
+		diagnostic_button.size = Vector2(79,44)
 		recovery_icon.position = Vector2(width-171,15)
 		recovery_icon.size = Vector2(24,24)
 		recovery.position = Vector2(width-140,6)
@@ -1119,6 +1152,7 @@ func _play_hud() -> Control:
 	root.resized.connect(layout)
 	root.ready.connect(layout)
 	_hud["performance"] = performance
+	_hud["performance_panel"] = performance_panel
 	_hud.merge({"recovery":recovery,"metric":metric,"battery":battery,"recovery_bar":recovery_bar,"battery_bar":battery_bar,"tool":tool,"tool_name":tool_name,"tool_icon":tool_icon,"switch_icon":switch_icon,"passives":passive_slots,"actives":active_slots,"tutorial":tutorial,"minimap":minimap,"fit":fit,"tip":tip,"notice":notice_label,"notice_panel":notice_panel,"skip_guide":skip,"skip_wait":skip_wait,"layout":layout})
 	return root
 

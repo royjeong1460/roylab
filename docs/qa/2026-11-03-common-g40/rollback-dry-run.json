@@ -1,0 +1,11 @@
+{
+  "restoreEntries": [
+    "public/games/planet-patchup-free/index.html",
+    "public/planet-patchup/play/index.html",
+    "public/games/planet-patchup-free/shell-manifest.json"
+  ],
+  "baseCommit": "bda560151008e9288cbe1059b4f27d1cd6062938",
+  "retainAllAssets": true,
+  "touchBrowserSaves": false,
+  "apply": false
+}

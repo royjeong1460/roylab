@@ -1,0 +1,60 @@
+{
+  "godot.js": {
+    "bytes": 5552570,
+    "sha256": "f3ec2db2acf90e2413035417a6d2ded643248791c1de7987ff68492a4610de27"
+  },
+  "godot.wasm": {
+    "bytes": 1509558,
+    "sha256": "9c50d494628b80586f585292048331268076b74c403bcb066519f8ce2102cc35",
+    "memory_limits": [
+      {
+        "flags": 1,
+        "shared": false,
+        "minimum": 512,
+        "maximum": 32768
+      }
+    ],
+    "custom_sections": [
+      "dylink.0"
+    ],
+    "version_markers": []
+  },
+  "godot.audio.worklet.js": {
+    "bytes": 7298,
+    "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+  },
+  "godot.audio.position.worklet.js": {
+    "bytes": 2973,
+    "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+  },
+  "godot.side.wasm": {
+    "bytes": 41124149,
+    "sha256": "6cf851a8cab85aba0770b76a838cea5e2f63fbe02b1b95963e0d6582d42d17e1",
+    "memory_limits": [
+      {
+        "flags": 0,
+        "shared": false,
+        "minimum": 83
+      }
+    ],
+    "custom_sections": [
+      "dylink.0"
+    ],
+    "version_markers": [
+      "4.6.2.stable",
+      "71f334935"
+    ]
+  },
+  "godot.html": {
+    "bytes": 5088,
+    "sha256": "3a5f265e788646513c32494fc0faead64c6b7f92ef005bf475da0c622bd481f4"
+  },
+  "godot.service.worker.js": {
+    "bytes": 5739,
+    "sha256": "c72e9a688cd06978be343fd8481130e89dd81439267e1cfd8aef8343ea9f4139"
+  },
+  "godot.offline.html": {
+    "bytes": 971,
+    "sha256": "b0a5d443e78f58717adac780bac91c1431bfa3b801c41f4707d507fb5ad2e47f"
+  }
+}

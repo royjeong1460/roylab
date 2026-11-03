@@ -1,0 +1,9 @@
+{
+  "base": "bda560151008e9288cbe1059b4f27d1cd6062938",
+  "paidVersion": "0.5.40(49)",
+  "paidProject": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/perf-g40-2026-11-03/project",
+  "paidReceipt": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/perf-g40-2026-11-03/device-install.json",
+  "userFeedback": "Not bad; unrecorded brief stop skipped at user request; no quantified g40 device FPS confirmed",
+  "testsAllowed": false,
+  "gameplayOwner": "user"
+}

@@ -21,17 +21,18 @@ var motion_radius := 1.0
 var pixel_rects: Array = []
 var pixel_shapes: Array = []
 var pixel_mesh: Mesh
+var _native_contacts = ClassDB.instantiate("PPContactKernel")
 
 func configure(world: Node, pixels: Array, parent_piece = null) -> void:
 	owner_world = world
 	ids = pixels.duplicate()
 	var same_geometry: bool = parent_piece != null and ids == parent_piece.ids
+	var geometry: Dictionary = {}
 	if same_geometry:
 		origin_center = parent_piece.origin_center
 	else:
-		for id in ids:
-			origin_center += world.original_point(id)
-		origin_center /= ids.size()
+		geometry = world.native_pixels.body_geometry(ids, world._original_points)
+		origin_center = geometry.center
 	position = origin_center * S
 	mass = ids.size() * 0.002
 	custom_integrator = true
@@ -55,12 +56,8 @@ func configure(world: Node, pixels: Array, parent_piece = null) -> void:
 		pixel_shapes = parent_piece.pixel_shapes
 		pixel_mesh = parent_piece.pixel_mesh
 	else:
-		var moment := 0.0
-		for id in ids:
-			var local: Vector2 = (world.original_point(id) - origin_center) * S
-			moment += 0.008 * (local.length_squared() + S * S / 6.0)
-			motion_radius = maxf(motion_radius, local.length() + 0.75 * S)
-		inertia = moment
+		inertia = geometry.moment
+		motion_radius = geometry.radius
 		pixel_rects = world.rectangles(ids)
 		for rect in pixel_rects:
 			var shape := RectangleShape2D.new()
@@ -134,77 +131,11 @@ func _integrate_forces_unprofiled(state: PhysicsDirectBodyState2D) -> void:
 	if owner_world == null or owner_world.paused:
 		return
 	state.integrate_forces()
-	var patches := {}
-	var contacts := {}
-	for i in range(state.get_contact_count()):
-		var key := "%d:%d:%d" % [state.get_contact_collider_id(i), state.get_contact_local_shape(i), state.get_contact_collider_shape(i)]
-		contacts[key] = true
-		if not patches.has(key):
-			var other_id := state.get_contact_collider_id(i)
-			var local_shape := state.get_contact_local_shape(i)
-			var other_shape := state.get_contact_collider_shape(i)
-			var pair_key := "%d:%d:%d:%d" % [get_instance_id(), local_shape, other_id, other_shape] if get_instance_id() < other_id else "%d:%d:%d:%d" % [other_id, other_shape, get_instance_id(), local_shape]
-			patches[key] = {"points": [], "normal": state.get_contact_local_normal(i), "other": state.get_contact_collider_object(i), "other_v": state.get_contact_collider_velocity_at_position(i), "impulse": 0.0, "pair_key": pair_key}
-		patches[key].points.append(state.get_contact_local_position(i))
-		patches[key].impulse += absf(state.get_contact_impulse(i).dot(patches[key].normal)) / (S * 60)
-	for patch in patches.values():
-		var points: Array = []
-		var center := Vector2.ZERO
-		for q in patch.points:
-			points.append(q / S)
-			center += q / (S * patch.points.size())
-		var arm: Vector2 = center * S - state.transform.origin
-		var velocity: Vector2 = state.linear_velocity + Vector2(-arm.y, arm.x) * state.angular_velocity
-		var other_velocity: Vector2 = patch.other_v
-		if patch.other is RigidBody2D:
-			var other_arm: Vector2 = center * S - patch.other.position
-			other_velocity = patch.other.linear_velocity + Vector2(-other_arm.y, other_arm.x) * patch.other.angular_velocity
-		owner_world.pending_contacts.append({"piece": self, "other": patch.other if patch.other is RigidBody2D else null, "collider": patch.other, "normal": patch.normal, "points": points, "point": center, "normal_impulse": patch.impulse, "relative_velocity": (velocity - other_velocity) / S, "friction": 0.7, "pair_key": patch.pair_key})
-	var best := {}
-	var static_best := {}
-	var own_ready: bool = owner_world.elapsed - last_impact >= 0.15
-	for key in patches:
-		# Fracture consumes collisionStart; wear/support retain continuing manifolds above.
-		if previous_contacts.has(key):
-			continue
-		var patch: Dictionary = patches[key]
-		var contact := Vector2.ZERO
-		for q in patch.points:
-			contact += q / patch.points.size()
-		var normal: Vector2 = patch.normal
-		var arm: Vector2 = contact - state.transform.origin
-		var own_v := previous_velocity + Vector2(-arm.y, arm.x) * previous_angular
-		var other_v: Vector2 = patch.other_v
-		var inverse: float = 1.0 / mass + pow(arm.cross(normal), 2) / inertia
-		var other = patch.other
-		if other is RigidBody2D:
-			var other_arm: Vector2 = contact - other.position
-			inverse += 1.0 / other.mass + pow(other_arm.cross(normal), 2) / other.inertia
-			if other.get("previous_velocity") != null:
-				other_v = other.previous_velocity + Vector2(-other_arm.y, other_arm.x) * other.previous_angular
-		var speed := maxf(0.0, -(own_v - other_v).dot(normal)) / S
-		if speed < 4 or inverse <= 0:
-			continue
-		var recipients := 2 if other == owner_world.static_body or other is RigidBody2D else 1
-		var energy := 0.5 / (inverse * 0.002) * pow(minf(speed, 180) / 60.0, 2) / recipients
-		var segments: Array = []
-		var static_segments: Array = []
-		for candidate_key in patches:
-			var candidate: Dictionary = patches[candidate_key]
-			if not previous_contacts.has(candidate_key) and absf(candidate.normal.dot(normal)) >= 0.7:
-				var segment := {"a": candidate.points[0] / S, "b": candidate.points[-1] / S}
-				segments.append(segment)
-				if candidate.other == owner_world.static_body:
-					static_segments.append(segment)
-		var hit := {"piece": self, "source_piece": self, "source_normal": normal, "source_velocity": own_v / S, "other_velocity": other_v / S, "other": other if other is RigidBody2D else null, "collider": other, "point": contact / S, "speed": speed, "energy": energy, "normal": normal, "segments": segments.slice(0, 16), "downward": normal.y < -0.35 and own_v.y / S > 14}
-		if own_ready and (best.is_empty() or energy > best.energy):
-			best = hit
-		if other == owner_world.static_body and (static_best.is_empty() or energy > static_best.energy):
-			static_best = hit.duplicate()
-			static_best.piece = null
-			static_best.normal = -normal
-			static_best.downward = false
-			static_best.segments = static_segments.slice(0, 16)
+	var contact_result: Dictionary = _native_contacts.sample(self, state, owner_world, previous_contacts, previous_velocity, previous_angular, last_impact)
+	owner_world.pending_contacts.append_array(contact_result.pending)
+	var best: Dictionary = contact_result.best
+	var static_best: Dictionary = contact_result.static_best
+	var contacts: Dictionary = contact_result.contacts
 	if not best.is_empty():
 		best.chain_context = owner_world.chain_physics.prepare(best)
 		owner_world.pending_impacts.append(best)

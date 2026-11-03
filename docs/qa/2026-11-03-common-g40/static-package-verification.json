@@ -1,0 +1,11 @@
+{
+  "version": "0.5.40-free",
+  "stem": "free-0540-4cd73924be76",
+  "artifacts": 8,
+  "gzipPayloads": 4,
+  "allArtifactAndDecodedHashesMatch": true,
+  "existingAnalyticsConfigPreserved": true,
+  "oldImmutableAssetsPreserved": true,
+  "gameplayRun": false,
+  "browserRun": false
+}
