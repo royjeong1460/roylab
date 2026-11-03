@@ -1,0 +1,391 @@
+{
+  "base": "bda560151008e9288cbe1059b4f27d1cd6062938",
+  "source": "/Users/roy/Developer/sand/variants/free-web-g40-20261103",
+  "destination": "/Users/roy/Developer/sand/deployment/roylab",
+  "paths": [
+    {
+      "path": ".gitattributes",
+      "action": "sync owned change"
+    },
+    {
+      "path": "AGENTS.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "README.md",
+      "action": "three-way preserve existing edits"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/README.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/SConstruct",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/build-profile.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/dependency-lock.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/source-manifest.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/bearing_kernel.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/bearing_kernel.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/contact_kernel.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/contact_kernel.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/effect_kernel.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/effect_kernel.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/grain_kernel.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/grain_kernel.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/graph_kernels.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/graph_kernels.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/pixel_kernel.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/pixel_kernel.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/register_types.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/render_kernel.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/render_kernel.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/structure_kernel.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/structure_kernel.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/world_kernel.cpp",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-core-native/src/world_kernel.h",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/AGENTS.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/README.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/app/screens.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/bearing_constraint.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/blackhole_physics.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/campaign/final_collection.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/chain_physics.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/export_presets.cfg",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/fracture_connectivity.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/fracture_graph.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/grain_physics.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/impact_physics.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/native_core/bin/libpp_core-g40-933aa18db7e2de4a.wasm",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/native_core/bin/libpp_core.macos.template_release.arm64.dylib",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/native_core/pp_core.gdextension",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/native_core/provenance.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/performance_probe.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/piece.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/platform/diagnostics.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/platform/diagnostics.gd.uid",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/presentation/grain_surface.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/presentation/pixel_surface.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/project.godot",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/section_graph.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/skill_physics.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/structure_physics.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/godot-free/world.gd",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/scripts/build-godot-free.mjs",
+      "action": "sync owned change"
+    },
+    {
+      "path": "demos/planet-patchup/src/godot-free/shell.js",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/bugs/PERF-001-common-g40.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/bugs/README.md",
+      "action": "preserved conflicting primary; release worktree authoritative"
+    },
+    {
+      "path": "docs/planet-addresses.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/planet-patchup-version-history.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/planet-patchup-versions.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/README.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/before-release.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/build-free.log",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/build-next.log",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/delivery.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/discarded-unpublished-draft.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/final-review.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/free-integration-report.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/g38-to-g39.patch",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/g39-to-g40.patch",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/install-site-deps.log",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/native-web-report.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/native-web-static-inspection.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/official-template-members-sha256.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/release-manifest.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/rollback-dry-run.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/rollback-web.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/rollback-web.py",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/source-review.md",
+      "action": "sync owned change"
+    },
+    {
+      "path": "docs/qa/2026-11-03-common-g40/static-package-verification.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/_headers",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/free-0540-4cd73924be76-manifest.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/free-0540-4cd73924be76.audio.position.worklet.js",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/free-0540-4cd73924be76.audio.worklet.js",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/free-0540-4cd73924be76.js",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/free-0540-4cd73924be76.pck",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/free-0540-4cd73924be76.png",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/free-0540-4cd73924be76.side.wasm",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/free-0540-4cd73924be76.wasm",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/godot-shell-assets/shell-d00lwLHI.js",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/index.html",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/libpp_core-g40-933aa18db7e2de4a.wasm",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/games/planet-patchup-free/shell-manifest.json",
+      "action": "sync owned change"
+    },
+    {
+      "path": "public/planet-patchup/play/index.html",
+      "action": "sync owned change"
+    }
+  ],
+  "unrelatedDirtyPathsPreserved": true,
+  "manualPreservingMerge": [
+    "docs/bugs/README.md: append PERF-001 only, existing bug rows retained"
+  ]
+}

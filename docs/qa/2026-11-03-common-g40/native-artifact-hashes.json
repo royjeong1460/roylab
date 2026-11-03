@@ -1,0 +1,17 @@
+{
+  "/Users/roy/Developer/sand/.local-tools/web-g40/web_dlink_nothreads_release.zip": {
+    "bytes": 11189445,
+    "sha256": "d19564ebc3602f80e78d6b9c3951affc90b5512d0471f8ac74f6c603c912aab5",
+    "gzip_bytes": 11099647
+  },
+  "/Users/roy/Developer/sand/variants/godot-paid-port/qa/web-release-g40-2026-11-03/native-build/project/native_core/bin/libpp_core.web.template_release.wasm32.wasm": {
+    "bytes": 1653903,
+    "sha256": "933aa18db7e2de4a19c87ab439960650474a783da188de42cf901347db25f2d7",
+    "gzip_bytes": 311046
+  },
+  "/Users/roy/Developer/sand/variants/godot-paid-port/qa/web-release-g40-2026-11-03/native-build/project/native_core/bin/libpp_core.macos.template_release.arm64.dylib": {
+    "bytes": 616528,
+    "sha256": "786748abb43e66cbd8e066eabfb1108894fc852ef9a2194cdc5d2ee0471fcac4",
+    "gzip_bytes": 225364
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "/Users/roy/Developer/sand/.local-tools/web-g40/emsdk/.emscripten": {
+    "sha256": "b6fb54bdf3679a42441619c1bf348b99fb7c8e877c4d7fecbac75d4844bdc58f",
+    "bytes": 329
+  },
+  "/Users/roy/Developer/sand/.local-tools/web-g40/emsdk/emsdk_manifest.json": {
+    "sha256": "e314b477cfb018723575af0ab83777d9657799b0c05898192690b94a0a2fba06",
+    "bytes": 26399
+  },
+  "/Users/roy/Developer/sand/.local-tools/web-g40/emsdk/upstream/emscripten/emcc.py": {
+    "sha256": "8aceac1889631c2902b2265c7991a18d187e3deec157e8194e489e0988a564d1",
+    "bytes": 22827
+  },
+  "/Users/roy/Developer/sand/.local-tools/web-g40/emsdk/upstream/emscripten/emscripten-version.txt": {
+    "sha256": "912f766a2b95eeee2fae2da6257b8d6fde56716e71a20f16d58a5cbdfebed9d0",
+    "bytes": 9
+  },
+  "/Users/roy/Developer/sand/.local-tools/web-g40/emsdk/upstream/bin/clang": {
+    "sha256": "cd6ba200bcd0e32515f9b32deaaaf848f7d5335704ccf7b7f9c56027fe3394cc",
+    "bytes": 113692720
+  },
+  "/Users/roy/Developer/sand/.local-tools/web-g40/emsdk/upstream/bin/wasm-ld": {
+    "sha256": "b03b753ce6045a61db8ccde51a08fd770c0b616f5de70dfbb9c7891618994823",
+    "bytes": 66190352
+  },
+  "/Users/roy/Developer/sand/.local-tools/web-g40/emsdk/upstream/bin/wasm-opt": {
+    "sha256": "7a5e8eb672b69976c9c29fb3978556c2fd549d102e738a0b48047fdd25884d14",
+    "bytes": 17977776
+  },
+  "/Users/roy/Developer/sand/.local-tools/web-g40/emsdk/node/22.16.0_64bit/bin/node": {
+    "sha256": "a45751fbfe88440bebff63cd44814e4ed6deb642bc3e3c4a14c4f8ae0ed9e019",
+    "bytes": 110503408
+  }
+}

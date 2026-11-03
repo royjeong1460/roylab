@@ -13,3 +13,7 @@ Native app source/hash/install records remain under local variants/godot-paid-po
 ## Web rollback
 
 `python3 docs/qa/2026-11-03-common-g40/rollback-web.py` is a guarded dry-run; `--apply` restores only the three public entry/manifest files from bda5601 after checking their current hashes. Keep every0534/0540/native payload and _headers entry so already-open/cached clients still load. Review diff, update ledger, run normal static site build/deploy and HTTP verification. Do not use a blind full revert that deletes cached-client assets; never reset browser saves. The native app has its independent g39 source/app rollback.
+
+## Public delivery
+
+Release5abb5ae fast-forward pushed to main. Cloudflare completed success d356bed6-13c8-4fc4-8ca4-0d28a587e9b9. Canonical /planet-patchup/play/ serves free-0540-4cd73924be76;15staticHTTPresponses and all transport/decoded payload hashes match. Archived Phaser/editor URLs are reachable. No browser/engine was started. This verifies delivery, not actual runtime/save/audio/FPS. Post-delivery documentation commit does not change any game bytes.

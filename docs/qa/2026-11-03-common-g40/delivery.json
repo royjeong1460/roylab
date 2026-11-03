@@ -8,14 +8,17 @@
   "siteBuild": "passed Next static build",
   "nativeWebBuild": "passed pinned Emscripten4.0.20",
   "packageVerification": "passed; all8artifacts/4gzip and native hashes",
-  "deployment": "pending",
-  "publicHttpVerification": "pending",
+  "deployment": "success",
+  "publicHttpVerification": "15staticresponsesandallpayload/decodedhashesmatch",
   "paidInstalled": true,
   "paidInstalledSequence": 3716,
   "userAppFeedback": "not bad; unrecorded stop deferred",
   "gameplayByAssistant": false,
   "browserByAssistant": false,
   "testsByAssistant": false,
-  "userWebVerification": "pending",
-  "rollback": "rollback-web.py (guarded entry-only, immutable artifacts retained)"
+  "userWebVerification": "pending, no game/browser run by assistant",
+  "rollback": "rollback-web.py (guarded entry-only, immutable artifacts retained)",
+  "releaseCommit": "5abb5aed1b1461e1298f2d188a43567f5f570527",
+  "cloudflareDeployment": "d356bed6-13c8-4fc4-8ca4-0d28a587e9b9",
+  "publicUrl": "https://roylab.pages.dev/planet-patchup/play/"
 }

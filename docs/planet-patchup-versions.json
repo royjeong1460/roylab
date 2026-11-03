@@ -18,9 +18,14 @@
     "engine": "Godot4.6.2 Compatibility + C++ WebAssembly (single thread)",
     "project": "demos/planet-patchup/godot-free",
     "route": "/planet-patchup/play/",
-    "published": false,
+    "published": true,
     "content": "Arch8maps,3skills,one passive and one active slot",
-    "previousRelease": "bda5601 /0.5.34-free"
+    "previousRelease": "bda5601 /0.5.34-free",
+    "releaseCommit": "5abb5aed1b1461e1298f2d188a43567f5f570527",
+    "url": "https://roylab.pages.dev/planet-patchup/play/",
+    "manifestStem": "free-0540-4cd73924be76",
+    "delivery": "docs/qa/2026-11-03-common-g40/delivery.json",
+    "httpVerified": true
   },
   "excluded": [
     "v35 regression experiment",
