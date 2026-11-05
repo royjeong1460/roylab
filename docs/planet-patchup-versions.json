@@ -24,8 +24,8 @@
     "project": "demos/planet-patchup/godot-free",
     "route": "/planet-patchup/play/",
     "url": "https://roylab.pages.dev/planet-patchup/play/",
-    "manifestStem": "free-0541-24c2dfba8fc8",
-    "delivery": "docs/qa/2026-11-06-unified-godot/README.md"
+    "manifestStem": "free-0541-dadcd08d207d",
+    "delivery": "docs/qa/2026-11-06-web-save-block/README.md"
   },
   "previous": {
     "commonVersion": "0.5.40",

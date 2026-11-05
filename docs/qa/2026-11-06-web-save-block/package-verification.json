@@ -1,0 +1,14 @@
+{
+  "stem": "free-0541-dadcd08d207d",
+  "before": "free-0541-24c2dfba8fc8",
+  "pckEntries": 816,
+  "changedPackPaths": [
+    ".godot/exported/133200997/export-da3d2b29be011000ecf2ffbfcf527f17-app.scn",
+    "app/app.gdc"
+  ],
+  "campaignMaps": 43,
+  "skills": 10,
+  "storageLogicUnchanged": true,
+  "runtimeExecuted": false,
+  "buildExitCode": 0
+}

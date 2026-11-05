@@ -154,7 +154,8 @@ func navigate(screen: String, data: Dictionary = {}) -> void:
 	screens.close_popup()
 	payload = data.duplicate()
 	if is_instance_valid(view):
-		safe_root.remove_child(view)
+		# A pressed button can still be part of the current input dispatch.
+		view.hide()
 		view.queue_free()
 	view = screens.build(screen, payload)
 	safe_root.add_child(view)
@@ -388,6 +389,11 @@ func show_notice(text: String, args: Array = []) -> void:
 
 func _failure_text(result: Dictionary) -> String:
 	var reason := str(result.get("reason", "unknown"))
+	if reason in ["storage", "storage-blocked"]:
+		var details: String = journey.store.warning
+		if not details.is_empty():
+			push_warning("Planet Patchup storage: " + details)
+			return details
 	if reason == "storage-unavailable":
 		return _render_notice(FreeWebBridge.STORAGE_UNAVAILABLE)
 	if reason == "slots-full":

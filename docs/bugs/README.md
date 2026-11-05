@@ -10,3 +10,4 @@
 | [BUG-003](BUG-003-free-web-first-load.md) | 2026-11-02 | Safari 무료 웹 첫 로딩 지연 | 음악 리소스 축소 · 사용자 확인 대기 |
 
 | [PERF-001](PERF-001-common-g40.md) | 2026-11-03 | g40공통 최적화·모래표시·버전/롤백 추적 | 앱체감개선확인 · 무료웹사용자확인대기 |
+| [BUG-004](BUG-004-free-web-sortie-save-blocked.md) | 2026-11-03 | 웹 출동 시 저장 오류 | Chrome 재제보 · 상세 원인 확인 대기 |
