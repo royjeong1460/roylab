@@ -1,0 +1,15 @@
+{
+  "stem": "free-0541-391bbf6d2e52",
+  "before": "free-0541-dadcd08d207d",
+  "entries": 816,
+  "changedPaths": [
+    ".godot/exported/133200997/export-da3d2b29be011000ecf2ffbfcf527f17-app.scn",
+    "platform/free_web_bridge.gdc",
+    "platform/legacy_profile.gdc"
+  ],
+  "maps": 43,
+  "skills": 10,
+  "runtimeExecutedByAgent": false,
+  "cause": "legacy-version was returned after decode_export had already validated the profile",
+  "archiveBeforeImport": true
+}

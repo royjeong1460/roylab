@@ -54,11 +54,9 @@ static func select_free_slots(slots: Dictionary, schema) -> Dictionary:
 		var parsed: Dictionary = decode_export(raw, schema)
 		if not parsed.ok:
 			return {"ok": false, "reason": "legacy-corrupt", "key": key, "detail": parsed.reason}
-		var original = JSON.parse_string(raw)
-		if not original is Dictionary or original.get("version") not in [1, 2]:
-			return {"ok": false, "reason": "legacy-version", "key": key}
+		# A legacy slot can contain a newer profile or an export accepted by decode_export.
 		valid.append(parsed.profile)
-		originals.append(original)
+		originals.append(JSON.parse_string(raw))
 	if valid.is_empty():
 		return {"ok": false, "reason": "legacy-empty"}
 	# Compare raw parsed source objects too: normalization must not hide a conflict.

@@ -70,7 +70,7 @@ func bootstrap(journey) -> void:
 	if not result.ok:
 		_recovery(journey, "legacy-import: " + str(result.reason))
 		return
-	var marker := {"schemaVersion": 1, "sourceRevision": selected.profile.legacyCollection.sourceRevision,
+	var marker := {"schemaVersion": 1, "sourceRevision": selected.profile.revision,
 		"resetCount": selected.profile.resetCount, "snapshotSha256": digest, "rawBackup": backup_path,
 		"destinationRevision": journey.profile.revision}
 	var recorded := _write_verified(BACKUP_DIRECTORY.path_join("migration.json"), JSON.stringify(marker, "", true))

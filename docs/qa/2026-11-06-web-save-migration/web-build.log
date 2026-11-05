@@ -1,0 +1,66 @@
+
+> roylab@0.1.0 build:game
+> node scripts/build-planet-demo.mjs --free
+
+
+> planet-patchup-demo@0.1.0 build:free
+> node scripts/build-godot-free.mjs
+
+Godot import: passed (/var/folders/j0/ckthjmvx2c3gx4673wxb2cg80000gn/T/pp-godot-free-0541-mIlhMF/logs/import.log)
+Godot compile: passed (/var/folders/j0/ckthjmvx2c3gx4673wxb2cg80000gn/T/pp-godot-free-0541-mIlhMF/logs/compile.log)
+Godot export: passed (/var/folders/j0/ckthjmvx2c3gx4673wxb2cg80000gn/T/pp-godot-free-0541-mIlhMF/logs/export.log)
+vite v8.3.3 building client environment for production...
+transforming...
+✓ 7 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-godot-shell/godot-shell-assets/shell-CehdKP2w.css   2.03 kB │ gzip: 0.82 kB
+dist-godot-shell/godot-shell-assets/shell-BnxlxNYt.js   13.72 kB │ gzip: 5.60 kB
+
+✓ built in 15ms
+{
+  "built": "free-0541-391bbf6d2e52",
+  "files": [
+    {
+      "file": "free-0541-391bbf6d2e52.audio.position.worklet.js",
+      "bytes": 2973,
+      "decodedBytes": 2973
+    },
+    {
+      "file": "free-0541-391bbf6d2e52.audio.worklet.js",
+      "bytes": 7298,
+      "decodedBytes": 7298
+    },
+    {
+      "file": "free-0541-391bbf6d2e52.js",
+      "bytes": 5552570,
+      "decodedBytes": 5552570
+    },
+    {
+      "file": "free-0541-391bbf6d2e52.pck",
+      "bytes": 13289910,
+      "decodedBytes": 57274648
+    },
+    {
+      "file": "free-0541-391bbf6d2e52.png",
+      "bytes": 21443,
+      "decodedBytes": 21443
+    },
+    {
+      "file": "free-0541-391bbf6d2e52.side.wasm",
+      "bytes": 10041388,
+      "decodedBytes": 41124149
+    },
+    {
+      "file": "free-0541-391bbf6d2e52.wasm",
+      "bytes": 584666,
+      "decodedBytes": 1509558
+    },
+    {
+      "file": "libpp_core-g40-933aa18db7e2de4a.wasm",
+      "bytes": 313237,
+      "decodedBytes": 1653903
+    }
+  ],
+  "manifest": "/Users/roy/Developer/sand/variants/web-save-recovery-20261106/demos/planet-patchup/dist-godot-free/build-manifest.json"
+}
