@@ -109,15 +109,27 @@ func _apply_material() -> void:
 	_shader.set_shader_parameter("restoration_b", Vector2(restoration[4],restoration[5]))
 	_overlay.queue_redraw()
 
-func update_profile(profile: Dictionary, progression) -> void:
+func update_profile(profile: Dictionary) -> void:
 	if catalog == null:
 		return
+	var records: Dictionary = profile.get("stageRecords", {})
+	var previous_cleared := true
 	for i in range(6):
-		var progress: Dictionary = progression.region_progress(profile, i)
-		available[i] = progression.region_open(profile, i)
-		cleared[i] = progress.cleared
-		complete[i] = progress.complete
-		restoration[i] = float(progress.restoration)
+		var region: Dictionary = catalog.region(i)
+		var sites: Array = region.get("sites", [])
+		var clears := 0
+		var all_complete := not sites.is_empty()
+		for entry in sites:
+			var id := str(entry.get("id", "")) if entry is Dictionary else str(entry)
+			var record: Dictionary = records.get(id,{})
+			var ratio := float(record.get("recovered",0)) / maxf(1.0,float(record.get("total",1)))
+			clears += int(ratio >= 0.7)
+			all_complete = all_complete and ratio >= 1.0
+		available[i] = previous_cleared
+		cleared[i] = not sites.is_empty() and clears == sites.size()
+		complete[i] = all_complete
+		restoration[i] = (1.0 if all_complete else 0.8 if cleared[i] else float(clears)/7.0*0.65) if available[i] else 0.0
+		previous_cleared = previous_cleared and cleared[i]
 	_apply_material()
 
 func set_selected(index: int) -> void:

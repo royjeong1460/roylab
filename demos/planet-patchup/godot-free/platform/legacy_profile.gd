@@ -20,7 +20,7 @@ static func decode_export(data: Variant, schema) -> Dictionary:
 	if value.has("currentProfile"):
 		if value.get("campaign", "arch") != "arch" or (value.has("edition") and value.edition != "free-web"):
 			return {"ok": false, "reason": "import-campaign"}
-		if value.has("balanceVersion") and value.balanceVersion not in ["arch-campaign-v0.2", "arch-campaign-v0.2.1", "arch-campaign-v0.2.2", "arch-campaign-v0.2.3", schema.BALANCE_VERSION]:
+		if value.has("balanceVersion") and value.balanceVersion not in ["arch-campaign-v0.2", "arch-campaign-v0.2.1", "arch-campaign-v0.2.2", "arch-campaign-v0.2.3", schema.WEB_V4_BALANCE_VERSION, schema.BALANCE_VERSION]:
 			return {"ok": false, "reason": "import-campaign"}
 		value = value.currentProfile
 		source = "currentProfile"

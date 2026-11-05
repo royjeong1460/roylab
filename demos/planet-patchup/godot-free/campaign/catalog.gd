@@ -1,6 +1,5 @@
 extends RefCounted
 
-const FreeEdition = preload("res://campaign/free_edition.gd")
 const MAP_CACHE_LIMIT := 2
 const RETIRED_TRACKS := ["suction", "range", "collectBatch", "collectInterval"]
 var regions: Array = []
@@ -79,7 +78,7 @@ func load_catalog() -> Error:
 	for id in collection.tracks:
 		next_tracks[id] = collection.tracks[id].duplicate(true)
 	next_balance.tracks = next_tracks
-	next_balance.balance_version = FreeEdition.BALANCE_VERSION
+	next_balance.balance_version = str(collection.get("balance_version", "paid-final-collection-v1"))
 	var next_metadata: Dictionary = {}
 	for value in campaign.sites:
 		if not value is Dictionary or not value.get("id") is String or next_metadata.has(value.id):
@@ -91,22 +90,6 @@ func load_catalog() -> Error:
 		last_error = "Content catalog has no tutorial."
 		return ERR_FILE_CORRUPT
 	next_metadata[next_tutorial] = campaign.tutorial_metadata
-	if next_metadata.size() != FreeEdition.MAP_IDS.size() or next_skills.size() != FreeEdition.SKILL_IDS.size() or campaign.regions.size() != 6 or campaign.sites.size() != 7 or next_tutorial != FreeEdition.MAP_IDS[0]:
-		last_error = "Free content does not match its allowlist."
-		return ERR_FILE_CORRUPT
-	for id in next_metadata:
-		if not FreeEdition.allows_site(id):
-			last_error = "Unavailable free map: " + str(id)
-			return ERR_FILE_CORRUPT
-	for id in next_skills:
-		if not FreeEdition.allows_skill(id):
-			last_error = "Unavailable free skill: " + str(id)
-			return ERR_FILE_CORRUPT
-	for index in range(6):
-		var ids: Array = campaign.regions[index].get("sites", [])
-		if (index > 0 and not ids.is_empty()) or (index == 0 and ids != FreeEdition.MAP_IDS.slice(1)):
-			last_error = "Free region contents do not match their allowlist."
-			return ERR_FILE_CORRUPT
 	# Commit only after every catalog file is readable; failed loads never erase state.
 	regions = campaign.regions
 	sites = campaign.sites
@@ -126,9 +109,6 @@ func metadata(id: String) -> Dictionary:
 	return _metadata.get(id, {})
 
 func site(id: String) -> Dictionary:
-	if not FreeEdition.allows_site(id):
-		last_error = "Unavailable free map: " + id
-		return {}
 	if _maps.has(id):
 		var cached: Dictionary = _maps[id]
 		_maps.erase(id)
@@ -161,10 +141,10 @@ func region(index: int) -> Dictionary:
 	return regions[index]
 
 static func effect_stats(id: String, owned_level: int) -> Dictionary:
-	var maximum := 10 if id == "aftershock" else 5
+	var maximum := 10 if id == "aftershock" else 1 if id == "recharge" else 5
 	var level := clampi(owned_level, 1, maximum)
 	var tail := 1.0 + 0.08 * sqrt(float(maxi(0, owned_level - maximum)))
-	var gain := 1.0 + 0.1 * (mini(3, level - 1) if id in ["relay"] else level - 1)
+	var gain := 1.0 + 0.1 * (mini(3, level - 1) if id in ["relay", "slam", "expand", "wave"] else level - 1)
 	gain *= tail
 	var result := {"level": maxi(1, owned_level), "gain": gain}
 	match id:
@@ -172,8 +152,22 @@ static func effect_stats(id: String, owned_level: int) -> Dictionary:
 			result.merge({"threshold": 3, "echoes": 2 + floori(float(level - 1) / 3.0), "power": [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 1.0][level - 1] * tail})
 		"relay":
 			result.merge({"threshold": 4 if level == 5 else 5, "power": 0.65 * gain})
+		"slam":
+			result.merge({"threshold": 5 if level == 5 else 6, "lift_power": 1.5 * gain, "slam_power": 2.0 * gain, "delay": 0.8})
+		"expand":
+			result.merge({"threshold": 4 if level == 5 else 5, "start_radius": 2.0, "radius": 11.0, "duration": 1.6, "pulse_interval": 0.15, "pressure": 1.5 * gain, "outward_power": 0.16 * gain, "final_radius": 2.0, "final_power": 0.6 * gain})
+		"wave":
+			result.merge({"threshold": 5 if level == 5 else 6, "pulses_per_side": 4, "spacing": 7.0, "pulse_interval": 0.12, "pressure": 1.6 * gain, "upward_power": 0.6 * gain})
 		"orbital":
 			result.payloads = 5 + int(level >= 3) + int(level >= 5)
+		"seismic":
+			result.merge({"targets": 12, "coverage": 1.2 if level >= 3 else 1.0, "followup_power": 0.5 if level >= 5 else 0.0})
+		"gravity":
+			result.merge({"duration": 4.2 + 0.25 * int(level >= 3) + 0.25 * int(level >= 5), "down_acceleration": 280.0 * gain, "contact_fatigue": 0.18 * gain})
+		"sonic":
+			result.merge({"duration": 1.65 + 0.25 * int(level >= 3) + 0.25 * int(level >= 5), "steps": 12, "pressure": 0.6 * gain, "inward_power": 1.2 * gain})
+		"recharge":
+			result.recharge_fraction = 1.0 - 0.75 / (1.0 + 0.05 * (maxi(1, owned_level) - 1))
 		_:
 			return {}
 	return result

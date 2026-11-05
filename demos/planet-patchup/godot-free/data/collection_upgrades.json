@@ -1,1 +1,8 @@
-{"schema_version":1,"balance_version":"free-final-collection-v1","tracks":{"debrisProcessing":{"id":"debrisProcessing","name":"Debris Processing","base":180,"start":1.0,"sqrt_step":0.08,"unit":"collision multiplier"},"salvageYield":{"id":"salvageYield","name":"Resource Refining","base":240,"start":0.0,"sqrt_step":0.06,"unit":"bonus ratio"}}}
+{
+  "schema_version": 1,
+  "balance_version": "paid-final-collection-v1",
+  "tracks": {
+    "debrisProcessing": {"id": "debrisProcessing", "name": "Debris Processing", "base": 180, "start": 1.0, "sqrt_step": 0.08, "unit": "collision multiplier"},
+    "salvageYield": {"id": "salvageYield", "name": "Resource Refining", "base": 240, "start": 0.0, "sqrt_step": 0.06, "unit": "bonus ratio"}
+  }
+}

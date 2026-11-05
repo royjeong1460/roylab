@@ -137,7 +137,7 @@ func is_terrain_cell(id: int) -> bool:
 
 func _ready() -> void:
 	if fixture.is_empty():
-		fixture = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/arch-1-arch-quarter-v2.json"))
+		fixture = JSON.parse_string(FileAccess.get_file_as_string("res://data/arch_lane.json"))
 	assert(fixture is Dictionary, "Arch Lane fixture must exist")
 	width = int(fixture.width)
 	height = int(fixture.height)

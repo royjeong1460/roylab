@@ -220,11 +220,10 @@ func _home() -> Control:
 	var planet := PlanetHome.new()
 	_place(fixed, planet, Rect2(0,0,390,844))
 	planet.setup(catalog)
-	planet.update_profile(journey.profile, journey.progression)
+	planet.update_profile(journey.profile)
 	planet.set_selected(app.selected_region)
 	planet.region_selected.connect(func(index): app.select_region(index))
 	_place(fixed, _label("%02d / 06" % (app.selected_region + 1), 12, Color("a9beb7")), Rect2(24,31,85,22))
-	_place(fixed, _label("FREE", 8, Color("839b97")), Rect2(108,34,70,18))
 	var options := _flat(_button("▦",func(): app.show_settings("home")),Color("a9beb7"))
 	_place(fixed,options,Rect2(326,18,44,44))
 	var subtitle := _label("Save the planet!", 11, Color("b5c4b9"))
@@ -255,7 +254,7 @@ func _home() -> Control:
 	next_region.custom_minimum_size = Vector2(44,44)
 	selector.add_child(previous_region)
 	var region: Dictionary = catalog.region(app.selected_region)
-	var name_label := _label(str(region.get("name", "")) if journey.region_open(app.selected_region) else "?", 14, Color("f4dfaf"))
+	var name_label := _label(str(region.get("name", "")),14,Color("f4dfaf"))
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -267,7 +266,7 @@ func _home() -> Control:
 	selector.add_child(name_label)
 	selector.add_child(next_region)
 	var open: bool = journey.region_open(app.selected_region)
-	var region_status := _region_status(app.selected_region) if open else L10n.text("Undiscovered · available in the full game")
+	var region_status := _region_status(app.selected_region) if open else L10n.text("Clear the previous region to unlock")
 	var summary := _label(L10n.format("%s · Planet %s",[region_status,_percent(journey.planet_progress())]),10,Color("bfcdc2"))
 	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -283,13 +282,19 @@ func _home() -> Control:
 	markers.custom_minimum_size.y = 44
 	footer.add_child(markers)
 	var dots: Array[Button] = []
-	for index in range(6):
+	for index in range(catalog.regions.size()):
 		var marker := "━" if index == app.selected_region else "·"
 		var dot := _flat(_button(marker,func(): app.select_region(index)),Color("edbf76") if index == app.selected_region else Color("718482"))
 		dot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		dot.clip_text = true
 		markers.add_child(dot)
 		dots.append(dot)
+	var future := _label("?", 14, Color("839b97"))
+	future.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	future.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	future.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	future.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	markers.add_child(future)
 	var enter := _button("Enter     →" if open else "Locked", func():
 		if journey.profile.tutorial == "intro": app.start_run("tutorial")
 		else: app.navigate("maps"), not open, true)
@@ -351,16 +356,16 @@ func _regions() -> Control:
 	for index in range(catalog.regions.size()):
 		var region: Dictionary = catalog.region(index)
 		var status := _region_status(index) if journey.region_open(index) else "Locked"
-		page.content.add_child(_button(L10n.format("%02d · %s\n%s",[index+1,L10n.text(region.name) if journey.region_open(index) else "?",L10n.text(status)]),func(): app.select_region(index)))
+		page.content.add_child(_button(L10n.format("%02d · %s\n%s",[index+1,L10n.text(region.name),L10n.text(status)]),func(): app.select_region(index)))
+	var future := _label("? · More regions may follow", 13, UITheme.MUTED)
+	future.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	page.content.add_child(future)
 	page.content.add_child(_button("Back to planet",func(): app.navigate("home")))
 	return page.root
 
 func _maps() -> Control:
 	var region: Dictionary = catalog.region(app.selected_region)
 	var page := _page(str(region.name),L10n.format("REGION %02d · MAP SELECT",[app.selected_region+1]))
-	if not journey.region_open(app.selected_region):
-		page.content.add_child(_label("Undiscovered · available in the full game",13,UITheme.MUTED))
-		return page.root
 	var content: VBoxContainer = page.content
 	content.add_child(_label(L10n.format("%s · Planet %s",[_region_status(app.selected_region),_percent(journey.planet_progress())]),12,UITheme.MINT))
 	var progress: Dictionary = journey.region_progress(app.selected_region)
@@ -412,7 +417,7 @@ func _maps() -> Control:
 		row.resized.connect(layout_row)
 		row.ready.connect(layout_row)
 		content.add_child(row)
-	content.add_child(_label("Reach 70% on all six normal sites to open the boss. Clear the boss to restore Arch Quarter. Return any time for 100% All Clear.",10,UITheme.MUTED))
+	content.add_child(_label("Reach 70% on every normal site to open the boss. Clear the boss to open the next region. Return any time for 100% All Clear.",10,UITheme.MUTED))
 	return page.root
 
 func _offer_description(offer: Dictionary) -> String:
@@ -440,7 +445,14 @@ func _skill_summary(id: String) -> String:
 	return L10n.text(str({
 		"aftershock":"Adds scattered explosions around the attack.",
 		"relay":"Marks a nearby fragment. Its next hard collision creates an extra impact.",
+		"slam":"Lifts nearby loose pieces, then drives them down.",
+		"expand":"Builds an expanding pressure field, ending in a burst.",
+		"wave":"Marks a nearby fragment. Its next hard landing sends waves along the ground.",
 		"orbital":"Drops impact payloads onto the remaining structure.",
+		"seismic":"Strikes foundations across the remaining structure.",
+		"gravity":"Adds downward load to structures and loose pieces.",
+		"sonic":"Sweeps inward from both sides of the structure.",
+		"recharge":"Restores battery without consuming an attack."
 	}.get(id,"")))
 
 func _skill_unlock_hint(id: String) -> String:
@@ -542,7 +554,9 @@ func _show_offer_details(offer: Dictionary) -> void:
 	if not hint.is_empty(): column.add_child(_label(hint,12,UITheme.MUTED))
 	if catalog.skills.has(id):
 		column.add_child(_label("Passives trigger from effective Blasts. Each active can be used once per sortie while battery remains. Skills use no battery.",11,UITheme.MUTED))
-		column.add_child(_label("Equip one passive and one active skill.",11,UITheme.MUTED))
+		if journey.progression.skill_slots(journey.profile)<2:
+			var region_name := L10n.text(str(catalog.region(1).get("name","")))
+			column.add_child(_label(L10n.format("Open %s to unlock a second passive slot and a second active slot.",[region_name]),11,UITheme.MUTED))
 		if int(offer.level)>0: _skill_equip_controls(column,id)
 	else:
 		column.add_child(_label("Upgrades apply next sortie. Save parts or spend them here.",11,UITheme.MUTED))
@@ -677,7 +691,7 @@ func _workshop(payload: Dictionary) -> Control:
 		var tab_button := _button(tab[1],func(): app.navigate("workshop",{"tab":tab[0]}),false,tab[0]==_tab)
 		tab_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		tabs.add_child(tab_button)
-	var groups := [{"tab":"weapons","title":"Shockwave","ids":["blastForce","blastRadius","blastReach"]},{"tab":"weapons","title":"Black Hole","ids":["blackhole","wellPull","wellReach","wellDuration","mix","wear"]},{"tab":"utility","title":"Battery & Recovery","ids":["battery","debrisProcessing","salvageYield"]},{"tab":"skills","title":"Passive skills","ids":["aftershock","relay"]},{"tab":"skills","title":"Active skills","ids":["orbital"]}]
+	var groups := [{"tab":"weapons","title":"Shockwave","ids":["blastForce","blastRadius","blastReach"]},{"tab":"weapons","title":"Black Hole","ids":["blackhole","wellPull","wellReach","wellDuration","mix","wear"]},{"tab":"utility","title":"Battery & Recovery","ids":["battery","debrisProcessing","salvageYield"]},{"tab":"skills","title":"Passive skills","ids":["aftershock","relay","slam","expand","wave"]},{"tab":"skills","title":"Active skills","ids":["orbital","seismic","gravity","sonic","recharge"]}]
 	var offers: Array = journey.offers()
 	if _tab == "skills":
 		_skill_loadout_summary(content)
@@ -756,7 +770,7 @@ func _chapter(payload: Dictionary) -> Control:
 	_refinement_receipt(page.content,payload)
 	var next = payload.get("nextRegion")
 	page.content.add_child(_label(L10n.format("%s · Planet %s",[_region_status(index),_percent(journey.planet_progress())]),15,UITheme.MINT))
-	page.content.add_child(_label("Next region unlocked! Your parts, tools and upgrades carry over. You can return here for 100% at any time." if next!=null else "Arch Quarter restored! Replay these sites for 100% All Clear. The other five regions remain locked in the free edition.",13))
+	page.content.add_child(_label("Next region unlocked! Your parts, tools and upgrades carry over. You can return here for 100% at any time." if next!=null else "You have cleared all six regions of this planet! Replay any region for 100% All Clear.",13))
 	if next != null:
 		var next_region: Dictionary = catalog.region(int(next))
 		page.content.add_child(_label(L10n.format("%s → %s",[L10n.text(region.name),L10n.text(next_region.name)]),18,UITheme.GOLD))
@@ -850,7 +864,7 @@ func _pause() -> Control:
 
 func _reset() -> Control:
 	var page := _page("Reset your progress?","RESET PROGRESS","settings")
-	page.content.add_child(_label("Reset Arch Quarter progress, parts, upgrades and skills. Your Godot progress starts again from the first tutorial. This cannot be undone.",14))
+	page.content.add_child(_label("Reset all regions, parts, upgrades and skills. Your progress starts again from the first tutorial. This cannot be undone.",14))
 	page.content.add_child(_label("Sound settings, original app saves and other game saves are kept.",12,UITheme.MUTED))
 	page.content.add_child(_button("Cancel · keep playing",func(): app.show_settings("home"),false,true))
 	page.content.add_child(_button("Reset and start over",func(): app.reset_progress()))
@@ -877,7 +891,7 @@ func _error(payload: Dictionary) -> Control:
 
 func _build_info() -> Control:
 	var page := _page("Build information","PLANET PATCHUP · GODOT","settings")
-	page.content.add_child(_label(L10n.format("Free web edition · 0.5.40\nGodot 4.6.2 · Compatibility\nArch Quarter · 7 maps + tutorial\n%d upgrade tracks · %d skills",[catalog.tracks.size(),catalog.skills.size()]),14))
+	page.content.add_child(_label(L10n.format("Planet Patchup · 0.5.41\nGodot 4.6.2 · Compatibility\n6 regions · 42 maps + tutorial\n%d upgrade tracks · %d skills",[catalog.tracks.size(),catalog.skills.size()]),14))
 	page.content.add_child(_label("Content source hashes are included with this build. Gameplay and device confirmation are recorded separately.",12,UITheme.MUTED))
 	page.content.add_child(_button("Export records",func(): app.export_profile()))
 	return page.root
@@ -977,7 +991,7 @@ func _play_hud() -> Control:
 	var performance_panel := PanelContainer.new()
 	performance_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	performance_panel.add_theme_stylebox_override("panel",UITheme.box(Color(0.035,0.065,0.09,0.94),Color("bca367"),1,6))
-	var performance := _label("성능 진단 Godot C++/g40 · 측정 대기",11,Color("fff0cd"))
+	var performance := _label("성능 진단 Godot v34 · 측정 대기",11,Color("fff0cd"))
 	performance.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	performance_panel.add_child(performance)
 	performance_panel.visible = Diagnostics.is_enabled()

@@ -5,12 +5,21 @@ signal status_changed(value: String)
 
 const SETTINGS_PATH := "user://free-web-audio-v1.json"
 const DEFAULTS := {"music":true,"musicVolume":0.5,"effects":true,"effectsVolume":1.0,"haptics":true}
-const SKILL_AUDIO := {"battery-recharge":"res://assets/audio/16-battery-recharge.wav"}
-const TIMED_SKILLS := []
+const SKILL_AUDIO := {
+	"seismic-strike":"res://assets/audio/11-seismic-strike.wav",
+	"gravity-engage":"res://assets/audio/12-gravity-engage.wav",
+	"gravity-pressure-loop":"res://assets/audio/13-gravity-pressure-loop.wav",
+	"gravity-release":"res://assets/audio/14-gravity-release.wav",
+	"sonic-sweep-short":"res://assets/audio/15-sonic-sweep-short.wav",
+	"sonic-sweep-medium":"res://assets/audio/15-sonic-sweep-medium.wav",
+	"sonic-sweep-long":"res://assets/audio/15-sonic-sweep-long.wav",
+	"battery-recharge":"res://assets/audio/16-battery-recharge.wav"
+}
+const TIMED_SKILLS := ["gravity-engage","gravity-pressure-loop","gravity-release","sonic-sweep-short","sonic-sweep-medium","sonic-sweep-long"]
 const COLLECTION_AUDIO := {"collection-start":"ui-confirm","collection-tick":"debris-impact","collection-tier":"progress-success","collection-rise":"active-ready","collection-complete":"battery-recharge"}
 const GAPS := {"ui-tap":0.055,"ui-confirm":0.16,"ui-unavailable":0.22,"blackhole-open":0.18,"blackhole-close":0.18,"active-ready":0.3,"active-deploy":0.4,"orbital-fall":0.18,"progress-success":0.8,"blast":0.09,"debris-impact":0.06,"pixel-collect":0.09,"collection-start":0.0,"collection-tick":0.05,"collection-tier":0.0,"collection-rise":0.0,"collection-complete":0.0}
 const LEVELS := {"blackhole-loop":0.75,"active-ready":0.85,"orbital-fall":0.85}
-const GAMEPLAY := ["blackhole-open","blackhole-loop","blackhole-close","active-ready","active-deploy","orbital-fall","blast","debris-impact","pixel-collect","battery-recharge"]
+const GAMEPLAY := ["blackhole-open","blackhole-loop","blackhole-close","active-ready","active-deploy","orbital-fall","blast","debris-impact","pixel-collect","seismic-strike","gravity-engage","gravity-pressure-loop","gravity-release","sonic-sweep-short","sonic-sweep-medium","sonic-sweep-long","battery-recharge"]
 var settings: Dictionary = DEFAULTS.duplicate()
 var status := "waiting"
 var catalog: RefCounted
@@ -268,7 +277,36 @@ func leave_campaign() -> void:
 	_timed_started.clear()
 	_collection_final_tick=false
 
+func _sync_skill_cue(key: String, offset: float, duration: float, volume := 0.2, loop := false) -> void:
+	if offset < 0 or offset >= duration:
+		stop_effect(key)
+		return
+	# Stops clear this marker; natural endings must not replay the cue's tail.
+	if not _timed_started.has(key):
+		play_effect(key,volume,1,loop,offset)
+		if _playing(key):
+			_timed_started[key]=true
+	for voice in _voices.get(key,[]):
+		_mix[voice.get_instance_id()]=volume
+		voice.volume_linear=volume*float(settings.effectsVolume)
 
+func _sync_skill_audio(current: Dictionary) -> void:
+	var keep: Array[String] = []
+	var age := float(current.get("age",0))
+	if current.get("id","") == "gravity":
+		keep.assign(["gravity-engage","gravity-pressure-loop","gravity-release"])
+		var duration := float(current.duration)
+		_sync_skill_cue("gravity-engage",age,0.44)
+		_sync_skill_cue("gravity-pressure-loop",age-0.6,duration-0.6,0.2*float(current.pressure),true)
+		_sync_skill_cue("gravity-release",age-(duration-0.5),0.41)
+	elif current.get("id","") == "sonic":
+		var level := int(current.level)
+		var key := "sonic-sweep-long" if level >= 5 else "sonic-sweep-medium" if level >= 3 else "sonic-sweep-short"
+		keep.append(key)
+		_sync_skill_cue(key,age-0.4,float(current.sweep_duration))
+	for key in TIMED_SKILLS:
+		if key not in keep:
+			stop_effect(key)
 
 func sync_campaign(run: RefCounted) -> void:
 	if run==null:
@@ -290,6 +328,7 @@ func sync_campaign(run: RefCounted) -> void:
 	if run.paused or run.finish_ready:
 		pause_campaign()
 		return
+	_sync_skill_audio(run.world.skill_physics.active)
 	var skill: Dictionary=run.skill_state()
 	var ready: bool = run.phase=="working" and skill.get("actives", []).any(func(entry): return entry.get("available", false))
 	if not _run_ready and ready and not _playing("ui-confirm"):
@@ -355,6 +394,7 @@ func process_events(events: Array, _dt := 0.0, collected_total := -1, active := 
 		return
 	var gained := false
 	var impact := {}
+	var seismic_volume := 0.0
 	for event in events:
 		var kind: String = event.get("kind","")
 		if (kind=="tool-blast" and event.get("phase","")=="blast" or kind=="blast") and event.get("audio",true):
@@ -362,13 +402,20 @@ func process_events(events: Array, _dt := 0.0, collected_total := -1, active := 
 		elif kind=="tool-gravity" and event.get("phase","")=="start":
 			play_effect("blackhole-open")
 		elif kind=="sound-active-deploy":
-			play_effect("active-deploy")
+			if event.get("id","") != "gravity":
+				play_effect("active-deploy")
+		elif kind=="sound-seismic-strike":
+			seismic_volume=maxf(seismic_volume,0.11 if event.get("followup",false) else 0.2)
+		elif kind=="skill-recharge":
+			play_effect("battery-recharge")
 		elif kind=="sound-orbital-fall":
 			play_effect("orbital-fall")
 		elif kind=="sound-impact" and float(event.get("speed",0))>=8 and float(event.get("energy",0))>float(impact.get("energy",0)):
 			impact=event
 		elif kind=="collect":
 			gained=true
+	if seismic_volume > 0:
+		play_effect("seismic-strike",seismic_volume)
 	if not impact.is_empty():
 		play_effect("debris-impact",0.035+minf(1,sqrt(float(impact.energy))/8)*0.085,randf_range(0.94,1.06))
 	if collected_total>=0:

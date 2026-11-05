@@ -185,7 +185,7 @@ func _numeric_error(id: String, level: int, cost: Variant) -> String:
 	if catalog.skills.has(id):
 		if level == 0:
 			return ""
-		var key := "power" if id == "aftershock" else "gain"
+		var key := "recharge_fraction" if id == "recharge" else "power" if id == "aftershock" else "gain"
 		if catalog.effect_stats(id, level + 1)[key] <= catalog.effect_stats(id, level)[key] and level >= int(catalog.skills[id].get("max", 5)):
 			return "numeric-limit"
 	else:
@@ -239,7 +239,21 @@ func skill_effect_description(id: String, level: int) -> Dictionary:
 			return {"key": "Every %d effective Blasts · %d echoes at %s%% primary force", "args": [effect.threshold, effect.echoes, _value_text(float(effect.power) * 100.0)]}
 		"relay":
 			return {"key": "Every %d effective Blasts · fragment relay at %s%% base strength", "args": [effect.threshold, strength]}
+		"slam":
+			return {"key": "Every %d effective Blasts · lift then slam at %s%% base strength", "args": [effect.threshold, strength]}
+		"expand":
+			return {"key": "Every %d effective Blasts · expanding pressure at %s%% base strength", "args": [effect.threshold, strength]}
+		"wave":
+			return {"key": "Every %d effective Blasts · landing sends %d pulses each way at %s%% strength", "args": [effect.threshold, effect.pulses_per_side, strength]}
 		"orbital":
 			return {"key": "Once per sortie · %d payloads at %s%% impact strength", "args": [effect.payloads, strength]}
+		"seismic":
+			return {"key": "Once per sortie · %d foundation strikes at %s%% strength · %d%% coverage · %d%% follow-up", "args": [effect.targets, strength, roundi(float(effect.coverage) * 100.0), roundi(float(effect.followup_power) * 100.0)]}
+		"gravity":
+			return {"key": "Once per sortie · %.2f s downward load at %s%% strength", "args": [effect.duration, strength]}
+		"sonic":
+			return {"key": "Once per sortie · %.2f s inward sweep at %s%% strength", "args": [effect.duration, strength]}
+		"recharge":
+			return {"key": "Once per sortie · restore %s%% maximum battery before it empties", "args": [_value_text(float(effect.recharge_fraction) * 100.0)]}
 	return {"key": "%s", "args": [id]}
 

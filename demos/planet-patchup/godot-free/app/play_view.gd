@@ -69,10 +69,12 @@ func _ready() -> void:
 	else:
 		var backdrop := CultureBackdrop.new()
 		add_child(backdrop)
-		backdrop.setup(world, region)
-		var style := GameSkin.culture_style(CultureBackdrop.THEMES[region])
-		sky_color = Color(style.sky)
-		ground_color = Color(style.ground)
+		var previous: Dictionary = profile.stageRecords.get(site.id, {})
+		var restoration := float(previous.get("recovered", 0))/maxf(1,float(previous.get("total", 1)))
+		backdrop.setup(world, region, restoration)
+		var style := backdrop.environment_style()
+		sky_color = style.sky
+		ground_color = style.ground
 	camera = Camera.new()
 	add_child(camera)
 	camera.make_current()

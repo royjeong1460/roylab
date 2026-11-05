@@ -1,6 +1,5 @@
 extends RefCounted
 
-const FreeEdition = preload("res://campaign/free_edition.gd")
 var catalog
 
 func setup(source) -> void:
@@ -21,14 +20,19 @@ func region_progress(p: Dictionary, index: int) -> Dictionary:
 		sum += value
 		clears += int(value >= 0.7)
 		all_clear = all_clear and value == 1.0
-	var cleared: bool = bool(p.get("bossCleared", false)) if index == 0 else false
+	var cleared := not ids.is_empty() and clears == ids.size()
 	return {"ratio": sum / ids.size() if not ids.is_empty() else 0.0,
 		"clears": clears, "cleared": cleared, "complete": all_clear,
 		"state": "complete" if all_clear else "cleared" if cleared else "working",
-		"restoration": (1.0 if p.get("bossCleared", false) else normal_clears(p, 0) / 7.0) if index == 0 else 0.0}
+		"restoration": 1.0 if all_clear else 0.8 if cleared else clears / 7.0 * 0.65}
 
-func region_open(_p: Dictionary, index: int) -> bool:
-	return FreeEdition.allows_region(index) and not catalog.region(index).get("sites", []).is_empty()
+func region_open(p: Dictionary, index: int) -> bool:
+	if index < 0 or index >= catalog.regions.size():
+		return false
+	for previous in range(index):
+		if not region_progress(p, previous).cleared:
+			return false
+	return not catalog.region(index).get("sites", []).is_empty()
 
 func site_region(id: String) -> int:
 	for i in range(catalog.regions.size()):
@@ -41,8 +45,6 @@ func selected_region(p: Dictionary) -> int:
 	return index if region_open(p, index) else 0
 
 func stage_open(p: Dictionary, id: String) -> bool:
-	if not FreeEdition.allows_site(id):
-		return false
 	var meta: Dictionary = catalog.metadata(id)
 	var index := site_region(id)
 	if meta.is_empty() or not region_open(p, index):
@@ -78,21 +80,21 @@ func normal_clears(p: Dictionary, index: int) -> int:
 	return count
 
 func skill_available(p: Dictionary, id: String) -> bool:
-	if not FreeEdition.allows_skill(id) or not catalog.skills.has(id):
+	if not catalog.skills.has(id):
 		return false
 	var skill: Dictionary = catalog.skills[id]
 	var index := int(skill.get("region", 0))
 	return region_open(p, index) and normal_clears(p, index) >= int(skill.get("clears", 0))
 
 func skill_unlock_info(id: String) -> Dictionary:
-	if not FreeEdition.allows_skill(id) or not catalog.skills.has(id):
+	if not catalog.skills.has(id):
 		return {}
 	var skill: Dictionary = catalog.skills[id]
 	var index := int(skill.get("region", 0))
 	return {"region": index, "clears": int(skill.get("clears", 0)), "region_name": str(catalog.region(index).get("name", ""))}
 
 func skill_slots(p: Dictionary, _kind := "") -> int:
-	return 1
+	return 2 if region_open(p, 1) else 1
 
 func remember(p: Dictionary, id: String, recovered: int, total: int) -> void:
 	var meta: Dictionary = catalog.metadata(id)

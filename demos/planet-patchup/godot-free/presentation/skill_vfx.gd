@@ -7,7 +7,12 @@ const SPECS := {
 	"spark":[32,32,5,24],"relay-mark":[32,32,4,8],"shockwave":[96,48,8,20],
 	"collect":[16,16,5,20],"satellite-normal":[48,48,1,1],"satellite-heavy":[64,64,1,1],
 	"satellite-wreck":[48,48,1,1],"satellite-trail":[24,64,6,20],
+	"lift-stream":[48,96,10,20],"slam-impact":[96,64,10,20],
+	"pressure-bloom":[96,96,12,12],"ground-pulse":[96,48,10,20],
+	"seismic-strike":[64,96,10,20],"gravity-field":[128,64,12,12],
+	"gravity-impact":[64,48,8,20],"sonic-front":[48,128,12,20],"recharge":[64,64,12,16],
 }
+const BLOOM_RADII := [8.0,12.0,17.0,22.0,27.0,31.0,35.0,38.0,40.0,41.0,42.0,43.0]
 var world: Node
 var catalog: RefCounted
 var images := {}
@@ -70,6 +75,9 @@ func process_events(source_events: Array) -> void:
 				if float(event.get("delay",0.35)) > 0:
 					_push(event,"fuse",float(event.get("delay",0.35)))
 				continue
+			if event.get("vfx","")=="expand":
+				# The paired expand event releases the open shell without a smoke overlay.
+				continue
 			var follow: bool=event.get("vfx","") in ["aftershock","relay"] or event.get("secondary",false)
 			_push(event,"blast",0.3 if follow else 0.5)
 			_push(event,"shockwave",0.24 if follow else 0.4,true)
@@ -78,6 +86,8 @@ func process_events(source_events: Array) -> void:
 			_push(event,"collect",0.3,true)
 		elif kind=="chain-impact":
 			_push(event,"chain",0.65)
+		elif kind=="skill-vfx":
+			_push(event,"skill",float(event.get("life",0.6)))
 		elif kind in ["impact","fracture","fall-fracture","speed-fracture"]:
 			if clock-last_impact<0.075 or not (float(event.get("speed",0))>=2 or float(event.get("damage",0))>=1 or int(event.get("count",0))>=3):
 				continue
@@ -164,7 +174,11 @@ func _relay_marks() -> void:
 			if not is_instance_valid(piece):
 				continue
 			if world.skill_physics.mark_has_piece(mark,piece):
-				_sprite("relay-mark",piece.position/4,5,clock,1,piece.rotation,-1,true)
+				if mark.get("kind","relay")=="wave":
+					_ring(piece.position/4,2.3,"85d8c0",0.85)
+					_arrow(piece.position/4,Vector2.DOWN,2.0,Color("85d8c0"))
+				else:
+					_sprite("relay-mark",piece.position/4,5,clock,1,piece.rotation,-1,true)
 
 func _orbital() -> void:
 	if world.skill_physics==null:
@@ -186,9 +200,80 @@ func _orbital() -> void:
 			_sprite("satellite-trail",p-Vector2(0,width*0.65),width*0.42,clock,0.6,0,width*0.95,true)
 		_sprite("satellite-heavy" if heavy else "satellite-normal",p,width,0,1,0 if reduced_motion else clampf(float(projectile.get("vy",0))*0.001,-0.12,0.12))
 
+func _arrow(point: Vector2, direction: Vector2, size: float, ink: Color) -> void:
+	var end:=point+direction*size*0.5
+	var side:=Vector2(-direction.y,direction.x)*size*0.28
+	draw_line(point-direction*size*0.5,end,ink,0.3)
+	draw_line(end,end-direction*size*0.4+side,ink,0.3)
+	draw_line(end,end-direction*size*0.4-side,ink,0.3)
 
+func _skill_event(event: Dictionary, point: Vector2, alpha: float, progress: float) -> void:
+	var effect: String=event.get("effect","")
+	var radius:=float(event.get("radius",4))
+	if effect=="slam-up":
+		var rise:=0.0 if reduced_motion else progress*radius*0.3
+		for side in [-1.0,1.0]:
+			_sprite("lift-stream",point+Vector2(side*radius*0.4,-rise),radius*0.65,progress*0.5,alpha)
+	elif effect=="slam-down":
+		# No measured contact: use the descent frames, never the sheet's ground crown.
+		var age:=float(event.age)
+		_sprite("lift-stream",point,radius*0.5,progress*0.5,alpha,PI)
+		if not reduced_motion and age<0.1:
+			_sprite("slam-impact",point,radius*0.9,0,alpha,0,-1,false,false,mini(1,int(age*20)))
+	elif effect=="wave":
+		var width:=radius*1.5
+		# Source crest starts at x=15 and its contact plane is y=40.
+		for side in [-1.0,1.0]:
+			_sprite("ground-pulse",point+Vector2(side*width*33.0/96.0,-width/6.0),width,progress*0.5,alpha,0,-1,false,side<0)
+	elif effect=="seismic":
+		var width:=radius*1.5
+		_sprite("seismic-strike",point-Vector2(0,width*44.0/64.0),width,progress*0.5,alpha)
+	elif effect=="compression":
+		var width:=radius*2.0
+		_sprite("gravity-impact",point-Vector2(0,width*12.0/64.0),width,progress*0.4,alpha)
+	elif effect=="recharge":
+		_sprite("recharge",point,radius*3.0,progress*0.75,alpha)
+	elif effect=="expand":
+		_pressure_bloom(point,radius,mini(11,9+int(progress*3)),alpha)
 
+func _pressure_bloom(point: Vector2, radius: float, frame: int, alpha: float) -> void:
+	var source_frame:=2 if reduced_motion else clampi(frame,0,11)
+	# Frames already grow: normalize their authored radius to the live physical radius.
+	var width:=radius*96.0/float(BLOOM_RADII[source_frame])
+	_sprite("pressure-bloom",point,width,0,alpha,0,-1,false,false,source_frame)
 
+func _skill_fields() -> void:
+	if world.skill_physics==null:
+		return
+	for field in world.skill_physics.fields:
+		var progress:=clampf(float(field.age)/maxf(0.001,float(field.duration)),0,1)
+		_pressure_bloom(field.p,float(field.radius),mini(8,int(progress*9)),0.85)
+	var current: Dictionary=world.skill_physics.active
+	if current.is_empty():
+		return
+	var left:=float(current.get("left",0))
+	var right:=float(current.get("right",0))
+	var top:=maxf(3,float(current.get("top",3))-5)
+	var center: float=(left+right)/2
+	var age:=float(current.age)
+	if current.id=="gravity":
+		var width:=maxf(12,(right-left)*128.0/108.0)
+		var height:=minf(24,width*0.5)
+		var envelope:=minf(clampf(age/0.4,0,1),clampf((float(current.duration)-age)/0.5,0,1))
+		var alpha: float=(0.35+float(current.get("pressure",0))*0.5)*envelope
+		_sprite("gravity-field",Vector2(center,top+height*0.35),width,age,alpha,0,height,true)
+	elif current.id=="sonic":
+		var elapsed:=age-0.4
+		if elapsed<0:
+			return
+		var progress:=clampf(elapsed/maxf(0.001,float(current.sweep_duration)),0,1)
+		var alpha:=minf(clampf(elapsed/0.15,0,1),clampf((float(current.duration)-age)/0.75,0,1))
+		for side in [-1.0,1.0]:
+			var x: float=center+side*(right-left)*0.5*(1-progress)
+			var bottom: float=world.ground_y(x)-1
+			var height:=maxf(1,bottom-top)
+			var width:=clampf(height*0.2,6,16)
+			_sprite("sonic-front",Vector2(x,(top+bottom)/2),width,elapsed,alpha*(0.5 if progress>=1 else 0.85),0,height,true,side>0)
 
 func _draw() -> void:
 	if world==null:
@@ -205,6 +290,8 @@ func _draw() -> void:
 		if reduced_motion and event.decorative:
 			continue
 		match event.sheet:
+			"skill":
+				_skill_event(event,point,alpha,progress)
 			"fuse":
 				_ring(point,radius,"c5aa73",0.5)
 				draw_rect(Rect2(point-Vector2(0.5,0.5),Vector2.ONE),Color("f6d196"))
@@ -226,4 +313,5 @@ func _draw() -> void:
 		_ring(p,radius,"a59caf",alpha*0.24)
 		_sprite(well.phase,p,maxf(3,radius*0.9),well.age,alpha,0,-1,well.phase=="blackhole-loop")
 	_relay_marks()
+	_skill_fields()
 	_orbital()

@@ -19,27 +19,29 @@ const files=directory=>readdirSync(directory,{withFileTypes:true}).sort((a,b)=>a
  const full=path.join(directory,e.name);return e.isDirectory()?files(full):[full];
 });
 const json=file=>JSON.parse(readFileSync(file,'utf8'));
-const allowedMaps=new Set(Array.from({length:8},(_,i)=>`arch-${i}-arch-quarter-v2`));
-const allowedSkills=['aftershock','orbital','relay'];
-const expectedMaps=[...allowedMaps].map(id=>id+'.json').sort();
-if(JSON.stringify(readdirSync(path.join(source,'data/maps')).filter(n=>n.endsWith('.json')).sort())!==JSON.stringify(expectedMaps))fail('Free export must contain exactly the eight original Arch maps.');
 const campaign=json(path.join(source,'data/campaign.json'));
-if(campaign.sites.length!==7||campaign.sites.some(s=>s.region!==0||!allowedMaps.has(s.id))||campaign.tutorial!=='arch-0-arch-quarter-v2')fail('Free campaign entitlement mismatch.');
-if(campaign.regions.length!==6||campaign.regions.slice(1).some(r=>r.sites.length))fail('Paid region previews must contain no playable sites.');
+const siteIds=campaign.sites.map(site=>site.id);
+const allowedMaps=new Set([campaign.tutorial,...siteIds]);
+const expectedMaps=[...allowedMaps].map(id=>id+'.json').sort();
+if(allowedMaps.size!==43||campaign.regions.length!==6||campaign.sites.length!==42||campaign.tutorial!=='arch-0-arch-quarter-v2')fail('Expected six regions and 42 campaign maps plus the tutorial.');
+for(const [index,region] of campaign.regions.entries()){
+ const sites=campaign.sites.filter(site=>site.region===index);
+ if(region.index!==index||sites.length!==7||sites.filter(site=>site.boss).length!==1||JSON.stringify(region.sites)!==JSON.stringify(sites.map(site=>site.id)))fail('Incorrect campaign membership for region '+index);
+}
+if(JSON.stringify(readdirSync(path.join(source,'data/maps')).filter(n=>n.endsWith('.json')).sort())!==JSON.stringify(expectedMaps))fail('Map directory differs from the campaign.');
 const balance=json(path.join(source,'data/balance.json'));
-if(JSON.stringify(Object.keys(balance.skills).sort())!==JSON.stringify(allowedSkills))fail('Only the three original free skills may ship.');
 const expansion=json(path.join(source,'data/skill_expansion.json'));
-if(Object.keys(expansion.skills).length)fail('Paid skill expansion must not ship.');
-if(existsSync(path.join(source,'data/source-manifest.json')))fail('Paid provenance and map manifest must not ship in the free project.');
+const allowedSkills=['aftershock','expand','gravity','orbital','recharge','relay','seismic','slam','sonic','wave'];
+if(JSON.stringify([...Object.keys(balance.skills),...Object.keys(expansion.skills)].sort())!==JSON.stringify(allowedSkills))fail('Expected ten campaign skills.');
 const project=readFileSync(path.join(source,'project.godot'),'utf8');
-if(!project.includes('config/version="0.5.40"')||!project.includes('config/custom_user_dir_name="PlanetPatchupGodotFreeWeb"'))fail('Incorrect free version or persistent user directory.');
+if(!project.includes('config/version="0.5.41"')||!project.includes('config/custom_user_dir_name="PlanetPatchupGodotFreeWeb"'))fail('Incorrect free version or persistent user directory.');
 
 const inputs=files(source).concat(files(path.join(demo,'src/godot-free')),fileURLToPath(import.meta.url),path.join(demo,'vite.godot-shell.config.js'));
 const content=createHash('sha256');
 for(const p of inputs){content.update(path.relative(demo,p));content.update(readFileSync(p));}
 const sourceHash=content.digest('hex');
-const exportStem='free-0540-'+sourceHash.slice(0,12);
-const scratch=mkdtempSync(path.join(tmpdir(),'pp-godot-free-0540-'));
+const exportStem='free-0541-'+sourceHash.slice(0,12);
+const scratch=mkdtempSync(path.join(tmpdir(),'pp-godot-free-0541-'));
 const staging=path.join(scratch,'project');
 cpSync(source,staging,{recursive:true,filter:p=>!p.split(path.sep).includes('.godot')&&!p.endsWith('.DS_Store')});
 const raw=path.join(scratch,'export');mkdirSync(raw);
@@ -69,7 +71,7 @@ run('export',['--headless','--editor','--path',staging,'--export-release','Web',
 // Include actual engine/pack bytes so immutable URLs remain safe across rebuilds and templates.
 const packageHash=createHash('sha256').update(sourceHash);
 for(const file of files(raw).filter(p=>/\.(wasm|pck)$/.test(p))){packageHash.update(path.relative(raw,file));packageHash.update(readFileSync(file));}
-const stem='free-0540-'+packageHash.digest('hex').slice(0,12);
+const stem='free-0541-'+packageHash.digest('hex').slice(0,12);
 execFileSync(process.execPath,[path.join(demo,'node_modules/vite/bin/vite.js'),'build','--config','vite.godot-shell.config.js'],{cwd:demo,stdio:'inherit'});
 const shellOutput=path.join(demo,'dist-godot-shell');
 const shellIndex=json(path.join(shellOutput,'shell-manifest.json'));
@@ -100,7 +102,7 @@ if(existsSync(path.join(source,'licenses'))){
  cpSync(path.join(source,'licenses'),path.join(target,'licenses'),{recursive:true});
 }
 let html=readFileSync(path.join(raw,exportStem+'.html'),'utf8').replaceAll(exportStem,stem);
-html=html.replace(/<title>.*?<\/title>/,'<title>Planet Patchup · 무료 플레이</title>');
+html=html.replace(/<title>.*?<\/title>/,'<title>Planet Patchup · 플레이</title>');
 const engineError=`globalThis.PPFreeWebEngineError=()=>{
  const overlay=document.getElementById('status'),notice=document.getElementById('status-notice');
  document.getElementById('status-progress').style.display='none';
@@ -142,15 +144,17 @@ writeFileSync(path.join(output,'index.html'),html);writeFileSync(path.join(targe
 const headersPath=path.join(repo,'public/_headers');
 let headers=existsSync(headersPath)?readFileSync(headersPath,'utf8'):'';
 headers=headers.replace(/# BEGIN GODOT FREE\n[\s\S]*?# END GODOT FREE\n?/g,'');
-const encodedFiles=readdirSync(target).filter(n=>/^(?:free-(?:059|0534|0540)-[a-f0-9]+(?:\.side)?\.(?:wasm|pck)|libpp_core-g40-[a-f0-9]+\.wasm)$/.test(n)).sort();
+const encodedFiles=readdirSync(target).filter(n=>/^(?:free-(?:059|0534|0540|0541)-[a-f0-9]+(?:\.side)?\.(?:wasm|pck)|libpp_core-g40-[a-f0-9]+\.wasm)$/.test(n)).sort();
 headers+='\n# BEGIN GODOT FREE\n'+encodedFiles.map(name=>`/games/planet-patchup-free/${name}\n  Content-Type: application/gzip\n  Cache-Control: public, max-age=31536000, immutable, no-transform\n`).join('')+'# END GODOT FREE\n';
 writeFileSync(headersPath,headers);
 syncPlanetRoutes();
 const pck=readFileSync(path.join(raw,exportStem+'.pck'));
 for(const id of allowedMaps)if(!pck.includes(Buffer.from('data/maps/'+id+'.json')))fail('Missing packaged map '+id);
-for(const prefix of ['culture-yard-','amber-','canal-','terrace-','mosaic-'])if(pck.includes(Buffer.from('data/maps/'+prefix)))fail('Paid map path leaked into free PCK.');
 const packagedMaps=[...new Set([...pck.toString('latin1').matchAll(/data\/maps\/([a-z0-9-]+)\.json/g)].map(m=>m[1]))].sort();
-if(JSON.stringify(packagedMaps)!==JSON.stringify([...allowedMaps].sort()))fail('Packaged map directory differs from the free allowlist.');
+if(JSON.stringify(packagedMaps)!==JSON.stringify([...allowedMaps].sort()))fail('Packaged map directory differs from the campaign.');
+for(const file of ['data/campaign.json','data/balance.json','data/skill_expansion.json']){
+ if(!pck.includes(readFileSync(path.join(staging,file))))fail('Campaign data missing from PCK: '+file);
+}
 const assetData=readFileSync(path.join(staging,'data/assets.json'));
 if(!pck.includes(assetData))fail('Filtered asset catalog missing from free PCK.');
 const assetCatalog=JSON.parse(assetData);
@@ -161,7 +165,7 @@ if(!/^loop=true$/m.test(musicImport)||!/^loop_offset=0(?:\.0)?$/m.test(musicImpo
 if(!pck.includes(readFileSync(path.join(source,'assets/audio',musicFile))))fail('MP3 music bytes missing from free PCK.');
 if(pck.includes(Buffer.from('quiet-background-v5-94bpm-32bars.wav-')))fail('Original large WAV sample must not ship in the free PCK.');
 for(const p of files(output))if(readFileSync(p).length>sizeLimit)fail('Oversized final artifact: '+path.basename(p));
-const manifest={version:'0.5.40-free',commonBaseline:'g40',nativeCore:json(path.join(source,'native_core/provenance.json')),templateSha256:sha(readFileSync(template)),sourceHash,stem,scratch,allowedMaps:[...allowedMaps],allowedSkills,
+const manifest={version:'0.5.41',commonBaseline:'g40',nativeCore:json(path.join(source,'native_core/provenance.json')),templateSha256:sha(readFileSync(template)),sourceHash,stem,scratch,allowedMaps:[...allowedMaps],allowedSkills,
  shellScript,shellCss,artifacts,scope:'compile/export/static package verification only; no game/browser/save-runtime testing'};
 writeFileSync(path.join(output,'build-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 writeFileSync(path.join(target,stem+'-manifest.json'),JSON.stringify({...manifest,scratch:undefined},null,2)+'\n');

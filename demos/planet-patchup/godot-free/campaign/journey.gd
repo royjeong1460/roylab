@@ -3,7 +3,6 @@ extends RefCounted
 signal browser_event(kind: String, payload: Dictionary)
 const FreeWebBridge = preload("res://platform/free_web_bridge.gd")
 
-const FreeEdition = preload("res://campaign/free_edition.gd")
 const Progression = preload("res://campaign/progression.gd")
 const Economy = preload("res://campaign/economy.gd")
 const Schema = preload("res://campaign/profile_schema.gd")
@@ -126,7 +125,7 @@ func start(mode := "stage", site_id := "") -> Dictionary:
 	if id.is_empty():
 		return _done(_result(false, "no-previous-site"))
 	var tutorial := id == _tutorial_id()
-	if not FreeEdition.allows_site(id) or (not tutorial and not stage_open(id)):
+	if not tutorial and not stage_open(id):
 		return _done(_result(false, "locked"))
 	var site: Dictionary = catalog.site(id)
 	if site.is_empty():
@@ -153,8 +152,6 @@ func attach_world(world) -> void:
 	browser_event.emit("run_started", FreeWebBridge.run_payload(current_run))
 
 func buy(id: String, expected: Dictionary = {}) -> Dictionary:
-	if not catalog.tracks.has(id) and not FreeEdition.allows_skill(id) and id != "blackhole":
-		return _result(false, "unavailable")
 	var ready := _begin()
 	if not ready.ok:
 		return ready
@@ -197,8 +194,6 @@ func buy(id: String, expected: Dictionary = {}) -> Dictionary:
 	return _done(saved)
 
 func equip_skill(id: String, slot := -1) -> Dictionary:
-	if not FreeEdition.allows_skill(id):
-		return _result(false, "unavailable")
 	var ready := _begin()
 	if not ready.ok:
 		return ready

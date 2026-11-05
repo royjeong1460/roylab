@@ -4,8 +4,9 @@ Single entry: https://roylab.pages.dev/planet-patchup/
 
 | Purpose | Canonical path |
 | --- | --- |
-| Current Godot 0.5.40 free campaign | /planet-patchup/play/ |
-| Paid map and power testing | /planet-patchup/test/paid/ |
+| Full Godot campaign | /planet-patchup/play/ |
+| Earlier paid test link (redirects to play) | /planet-patchup/test/paid/ |
+| Archived Phaser culture maps and power testing | /planet-patchup/archive/paid-phaser/ |
 | Wide/tall/open maps and skill effects | /planet-patchup/lab/maps/ |
 | Pillar/body/roof and load inspection | /planet-patchup/lab/structure/ |
 | Isolated contact-touch edition | /planet-patchup/lab/touch/ |

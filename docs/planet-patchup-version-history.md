@@ -29,3 +29,10 @@
 ## 보존한 증거
 
 [QA 색인](qa/2026-11-03-common-g40/README.md)에 원본 소스 해시, 변경 패치, 웹코어/템플릿/SDK출처, 무료 제한 보존과 빌드·배포·HTTP검증을 연결한다. 실제 영상과 기기 식별정보/저장파일은 공개 저장소·웹 패키지에 넣지 않는다. 네이티브 원본 QA와 장치 설치 영수증은 로컬 variants/godot-paid-port에 보관한다.
+
+
+## 2026-11-06 · 0.5.41 unified free campaign
+
+The g40 release now includes all six regions, 42 campaign sites plus the tutorial, and ten skills on both platforms. The home and region list show `?` after the sixth region. The previous web test entry leads to the unified game. iOS build 50 installed as sequence 3868. The preceding web release and iOS g40(49) are the rollback reference.
+
+[Release evidence](qa/2026-11-06-unified-godot/README.md)

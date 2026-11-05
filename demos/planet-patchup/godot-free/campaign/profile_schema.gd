@@ -1,12 +1,13 @@
 extends RefCounted
 
 const Money = preload("res://campaign/money.gd")
-const FreeEdition = preload("res://campaign/free_edition.gd")
-const BALANCE_VERSION := FreeEdition.BALANCE_VERSION
+const BALANCE_VERSION := "paid-final-collection-v1"
 const SAVE_BALANCE_VERSION := BALANCE_VERSION
-const PREVIOUS_BALANCE_VERSION := "free-legacy-normalized-v1"
-const LEGACY_BALANCE_VERSIONS := ["arch-campaign-v0.2.2", "arch-campaign-v0.2.3"]
+const WEB_V4_BALANCE_VERSION := "free-final-collection-v1"
+const PREVIOUS_BALANCE_VERSION := "paid-skill-expansion-v1"
+const LEGACY_BALANCE_VERSIONS := ["paid-eave-collection-v2", "arch-campaign-v0.2.2", "arch-campaign-v0.2.3"]
 const LEGACY_SKILLS := ["aftershock", "relay", "orbital"]
+const ADDED_SKILLS := ["slam", "expand", "wave", "seismic", "gravity", "sonic", "recharge"]
 const RETIRED_TRACKS := ["suction", "range", "collectBatch", "collectInterval"]
 const MAX_SAFE_INTEGER := 9007199254740991
 var catalog
@@ -25,7 +26,7 @@ func fresh() -> Dictionary:
 		upgrades[id] = 0
 	for id in catalog.skills:
 		skills[id] = 0
-	var p := {"version": 4, "campaign": "arch", "edition": FreeEdition.ID, "balanceVersion": BALANCE_VERSION,
+	var p := {"version": 4, "campaign": "arch", "balanceVersion": BALANCE_VERSION,
 		"revision": 0, "resetCount": 0, "tutorial": "intro", "parts": 0, "earned": 0, "spent": 0, "refunded": 0,
 		"collectionMigration": "fresh-v4", "legacyCollection": {}, "purchaseTotals": {}, "lastSettlement": null,
 		"owned": ["bomb"], "patterns": ["dot"], "upgrades": upgrades, "skills": skills,
@@ -44,8 +45,6 @@ func normalize(data: Variant) -> Dictionary:
 	if not data is Dictionary:
 		return {"ok": false, "reason": "profile-object"}
 	var p: Dictionary = data.duplicate(true)
-	if p.has("edition") and p.edition != FreeEdition.ID:
-		return {"ok": false, "reason": "free-edition"}
 	var source_version: Variant = p.get("version")
 	var source_balance: Variant = p.get("balanceVersion")
 	if p.get("version") == 1:
@@ -54,7 +53,7 @@ func normalize(data: Variant) -> Dictionary:
 		if p.upgrades.size() != catalog.legacy_tracks.size() - 2 or p.upgrades.has("suction") or p.upgrades.has("range"):
 			return {"ok": false, "reason": "legacy-upgrades"}
 		p.version = 2
-		p.balanceVersion = "arch-campaign-v0.2.2"
+		p.balanceVersion = "paid-eave-collection-v2"
 		p.upgrades.suction = 0
 		p.upgrades.range = 0
 	if p.get("version") == 2:
@@ -74,16 +73,19 @@ func normalize(data: Variant) -> Dictionary:
 			if equipped != null and (not equipped is String or equipped not in LEGACY_SKILLS):
 				return {"ok": false, "reason": "legacy-equipped-" + kind}
 			p.equipped[kind] = [] if equipped == null else [equipped]
+		for id in ADDED_SKILLS:
+			p.skills[id] = 0
 		p.version = 3
 		p.balanceVersion = PREVIOUS_BALANCE_VERSION
 	if p.get("version") == 3:
-		if source_version not in [1, 2]:
-			return {"ok": false, "reason": "free-profile-source"}
 		# Validate the complete original price/ownership ledger before any refund or new levels.
 		var legacy_reason := _validate_legacy(p)
 		if not legacy_reason.is_empty():
 			return {"ok": false, "reason": legacy_reason}
 		p = _migrate_collection(p, int(source_version), str(source_balance))
+	if p.get("version") == 4 and p.get("edition") == "free-web" and p.get("balanceVersion") == WEB_V4_BALANCE_VERSION:
+		if not _expand_web_profile(p):
+			return {"ok": false, "reason": "previous-web-profile"}
 	var reason := validate(p)
 	if not reason.is_empty():
 		return {"ok": false, "reason": reason}
@@ -92,6 +94,27 @@ func normalize(data: Variant) -> Dictionary:
 	if not p.has("bossRewards"):
 		p.bossRewards = {}
 	return {"ok": true, "reason": "", "profile": p}
+
+func _expand_web_profile(p: Dictionary) -> bool:
+	if not p.get("skills") is Dictionary or p.skills.size() != LEGACY_SKILLS.size():
+		return false
+	if not p.get("purchaseTotals") is Dictionary or p.purchaseTotals.size() != catalog.tracks.size() + LEGACY_SKILLS.size() + 1:
+		return false
+	for id in LEGACY_SKILLS:
+		if not p.skills.has(id) or not p.purchaseTotals.has(id):
+			return false
+	for id in ADDED_SKILLS:
+		if p.purchaseTotals.has(id):
+			return false
+		p.skills[id] = 0
+		p.purchaseTotals[id] = 0
+	p.erase("edition")
+	p.balanceVersion = BALANCE_VERSION
+	var settlement = p.get("lastSettlement")
+	if settlement is Dictionary and settlement.get("receipt") is Dictionary:
+		if settlement.receipt.get("balanceVersion") == WEB_V4_BALANCE_VERSION:
+			settlement.receipt.balanceVersion = BALANCE_VERSION
+	return true
 
 func _migrate_collection(p: Dictionary, source_version: int, source_balance: String) -> Dictionary:
 	var levels := {}
@@ -116,7 +139,6 @@ func _migrate_collection(p: Dictionary, source_version: int, source_balance: Str
 	p.lastSettlement = null
 	p.version = 4
 	p.balanceVersion = BALANCE_VERSION
-	p.edition = FreeEdition.ID
 	return p
 
 func _validate_legacy(p: Dictionary) -> String:
@@ -135,7 +157,7 @@ func _validate_legacy(p: Dictionary) -> String:
 	return ""
 
 func validate(p: Dictionary) -> String:
-	if p.get("version") != 4 or p.get("campaign") != "arch" or p.get("edition") != FreeEdition.ID or p.get("balanceVersion") != BALANCE_VERSION:
+	if p.get("version") != 4 or p.get("campaign") != "arch" or p.get("balanceVersion") != BALANCE_VERSION:
 		return "profile-version"
 	for key in ["parts", "earned", "spent", "refunded"]:
 		if not Money.valid(p.get(key)):
@@ -180,7 +202,7 @@ func _validate_archive(p: Dictionary) -> String:
 	if p.get("collectionMigration") != "legacy-collection-refund-v1":
 		return "collection-migration"
 	var version: Variant = archive.get("sourceVersion")
-	var valid_versions := {1: ["arch-campaign-v0.2", "arch-campaign-v0.2.1"], 2: LEGACY_BALANCE_VERSIONS}
+	var valid_versions := {1: ["arch-campaign-v0.2", "arch-campaign-v0.2.1"], 2: LEGACY_BALANCE_VERSIONS, 3: [PREVIOUS_BALANCE_VERSION]}
 	if not uint(version) or not valid_versions.has(int(version)) or archive.get("sourceBalanceVersion") not in valid_versions[int(version)]:
 		return "collection-source"
 	for key in ["sourceRevision", "originalEarned", "originalSpent", "totalSpent"]:
@@ -226,7 +248,7 @@ func _validate_common(p: Dictionary, legacy: bool) -> String:
 	if not p.get("skills") is Dictionary or p.skills.size() != catalog.skills.size():
 		return "skills"
 	for id in catalog.skills:
-		if not uint(p.skills.get(id)) or (legacy and p.skills[id] > 5):
+		if not uint(p.skills.get(id)) or (legacy and p.skills[id] > catalog.skills[id].get("max", 5)):
 			return "skill-" + str(id)
 	if not p.get("stageRecords") is Dictionary:
 		return "records"
@@ -256,7 +278,7 @@ func _validate_common(p: Dictionary, legacy: bool) -> String:
 		for id in p.bossRewards:
 			if p.bossRewards[id] != true or typeof(p.bossRewards[id]) != TYPE_BOOL or not catalog.metadata(str(id)).get("boss", false):
 				return "boss-reward-site"
-	if p.has("selectedRegion") and (not uint(p.selectedRegion) or p.selectedRegion != 0):
+	if p.has("selectedRegion") and (not uint(p.selectedRegion) or p.selectedRegion >= catalog.regions.size()):
 		return "region"
 	if not p.has("lastSite") or (p.lastSite != null and catalog.metadata(str(p.lastSite)).is_empty()):
 		return "last-site"
@@ -266,36 +288,6 @@ func _validate_common(p: Dictionary, legacy: bool) -> String:
 		if not p.get(key) is Array or p[key].size() > 100:
 			return key
 		for entry in p[key]:
-			if not entry is Dictionary or not _free_history(entry):
+			if not entry is Dictionary:
 				return key + "-entry"
-			if key == "purchases" and (not entry.get("id") is String or not Money.valid(entry.get("cost")) or not uint(entry.get("workMs")) or entry.workMs > p.workMs or Money.compare(entry.cost, p.spent) > 0):
-				return "purchase-entry-ledger"
 	return ""
-
-func _free_history(value: Variant, field := "", depth := 0) -> bool:
-	if depth > 32:
-		return false
-	if field in ["region", "regionIndex", "selectedRegion"] and value != null and value != 0:
-		return false
-	if value is Dictionary:
-		if field in ["skills", "skillUses", "skillLevels"]:
-			for id in value:
-				if not FreeEdition.allows_skill(str(id)):
-					return false
-		for key in value:
-			if not _free_history(value[key], str(key), depth + 1):
-				return false
-	elif value is Array:
-		for item in value:
-			if not _free_history(item, field, depth + 1):
-				return false
-	elif value is String:
-		if field in ["site", "siteId", "mapId", "lastSite"] and not FreeEdition.allows_site(value):
-			return false
-		if field in ["skill", "skillId", "passive", "active"] and not FreeEdition.allows_skill(value):
-			return false
-		if field == "id" and not FreeEdition.allows_skill(value) and not catalog.tracks.has(value) and value not in RETIRED_TRACKS + ["bomb", "blackhole"]:
-			return false
-	elif field in ["region", "regionIndex", "selectedRegion"] and value != null and value != 0:
-		return false
-	return true

@@ -1,1 +1,18 @@
-{"schema_version":1,"balance_version":"free-original-skills-v1","legacy_metadata":{"aftershock":{"region":0,"icon":"passive-aftershock"},"relay":{"region":0,"icon":"passive-impact-relay"},"orbital":{"region":0,"icon":"active-orbital-drop"}},"skills":{}}
+{
+  "schema_version": 1,
+  "balance_version": "paid-skill-expansion-v1",
+  "legacy_metadata": {
+    "aftershock": {"region": 0, "icon": "passive-aftershock"},
+    "relay": {"region": 0, "icon": "passive-impact-relay"},
+    "orbital": {"region": 0, "icon": "active-orbital-drop"}
+  },
+  "skills": {
+    "slam": {"name": "Lift & Slam", "kind": "passive", "region": 1, "clears": 3, "learn": 3500, "max": 5, "prices": [1200, 3000, 6000, 12000], "trigger": 6, "icon": "passive-lift-slam"},
+    "expand": {"name": "Pressure Bloom", "kind": "passive", "region": 2, "clears": 0, "learn": 6000, "max": 5, "prices": [1800, 4000, 8000, 16000], "trigger": 5, "icon": "passive-pressure-wave"},
+    "wave": {"name": "Ground Pulse", "kind": "passive", "region": 3, "clears": 0, "learn": 10000, "max": 5, "prices": [2400, 5000, 10000, 20000], "trigger": 6, "icon": "passive-ground-wave"},
+    "seismic": {"name": "Seismic Driver", "kind": "active", "region": 1, "clears": 0, "learn": 4000, "max": 5, "prices": [2000, 5000, 10000, 18000], "icon": "active-seismic-driver"},
+    "gravity": {"name": "Gravity Press", "kind": "active", "region": 2, "clears": 0, "learn": 8000, "max": 5, "prices": [3000, 7000, 14000, 24000], "icon": "active-gravity-press"},
+    "sonic": {"name": "Sonic Sweep", "kind": "active", "region": 3, "clears": 0, "learn": 12000, "max": 5, "prices": [4000, 9000, 18000, 30000], "icon": "active-sonic-sweep"},
+    "recharge": {"name": "Battery Recharge", "kind": "active", "region": 4, "clears": 0, "learn": 12000, "max": 1, "prices": [], "icon": "active-battery-charge"}
+  }
+}

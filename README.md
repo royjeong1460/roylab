@@ -33,7 +33,7 @@ emits static files into `out`.
 
 ## Planet Patchup playable demo
 
-Common game baseline: **0.5.40 (g40)** — free Web0.5.40-free and paid Godot iOS0.5.40(49). Read [current versions](docs/planet-patchup-versions.json), [change/rollback history](docs/planet-patchup-version-history.md), and [release evidence](docs/qa/2026-11-03-common-g40/README.md). Build, deploy/install and user gameplay verification are recorded separately.
+Current game **0.5.41** uses the common g40 core and the full free six-region campaign on web and iOS. See [versions](docs/planet-patchup-versions.json), [rollback history](docs/planet-patchup-version-history.md), and [delivery evidence](docs/qa/2026-11-06-unified-godot/README.md).
 
 
 - `/planet-patchup/play/` is the Godot 0.5.34 free web edition: Arch Quarter's six normal maps, boss and tutorial, three original skills, central automatic collection and unlimited upgrades. Five other regions remain locked. All routes and archives are listed at `/planet-patchup/` and in [the address guide](docs/planet-addresses.md).

@@ -10,13 +10,13 @@
 
 ## 소스와 실행판
 
-- `app/`은 Next.js 사이트다. 현재 무료 웹은 `demos/planet-patchup/godot-free/`의 Godot 0.5.40 프로젝트이며, 브라우저 연결부는 `src/godot-free/`다. 기존 Vite/Phaser 소스와 `paid-app/`은 보존한다. 현재 유료 네이티브 Godot는 상위 작업 폴더의 `variants/godot-paid-port/` 지침을 먼저 확인한다.
-- 무료판은 웹버전, 유료판은 앱버전이다. 큰 디자인·기능 업데이트와 공용 코드 변경은 두 판에 함께 반영한다.
+- `app/`은 Next.js 사이트다. 현재 무료 웹은 `demos/planet-patchup/godot-free/`의 Godot 0.5.41 프로젝트이며, 브라우저 연결부는 `src/godot-free/`다. 기존 Vite/Phaser 소스와 `paid-app/`은 보존한다. 현재 네이티브 Godot는 상위 작업 폴더의 `variants/godot-paid-port/` 지침을 먼저 확인한다.
+- 웹과 앱은 동일한 6지역 Godot 캠페인을 무료로 제공한다. 큰 디자인·기능 업데이트와 공용 코드 변경은 두 플랫폼에 함께 반영한다.
 - 유료판은 웹 미리보기나 Vite 빌드만으로 업데이트를 완료하지 않는다. 최신 자산을 네이티브 프로젝트에 동기화하고 iOS 앱 빌드까지 확인한다. 무료 웹 공개 배포와 유료 앱 기기 설치 여부는 각각 별도로 보고한다.
 - 유료판을 수정하면 사용자의 연결된 개발용 iPhone에 업데이트 설치까지 기본으로 진행한다. 기존 앱 ID와 저장 데이터를 유지하고 앱 삭제·초기화 없이 덮어 설치한다. 설치와 실행 여부를 확인하며, 연결·잠금·개발 서명 문제로 설치할 수 없으면 기기용 빌드 준비 상태와 막힌 이유를 구체적으로 보고한다.
 - 현재 무료판 빌드는 `demos/planet-patchup/scripts/build-godot-free.mjs`다. `npm run build:game -- --free`가 이를 실행한다. `vite.free.config.js`와 `src/arch/main.js`는 이전 Phaser 무료판 보관본이다. 무료판 범위, 저장 이전과 배포는 [무료 Godot README](demos/planet-patchup/godot-free/README.md)를 따른다.
 - Godot의 게임플레이·브라우저·기기·체감·발열 검증은 사용자가 한다. 에이전트는 테스트·씬·시뮬레이션·브라우저·기기 앱을 실행하지 않는다. 소스 검토, import/compile/export, 정적 패키지·HTTP 확인과 배포만 수행하고 확인 범위를 구분해 보고한다.
-- 무료판은 첫 지역의 일반 6맵·보스·튜토리얼, 기존 3스킬, 패시브/액티브 각 1칸을 유지한다. 다른 5지역은 잠긴 미리보기이며 유료 맵·스킬 데이터는 무료 패키지에 포함하지 않는다. 원래 브라우저 저장을 보존하고 별도 Godot 저장 영역으로 검증 이전한다.
+- 전체 캠페인은 일반 현장 36개·보스 6개·튜토리얼과 스킬 10개다. 지역은 플레이로 해금한다. 여섯 지역 뒤의 물음표는 표시 전용이다. 웹과 앱의 기존 저장 경로와 저장 이전 절차를 유지한다.
 - 주소와 별칭의 기준은 `scripts/planet-routes.mjs`, 설명은 [주소 문서](docs/planet-addresses.md)다. 생성된 진입 HTML과 리다이렉트는 생성 스크립트로 갱신한다.
 - QA는 해당 실행판의 별도 저장 영역을 사용하고 같은 origin을 유지한다. `localhost`와 `127.0.0.1`은 저장소가 다르다. 초기화·마이그레이션은 해당 판의 키만 다룬다.
 - 게임 배포 작업에는 `scripts/build-planet-demo.mjs`의 판별 옵션과 출력 경로를 확인한다. 사이트 빌드는 체크인된 `public/games/` 결과를 사용한다. 소스 수정만으로 배포된 게임이 갱신되지는 않는다.

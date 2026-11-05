@@ -1,0 +1,19 @@
+{
+  "version": "0.5.41",
+  "nativeBuild": 50,
+  "stem": "free-0541-24c2dfba8fc8",
+  "regions": 6,
+  "normalSites": 36,
+  "bossSites": 6,
+  "tutorials": 1,
+  "skills": 10,
+  "matchingMapAndBalancePayloads": true,
+  "webPackEntries": 816,
+  "nativePackEntries": 815,
+  "nativePackSha256": "4870719f6994b25dc551982670134e8fec6fd1242c9ef115170633829161b7f7",
+  "nativeSignatureVerified": true,
+  "nativeApp": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/unified-2026-11-06-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeCoreUnchanged": true,
+  "runtimeExecutedByAgent": false
+}
