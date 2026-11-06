@@ -28,7 +28,7 @@ func _ready() -> void:
 	dim.pressed.connect(close)
 	_panel = PanelContainer.new()
 	_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	_panel.add_theme_stylebox_override("panel",UITheme.box(UITheme.PANEL,UITheme.GOLD,1,12))
+	_panel.add_theme_stylebox_override("panel",UITheme.box(UITheme.MENU_PANEL,UITheme.GOLD,1,12))
 	add_child(_panel)
 	var column := VBoxContainer.new()
 	_panel.add_child(column)

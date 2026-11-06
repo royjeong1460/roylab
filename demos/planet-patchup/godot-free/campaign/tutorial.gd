@@ -38,8 +38,8 @@ func title() -> String:
 
 func copy(_touch := true) -> String:
 	return L10n.text({
-		"aim":"Tap and release without moving to attack. Two fingers move and zoom.",
+		"aim":"Tap the marked column and release without moving. Each blast uses battery.",
 		"collapse":"Weak columns cannot carry the weight above.",
-		"collect":"Loose pixels gather automatically when the battery runs out.",
-		"work":"More mint pixels means more parts to recover."
+		"collect":"Loose scrap gathers automatically when the battery runs out.",
+		"work":"Mint-colored scrap is ready to recover."
 	}.get(stage,""))

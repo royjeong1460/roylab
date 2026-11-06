@@ -7,6 +7,9 @@ var images := {}
 var width := 460.0
 var height := 628.0
 var floor_y := 580.0
+var _clouds: CloudLayer
+var _map_floor_y := 0.0
+var _tile_depth := 28.0
 var restoration := 0.0:
 	set(value):
 		restoration = value
@@ -24,17 +27,28 @@ func environment_style() -> Dictionary:
 	return GameSkin.arch_style({"sky":Color("aca696"),"horizon":Color("afa58f"),"ground":Color("776653"),"dust":0.26},tier)
 
 func _ready() -> void:
+	_map_floor_y = floor_y
 	size = Vector2(width, height)
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	for name in ["shared-cloud-a", "shared-cloud-b", "shared-cloud-c", "shared-mesa-a", "shared-mesa-b", "shared-mesa-c", "01-compacted", "02-panels", "03-pipes", "04-appliances", "05-drums", "06-mixed", "arch-ground-a", "arch-ground-b", "arch-ground-c", "arch-building-a", "arch-building-b", "arch-building-c", "prop-stairs", "prop-fountain", "prop-lamp", "prop-bench", "shared-scrap-a", "shared-scrap-b", "shared-scrap-c"]:
 		images[name] = load("res://assets/salvage/" + name + ".png")
-	var clouds := CloudLayer.new()
-	add_child(clouds)
+	_clouds = CloudLayer.new()
+	add_child(_clouds)
 	var cloud_alpha := 0.85 if GameSkin.bright() else 0.72 if restoration_tier()>0 else 0.42
 	# The new sprite layer is above the dust draw; preserve the old effective alpha.
-	clouds.setup(Vector2(width,height),floor_y,cloud_alpha*(1.0-float(environment_style().dust)))
+	_clouds.setup(Vector2(width,height),floor_y,cloud_alpha*(1.0-float(environment_style().dust)))
+	queue_redraw()
+
+func cover_view(bounds: Rect2) -> void:
+	position = bounds.position
+	width = bounds.size.x
+	height = bounds.size.y
+	floor_y = _map_floor_y - bounds.position.y
+	_tile_depth = height - floor_y
+	size = bounds.size
+	_clouds.position = -bounds.position
 	queue_redraw()
 
 func sprite(name: String, x: float, base: float, target_width: float, alpha := 1.0, max_height := INF) -> void:
@@ -96,4 +110,7 @@ func _draw() -> void:
 			draw_rect(Rect2(roundf(w*x),f-3,12,3),Color("8f9f74"))
 			draw_rect(Rect2(roundf(w*x)+3,f-6,4,3),Color("8f9f74"))
 	for x in range(0, int(w), 192):
-		sprite("arch-ground-" + "abc"[(x / 192) as int % 3], x, f + 28, 192, 0.85)
+		var name := "arch-ground-" + "abc"[(x / 192) as int % 3]
+		var texture: Texture2D = images.get(name)
+		if texture != null:
+			draw_texture_rect(GameSkin.texture(texture), Rect2(x, f, 192, _tile_depth), false, Color(1, 1, 1, 0.85))

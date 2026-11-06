@@ -138,7 +138,7 @@ func _play_area() -> Rect2:
 
 func _update_edge_colors() -> void:
 	for index in range(unsafe_masks.size()):
-		var color := Color("192b32") if current_screen == "home" else UITheme.BG
+		var color := UITheme.MENU_BG if current_screen == "home" or current_screen in UITheme.TEAL_SCREENS else UITheme.BG
 		if current_screen == "play" and is_instance_valid(play_view):
 			color = GameSkin.hud("cream") if index == 0 else GameSkin.hud("sand") if index == 1 and GameSkin.bright() else play_view.ground_color if index == 1 else Color.TRANSPARENT
 		unsafe_masks[index].color = color
@@ -162,7 +162,7 @@ func navigate(screen: String, data: Dictionary = {}) -> void:
 	view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ground_surround.visible = is_instance_valid(play_view)
 	if not is_instance_valid(play_view):
-		backdrop.color = Color("192b32") if screen == "home" else UITheme.BG
+		backdrop.color = UITheme.MENU_BG if screen == "home" or screen in UITheme.TEAL_SCREENS else UITheme.BG
 	_update_edge_colors()
 	if is_instance_valid(play_view):
 		play_view.visible = screen in ["play", "pause", "settings", "build_info"]
@@ -255,7 +255,7 @@ func buy_offer(id: String, expected: Dictionary) -> void:
 		return
 	notice = ""
 	feedback.play_effect("ui-confirm")
-	navigate("workshop", payload)
+	_refresh_equipment_screen(id)
 
 func equip_skill(id: String, slot: int = -1) -> void:
 	var result: Dictionary = journey.equip_skill(id, slot)
@@ -264,7 +264,7 @@ func equip_skill(id: String, slot: int = -1) -> void:
 		return
 	feedback.play_effect("ui-confirm")
 	notice = ""
-	navigate("workshop", payload)
+	_refresh_equipment_screen(id)
 
 func unequip_skill(id: String) -> void:
 	var result: Dictionary = journey.unequip_skill(id)
@@ -273,7 +273,14 @@ func unequip_skill(id: String) -> void:
 		return
 	feedback.play_effect("ui-confirm")
 	notice = ""
-	navigate("workshop", payload)
+	_refresh_equipment_screen(id)
+
+func _refresh_equipment_screen(id: String) -> void:
+	if current_screen in ["receipt", "chapter"]:
+		navigate(current_screen, payload)
+		screens.open_unlock_intro(id)
+	else:
+		navigate("workshop", payload)
 
 func skip_run_guide() -> void:
 	if journey.current_run != null and journey.current_run.guide != null:
@@ -286,7 +293,7 @@ func skip_tutorial() -> void:
 	var result: Dictionary = journey.skip_tutorial()
 	if result.ok:
 		notice = ""
-		navigate("workshop")
+		navigate("workshop", payload)
 	else:
 		show_notice(_failure_text(result))
 
@@ -402,8 +409,8 @@ func _failure_text(result: Dictionary) -> String:
 		return _render_notice("This skill slot is not available yet.")
 	if reason == "duplicate-skill":
 		return _render_notice("This skill is already equipped.")
-	var descriptions := {"locked": "This map is locked. Clear the required sites first.", "insufficient": "Not enough parts.", "stale": "Progress changed. Please try again.", "storage": "Could not save progress. Your previous data has been kept.", "storage-blocked": "Progress could not be read. Export or import a recovery copy in Options.", "active": "Finish the current run first.", "site-data": "Map data could not be loaded. Your progress has been kept.", "unavailable": "This upgrade is not available yet.", "unowned": "Learn this skill before equipping it."}
-	descriptions["numeric-limit"] = "Unable to calculate the next upgrade safely. Your parts are unchanged."
+	var descriptions := {"locked": "This map is locked. Clear the required sites first.", "insufficient": "Not enough scrap.", "stale": "Progress changed. Please try again.", "storage": "Could not save progress. Your previous data has been kept.", "storage-blocked": "Progress could not be read. Export or import a recovery copy in Options.", "active": "Finish the current run first.", "site-data": "Map data could not be loaded. Your progress has been kept.", "unavailable": "This upgrade is not available yet.", "unowned": "Learn this skill before equipping it."}
+	descriptions["numeric-limit"] = "Unable to calculate the next upgrade safely. Your scrap is unchanged."
 	return _render_notice(str(descriptions[reason])) if descriptions.has(reason) else _render_notice("Could not complete this action (%s). Your previous progress has been kept.", [reason])
 
 func _active_changed(active: bool) -> void:
@@ -420,7 +427,9 @@ func _back_requested() -> void:
 		elif current_screen == "settings" or current_screen == "build_info":
 			navigate("pause")
 		return
-	if current_screen in ["settings", "reset", "reset_confirm", "import_confirm", "build_info", "maps", "regions", "workshop"]:
+	if current_screen in ["receipt", "chapter"] or (current_screen == "workshop" and payload.get("from_result", false)):
+		navigate("maps")
+	elif current_screen in ["settings", "reset", "reset_confirm", "import_confirm", "build_info", "maps", "regions", "workshop"]:
 		navigate("home")
 	else:
 		show_settings("home")

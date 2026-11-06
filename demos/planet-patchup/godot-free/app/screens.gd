@@ -10,10 +10,10 @@ const Diagnostics = preload("res://platform/diagnostics.gd")
 const OfferPopup = preload("res://app/offer_popup.gd")
 const PLAY_TIPS := [
 	"Tap and release without moving to attack. Two fingers move and zoom.",
-	"Mint pixels are ready to recover when the battery runs out.",
+	"Mint-colored scrap is recovered when the battery runs out.",
 	"Use two fingers to move and zoom. On PC, right-drag and use the mouse wheel.",
-	"Keep every recovered pixel. Spend parts on upgrades before your next sortie.",
-	"When the battery runs out, all loose pixels gather at the center automatically.",
+	"Spend recovered scrap on upgrades before your next sortie.",
+	"When the battery runs out, all loose scrap gathers at the center.",
 	"Clear all six normal sites at 70% to unlock the boss. Aim for 100% All Clear!",
 	"Tap a tool below the field to select it.",
 	"Pause to collect early and return to the workshop."
@@ -36,6 +36,7 @@ var _hud: Dictionary = {}
 var _tab := "weapons"
 var _workshop_scroll: Dictionary = {}
 var _offer_popup: Control
+var _menu_theme: Theme
 var _settings_from := "home"
 var _performance_updated := 0
 var _diagnostic_taps: Array[int] = []
@@ -45,6 +46,7 @@ func setup(application, source_catalog, source_journey, source_feedback) -> void
 	catalog = source_catalog
 	journey = source_journey
 	feedback = source_feedback
+	_menu_theme = UITheme.make(catalog,true)
 
 func close_popup() -> bool:
 	if not is_instance_valid(_offer_popup):
@@ -97,12 +99,13 @@ func _hud_icon(key: String, color: Color) -> TextureRect:
 	UITheme.tint_icon(icon,color)
 	return icon
 
-func _composition(home := false) -> Dictionary:
+func _composition(home := false, teal := false) -> Dictionary:
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if teal: root.theme = _menu_theme
 	var background := ColorRect.new()
-	background.color = UITheme.BG
+	background.color = UITheme.MENU_BG if teal else UITheme.BG
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(background)
@@ -140,21 +143,26 @@ func _composition(home := false) -> Dictionary:
 	root.ready.connect(fit)
 	return {"root": root, "fixed": fixed}
 
-func _page(title: String, kicker := "", back := "home", footer_height := 0.0) -> Dictionary:
-	var page := _composition()
+func _page(title: String, kicker := "", back := "home", footer_height := 0.0, teal := false) -> Dictionary:
+	var page := _composition(false,teal)
 	var fixed: Control = page.fixed
-	_place(fixed, _label(kicker, 9, UITheme.GOLD), Rect2(22,24,300,18))
 	var heading := _label(title,25)
-	_place(fixed,heading,Rect2(22,48,300,40))
 	var close := _button("×", func():
 		if back == "play": app.resume_run()
 		else: app.navigate(back))
 	_place(fixed,close,Rect2(324,28,44,44))
+	if kicker.is_empty():
+		heading.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_place(fixed,heading,Rect2(22,close.position.y,300,close.size.y))
+	else:
+		_place(fixed,_label(kicker,9,UITheme.GOLD),Rect2(22,24,300,18))
+		_place(fixed,heading,Rect2(22,48,300,40))
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.scroll_deadzone = 8
 	scroll.follow_focus = true
-	_place(fixed, scroll, Rect2(22,103,346,711))
+	var scroll_top := 84.0 if kicker.is_empty() else 103.0
+	_place(fixed,scroll,Rect2(22,scroll_top,346,814.0-scroll_top))
 	var content := VBoxContainer.new()
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 12)
@@ -164,7 +172,7 @@ func _page(title: String, kicker := "", back := "home", footer_height := 0.0) ->
 		heading.size.x = maxf(100,fixed.size.x-92)
 		close.position.x = fixed.size.x-66
 		scroll.size.x = maxf(100,fixed.size.x-44)
-		scroll.size.y = minf(711,maxf(80,page.root.size.y / factor - 133))
+		scroll.size.y = minf(814.0-scroll_top,maxf(80,page.root.size.y/factor-scroll_top-30.0))
 		if footer_height > 0.0:
 			var available: float = (page.root.size.y-footer_height-12.0-fixed.position.y)/factor-scroll.position.y
 			scroll.size.y = minf(scroll.size.y,maxf(0.0,available))
@@ -296,7 +304,7 @@ func _home() -> Control:
 	future.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	markers.add_child(future)
 	var enter := _button("Enter     →" if open else "Locked", func():
-		if journey.profile.tutorial == "intro": app.start_run("tutorial")
+		if app.selected_region == 0 and journey.profile.tutorial == "intro": app.start_run("tutorial")
 		else: app.navigate("maps"), not open, true)
 	enter.add_theme_font_size_override("font_size",17)
 	var enter_style := UITheme.box(Color("dca75f"),Color("ecc583"),2)
@@ -365,62 +373,99 @@ func _regions() -> Control:
 
 func _maps() -> Control:
 	var region: Dictionary = catalog.region(app.selected_region)
-	var page := _page(str(region.name),L10n.format("REGION %02d · MAP SELECT",[app.selected_region+1]))
+	var page := _page(str(region.name),"","home",0.0,true)
 	var content: VBoxContainer = page.content
-	content.add_child(_label(L10n.format("%s · Planet %s",[_region_status(app.selected_region),_percent(journey.planet_progress())]),12,UITheme.MINT))
+	content.add_theme_constant_override("separation",8)
 	var progress: Dictionary = journey.region_progress(app.selected_region)
-	content.add_child(_label(L10n.format("%d / 7 cleared · Region cleanup %s",[int(progress.get("clears",0)),_percent(float(progress.get("ratio",0)))]),10,UITheme.MUTED))
-	content.add_child(_button("Tutorial\nBlast · Collect · Upgrade     Practice →",func(): app.start_run("training")))
+	content.add_child(_label(L10n.format("%d/%d sites cleared · Region recovery %s",[int(progress.get("clears",0)),region.sites.size(),_percent(float(progress.get("ratio",0)))]),12,UITheme.MINT))
+	var guide := HBoxContainer.new()
+	content.add_child(guide)
+	var rule := _label("70% recovery clears a site.",11,UITheme.MUTED)
+	rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rule.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	guide.add_child(rule)
+	if app.selected_region == 0:
+		guide.add_child(_button("Tutorial →",func(): app.start_run("training")))
+	var best_heading := _label("Best record",10,UITheme.MUTED)
+	best_heading.autowrap_mode = TextServer.AUTOWRAP_OFF
+	best_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	best_heading.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	guide.add_child(best_heading)
+	var end_inset := Control.new()
+	end_inset.custom_minimum_size.x = 8.0
+	end_inset.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guide.add_child(end_inset)
 	for index in range(region.sites.size()):
 		var site_id := str(region.sites[index])
 		var site: Dictionary = catalog.metadata(site_id)
 		var record: Dictionary = journey.profile.stageRecords.get(site_id,{})
 		var best := float(record.get("recovered",0)) / maxf(1,float(record.get("total",1)))
 		var open: bool = journey.stage_open(site_id)
-		var state := "FULL CLEAR" if best >= 1 else "CLEARED" if best >= 0.7 else "BOSS · 70% to clear" if site.boss else "Reach 70% to clear"
-		if not open: state = "Clear all 6 sites at 70%" if site.boss else "Clear the previous region"
+		var cleared := open and best >= 0.7
+		var accent := UITheme.GOLD if best >= 1.0 else UITheme.MINT
+		var state := "FULL CLEAR" if cleared and best >= 1.0 else "CLEARED" if cleared else ""
+		if not open: state = "Clear all 6 normal sites" if site.boss else "Clear the previous region"
 		var row := _button("",func(): app.start_run("stage",site_id),not open)
-		row.custom_minimum_size.y = 88 if site.boss else 78
+		row.custom_minimum_size.y = 46 if state.is_empty() else 56
+		if cleared:
+			var fill := UITheme.MENU_PANEL.lerp(accent,0.12)
+			row.add_theme_stylebox_override("normal",UITheme.box(fill,accent.darkened(0.22),1))
+			row.add_theme_stylebox_override("hover",UITheme.box(fill.lightened(0.07),accent,1))
+			row.add_theme_stylebox_override("pressed",UITheme.box(fill.darkened(0.12),accent,1))
+			row.add_theme_stylebox_override("focus",UITheme.box(Color.TRANSPARENT,UITheme.TEXT,2))
 		var body := Control.new()
 		body.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.add_child(body)
 		var number_label := _label("B" if site.boss else "%02d" % (index+1),13,UITheme.GOLD)
 		number_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		number_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		body.add_child(number_label)
 		var name_label := _label(site.name,12,UITheme.TEXT if open else UITheme.MUTED)
+		name_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		name_label.clip_text = true
+		name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		body.add_child(name_label)
-		var state_label := _label(state,10,UITheme.GOLD if best>=1 else UITheme.MINT if best>=0.7 else UITheme.MUTED)
-		body.add_child(state_label)
-		var best_label := _label(L10n.text("BEST" if open else "LOCKED")+"\n"+_percent(best),11,UITheme.GOLD if best>=1 else UITheme.TEXT)
+		var status: Control
+		if cleared:
+			var badge := PanelContainer.new()
+			badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			badge.add_theme_stylebox_override("panel",UITheme.box(accent,Color.TRANSPARENT,0,0))
+			var mark := _label(state,11,UITheme.BG)
+			mark.autowrap_mode = TextServer.AUTOWRAP_OFF
+			mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			mark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			badge.add_child(mark)
+			status = badge
+		elif not state.is_empty():
+			status = _label(state,10,UITheme.MUTED)
+		if status != null: body.add_child(status)
+		var score := L10n.text("Locked") if not open else "—" if record.is_empty() else _percent(best)
+		var best_label := _label(score,14 if cleared else 12,accent if cleared else UITheme.MUTED if not open else UITheme.TEXT)
 		best_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 		best_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		best_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		body.add_child(best_label)
-		var meter := ProgressBar.new()
-		meter.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		meter.show_percentage = false
-		meter.value = best*100
-		body.add_child(meter)
 		var layout_row := func():
-			# The button owns a complete card; fixed side reserves cannot collapse into vertical text.
 			body.position = Vector2.ZERO
 			body.size = row.size
-			number_label.position = Vector2(12,22)
-			number_label.size = Vector2(30,24)
-			name_label.position = Vector2(50,12)
-			name_label.size = Vector2(maxf(80,row.size.x-137),30)
-			state_label.position = Vector2(50,45)
-			state_label.size = Vector2(maxf(80,row.size.x-137),22)
-			best_label.position = Vector2(row.size.x-77,14)
-			best_label.size = Vector2(65,42)
-			meter.position = Vector2(12,row.size.y-8)
-			meter.size = Vector2(maxf(0,row.size.x-24),3)
+			number_label.position = Vector2(12,0)
+			number_label.size = Vector2(30,row.size.y)
+			var name_width := maxf(80,row.size.x-116)
+			name_label.position = Vector2(46,0 if status==null else 5)
+			name_label.size = Vector2(name_width,row.size.y if status==null else 23)
+			if status != null:
+				var status_width := maxf(76,status.get_combined_minimum_size().x+12) if cleared else name_width
+				status.position = Vector2(46,28)
+				status.size = Vector2(status_width,20 if cleared else 22)
+			best_label.position = Vector2(row.size.x-64,0)
+			best_label.size = Vector2(52,row.size.y)
 		row.resized.connect(layout_row)
 		row.ready.connect(layout_row)
 		content.add_child(row)
-	content.add_child(_label("Reach 70% on every normal site to open the boss. Clear the boss to open the next region. Return any time for 100% All Clear.",10,UITheme.MUTED))
 	return page.root
 
-func _offer_description(offer: Dictionary) -> String:
+func _offer_description(offer: Dictionary, show_next := true) -> String:
 	var id := str(offer.id)
 	var level := int(offer.level)
 	if offer.has("description_key"):
@@ -429,7 +474,7 @@ func _offer_description(offer: Dictionary) -> String:
 			if args[index] is String: args[index] = L10n.text(args[index])
 		var effect := L10n.format(str(offer.description_key),args)
 		# Track descriptions already contain their current → next values and units.
-		if catalog.tracks.has(id) or id=="blackhole": return effect
+		if not show_next or catalog.tracks.has(id) or id=="blackhole": return effect
 		if level==0 and catalog.skills.has(id):
 			return L10n.format("At Lv 1\n%s",[effect])
 		var description := L10n.format("Current Lv %s\n%s",[_number(level),effect])
@@ -455,18 +500,14 @@ func _skill_summary(id: String) -> String:
 		"recharge":"Restores battery without consuming an attack."
 	}.get(id,"")))
 
-func _skill_unlock_hint(id: String) -> String:
-	var unlock: Dictionary = journey.progression.skill_unlock_info(id)
-	var index := int(unlock.get("region",0))
+func _gear_unlock_hint(id: String) -> String:
+	var unlock: Dictionary = journey.progression.gear_unlock_info(id)
 	var needed := int(unlock.get("clears",0))
-	var cleared: int = journey.progression.normal_clears(journey.profile,index)
 	var region_name := L10n.text(str(unlock.get("region_name","")))
 	if needed == 0:
 		return L10n.format("Open %s to unlock.",[region_name])
-	var progress := L10n.format("%s · %d/%d normal sites at 70%%",[region_name,mini(cleared,needed),needed])
-	if not journey.region_open(index):
-		return L10n.format("Open %s first.",[region_name])+"\n"+progress
-	return progress
+	var cleared: int = journey.progression.normal_clears(journey.profile,int(unlock.get("region",0)))
+	return L10n.format("%s · %d/%d normal sites at 70%%",[region_name,mini(cleared,needed),needed])
 
 func _skill_equip_controls(column: VBoxContainer, id: String) -> void:
 	var kind := str(catalog.skills[id].kind)
@@ -501,12 +542,13 @@ func _offer_name(offer: Dictionary) -> String:
 	return L10n.text(str({"blastForce":"Impact Power","blastRadius":"Break Radius","blastReach":"Shock Reach","wellPull":"Pull","wellReach":"Pull Range","wellDuration":"Duration","mix":"Core Mixing","wear":"Grinding","battery":"Battery","debrisProcessing":"Debris Processing","salvageYield":"Resource Refining"}.get(str(offer.id),offer.name)))
 
 func _offer_hint(offer: Dictionary) -> String:
+	if _offer_owned(offer): return ""
 	if not str(offer.get("numeric_error","")).is_empty():
-		return L10n.text("Unable to calculate the next upgrade safely. Your parts are unchanged.")
-	if catalog.skills.has(offer.id) and not journey.progression.skill_available(journey.profile,str(offer.id)):
-		return _skill_unlock_hint(str(offer.id))
+		return L10n.text("Unable to calculate the next upgrade safely. Your scrap is unchanged.")
+	if (catalog.skills.has(offer.id) or offer.id=="blackhole") and not journey.progression.gear_available(journey.profile,str(offer.id)):
+		return _gear_unlock_hint(str(offer.id))
 	if not offer.available and not _offer_owned(offer):
-		return L10n.text("Clear 3 sites at 70% to unlock.") if offer.id=="blackhole" else L10n.text("Unlock Black Hole first.")
+		return L10n.text("Learn Black Hole first.")
 	return ""
 
 func _offer_owned(offer: Dictionary) -> bool:
@@ -527,7 +569,7 @@ func _offer_summary(id: String) -> String:
 	if catalog.skills.has(id): return _skill_summary(id)
 	return L10n.text(str({
 		"blastForce":"Pushes fragments harder and strengthens nearby cracks.",
-		"blastRadius":"Widens the central area that breaks pixels loose directly.",
+		"blastRadius":"Widens the central area that breaks scrap loose directly.",
 		"blastReach":"Carries the impact farther from the center to nearby fragments.",
 		"blackhole":"Pulls loose material inward, then grinds pieces through sustained contact.",
 		"wellPull":"Pulls nearby pieces toward the black hole more strongly.",
@@ -536,30 +578,52 @@ func _offer_summary(id: String) -> String:
 		"mix":"Stirs pieces more strongly inside the black hole.",
 		"wear":"Raises the maximum grinding strength during sustained contact.",
 		"battery":"Increases the energy available for each sortie.",
-		"debrisProcessing":"Helps fragments break into pixels through collisions. Does not change direct attacks or falling speed.",
-		"salvageYield":"Adds parts from recovered pixels. Does not change recovery percentage or multiply boss bonuses."
+		"debrisProcessing":"Helps fragments break into scrap on impact. Does not change direct attacks or falling speed.",
+		"salvageYield":"Increases the scrap reward based on recovery. Recovery rate and boss bonuses stay the same."
 	}.get(id,"")))
 
-func _show_offer_details(offer: Dictionary) -> void:
+func open_unlock_intro(id: String) -> void:
+	for offer in journey.offers():
+		if offer.id == id and journey.progression.gear_available(journey.profile,id):
+			_show_offer_details(offer,true)
+			return
+
+func _show_offer_details(offer: Dictionary, intro := false) -> void:
 	close_popup()
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation",12)
 	var id := str(offer.id)
-	column.add_child(_label(_offer_level(offer),12,UITheme.MUTED))
+	if not intro:
+		column.add_child(_label(_offer_level(offer),12,UITheme.MUTED))
 	column.add_child(_label(_offer_summary(id),13))
-	column.add_child(_label(_offer_description(offer),13,UITheme.GOLD))
-	if not _offer_owned(offer) and str(offer.get("numeric_error","")).is_empty():
-		column.add_child(_label(L10n.format("%s parts",[str(offer.price_text)]),12,UITheme.MINT if offer.can_afford else Color("eea291")))
+	column.add_child(_label(_offer_description(offer,not intro),13,UITheme.GOLD))
+	if not intro and not _offer_owned(offer) and str(offer.get("numeric_error","")).is_empty():
+		column.add_child(_label(L10n.format("%s scrap",[str(offer.price_text)]),12,UITheme.MINT if offer.can_afford else Color("eea291")))
 	var hint := _offer_hint(offer)
 	if not hint.is_empty(): column.add_child(_label(hint,12,UITheme.MUTED))
 	if catalog.skills.has(id):
-		column.add_child(_label("Passives trigger from effective Blasts. Each active can be used once per sortie while battery remains. Skills use no battery.",11,UITheme.MUTED))
-		if journey.progression.skill_slots(journey.profile)<2:
+		var usage := "Passives trigger from effective Blasts. Each active can be used once per sortie while battery remains. Skills use no battery."
+		if intro:
+			usage = "Equip this skill. It triggers automatically when its Blast counter fills." if offer.kind=="passive" else "Equip this skill, then tap its button in the field once per sortie while battery remains."
+		column.add_child(_label(usage,11,UITheme.MUTED))
+		if not intro and journey.progression.skill_slots(journey.profile)<2:
 			var region_name := L10n.text(str(catalog.region(1).get("name","")))
 			column.add_child(_label(L10n.format("Open %s to unlock a second passive slot and a second active slot.",[region_name]),11,UITheme.MUTED))
 		if int(offer.level)>0: _skill_equip_controls(column,id)
-	else:
-		column.add_child(_label("Upgrades apply next sortie. Save parts or spend them here.",11,UITheme.MUTED))
+	elif not intro:
+		column.add_child(_label("Upgrades apply next sortie. Save scrap or spend it here.",11,UITheme.MUTED))
+	if intro:
+		if id=="blackhole":
+			column.add_child(_label("Select Black Hole in the field, then aim where you want to pull debris.",11,UITheme.MUTED))
+		if int(offer.level)==0:
+			column.add_child(_offer_purchase(offer,true))
+			if not offer.can_afford:
+				column.add_child(_label("Not enough scrap.",11,UITheme.MUTED))
+		elif _offer_owned(offer) or id in journey.profile.equipped.get(offer.kind,[]):
+			column.add_child(_button("Try on this site →",func(): app.start_run("retry"),false,true))
+		var tab := "weapons" if id=="blackhole" else "skills"
+		column.add_child(_button("Open weapons tab →" if id=="blackhole" else "Open skills tab →",
+			func(): app.navigate("workshop",{"from_result":true,"tab":tab})))
 	var popup := OfferPopup.new()
 	popup.configure(_offer_name(offer),column)
 	_offer_popup = popup
@@ -567,27 +631,29 @@ func _show_offer_details(offer: Dictionary) -> void:
 		if _offer_popup == popup: _offer_popup = null)
 	app.view.add_child(popup)
 
-func _offer_purchase(offer: Dictionary) -> Button:
+func _offer_purchase(offer: Dictionary, show_action := false) -> Button:
 	var owned := _offer_owned(offer)
 	var locked := _offer_locked(offer)
 	var numeric_limit := not str(offer.get("numeric_error","")).is_empty()
 	var can_buy := not owned and not numeric_limit and bool(offer.available) and bool(offer.can_afford)
+	var inactive := owned or locked or numeric_limit
 	var price := L10n.text("Locked") if locked else L10n.text("Owned") if owned else L10n.text("Unavailable") if numeric_limit else L10n.text("FREE") if str(offer.cost)=="0" else str(offer.price_text)
+	var full_price := price if str(offer.cost)=="0" else L10n.format("%s scrap",[str(offer.price_text)])
+	var label := L10n.format("Learn · %s",[full_price]) if show_action and not inactive else price
 	var expected := {"revision":journey.profile.revision,"cost":offer.cost,"level":offer.level}
-	var button := _button(price,func(): app.buy_offer(offer.id,expected),not can_buy)
+	var button := _button(label,func(): app.buy_offer(offer.id,expected),not can_buy)
 	button.add_theme_font_size_override("font_size",11)
 	button.clip_text = true
 	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var inactive := owned or locked or numeric_limit
 	var ink := UITheme.MUTED if inactive else Color("a6d7a2") if can_buy else Color("eea291")
-	var fill := UITheme.PANEL if inactive else Color("233a31") if can_buy else Color("30252a")
+	var fill := UITheme.MENU_BG if inactive else Color("233a31") if can_buy else Color("30252a")
 	for state in ["normal","hover","pressed","disabled"]:
 		button.add_theme_stylebox_override(state,UITheme.box(fill.lightened(0.08) if state=="hover" and can_buy else fill,ink,1,6))
 	for state in ["font_color","font_hover_color","font_pressed_color","font_disabled_color"]:
 		button.add_theme_color_override(state,ink)
 	var action := L10n.text("Learn") if int(offer.level)==0 and (catalog.skills.has(offer.id) or offer.id=="blackhole") else L10n.text("Upgrade")
-	button.tooltip_text = price if inactive else action+" · "+L10n.format("%s parts",[str(offer.price_text)])
+	button.tooltip_text = price if inactive else action+" · "+full_price
 	if not can_buy:
 		button.focus_mode = Control.FOCUS_NONE
 		button.mouse_default_cursor_shape = Control.CURSOR_ARROW
@@ -597,7 +663,7 @@ func _offer_card(offer: Dictionary) -> PanelContainer:
 	var locked := _offer_locked(offer)
 	var card := PanelContainer.new()
 	card.mouse_filter = Control.MOUSE_FILTER_PASS
-	card.add_theme_stylebox_override("panel",UITheme.box(UITheme.PANEL,UITheme.BORDER,1,8))
+	card.add_theme_stylebox_override("panel",UITheme.box(UITheme.MENU_PANEL,UITheme.MENU_BORDER,1,8))
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation",4)
 	card.add_child(column)
@@ -621,7 +687,7 @@ func _offer_card(offer: Dictionary) -> PanelContainer:
 		# Keep the full touch target; only the visible info badge is smaller.
 		var badge := PanelContainer.new()
 		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		badge.add_theme_stylebox_override("panel",UITheme.box(UITheme.PANEL,UITheme.GOLD,1,0))
+		badge.add_theme_stylebox_override("panel",UITheme.box(UITheme.MENU_PANEL,UITheme.GOLD,1,0))
 		_place(info,badge,Rect2(13,13,18,18))
 		var mark := _label("i",12,UITheme.GOLD)
 		mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -645,6 +711,8 @@ func _offer_card(offer: Dictionary) -> PanelContainer:
 	level_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	level_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	level_row.add_child(level_label)
+	if locked:
+		column.add_child(_label(_offer_hint(offer),10,UITheme.MUTED))
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation",4)
 	column.add_child(actions)
@@ -657,14 +725,15 @@ func _offer_card(offer: Dictionary) -> PanelContainer:
 		equip.add_theme_font_size_override("font_size",10)
 		equip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		for style in ["normal","hover","pressed","disabled"]:
-			equip.add_theme_stylebox_override(style,UITheme.box(UITheme.PANEL,UITheme.BORDER,1,6))
+			equip.add_theme_stylebox_override(style,UITheme.box(UITheme.MENU_BG,UITheme.MENU_BORDER,1,6))
 		actions.add_child(equip)
 	return card
 
 func _workshop(payload: Dictionary) -> Control:
 	_tab = str(payload.get("tab",_tab))
-	var page := _page("Upgrades","FIELD WORKSHOP","home",72.0)
-	page.heading.text = L10n.format("Upgrades · %s parts",[_number(journey.profile.parts)])
+	var from_result := bool(payload.get("from_result",false))
+	var page := _page("Upgrades","FIELD WORKSHOP","maps" if from_result else "home",72.0,true)
+	page.heading.text = L10n.format("Upgrades · %s scrap",[_number(journey.profile.parts)])
 	page.heading.add_theme_font_size_override("font_size",20)
 	page.heading.autowrap_mode = TextServer.AUTOWRAP_OFF
 	page.heading.clip_text = true
@@ -672,13 +741,14 @@ func _workshop(payload: Dictionary) -> Control:
 	page.heading.tooltip_text = page.heading.text
 	page.heading.mouse_filter = Control.MOUSE_FILTER_PASS
 	var content: VBoxContainer = page.content
-	if journey.profile.tutorial == "upgrade":
-		content.add_child(_label("FIRST UPGRADE · Spend your first 300 parts to improve Blast.",11,UITheme.GOLD))
+	var tutorial_step := str(journey.profile.tutorial) if app.selected_region == 0 else ""
+	if tutorial_step == "upgrade":
+		content.add_child(_label("FIRST UPGRADE · Spend your first 300 scrap to improve Blast.",11,UITheme.GOLD))
 		content.add_child(_button("Skip upgrade guide",func(): app.skip_tutorial()))
 	var tabs := HBoxContainer.new()
 	content.add_child(tabs)
 	var available_tabs := [["weapons","Weapons"]]
-	if journey.profile.tutorial not in ["upgrade","next"]:
+	if tutorial_step not in ["upgrade","next"] or journey.progression.gear_available(journey.profile,"aftershock"):
 		available_tabs.append(["skills","Skills"])
 		available_tabs.append(["utility","Utility"])
 	if not available_tabs.any(func(tab): return tab[0] == _tab): _tab = "weapons"
@@ -688,7 +758,7 @@ func _workshop(payload: Dictionary) -> Control:
 	scroll.get_v_scroll_bar().value_changed.connect(func(value): _workshop_scroll[current_tab] = int(value))
 	page.root.ready.connect(func(): scroll.set_deferred("scroll_vertical",saved_scroll))
 	for tab in available_tabs:
-		var tab_button := _button(tab[1],func(): app.navigate("workshop",{"tab":tab[0]}),false,tab[0]==_tab)
+		var tab_button := _button(tab[1],func(): app.navigate("workshop",{"tab":tab[0],"from_result":from_result}),false,tab[0]==_tab)
 		tab_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		tabs.add_child(tab_button)
 	var groups := [{"tab":"weapons","title":"Shockwave","ids":["blastForce","blastRadius","blastReach"]},{"tab":"weapons","title":"Black Hole","ids":["blackhole","wellPull","wellReach","wellDuration","mix","wear"]},{"tab":"utility","title":"Battery & Recovery","ids":["battery","debrisProcessing","salvageYield"]},{"tab":"skills","title":"Passive skills","ids":["aftershock","relay","slam","expand","wave"]},{"tab":"skills","title":"Active skills","ids":["orbital","seismic","gravity","sonic","recharge"]}]
@@ -708,7 +778,7 @@ func _workshop(payload: Dictionary) -> Control:
 				card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				grid.add_child(card)
 	var footer := PanelContainer.new()
-	var footer_style := UITheme.box(UITheme.BG,UITheme.BORDER,1,0)
+	var footer_style := UITheme.box(UITheme.MENU_BG,UITheme.MENU_BORDER,1,0)
 	footer_style.border_width_left = 0
 	footer_style.border_width_right = 0
 	footer_style.border_width_bottom = 0
@@ -735,51 +805,74 @@ func _workshop(payload: Dictionary) -> Control:
 	return page.root
 
 func _receipt(payload: Dictionary) -> Control:
-	var title := L10n.text("100% · ALL CLEAR") if payload.get("allClear",false) else L10n.format("%d%% · CLEARED",[floori(float(payload.get("recovered",0))*100.0/maxi(1,int(payload.get("total",1))))]) if payload.get("qualified",false) else L10n.format("%s pixels recovered",[_number(int(payload.get("recovered",0)))])
-	var page := _page(title,"SORTIE COMPLETE","workshop")
-	if int(payload.get("collectionTier",0))>=70: page.heading.add_theme_color_override("font_color",UITheme.GOLD)
-	page.content.add_child(_label(str(payload.get("siteName","")),19,UITheme.GOLD))
+	var page := _page(str(payload.get("siteName","")),"","maps",0.0,true)
+	if payload.get("qualified",false):
+		page.content.add_child(_label("100% · ALL CLEAR" if payload.get("allClear",false) else "CLEARED",17,UITheme.GOLD))
+	_result_unlocks(page.content,payload)
+	_result_reward(page.content,payload)
 	if int(payload.get("regionIndex", 0)) <= 0:
 		var illustration := EnvironmentReceipt.new()
 		illustration.setup(float(payload.get("ratio", 0.0)))
 		page.content.add_child(illustration)
-	page.content.add_child(_label(L10n.format("%s recovered · %s parts",[_percent(float(payload.get("ratio",0))),_number(payload.get("reward",0))]),15))
-	if str(payload.get("bonus",0))!="0":
-		page.content.add_child(_label(L10n.format("First clear bonus: %s parts" if payload.get("firstClear",false) else "Repeat clear bonus: %s parts",[_number(payload.bonus)]),13,UITheme.MINT))
-	_refinement_receipt(page.content,payload)
-	page.content.add_child(_label("Keep every recovered pixel. Upgrades apply next sortie.",12,UITheme.MUTED))
-	page.content.add_child(_button("Upgrade equipment →",func(): app.navigate("workshop"),false,true))
-	page.content.add_child(_button("Retry this map",func(): app.start_run("retry")))
-	page.content.add_child(_button("Back to planet",func(): app.navigate("home")))
-	if app.web_bridge.available(): page.content.add_child(_button("Feedback",func(): app.open_feedback()))
+	_result_actions(page.content)
 	return page.root
 
-func _refinement_receipt(content: VBoxContainer, payload: Dictionary) -> void:
+func _result_reward(content: VBoxContainer, payload: Dictionary) -> void:
+	var panel := PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel",UITheme.box(Color("304850"),UITheme.MENU_BORDER,1,14))
+	content.add_child(panel)
+	var metrics := HBoxContainer.new()
+	metrics.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	metrics.add_theme_constant_override("separation",16)
+	panel.add_child(metrics)
+	for stat in [["Recovery rate",_percent(float(payload.get("ratio",0))),Color("d4ecdc")],
+			["Scrap earned",_number(payload.get("reward",0)),Color("ffe1a1")]]:
+		var column := VBoxContainer.new()
+		column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		column.add_theme_constant_override("separation",4)
+		metrics.add_child(column)
+		column.add_child(_label(stat[0],11,UITheme.TEXT))
+		column.add_child(_label(stat[1],22,stat[2]))
+	if str(payload.get("bonus",0))!="0":
+		content.add_child(_label(L10n.format("First clear bonus: %s scrap" if payload.get("firstClear",false) else "Repeat clear bonus: %s scrap",[_number(payload.bonus)]),13,UITheme.MINT))
 	if str(payload.get("refinementBonus",0))!="0":
-		content.add_child(_label(L10n.format("Resource refining: +%s parts",[_number(payload.refinementBonus)]),13,UITheme.GOLD))
+		content.add_child(_label(L10n.format("Resource refining: +%s scrap",[_number(payload.refinementBonus)]),13,UITheme.GOLD))
+
+func _result_unlocks(content: VBoxContainer, payload: Dictionary) -> void:
+	var ids = payload.get("newUnlocks",[])
+	if not ids is Array or ids.is_empty():
+		return
+	for offer in journey.offers():
+		if offer.id in ids:
+			content.add_child(_button(L10n.format("%s unlocked →",[_offer_name(offer)]),
+				func(): open_unlock_intro(offer.id),false,true))
+
+func _result_actions(content: VBoxContainer, upgrade_primary := true) -> void:
+	content.add_child(_button("Upgrade equipment →",func(): app.navigate("workshop",{"from_result":true}),false,upgrade_primary))
+	content.add_child(_button("Retry this map",func(): app.start_run("retry")))
+	content.add_child(_button("Back to site list",func(): app.navigate("maps")))
+	if app.web_bridge.available(): content.add_child(_button("Feedback",func(): app.open_feedback()))
 
 func _chapter(payload: Dictionary) -> Control:
 	var index := int(payload.get("regionIndex",app.selected_region))
 	var region: Dictionary = catalog.region(index)
 	var region_complete: bool = journey.region_progress(index).get("complete", false)
-	var page := _page(L10n.format("%s · ALL CLEAR" if region_complete else "%s · CLEARED",[L10n.text(str(region.get("name","")))]),"REGION COMPLETE","workshop")
+	var page := _page(L10n.format("%s · ALL CLEAR" if region_complete else "%s · CLEARED",[L10n.text(str(region.get("name","")))]),"","maps",0.0,true)
 	if int(payload.get("collectionTier",0))>=70: page.heading.add_theme_color_override("font_color",UITheme.GOLD)
-	page.content.add_child(_label(L10n.format("%s recovered · %s parts",[_percent(float(payload.get("ratio",0))),_number(payload.get("reward",0))]),13,UITheme.GOLD))
-	if str(payload.get("bonus",0))!="0":
-		page.content.add_child(_label(L10n.format("First clear bonus: %s parts" if payload.get("firstClear",false) else "Repeat clear bonus: %s parts",[_number(payload.bonus)]),13,UITheme.MINT))
-	_refinement_receipt(page.content,payload)
+	_result_reward(page.content,payload)
+	_result_unlocks(page.content,payload)
 	var next = payload.get("nextRegion")
 	page.content.add_child(_label(L10n.format("%s · Planet %s",[_region_status(index),_percent(journey.planet_progress())]),15,UITheme.MINT))
-	page.content.add_child(_label("Next region unlocked! Your parts, tools and upgrades carry over. You can return here for 100% at any time." if next!=null else "You have cleared all six regions of this planet! Replay any region for 100% All Clear.",13))
+	page.content.add_child(_label("Next region unlocked! Your scrap, tools and upgrades carry over. You can return here for 100% at any time." if next!=null else "You have cleared all six regions of this planet! Replay any region for 100% All Clear.",13))
 	if next != null:
 		var next_region: Dictionary = catalog.region(int(next))
 		page.content.add_child(_label(L10n.format("%s → %s",[L10n.text(region.name),L10n.text(next_region.name)]),18,UITheme.GOLD))
 		page.content.add_child(_button(L10n.format("Go to %s →",[L10n.text(next_region.name)]),func():
 			app.select_region(int(next))
 			app.navigate("maps"),false,true))
-	else: page.content.add_child(_button("Back to planet",func(): app.navigate("home"),false,true))
-	page.content.add_child(_button("Stay & upgrade",func(): app.navigate("workshop")))
-	if app.web_bridge.available(): page.content.add_child(_button("Feedback",func(): app.open_feedback()))
+	_result_actions(page.content,next == null)
 	return page.root
 
 func _audio_options(content: VBoxContainer) -> void:
@@ -812,7 +905,7 @@ func _audio_options(content: VBoxContainer) -> void:
 
 func _settings(payload: Dictionary) -> Control:
 	_settings_from = str(payload.get("from","home"))
-	var page := _page("Options","SYSTEM · SETUP",_settings_from)
+	var page := _page("Options","SYSTEM · SETUP",_settings_from,0.0,true)
 	page.content.add_child(_label("언어 / Language",16,UITheme.GOLD))
 	var languages := HBoxContainer.new()
 	for entry in [["ko","한국어"],["en","English"]]:
@@ -834,11 +927,12 @@ func _settings(payload: Dictionary) -> Control:
 	var stats: Dictionary = journey.stats()
 	page.content.add_child(_label("Your equipment",16,UITheme.GOLD))
 	for entry in [["Battery",stats.capacity],["Blast radius",stats.bombRadius]]:
-		page.content.add_child(_label(L10n.format("%s · %s",[L10n.text(entry[0]),snappedf(float(entry[1]),0.01)]),12))
-	page.content.add_child(_label(L10n.format("Debris Processing · %s×",[snappedf(float(stats.debrisProcessing),0.01)]),12))
-	page.content.add_child(_label(L10n.format("Resource Refining · +%s%% parts",[snappedf(float(stats.salvageYield)*100.0,0.01)]),12))
+		page.content.add_child(_label(L10n.format("%s · %s",[L10n.text(entry[0]),String.num(float(entry[1]),2)]),12))
+	page.content.add_child(_label(L10n.format("Debris Processing · %s×",[String.num(float(stats.debrisProcessing),2)]),12))
+	page.content.add_child(_label(L10n.format("Resource Refining · +%s%% scrap",[String.num(float(stats.salvageYield)*100.0,2)]),12))
 	page.content.add_child(_label("Tap to attack. Two fingers move and zoom. On PC, right-drag to move and scroll to zoom.",11,UITheme.MUTED))
-	page.content.add_child(_button("Tutorial ↗",func(): app.start_run("training"),journey.current_run!=null))
+	if app.selected_region == 0:
+		page.content.add_child(_button("Tutorial ↗",func(): app.start_run("training"),journey.current_run!=null))
 	page.content.add_child(_button("Import profile",func(): app.import_profile(),journey.current_run!=null))
 	page.content.add_child(_button("Export records",func(): app.export_profile()))
 	page.content.add_child(_label("Play records are saved on this device only.",10,UITheme.MUTED))
@@ -864,7 +958,7 @@ func _pause() -> Control:
 
 func _reset() -> Control:
 	var page := _page("Reset your progress?","RESET PROGRESS","settings")
-	page.content.add_child(_label("Reset all regions, parts, upgrades and skills. Your progress starts again from the first tutorial. This cannot be undone.",14))
+	page.content.add_child(_label("Reset all regions, scrap, upgrades and skills. Your progress starts again from the first tutorial. This cannot be undone.",14))
 	page.content.add_child(_label("Sound settings, original app saves and other game saves are kept.",12,UITheme.MUTED))
 	page.content.add_child(_button("Cancel · keep playing",func(): app.show_settings("home"),false,true))
 	page.content.add_child(_button("Reset and start over",func(): app.reset_progress()))
@@ -874,7 +968,7 @@ func _import_confirm(payload: Dictionary) -> Control:
 	var page := _page("Import profile","SAVE TRANSFER","settings")
 	var preview: Dictionary = payload.get("preview",{})
 	page.content.add_child(_label("Review this profile before replacing your Godot progress. Your current Godot save will be backed up first.",13))
-	var names := {"parts":"Parts","runCount":"Sorties","revision":"Save revision","resetCount":"Resets"}
+	var names := {"parts":"Scrap","runCount":"Sorties","revision":"Save revision","resetCount":"Resets"}
 	for key in ["parts","runCount","revision","resetCount"]:
 		page.content.add_child(_label(L10n.format("%s · %s",[L10n.text(names[key]),_number(preview.get(key,0))]),13))
 	page.content.add_child(_label(L10n.format("Planet · %s",[_percent(float(preview.get("planetProgress",0)))]),13,UITheme.MINT))
@@ -931,17 +1025,10 @@ func _play_hud() -> Control:
 	control_strip.mouse_filter = Control.MOUSE_FILTER_STOP
 	root.add_child(control_strip)
 	var battery_icon := _hud_icon("hud-battery",UITheme.HUD_INK)
-	var recovery_icon := _hud_icon("hud-recovery",UITheme.HUD_INK)
 	root.add_child(battery_icon)
-	root.add_child(recovery_icon)
-	var recovery := _label("0%",17,UITheme.HUD_INK)
-	var metric := _label("PIXELIZED",8,UITheme.HUD_INK)
-	metric.autowrap_mode = TextServer.AUTOWRAP_OFF
-	root.add_child(metric)
 	var battery := _label("100%",17,UITheme.HUD_INK)
-	recovery.autowrap_mode = TextServer.AUTOWRAP_OFF
 	battery.autowrap_mode = TextServer.AUTOWRAP_OFF
-	root.add_child(recovery)
+	battery.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	root.add_child(battery)
 	var diagnostic_button := Button.new()
 	diagnostic_button.flat = true
@@ -951,14 +1038,6 @@ func _play_hud() -> Control:
 		diagnostic_button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
 	diagnostic_button.pressed.connect(_diagnostic_tap)
 	root.add_child(diagnostic_button)
-	var recovery_bar := ProgressBar.new()
-	recovery_bar.show_percentage = false
-	recovery_bar.visible = false
-	root.add_child(recovery_bar)
-	var battery_bar := ProgressBar.new()
-	battery_bar.show_percentage = false
-	battery_bar.visible = false
-	root.add_child(battery_bar)
 	var pause := _flat(_button("Ⅱ",func(): app.pause_run()),UITheme.HUD_INK)
 	pause.add_theme_font_size_override("font_size",20)
 	root.add_child(pause)
@@ -1066,12 +1145,23 @@ func _play_hud() -> Control:
 		var icon := _hud_icon("active-orbital-drop",UITheme.HUD_INK)
 		_place(button,icon,Rect2(10,10,28,28))
 		active_slots.append({"id":"","button":button,"icon":icon})
-	var tutorial := _label("",12,UITheme.GOLD)
-	root.add_child(tutorial)
+	var tutorial_panel := PanelContainer.new()
+	tutorial_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tutorial_panel.add_theme_stylebox_override("panel",UITheme.box(Color("162b31"),Color("bb9d62"),1,10))
+	tutorial_panel.hide()
+	root.add_child(tutorial_panel)
+	var guide_content := VBoxContainer.new()
+	guide_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	guide_content.add_theme_constant_override("separation",6)
+	tutorial_panel.add_child(guide_content)
+	var tutorial_title := _label("",17,Color("ffdb92"))
+	var tutorial_copy := _label("",14,Color("fff4da"))
+	guide_content.add_child(tutorial_title)
+	guide_content.add_child(tutorial_copy)
 	var skip := _button("Skip guide",func(): app.skip_run_guide())
-	skip.add_theme_font_size_override("font_size",10)
-	skip.visible = false
-	root.add_child(skip)
+	skip.add_theme_font_size_override("font_size",12)
+	skip.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	guide_content.add_child(skip)
 	var tip_panel := PanelContainer.new()
 	tip_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tip_panel.add_theme_stylebox_override("panel",UITheme.box(GameSkin.hud("sand"),Color.TRANSPARENT if bright else Color("b3b592"),0 if bright else 1,2 if bright else 7))
@@ -1083,11 +1173,20 @@ func _play_hud() -> Control:
 		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tip_panel.add_child(tip)
 	root.add_child(tip_panel)
-	var skip_wait := _button("Skip now",func():
+	var skip_wait := _button("Recover now",func():
 		if journey.current_run != null and journey.current_run.skip_collection_wait() and _hud.has("skip_wait"):
-			_hud.skip_wait.hide(),false,true)
+			_hud.skip_wait.hide())
+	UITheme.hud_button(skip_wait)
+	for state in ["normal","hover","pressed","focus"]:
+		var style := skip_wait.get_theme_stylebox(state)
+		style.content_margin_left = 10
+		style.content_margin_right = 10
+		skip_wait.add_theme_color_override("font_color" if state=="normal" else "font_%s_color" % state,UITheme.HUD_INK)
+	skip_wait.icon = catalog.texture("hud-recovery")
+	skip_wait.expand_icon = true
+	skip_wait.add_theme_constant_override("icon_max_width",18)
 	skip_wait.visible = false
-	skip_wait.tooltip_text = L10n.text("Start pixel recovery")
+	skip_wait.tooltip_text = L10n.text("Start scrap recovery")
 	root.add_child(skip_wait)
 	var layout := func():
 		var width: float = root.size.x
@@ -1097,23 +1196,16 @@ func _play_hud() -> Control:
 		var finishing: bool = journey.current_run!=null and journey.current_run.phase=="finishing"
 		var controls_height := PlayLayout.controls_height(root.size,finishing)
 		var controls_top := height-controls_height
-		skip_wait.size = Vector2(minf(180,width-32),48)
-		skip_wait.position = Vector2((width-skip_wait.size.x)/2.0,(PlayLayout.TOP+controls_top-skip_wait.size.y)/2.0)
 		control_strip.position = Vector2(0,controls_top)
 		control_strip.size = Vector2(width,controls_height)
-		battery_icon.position = Vector2(12,15)
+		var header_center := PlayLayout.TOP/2.0
+		battery_icon.position = Vector2(12,header_center-12)
 		battery_icon.size = Vector2(24,24)
-		battery.position = Vector2(43,13)
-		battery.size = Vector2(72,28)
-		diagnostic_button.position = Vector2(36,5)
+		battery.position = Vector2(42,0)
+		battery.size = Vector2(72,PlayLayout.TOP)
+		diagnostic_button.position = Vector2(36,header_center-22)
 		diagnostic_button.size = Vector2(79,44)
-		recovery_icon.position = Vector2(width-171,15)
-		recovery_icon.size = Vector2(24,24)
-		recovery.position = Vector2(width-140,6)
-		recovery.size = Vector2(72,28)
-		metric.position = Vector2(width-140,34)
-		metric.size = Vector2(80,14)
-		pause.position = Vector2(width-56,10)
+		pause.position = Vector2(width-56,header_center-22)
 		pause.size = Vector2(44,44)
 		performance_panel.position = Vector2(8,PlayLayout.TOP+4)
 		performance_panel.size = Vector2(width-16,184)
@@ -1123,8 +1215,19 @@ func _play_hud() -> Control:
 		notice_panel.position = Vector2(16,64+diagnostic_height)
 		notice_panel.size = Vector2(minf(245,maxf(120,width-145)),68)
 		var tip_height := 24.0 if bright else clampf(tip.get_minimum_size().y+16,30,maxf(30,controls_height-76))
+		if finishing:
+			tip_height = maxf(24.0,tip_panel.get_combined_minimum_size().y)
 		tip_panel.position = Vector2(8,height-8-tip_height)
 		tip_panel.size = Vector2(width-16,tip_height)
+		tip_panel.visible = not tip.text.is_empty()
+		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if bright or finishing else HORIZONTAL_ALIGNMENT_LEFT
+		if finishing:
+			var footer_center := controls_top+controls_height/2.0
+			tip_panel.position.y = footer_center-tip_height/2.0
+			if skip_wait.visible:
+				var button_width := minf(128.0,width-16.0)
+				skip_wait.position = Vector2((width-button_width)/2.0,footer_center-22.0)
+				skip_wait.size = Vector2(button_width,44)
 		var narrow := width < 390
 		var margin := 8.0 if narrow else 16.0
 		var gap := 4.0 if narrow else 8.0
@@ -1158,21 +1261,16 @@ func _play_hud() -> Control:
 			slot.button.size = Vector2(active_width,48)
 			slot.icon.position.x = (active_width-28)/2.0
 			left += active_width+gap
-		var tutorial_y := 72.0 if width > height else 164.0
-		if performance_panel.visible:
-			tutorial_y = maxf(tutorial_y,PlayLayout.TOP+diagnostic_height+12)
+		var tutorial_y := PlayLayout.TOP+10+diagnostic_height
 		if notice_panel.visible:
-			tutorial_y = maxf(tutorial_y,144+diagnostic_height)
-		tutorial.position = Vector2(16,tutorial_y)
-		var skip_x := minf(240,maxf(160,width-150))
-		tutorial.size = Vector2(skip_x-28 if skip.visible else minf(350,width-32),78)
-		skip.position = Vector2(skip_x,tutorial_y+14)
-		skip.size = Vector2(120,44)
+			tutorial_y = notice_panel.position.y+notice_panel.size.y+8
+		tutorial_panel.position = Vector2(16,tutorial_y)
+		tutorial_panel.size = Vector2(minf(320,maxf(0,width-104)),0)
 	root.resized.connect(layout)
 	root.ready.connect(layout)
 	_hud["performance"] = performance
 	_hud["performance_panel"] = performance_panel
-	_hud.merge({"recovery":recovery,"metric":metric,"battery":battery,"recovery_bar":recovery_bar,"battery_bar":battery_bar,"tools":tools,"passives":passive_slots,"actives":active_slots,"tutorial":tutorial,"minimap":minimap,"fit":fit,"tip":tip,"notice":notice_label,"notice_panel":notice_panel,"skip_guide":skip,"skip_wait":skip_wait,"layout":layout})
+	_hud.merge({"battery":battery,"tools":tools,"passives":passive_slots,"actives":active_slots,"tutorial_panel":tutorial_panel,"tutorial_title":tutorial_title,"tutorial_copy":tutorial_copy,"minimap":minimap,"fit":fit,"tip":tip,"notice":notice_label,"notice_panel":notice_panel,"skip_guide":skip,"skip_wait":skip_wait,"layout":layout})
 	return root
 
 func update_hud(play_view) -> void:
@@ -1184,7 +1282,7 @@ func update_hud(play_view) -> void:
 	probe.end()
 
 func _update_hud_unprofiled(play_view) -> void:
-	if _hud.is_empty() or play_view==null or play_view.world==null or not is_instance_valid(_hud.get("recovery")):
+	if _hud.is_empty() or play_view==null or play_view.world==null or not is_instance_valid(_hud.get("battery")):
 		return
 	var world = play_view.world
 	if world.perf.enabled and Time.get_ticks_msec() - _performance_updated >= 250:
@@ -1194,15 +1292,8 @@ func _update_hud_unprofiled(play_view) -> void:
 	var finishing: bool = run!=null and run.phase=="finishing"
 	var preparing: bool = finishing and not run.collection_started()
 	_hud.skip_wait.visible = preparing and run.can_skip_collection_wait()
-	var pixel_count: int = run.recovered() if finishing else run.pixelized() if run!=null else 0
-	var pixel_total: int = maxi(1,run.total()) if run!=null else 1
-	var progress := float(pixel_count)/pixel_total
-	_hud.recovery.text = "" if preparing else "%d%%" % clampi(floori(float(pixel_count)*100.0/pixel_total),0,100)
-	_hud.metric.text = L10n.text("Settling debris" if preparing else "RECOVERED" if finishing else "PIXELIZED")
 	_hud.fit.visible = not finishing
 	_hud.battery.text = "%d%%" % ceili(float(world.charge)/maxf(1,float(world.stats.capacity))*100)
-	_hud.recovery_bar.value = progress*100
-	_hud.battery_bar.value = float(world.charge)/maxf(1,float(world.stats.capacity))*100
 	var tools_disabled: bool = run==null or run.paused or run.finish_ready or run.phase!="working"
 	for control in _hud.tools:
 		control.button.visible = not finishing
@@ -1248,19 +1339,17 @@ func _update_hud_unprofiled(play_view) -> void:
 		warnings.append(L10n.text(journey.journal.warning))
 	_hud.notice.text = "\n".join(warnings)
 	_hud.notice_panel.visible = not warnings.is_empty()
-	_hud.tutorial.text = ""
-	_hud.skip_guide.visible = false
-	if run!=null and run.guide!=null:
-		var stage: String = run.guide.stage
-		_hud.skip_guide.visible = stage not in ["work","done"]
-		_hud.tutorial.text = L10n.text({"aim":"1 · Blast a column\nTap and release without moving. Two fingers move and zoom.","collapse":"2 · Watch it collapse\nWeak columns cannot carry the weight above.","collect":"3 · Use the remaining battery\nLoose pixels gather automatically when it runs out.","work":"Keep breaking fragments\nMore mint pixels means more parts to recover."}.get(stage,""))
 	var complete: bool = run!=null and run.finish_ready
-	_hud.tutorial.visible = not finishing and not complete
-	if finishing or complete: _hud.skip_guide.visible = false
+	var show_guide: bool = run!=null and run.guide!=null and run.guide.stage!="done" and not finishing and not complete
+	_hud.tutorial_panel.visible = show_guide
+	if show_guide:
+		_hud.tutorial_title.text = run.guide.title()
+		_hud.tutorial_copy.text = run.guide.copy()
+		_hud.skip_guide.visible = run.guide.stage!="work"
 	if complete:
-		_hud.tip.text = L10n.text("Collection complete · Returning to camp…")
+		_hud.tip.text = L10n.text("Collection complete")
 	elif finishing:
-		_hud.tip.text = L10n.text("Recovering pixels" if run.collection_started() else "Settling debris")
+		_hud.tip.text = "" if preparing else L10n.text("Recovering scrap")
 	elif run!=null:
 		var tips: Array = BRIGHT_PLAY_TIPS if GameSkin.bright() else PLAY_TIPS
 		var index := floori(float(run.work_ms)/5000.0)%tips.size()

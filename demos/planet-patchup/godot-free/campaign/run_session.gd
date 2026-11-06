@@ -54,13 +54,13 @@ func setup(authored_site: Dictionary, snapshot_profile: Dictionary, run_mode: St
 	id = "%d-%d" % [Time.get_ticks_usec(), randi()]
 	if mode == "tutorial":
 		guide = Tutorial.new()
-		var preview: Array = site.get("preview", [])
-		if not preview.is_empty():
-			var point = preview[0]
-			guide.target = Vector2(float(point.get("x", 0)), float(point.get("y", 0))) if point is Dictionary else Vector2.ZERO
 
 func attach_world(value) -> void:
 	world = value
+	if guide != null:
+		var preview: Array = world.fixture.get("preview", [])
+		if not preview.is_empty() and preview[0] is Dictionary:
+			guide.target = Vector2(float(preview[0].get("x", 0)), float(preview[0].get("y", 0)))
 	world.auto_advance = false
 	world.paused = paused
 	world.final_collection = true

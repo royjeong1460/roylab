@@ -8,11 +8,17 @@ static var _environments: Dictionary = {}
 var _config: Dictionary = {}
 var _state: Dictionary = {}
 var _tier := "0"
-var _extent := Vector2.ONE
+var _view_bounds := Rect2()
 var _scenery_floor := 0.0
+var _terrain: Texture2D
+var _terrain_rect := Rect2()
+var _clip := Control.new()
+var _scenery := Node2D.new()
+var _ground: GroundLayer
 
 func setup(world: Node2D, region: int, restoration := 0.0) -> void:
-	_extent = Vector2(world.width,world.height)*4.0
+	var extent := Vector2(world.width,world.height)*4.0
+	_view_bounds = Rect2(Vector2.ZERO,extent)
 	z_index = -100
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	if _environments.is_empty():
@@ -26,21 +32,21 @@ func setup(world: Node2D, region: int, restoration := 0.0) -> void:
 	# Snapshot the best record on entry; waste never disappears during play.
 	_tier = "1" if is_finite(restoration) and restoration >= 1.0 else "0.7" if is_finite(restoration) and restoration >= 0.7 else "0"
 	_state = _config.states[_tier]
-	var bounds := Control.new()
-	bounds.size = _extent
-	bounds.clip_contents = true
-	bounds.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bounds)
+	_clip.clip_contents = true
+	_clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_clip)
+	_clip.add_child(_scenery)
 	var layout := Node2D.new()
-	var factor := _extent.x/float(_config.reference_width)
+	var factor := extent.x/float(_config.reference_width)
 	_scenery_floor = world.floor_y*4.0
 	# Distant scenery stands behind the highest foreground ledge, not the valley floor.
 	for segment in world.terrain:
 		_scenery_floor = minf(_scenery_floor,float(segment.y)*4.0)
 	layout.scale = Vector2.ONE*factor
 	layout.position.y = _scenery_floor-float(_config.reference_floor)*factor
-	bounds.add_child(layout)
-	_image(layout,str(_state.terrain),Vector2.ZERO,Vector2.ONE,0)
+	_scenery.add_child(layout)
+	_terrain = load(str(_state.terrain))
+	_terrain_rect = Rect2(layout.position,_terrain.get_size()*factor)
 	for node in _state.objects:
 		var building: bool = node.role == "building"
 		var alpha := (0.56 if building else 0.66) if _tier == "0" else (0.78 if building else 0.84)
@@ -49,7 +55,7 @@ func setup(world: Node2D, region: int, restoration := 0.0) -> void:
 		_image(layout,_state.revival,Vector2.ZERO,Vector2.ONE,4)
 	var bank := ScrapBank.new()
 	bank.z_index = 4
-	bounds.add_child(bank)
+	_scenery.add_child(bank)
 	bank.setup(world,_config,_state,_scenery_floor,_tier)
 	for node in _state.waste:
 		var heap: Dictionary = node.duplicate()
@@ -58,12 +64,21 @@ func setup(world: Node2D, region: int, restoration := 0.0) -> void:
 			heap.width = float(heap.width)*1.4
 		_sprite(layout,heap,5,0.96)
 	var clouds := CloudLayer.new()
-	bounds.add_child(clouds)
-	clouds.setup(_extent,world.floor_y*4.0,0.24 if _tier == "0" else 0.58)
-	var ground := GroundLayer.new()
-	ground.z_index = 8
-	bounds.add_child(ground)
-	ground.setup(world,_config,environment_style(),_tier)
+	_scenery.add_child(clouds)
+	clouds.setup(extent,world.floor_y*4.0,0.24 if _tier == "0" else 0.58)
+	_ground = GroundLayer.new()
+	_ground.z_index = 8
+	_scenery.add_child(_ground)
+	_ground.setup(world,_config,environment_style(),_tier)
+	cover_view(_view_bounds)
+
+func cover_view(bounds: Rect2) -> void:
+	_view_bounds = bounds
+	if _ground != null:
+		_clip.position = bounds.position
+		_clip.size = bounds.size
+		_scenery.position = -bounds.position
+		_ground.cover_view(bounds)
 	queue_redraw()
 
 func environment_style() -> Dictionary:
@@ -98,7 +113,15 @@ func _sprite(parent: Node2D, node: Dictionary, layer: int, alpha: float) -> void
 	parent.add_child(image)
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO,_extent),environment_style().sky)
-	if not _state.is_empty():
-		# Extend the distant soil below its raised artwork; no strip of sky under a valley.
-		draw_rect(Rect2(0,_scenery_floor,_extent.x,maxf(0,_extent.y-_scenery_floor)),Color(str(_state.terrain_fill)))
+	draw_rect(_view_bounds,environment_style().sky)
+	if _terrain == null:
+		return
+	draw_rect(Rect2(_view_bounds.position.x,_scenery_floor,_view_bounds.size.x,_view_bounds.end.y-_scenery_floor),Color(str(_state.terrain_fill)))
+	# Mirror only the distant terrain at each edge so the skyline meets without duplicating props.
+	var width := _terrain_rect.size.x
+	for tile in range(floori(_view_bounds.position.x/width),ceili(_view_bounds.end.x/width)):
+		var mirrored := posmod(tile,2) == 1
+		var x := (tile+int(mirrored))*width
+		draw_set_transform(Vector2(x,_terrain_rect.position.y),0.0,Vector2(-1 if mirrored else 1,1))
+		draw_texture_rect(_terrain,Rect2(Vector2.ZERO,_terrain_rect.size),false)
+	draw_set_transform(Vector2.ZERO)

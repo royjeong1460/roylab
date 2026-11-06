@@ -125,6 +125,8 @@ func start(mode := "stage", site_id := "") -> Dictionary:
 	if id.is_empty():
 		return _done(_result(false, "no-previous-site"))
 	var tutorial := id == _tutorial_id()
+	if tutorial and selected_region() != 0:
+		return _done(_result(false, "locked"))
 	if not tutorial and not stage_open(id):
 		return _done(_result(false, "locked"))
 	var site: Dictionary = catalog.site(id)
@@ -304,6 +306,7 @@ func finish() -> Dictionary:
 	var bonus := (4000 if first_clear else 1000) if boss and qualified else 0
 	var refinement: Variant = Money.refinement_bonus(recovered, int(run.profile.upgrades.get("salvageYield", 0)))
 	var reward: Variant = Money.add(Money.add(recovered, refinement), bonus)
+	var region: int = progression.site_region(run.site.id)
 	var next := profile.duplicate(true)
 	if run.mode != "tutorial":
 		progression.remember(next, run.site.id, recovered, total)
@@ -313,6 +316,7 @@ func finish() -> Dictionary:
 	next.runCount += 1
 	next.bossAttempts += int(boss)
 	next.lastSite = run.site.id
+	next.selectedRegion = maxi(0, region)
 	if first_clear:
 		next.bossRewards[run.site.id] = true
 		if progression.site_region(run.site.id) == 0:
@@ -329,12 +333,12 @@ func finish() -> Dictionary:
 		"finishReason": snapshot.get("finishReason", ""), "balanceVersion": schema.BALANCE_VERSION,
 		"batteryUsed": snapshot.energyUsed, "tools": run.used_tools.duplicate()})
 	next.history = next.history.slice(maxi(0, next.history.size() - 100))
-	var region: int = progression.site_region(run.site.id)
 	var receipt := _result(true, "", {"recovered": recovered, "total": total, "reward": reward, "bonus": bonus, "refinementBonus": refinement,
 		"collectionTier": snapshot.get("collectionTier", 0), "cleanupDurationMs": snapshot.get("cleanupDurationMs", 0),
 		"finishReason": snapshot.get("finishReason", ""), "balanceVersion": schema.BALANCE_VERSION,
 		"qualified": qualified, "firstClear": first_clear, "bossCleared": next.bossCleared,
 		"mode": run.mode, "siteName": run.site.name, "siteId": run.site.id, "regionIndex": region,
+		"newUnlocks": progression.new_unlocks(profile, next),
 		"nextRegion": region + 1 if boss and qualified and progression.region_open(next, region + 1) else null,
 		"nextStage": null, "allClear": recovered == total, "ratio": float(recovered) / total, "workMs": work_ms})
 	next.lastSettlement = {"runId": run.id, "receipt": receipt.duplicate(true)}

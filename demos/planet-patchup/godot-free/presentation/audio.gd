@@ -17,9 +17,9 @@ const SKILL_AUDIO := {
 }
 const TIMED_SKILLS := ["gravity-engage","gravity-pressure-loop","gravity-release","sonic-sweep-short","sonic-sweep-medium","sonic-sweep-long"]
 const COLLECTION_AUDIO := {"collection-start":"ui-confirm","collection-tick":"debris-impact","collection-tier":"progress-success","collection-rise":"active-ready","collection-complete":"battery-recharge"}
-const GAPS := {"ui-tap":0.055,"ui-confirm":0.16,"ui-unavailable":0.22,"blackhole-open":0.18,"blackhole-close":0.18,"active-ready":0.3,"active-deploy":0.4,"orbital-fall":0.18,"progress-success":0.8,"blast":0.09,"debris-impact":0.06,"pixel-collect":0.09,"collection-start":0.0,"collection-tick":0.05,"collection-tier":0.0,"collection-rise":0.0,"collection-complete":0.0}
+const GAPS := {"ui-tap":0.055,"ui-confirm":0.16,"ui-unavailable":0.22,"blackhole-open":0.18,"blackhole-close":0.18,"active-ready":0.3,"active-deploy":0.4,"orbital-fall":0.18,"progress-success":0.8,"blast":0.09,"secondary-blast":0.09,"debris-impact":0.06,"pixel-collect":0.09,"collection-start":0.0,"collection-tick":0.05,"collection-tier":0.0,"collection-rise":0.0,"collection-complete":0.0}
 const LEVELS := {"blackhole-loop":0.75,"active-ready":0.85,"orbital-fall":0.85}
-const GAMEPLAY := ["blackhole-open","blackhole-loop","blackhole-close","active-ready","active-deploy","orbital-fall","blast","debris-impact","pixel-collect","seismic-strike","gravity-engage","gravity-pressure-loop","gravity-release","sonic-sweep-short","sonic-sweep-medium","sonic-sweep-long","battery-recharge"]
+const GAMEPLAY := ["blackhole-open","blackhole-loop","blackhole-close","active-ready","active-deploy","orbital-fall","blast","secondary-blast","debris-impact","pixel-collect","seismic-strike","gravity-engage","gravity-pressure-loop","gravity-release","sonic-sweep-short","sonic-sweep-medium","sonic-sweep-long","battery-recharge"]
 var settings: Dictionary = DEFAULTS.duplicate()
 var status := "waiting"
 var catalog: RefCounted
@@ -111,6 +111,8 @@ func _input(event: InputEvent) -> void:
 		unlock()
 
 func unlock() -> void:
+	if unlocked:
+		return
 	unlocked = true
 	_sync()
 
@@ -137,18 +139,18 @@ func _sync() -> void:
 	var enabled: bool = settings.music and float(settings.musicVolume)>0
 	if music.stream == null:
 		status = "unavailable"
-	elif not enabled:
-		music.stream_paused = true
-		status = "off"
-	elif paused:
-		music.stream_paused = true
-		status = "paused"
+	elif not enabled or paused:
+		if music.has_stream_playback() and not music.stream_paused:
+			music.stream_paused = true
+		status = "paused" if enabled else "off"
 	elif not unlocked:
 		status = "waiting"
 	else:
-		if not music.playing:
+		# Godot Web restarts a sample if it receives an unpause while already playing.
+		if music.stream_paused:
+			music.stream_paused = false
+		elif not music.has_stream_playback():
 			music.play()
-		music.stream_paused = false
 		status = "playing"
 	if paused or not settings.effects or float(settings.effectsVolume)<=0:
 		stop_effects()
@@ -161,12 +163,13 @@ func _process(dt: float) -> void:
 	clock += maxf(0,dt)
 
 func _stream(key: String, loop: bool) -> AudioStream:
-	var cache_key := key+("-loop" if loop else "")
+	var stream_key := "blast" if key=="secondary-blast" else key
+	var cache_key := stream_key+("-loop" if loop else "")
 	if _streams.has(cache_key):
 		return _streams[cache_key]
 	if catalog == null:
 		return null
-	var source_key: String = COLLECTION_AUDIO.get(key,key)
+	var source_key: String = COLLECTION_AUDIO.get(stream_key,stream_key)
 	var path: String = SKILL_AUDIO.get(source_key,catalog.asset_path("audio-"+source_key))
 	if path.is_empty() or not ResourceLoader.exists(path):
 		return null
@@ -182,7 +185,7 @@ func _stream(key: String, loop: bool) -> AudioStream:
 func _prepare_voices(key: String) -> void:
 	if _voices.has(key): return
 	_voices[key] = []
-	var count := 6 if key == "pixel-collect" else 2 if key in ["blast","debris-impact","collection-tick"] else 1
+	var count := 6 if key == "pixel-collect" else 2 if key in ["blast","secondary-blast","debris-impact","collection-tick"] else 1
 	for i in range(count):
 		var player := AudioStreamPlayer.new()
 		player.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -198,7 +201,7 @@ func prepare_sortie() -> void:
 	for key in COLLECTION_AUDIO:
 		stop_effect(key)
 	# Preload streams and voices without starting any sound.
-	for key in ["blast","debris-impact","pixel-collect"] + COLLECTION_AUDIO.keys():
+	for key in ["blast","secondary-blast","debris-impact","pixel-collect"] + COLLECTION_AUDIO.keys():
 		var stream := _stream(key,false)
 		if stream == null: continue
 		_prepare_voices(key)
@@ -221,7 +224,7 @@ func play_effect(key: String, volume := -1.0, rate := 1.0, loop := false, from_p
 		return
 	if key in ["ui-confirm","ui-unavailable"]:
 		stop_effect("ui-tap")
-	if key not in ["blast","debris-impact","pixel-collect","collection-tick"]:
+	if key not in ["blast","secondary-blast","debris-impact","pixel-collect","collection-tick"]:
 		_soft_order = _soft_order.filter(func(id):return id!=key and _playing(id))
 		if _soft_order.size()>=6:
 			stop_effect(_soft_order.pop_front())
@@ -398,7 +401,8 @@ func process_events(events: Array, _dt := 0.0, collected_total := -1, active := 
 	for event in events:
 		var kind: String = event.get("kind","")
 		if (kind=="tool-blast" and event.get("phase","")=="blast" or kind=="blast") and event.get("audio",true):
-			play_effect("blast",0.25,randf_range(0.98,1.02))
+			var follow_up: bool = kind=="blast" and event.get("vfx","") in ["aftershock","relay"]
+			play_effect("secondary-blast" if follow_up else "blast",0.15 if follow_up else 0.25,randf_range(0.98,1.02))
 		elif kind=="tool-gravity" and event.get("phase","")=="start":
 			play_effect("blackhole-open")
 		elif kind=="sound-active-deploy":
@@ -421,7 +425,7 @@ func process_events(events: Array, _dt := 0.0, collected_total := -1, active := 
 	if collected_total>=0:
 		gained=gained or collected_total>collected
 		collected=collected_total
-	var blasting := _playing("blast")
+	var blasting := _playing("blast") or _playing("secondary-blast")
 	var colliding := _playing("debris-impact")
 	var celebrating := _playing("collection-tier")
 	if gained and not milestone:

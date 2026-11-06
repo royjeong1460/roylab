@@ -11,3 +11,9 @@
 
 | [PERF-001](PERF-001-common-g40.md) | 2026-11-03 | g40공통 최적화·모래표시·버전/롤백 추적 | 앱체감개선확인 · 무료웹사용자확인대기 |
 | [BUG-004](BUG-004-free-web-sortie-save-blocked.md) | 2026-11-03 | 웹 출동 시 저장 오류 | 저장 이전 수정 · 사용자 확인 대기 |
+| [BUG-006](BUG-006-tutorial-viewport.md) | 2026-11-06 | 튜토리얼 배경 여백, 안내 가독성 및 지역 범위 | 사용자 확인 대기 |
+| [BUG-007](BUG-007-result-heading.md) | 2026-11-06 | 현장 결과 제목이 닫기 버튼보다 아래에 표시됨 | 사용자 확인 대기 |
+| [BUG-008](BUG-008-stat-precision-and-play-hud.md) | 2026-11-06 | 강화 소수 표시와 전투 상단 정렬 | 사용자 확인 대기 |
+| [BUG-009](BUG-009-desktop-playfield-boundary.md) | 2026-11-06 | PC 웹에서 잔해가 화면 안쪽 경계에 막힘 | 사용자 확인 대기 |
+| [BUG-010](BUG-010-gear-unlock-guidance.md) | 2026-11-06 | 장비 해금 시점과 조건 안내 누락 | 사용자 확인 대기 |
+| [BUG-011](BUG-011-secondary-blast-audio.md) | 2026-11-06 | 후속 폭파와 충격 릴레이의 충격음 누락 | 사용자 확인 대기 |

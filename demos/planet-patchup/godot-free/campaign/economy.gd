@@ -199,7 +199,7 @@ func stats(p: Dictionary) -> Dictionary:
 	return values
 
 func _value_text(value: float) -> String:
-	return String.num(value, 14)
+	return String.num(value, 2)
 
 func _upgrade_description(id: String, level: int) -> Dictionary:
 	var track: Dictionary = catalog.tracks[id]
@@ -236,7 +236,6 @@ func _price_fields(offer: Dictionary, p: Dictionary) -> Dictionary:
 
 func offers(p: Dictionary) -> Array:
 	var result: Array = []
-	var clears: int = progression.distinct_clears(p)
 	for id in catalog.tracks:
 		var track: Dictionary = catalog.tracks[id]
 		var level := int(p.upgrades[id])
@@ -249,7 +248,7 @@ func offers(p: Dictionary) -> Array:
 			"kind": "upgrade", "level": level, "cost": cost, "numeric_error": error,
 			"available": error.is_empty() and (id not in ["wellPull", "wellReach", "wellDuration", "mix", "wear"] or "blackhole" in p.owned)}, p))
 	result.append(_price_fields({"id": "blackhole", "name": "Black Hole", "kind": "tool", "description": "24 energy per attack",
-		"level": int("blackhole" in p.owned), "max": 1, "cost": 2000, "numeric_error": "", "available": clears >= 3 and "blackhole" not in p.owned}, p))
+		"level": int("blackhole" in p.owned), "max": 1, "cost": 2000, "numeric_error": "", "available": progression.gear_available(p, "blackhole") and "blackhole" not in p.owned}, p))
 	for id in catalog.skills:
 		var skill: Dictionary = catalog.skills[id]
 		var level := int(p.skills[id])
@@ -260,9 +259,9 @@ func offers(p: Dictionary) -> Array:
 		result.append(_price_fields({"id": id, "name": skill.name, "kind": skill.kind, "description": effect.key % effect.args,
 			"description_key": effect.key, "description_args": effect.args,
 			"next_description_key": next_effect.key, "next_description_args": next_effect.args,
-			"unlock": progression.skill_unlock_info(id), "icon": skill.get("icon", ""),
+			"unlock": progression.gear_unlock_info(id), "icon": skill.get("icon", ""),
 			"level": level, "cost": cost, "numeric_error": error,
-			"available": error.is_empty() and progression.skill_available(p, id)}, p))
+			"available": error.is_empty() and progression.gear_available(p, id)}, p))
 	return result
 
 func skill_effect_description(id: String, level: int) -> Dictionary:

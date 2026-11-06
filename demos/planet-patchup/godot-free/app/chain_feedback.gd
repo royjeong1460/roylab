@@ -33,7 +33,7 @@ func clear() -> void:
 	queue_redraw()
 
 func _caption(stage: int, count: int) -> String:
-	return "%d %s\n%s" % [stage,Locale.text("CHAIN"),Locale.format("+%d PIXELS",[count]) if count > 0 else Locale.text("CRACK")]
+	return "%d %s\n%s" % [stage,Locale.text("CHAIN"),Locale.format("+%d SCRAP",[count]) if count > 0 else Locale.text("CRACK")]
 
 func process_events(source_events: Array) -> void:
 	for source in source_events:

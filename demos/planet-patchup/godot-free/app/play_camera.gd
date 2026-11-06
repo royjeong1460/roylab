@@ -11,9 +11,11 @@ var _map_size := Vector2.ONE
 var _minimum_zoom := 1.0
 var _maximum_zoom := 2.0
 var _collection_mode := false
+var _fill_width := false
 
-func setup(source_world, play_area: Rect2) -> void:
+func setup(source_world, play_area: Rect2, fill_width := false) -> void:
 	world = source_world
+	_fill_width = fill_width
 	anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
 	position_smoothing_enabled = false
 	rotation_smoothing_enabled = false
@@ -28,7 +30,8 @@ func setup(source_world, play_area: Rect2) -> void:
 func _limits() -> void:
 	if area.size.x <= 0 or area.size.y <= 0:
 		return
-	_minimum_zoom = minf(area.size.x / _map_size.x, area.size.y / _map_size.y)
+	var width_zoom := area.size.x / _map_size.x
+	_minimum_zoom = width_zoom if _fill_width else minf(width_zoom, area.size.y / _map_size.y)
 	_maximum_zoom = maxf(MAX_PIXELS_PER_CELL / CELL_SCALE, _minimum_zoom)
 
 func set_area(play_area: Rect2) -> void:
@@ -38,6 +41,9 @@ func set_area(play_area: Rect2) -> void:
 	area = play_area
 	_limits()
 	if _collection_mode:
+		if _fill_width:
+			zoom = Vector2.ONE * maxf(zoom.x, _minimum_zoom)
+			_origin.x = clampf(_origin.x, 0.0, maxf(0.0, _map_size.x - area.size.x / zoom.x))
 		_sync_transform()
 		return
 	if fitted:
@@ -50,7 +56,7 @@ func set_area(play_area: Rect2) -> void:
 func fit() -> void:
 	_limits()
 	zoom = Vector2.ONE * _minimum_zoom
-	_origin = Vector2.ZERO
+	_origin = Vector2(0.0, _map_size.y - area.size.y / zoom.y) if _fill_width else Vector2.ZERO
 	fitted = true
 	_clamp_and_sync()
 
@@ -81,6 +87,12 @@ func map_to_screen(point: Vector2) -> Vector2:
 func visible_map_rect() -> Rect2:
 	return Rect2(_origin / CELL_SCALE, area.size / zoom / CELL_SCALE).intersection(Rect2(Vector2.ZERO, _map_size / CELL_SCALE))
 
+func fitted_world_bounds() -> Rect2:
+	var extent := _map_size.max(area.size / _minimum_zoom)
+	var bounds := Rect2(Vector2((_map_size.x - extent.x) / 2.0, _map_size.y - extent.y), extent)
+	# A resize during collection preserves the frozen camera instead of fitting again.
+	return bounds.merge(Rect2(_origin, area.size / zoom)) if _collection_mode else bounds
+
 func pan(screen_delta: Vector2) -> void:
 	if _collection_mode or not screen_delta.is_finite():
 		return
@@ -102,7 +114,7 @@ func _clamp_and_sync() -> void:
 	# Spare portrait height belongs above the map, not in an empty ground band below it.
 	if visible.y >= _map_size.y:
 		_origin.y = _map_size.y - visible.y
-	fitted = absf(zoom.x - _minimum_zoom) < 0.0001
+	fitted = absf(zoom.x - _minimum_zoom) < 0.0001 and (not _fill_width or absf(_origin.y - (_map_size.y - visible.y)) < 0.0001)
 	_sync_transform()
 
 func _sync_transform() -> void:

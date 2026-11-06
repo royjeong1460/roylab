@@ -3,6 +3,10 @@ extends RefCounted
 const BG := Color("091322")
 const PANEL := Color("121f2d")
 const BORDER := Color("344351")
+const MENU_BG := Color("192b32")
+const MENU_PANEL := Color("263c45")
+const MENU_BORDER := Color("47616a")
+const TEAL_SCREENS := ["maps","workshop","loadout","receipt","chapter","settings"]
 const TEXT := Color("eee3c9")
 const MUTED := Color("a8b3b8")
 const GOLD := Color("cbb17a")
@@ -41,20 +45,21 @@ static func box(fill: Color, border := BORDER, width := 1, padding := 12) -> Sty
 	style.content_margin_bottom = padding
 	return style
 
-static func make(catalog) -> Theme:
+static func make(catalog, teal := false) -> Theme:
 	var theme := Theme.new()
 	var font_path: String = catalog.asset_path("font")
 	if not font_path.is_empty() and ResourceLoader.exists(font_path):
 		theme.default_font = load(font_path) as Font
 	theme.default_font_size = 13
+	var panel := MENU_PANEL if teal else PANEL
 	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
-		var fill := PANEL
-		var border := BORDER
+		var fill := panel
+		var border := MENU_BORDER if teal else BORDER
 		if state == "hover":
-			fill = Color("1d2d3a")
+			fill = panel.lightened(0.05) if teal else Color("1d2d3a")
 			border = GOLD
 		elif state == "pressed":
-			fill = Color("293641")
+			fill = panel.darkened(0.15) if teal else Color("293641")
 		elif state == "focus":
 			fill = Color.TRANSPARENT
 			border = GOLD
@@ -69,9 +74,9 @@ static func make(catalog) -> Theme:
 	theme.set_constant("separation", "HBoxContainer", 8)
 	theme.set_constant("h_separation", "GridContainer", 10)
 	theme.set_constant("v_separation", "GridContainer", 10)
-	theme.set_stylebox("panel", "PanelContainer", box(PANEL))
+	theme.set_stylebox("panel", "PanelContainer", box(panel,MENU_BORDER if teal else BORDER))
 	theme.set_stylebox("background", "ProgressBar", box(Color("27323c"), Color.TRANSPARENT, 0, 0))
 	theme.set_stylebox("fill", "ProgressBar", box(MINT, Color.TRANSPARENT, 0, 0))
-	theme.set_stylebox("scroll", "VScrollBar", box(Color("15212d"), Color.TRANSPARENT, 0, 0))
-	theme.set_stylebox("grabber", "VScrollBar", box(Color("536772"), Color.TRANSPARENT, 0, 0))
+	theme.set_stylebox("scroll", "VScrollBar", box(MENU_BG if teal else Color("15212d"), Color.TRANSPARENT, 0, 0))
+	theme.set_stylebox("grabber", "VScrollBar", box(Color("68808a") if teal else Color("536772"), Color.TRANSPARENT, 0, 0))
 	return theme

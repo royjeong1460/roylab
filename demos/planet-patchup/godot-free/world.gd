@@ -35,6 +35,7 @@ var final_collection_active := false
 var finishing_requested := false
 var finishing_supports: Dictionary = {}
 const S := 4.0
+const MAX_PLAYFIELD_CELLS := 640 * 512
 const COLLECTIBLE_FILL := Color("a8dfc4")
 const COLLECTIBLE_RIM := Color("518c76")
 const BODY_LIMIT := 18
@@ -120,11 +121,67 @@ var last_cpu_us := 0
 var _original_groups := {}
 var _reserve := {}
 
-func configure_site(site: Dictionary, profile_stats: Dictionary, equipped: Dictionary) -> void:
-	fixture = site # Authored map data is immutable; only cells/roles become mutable packed arrays.
+func configure_site(site: Dictionary, profile_stats: Dictionary, equipped: Dictionary, play_size := Vector2.ZERO) -> void:
+	fixture = _fit_playfield(site, play_size)
 	starting_stats = profile_stats.duplicate(true)
 	starting_equipped = equipped.duplicate(true)
 	allowed_tools = equipped.get("owned", ["bomb"]).duplicate()
+
+func _fit_playfield(site: Dictionary, play_size: Vector2) -> Dictionary:
+	if play_size.x <= 0.0 or play_size.y <= 0.0:
+		return site
+	var authored_width := int(site.width)
+	var authored_height := int(site.height)
+	# Empty side ground is fixed per run and stays within the largest authored grid budget.
+	var width_limit := maxi(authored_width, floori(float(MAX_PLAYFIELD_CELLS) / authored_height))
+	var field_width := mini(width_limit, ceili(play_size.aspect() * authored_height))
+	if field_width <= authored_width:
+		return site
+	var extra := field_width - authored_width
+	var left := extra >> 1
+	var field := site.duplicate()
+	field.width = field_width
+	for key in ["cells", "roles", "colors", "module_of"]:
+		if not site.has(key):
+			continue
+		var source: Array = site[key]
+		var before: Array = []
+		var after: Array = []
+		before.resize(left)
+		after.resize(extra - left)
+		before.fill(-1 if key == "module_of" else 0)
+		after.fill(-1 if key == "module_of" else 0)
+		var grid: Array = []
+		for y in range(authored_height):
+			grid.append_array(before)
+			grid.append_array(source.slice(y * authored_width, (y + 1) * authored_width))
+			grid.append_array(after)
+		field[key] = grid
+	var remap_id := func(index: Variant) -> int:
+		var id := int(index)
+		return floori(float(id) / authored_width) * field_width + id % authored_width + left
+	var modules: Array = site.get("modules", []).duplicate(true)
+	for module in modules:
+		module.pixels = module.pixels.map(remap_id)
+	field.modules = modules
+	var links: Array = site.get("module_links", []).duplicate(true)
+	for link in links:
+		for index in range(link.size()):
+			link[index] = link[index].map(remap_id)
+	field.module_links = links
+	var preview: Array = site.get("preview", []).duplicate(true)
+	for point in preview:
+		point.x += left
+	field.preview = preview
+	var spans: Array = site.terrain.duplicate(true) if site.get("terrain") is Array else []
+	if not spans.is_empty():
+		for span in spans:
+			span.x += left
+		spans[0].x = 0
+		spans[0].w += left
+		spans[-1].w += extra - left
+		field.terrain = spans
+	return field
 
 func ground_y(x: float) -> float:
 	return float(ground_surface[clampi(floori(x), 0, width - 1)]) if not ground_surface.is_empty() else float(floor_y)
@@ -600,7 +657,7 @@ func blast_unprofiled(input) -> void:
 	var efficiency := float(bomb.get("fracture_efficiency", 1.0)) if secondary else float(stats.get("blastFractureEfficiency", 1.0))
 	impact_physics.blast_halo(point, radius, power, efficiency)
 	blasts += 1
-	events.append({"kind": "blast", "time": elapsed, "count": count, "x": point.x, "y": point.y, "radius": radius, "power": power, "secondary": secondary, "vfx": bomb.get("vfx", "aftershock" if bomb.get("kind") == "echo" else "relay" if bomb.get("kind") == "relay-hit" else ""), "heavy": bomb.get("heavy", false), "audio": bomb.get("audio", not bomb.get("kind", "") in ["echo", "relay-hit"])})
+	events.append({"kind": "blast", "time": elapsed, "count": count, "x": point.x, "y": point.y, "radius": radius, "power": power, "secondary": secondary, "vfx": bomb.get("vfx", "aftershock" if bomb.get("kind") == "echo" else "relay" if bomb.get("kind") == "relay-hit" else ""), "heavy": bomb.get("heavy", false), "audio": bomb.get("audio", true)})
 	skill_physics.on_primary_blast(bomb, count > 0 or impulses > 0)
 	_blast_depth -= 1
 	if _blast_depth == 0:

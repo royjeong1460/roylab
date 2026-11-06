@@ -35,6 +35,7 @@ var _result_fade_started := false
 var _minimap: ImageTexture
 var _minimap_age := 1.0
 var _minimap_rect := Rect2()
+var _backdrop
 
 func setup(owner_app: Node, source_catalog, source_journey, source_site: Dictionary, source_profile: Dictionary, run_mode: String) -> void:
 	app = owner_app
@@ -49,7 +50,8 @@ func _ready() -> void:
 	# Every physical ancestor stays at identity; camera fitting is independent.
 	world = World.new()
 	world.process_mode = Node.PROCESS_MODE_PAUSABLE
-	world.configure_site(site, journey.stats(), {"passive": profile.equipped.passive, "active": profile.equipped.active, "skills": profile.skills, "owned": profile.owned})
+	var fill_width := OS.has_feature("web")
+	world.configure_site(site, journey.stats(), {"passive": profile.equipped.passive, "active": profile.equipped.active, "skills": profile.skills, "owned": profile.owned}, play_area.size if fill_width else Vector2.ZERO)
 	add_child(world)
 	journey.attach_world(world)
 	run = journey.current_run
@@ -63,6 +65,7 @@ func _ready() -> void:
 		var previous: Dictionary = profile.stageRecords.get(site.id, {})
 		backdrop.restoration = float(previous.get("recovered", 0)) / maxf(1, float(previous.get("total", 1)))
 		add_child(backdrop)
+		_backdrop = backdrop
 		var style: Dictionary = backdrop.environment_style()
 		sky_color = style.sky
 		ground_color = style.ground
@@ -72,13 +75,15 @@ func _ready() -> void:
 		var previous: Dictionary = profile.stageRecords.get(site.id, {})
 		var restoration := float(previous.get("recovered", 0))/maxf(1,float(previous.get("total", 1)))
 		backdrop.setup(world, region, restoration)
+		_backdrop = backdrop
 		var style := backdrop.environment_style()
 		sky_color = style.sky
 		ground_color = style.ground
 	camera = Camera.new()
 	add_child(camera)
 	camera.make_current()
-	camera.setup(world, play_area)
+	camera.setup(world, play_area, fill_width)
+	_backdrop.cover_view(camera.fitted_world_bounds())
 	controls = PlayInput.new()
 	add_child(controls)
 	controls.setup(self)
@@ -103,6 +108,7 @@ func set_area(area: Rect2) -> void:
 	play_area = area
 	if camera != null:
 		camera.set_area(area)
+		_backdrop.cover_view(camera.fitted_world_bounds())
 	if chain_feedback != null:
 		chain_feedback.set_area(area)
 	if collection_overlay != null:

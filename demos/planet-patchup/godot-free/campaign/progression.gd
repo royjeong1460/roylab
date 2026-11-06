@@ -1,5 +1,7 @@
 extends RefCounted
 
+const BLACK_HOLE_CLEARS := 3
+
 var catalog
 
 func setup(source) -> void:
@@ -79,19 +81,26 @@ func normal_clears(p: Dictionary, index: int) -> int:
 			count += 1
 	return count
 
-func skill_available(p: Dictionary, id: String) -> bool:
-	if not catalog.skills.has(id):
+func gear_available(p: Dictionary, id: String) -> bool:
+	var unlock := gear_unlock_info(id)
+	if unlock.is_empty():
 		return false
-	var skill: Dictionary = catalog.skills[id]
-	var index := int(skill.get("region", 0))
-	return region_open(p, index) and normal_clears(p, index) >= int(skill.get("clears", 0))
+	return region_open(p, unlock.region) and normal_clears(p, unlock.region) >= unlock.clears
 
-func skill_unlock_info(id: String) -> Dictionary:
-	if not catalog.skills.has(id):
+func gear_unlock_info(id: String) -> Dictionary:
+	if id != "blackhole" and not catalog.skills.has(id):
 		return {}
-	var skill: Dictionary = catalog.skills[id]
-	var index := int(skill.get("region", 0))
-	return {"region": index, "clears": int(skill.get("clears", 0)), "region_name": str(catalog.region(index).get("name", ""))}
+	var rule: Dictionary = {"region": 0, "clears": BLACK_HOLE_CLEARS} if id == "blackhole" else catalog.skills[id]
+	var index := int(rule.get("region", 0))
+	return {"region": index, "clears": int(rule.get("clears", 0)), "region_name": str(catalog.region(index).get("name", ""))}
+
+func new_unlocks(previous: Dictionary, next: Dictionary) -> Array:
+	var result := []
+	for id in ["blackhole"] + catalog.skills.keys():
+		var learned: bool = id in previous.owned if id == "blackhole" else int(previous.skills.get(id, 0)) > 0
+		if not learned and gear_available(next, id) and not gear_available(previous, id):
+			result.append(id)
+	return result
 
 func skill_slots(p: Dictionary, _kind := "") -> int:
 	return 2 if region_open(p, 1) else 1
@@ -107,7 +116,7 @@ func boss_rewarded(p: Dictionary, id: String) -> bool:
 	return p.get("bossRewards", {}).get(id, false) or (site_region(id) == 0 and p.get("bossCleared", false))
 
 func grant_skills(p: Dictionary) -> void:
-	if distinct_clears(p) >= 2 and p.skills.aftershock == 0:
+	if p.skills.aftershock == 0 and gear_available(p, "aftershock"):
 		p.skills.aftershock = 1
 		if p.equipped.passive.is_empty():
 			p.equipped.passive.append("aftershock")
