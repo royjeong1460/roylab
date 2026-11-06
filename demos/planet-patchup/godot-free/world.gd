@@ -4,6 +4,7 @@ const PerformanceProbe = preload("res://performance_probe.gd")
 var perf := PerformanceProbe.new()
 var native_pixels = ClassDB.instantiate("PPPixelKernel")
 var native_world = ClassDB.instantiate("PPWorldKernel")
+var native_effects = ClassDB.instantiate("PPEffectKernel")
 
 const GameSkin = preload("res://app/skin.gd")
 const PixelSurface = preload("res://presentation/pixel_surface.gd")
@@ -592,6 +593,8 @@ func attack(point: Vector2, tool := "blast") -> bool:
 	if charge <= 0.00000001:
 		return false
 	if tool == "blast":
+		if not _has_blast_target(point, float(stats.bombRadius)):
+			return false
 		# Tap recognition already waits for release; accepted taps need no extra fuse delay.
 		bombs.append({"p": point, "delay": 0.0, "radius": stats.bombRadius, "power": stats.bombPower, "secondary": false})
 	elif tool == "blackhole" and wells.is_empty():
@@ -610,6 +613,13 @@ func attack(point: Vector2, tool := "blast") -> bool:
 	events.append({"kind": "tool-blast" if tool == "blast" else "tool-gravity", "phase": "fuse" if tool == "blast" else "start", "delay": 0.0, "x": point.x, "y": point.y, "time": elapsed})
 	enforce_body_budget()
 	return true
+
+func _has_blast_target(point: Vector2, radius: float) -> bool:
+	var radius_squared := radius * radius
+	for pixel in static_material_in_square(point, radius):
+		if point.distance_squared_to(pixel.q) <= radius_squared:
+			return true
+	return not native_effects.near_pieces(self, point, radius).is_empty()
 
 func cut_at(point: Vector2, radius: float) -> int:
 	var materials: Array = [{"piece": null, "pixels": static_material_in_square(point, radius)}]

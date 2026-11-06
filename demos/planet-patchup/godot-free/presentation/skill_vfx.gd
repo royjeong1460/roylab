@@ -13,6 +13,7 @@ const SPECS := {
 	"gravity-impact":[64,48,8,20],"sonic-front":[48,128,12,20],"recharge":[64,64,12,16],
 }
 const BLOOM_RADII := [8.0,12.0,17.0,22.0,27.0,31.0,35.0,38.0,40.0,41.0,42.0,43.0]
+const WELL_LOOP_SHADER = preload("res://presentation/blackhole_loop.gdshader")
 var world: Node
 var catalog: RefCounted
 var images := {}
@@ -23,6 +24,7 @@ var last_impact := -INF
 var collection_aim := Vector2(INF,INF)
 var reduced_motion := false
 var active := true
+var _well_loop := Sprite2D.new()
 
 func setup(source_world: Node, source_catalog: RefCounted) -> void:
 	world=source_world
@@ -31,10 +33,18 @@ func setup(source_world: Node, source_catalog: RefCounted) -> void:
 	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	for key in SPECS:
 		images[key]=catalog.texture("vfx-"+key)
+	var loop_material := ShaderMaterial.new()
+	loop_material.shader = WELL_LOOP_SHADER
+	_well_loop.material = loop_material
+	_well_loop.texture = images["blackhole-loop"]
+	_well_loop.hframes = int(SPECS["blackhole-loop"][2])
+	_well_loop.hide()
+	add_child(_well_loop)
 
 func clear() -> void:
 	events.clear()
 	wells.clear()
+	_well_loop.hide()
 	queue_redraw()
 
 func _push(source: Dictionary, sheet: String, life: float, decorative := false) -> void:
@@ -103,6 +113,7 @@ func _process(dt: float) -> void:
 		event.age+=maxf(0,dt)
 	events=events.filter(func(event):return event.age<event.life)
 	_update_wells(dt)
+	_update_well_loop()
 	queue_redraw()
 
 func _point(item: Dictionary) -> Vector2:
@@ -130,6 +141,19 @@ func _update_wells(dt: float) -> void:
 			well.age+=dt
 		if well.age>=0.333:
 			wells.erase(key)
+
+func _update_well_loop() -> void:
+	for well in wells.values():
+		if well.phase != "blackhole-loop":
+			continue
+		var spec: Array = SPECS["blackhole-loop"]
+		var diameter := maxf(3, float(well.get("radius", 4)) * 0.9)
+		_well_loop.position = _point(well) * 4.0
+		_well_loop.scale = Vector2.ONE * (diameter * 4.0 / float(spec[0]))
+		_well_loop.frame = 2 if reduced_motion else floori(float(well.age) * float(spec[3])) % int(spec[2])
+		_well_loop.show()
+		return
+	_well_loop.hide()
 
 func _sprite(key: String, point: Vector2, width: float, age := 0.0, alpha := 1.0, angle := 0.0, height := -1.0, loop := false, mirror := false, frame_index := -1) -> void:
 	var texture: Texture2D=images.get(key)
@@ -311,7 +335,8 @@ func _draw() -> void:
 		var p:=_point(well)
 		var radius:=float(well.get("radius",4))
 		_ring(p,radius,"a59caf",alpha*0.24)
-		_sprite(well.phase,p,maxf(3,radius*0.9),well.age,alpha,0,-1,well.phase=="blackhole-loop")
+		if well.phase != "blackhole-loop":
+			_sprite(well.phase,p,maxf(3,radius*0.9),well.age,alpha*0.72)
 	_relay_marks()
 	_skill_fields()
 	_orbital()
