@@ -116,11 +116,12 @@ func attack(point: Vector2) -> bool:
 		app.feedback.play_effect("ui-unavailable")
 	return accepted
 
-func toggle_tool() -> void:
-	if run == null or run.paused or run.phase != "working":
+func select_tool(id: String) -> void:
+	if run == null or run.paused or run.finish_ready or run.phase != "working" or id == tool:
 		return
-	if profile.owned.has("blackhole"):
-		tool = "blackhole" if tool == "blast" else "blast"
+	if id not in ["blast", "blackhole"] or (id == "blackhole" and not profile.owned.has("blackhole")):
+		return
+	tool = id
 	controls.cancel()
 
 func activate_skill(id: String = "") -> void:

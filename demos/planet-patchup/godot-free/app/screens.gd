@@ -15,7 +15,7 @@ const PLAY_TIPS := [
 	"Keep every recovered pixel. Spend parts on upgrades before your next sortie.",
 	"When the battery runs out, all loose pixels gather at the center automatically.",
 	"Clear all six normal sites at 70% to unlock the boss. Aim for 100% All Clear!",
-	"Black Hole pulls nearby material. Switch tools with the button below the field.",
+	"Tap a tool below the field to select it.",
 	"Pause to collect early and return to the workshop."
 ]
 const BRIGHT_PLAY_TIPS := [
@@ -24,7 +24,7 @@ const BRIGHT_PLAY_TIPS := [
 	"Battery empty? Recovery starts automatically",
 	"Upgrades apply next sortie",
 	"Clear normal sites at 70% to unlock the boss",
-	"Switch between Shockwave and Black Hole",
+	"Tap a tool below the field to select it.",
 	"Each active skill is usable once per sortie",
 	"Aim for 100% All Clear"
 ]
@@ -997,22 +997,30 @@ func _play_hud() -> Control:
 	performance_panel.visible = Diagnostics.is_enabled()
 	root.add_child(performance_panel)
 	_performance_updated = 0
-	var tool := _button("",func():
-		if app.play_view!=null: app.play_view.toggle_tool())
-	UITheme.hud_button(tool,true)
-	if bright:
-		for state in ["normal","hover","pressed","disabled"]:
-			tool.add_theme_stylebox_override(state,UITheme.box(Color("ebdfbf").lightened(0.05) if state=="hover" else Color("ebdfbf"),Color("8c9170"),1,0))
-	root.add_child(tool)
-	var tool_icon := _hud_icon("tool-blast",Color("be861f") if bright else UITheme.HUD_PALE)
-	_place(tool,tool_icon,Rect2(14,8 if bright else 14,28,28))
-	var tool_name := _label("Shockwave",9,GameSkin.hud("ink"))
-	tool_name.visible = bright
-	tool_name.autowrap_mode = TextServer.AUTOWRAP_OFF
-	tool_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_place(tool,tool_name,Rect2(0,39,56,12))
-	var switch_icon := _hud_icon("hud-switch",GameSkin.hud("ink") if bright else UITheme.HUD_PALE)
-	_place(tool,switch_icon,Rect2(39,1,14,14))
+	var tool_ids := ["blast"]
+	if is_instance_valid(app.play_view) and app.play_view.profile.owned.has("blackhole"):
+		tool_ids.append("blackhole")
+	var tools: Array[Dictionary] = []
+	for id: String in tool_ids:
+		var button := _button("",func():
+			if is_instance_valid(app.play_view):
+				app.play_view.select_tool(id)
+				update_hud(app.play_view))
+		button.toggle_mode = true
+		UITheme.hud_button(button)
+		var selected := UITheme.box(Color("e9d5a5"),Color("a16a20"),2,0)
+		button.add_theme_stylebox_override("pressed",selected)
+		button.add_theme_stylebox_override("hover_pressed",selected)
+		root.add_child(button)
+		var icon := _hud_icon("tool-blackhole" if id=="blackhole" else "tool-blast",Color("a16a20"))
+		_place(button,icon,Rect2(14,8,28,28))
+		var label := _label("Black Hole" if id=="blackhole" else "Shockwave",9,GameSkin.hud("ink"))
+		label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.clip_text = true
+		_place(button,label,Rect2(0,39,56,12))
+		button.tooltip_text = label.text
+		tools.append({"id":id,"button":button,"icon":icon,"label":label})
 	var passive_slots: Array = []
 	for slot in range(2):
 		var panel := PanelContainer.new()
@@ -1117,42 +1125,39 @@ func _play_hud() -> Control:
 		var tip_height := 24.0 if bright else clampf(tip.get_minimum_size().y+16,30,maxf(30,controls_height-76))
 		tip_panel.position = Vector2(8,height-8-tip_height)
 		tip_panel.size = Vector2(width-16,tip_height)
-		var narrow := width < 350
-		tool.position = Vector2(8 if narrow else 16,controls_top+8)
-		tool.size = Vector2(48 if narrow else 56,56)
-		tool_icon.position.x = (tool.size.x-28)/2.0
-		tool_name.size.x = tool.size.x
-		switch_icon.position.x = tool.size.x-17
-		# Keep five controls separate at 320 px without growing into the footer.
-		var passive_left := 64.0 if narrow else 80.0
-		var active_left := width-(104 if narrow else 120)
+		var narrow := width < 390
+		var margin := 8.0 if narrow else 16.0
+		var gap := 4.0 if narrow else 8.0
+		var tool_width := 48.0 if narrow else 56.0
+		var left := margin
+		for control in tools:
+			control.button.position = Vector2(left,controls_top+8)
+			control.button.size = Vector2(tool_width,56)
+			control.icon.position.x = (tool_width-28)/2.0
+			control.label.size.x = tool_width
+			left += tool_width+gap
+		var passive_count := 0
+		var active_count := 0
+		for slot in passive_slots:
+			passive_count += int(slot.panel.visible)
+		for slot in active_slots:
+			active_count += int(slot.button.visible)
 		var active_width := 44.0 if narrow else 48.0
-		var active_gap := 4.0 if narrow else 8.0
-		var passive_width := minf(100,maxf(62,(active_left-passive_left-14)/2.0))
-		for slot in range(passive_slots.size()):
-			passive_slots[slot].panel.position = Vector2(passive_left+slot*(passive_width+6),controls_top+8)
-			passive_slots[slot].panel.size = Vector2(passive_width,56)
-		for slot in range(active_slots.size()):
-			active_slots[slot].button.position = Vector2(active_left+slot*(active_width+active_gap),controls_top+12)
-			active_slots[slot].button.size = Vector2(active_width,48)
-			active_slots[slot].icon.position.x = (active_width-28)/2.0
-		if bright:
-			# Compact only equipped skills; keep all five touch targets inside the footer.
-			var counts := [0,0]
-			var skill_state: Dictionary = journey.current_run.skill_state() if journey.current_run!=null else {}
-			counts[0] = skill_state.get("passives",[]).size()
-			counts[1] = skill_state.get("actives",[]).size()
-			var left := tool.position.x+tool.size.x+8
-			var available := width-left-8
-			var p_width := minf(100,maxf(54,(available-counts[1]*48-4*maxi(0,counts[0]+counts[1]-1))/maxi(1,counts[0])))
-			for slot in range(passive_slots.size()):
-				passive_slots[slot].panel.position = Vector2(left+slot*(p_width+4),controls_top+8)
-				passive_slots[slot].panel.size = Vector2(p_width,56)
-			left += counts[0]*(p_width+4)
-			for slot in range(active_slots.size()):
-				active_slots[slot].button.position = Vector2(left+slot*48,controls_top+12)
-				active_slots[slot].button.size = Vector2(44,48)
-				active_slots[slot].icon.position.x = 8
+		var available := width-left-margin-active_count*active_width-gap*maxi(0,passive_count+active_count-1)
+		var passive_width := minf(100.0,maxf(0.0,available/maxi(1,passive_count)))
+		for slot in passive_slots:
+			if not slot.panel.visible: continue
+			var icon_size := 16.0 if passive_width<56 else 22.0
+			slot.icon.custom_minimum_size = Vector2(icon_size,icon_size)
+			slot.panel.position = Vector2(left,controls_top+8)
+			slot.panel.size = Vector2(passive_width,56)
+			left += passive_width+gap
+		for slot in active_slots:
+			if not slot.button.visible: continue
+			slot.button.position = Vector2(left,controls_top+12)
+			slot.button.size = Vector2(active_width,48)
+			slot.icon.position.x = (active_width-28)/2.0
+			left += active_width+gap
 		var tutorial_y := 72.0 if width > height else 164.0
 		if performance_panel.visible:
 			tutorial_y = maxf(tutorial_y,PlayLayout.TOP+diagnostic_height+12)
@@ -1167,7 +1172,7 @@ func _play_hud() -> Control:
 	root.ready.connect(layout)
 	_hud["performance"] = performance
 	_hud["performance_panel"] = performance_panel
-	_hud.merge({"recovery":recovery,"metric":metric,"battery":battery,"recovery_bar":recovery_bar,"battery_bar":battery_bar,"tool":tool,"tool_name":tool_name,"tool_icon":tool_icon,"switch_icon":switch_icon,"passives":passive_slots,"actives":active_slots,"tutorial":tutorial,"minimap":minimap,"fit":fit,"tip":tip,"notice":notice_label,"notice_panel":notice_panel,"skip_guide":skip,"skip_wait":skip_wait,"layout":layout})
+	_hud.merge({"recovery":recovery,"metric":metric,"battery":battery,"recovery_bar":recovery_bar,"battery_bar":battery_bar,"tools":tools,"passives":passive_slots,"actives":active_slots,"tutorial":tutorial,"minimap":minimap,"fit":fit,"tip":tip,"notice":notice_label,"notice_panel":notice_panel,"skip_guide":skip,"skip_wait":skip_wait,"layout":layout})
 	return root
 
 func update_hud(play_view) -> void:
@@ -1194,18 +1199,16 @@ func _update_hud_unprofiled(play_view) -> void:
 	var progress := float(pixel_count)/pixel_total
 	_hud.recovery.text = "" if preparing else "%d%%" % clampi(floori(float(pixel_count)*100.0/pixel_total),0,100)
 	_hud.metric.text = L10n.text("Settling debris" if preparing else "RECOVERED" if finishing else "PIXELIZED")
-	_hud.tool.visible = not finishing
 	_hud.fit.visible = not finishing
 	_hud.battery.text = "%d%%" % ceili(float(world.charge)/maxf(1,float(world.stats.capacity))*100)
 	_hud.recovery_bar.value = progress*100
 	_hud.battery_bar.value = float(world.charge)/maxf(1,float(world.stats.capacity))*100
-	_hud.tool.text = ""
-	_hud.tool_name.text = L10n.text("Black Hole" if play_view.tool=="blackhole" else "Shockwave")
-	_hud.tool.tooltip_text = L10n.format("%s · switch tool",[L10n.text("Black Hole" if play_view.tool=="blackhole" else "Shockwave")])
-	_hud.tool_icon.texture = catalog.texture("tool-blackhole" if play_view.tool=="blackhole" else "tool-blast")
-	_hud.switch_icon.visible = play_view.profile.owned.has("blackhole")
-	_hud.tool.disabled = run==null or run.paused or run.finish_ready or run.phase!="working"
-	_hud.tool.modulate.a = 0.6 if _hud.tool.disabled else 1.0
+	var tools_disabled: bool = run==null or run.paused or run.finish_ready or run.phase!="working"
+	for control in _hud.tools:
+		control.button.visible = not finishing
+		control.button.disabled = tools_disabled
+		control.button.set_pressed_no_signal(play_view.tool == control.id)
+		control.button.modulate.a = 0.6 if tools_disabled else 1.0
 	var state: Dictionary = run.skill_state() if run!=null else {}
 	var passives: Array = state.get("passives",[])
 	for slot in range(_hud.passives.size()):
