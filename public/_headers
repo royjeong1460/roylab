@@ -12,6 +12,7 @@
 
 
 
+
 # BEGIN GODOT FREE
 /games/planet-patchup-free/free-0534-c5a7a90dd912.pck
   Content-Type: application/gzip
@@ -70,13 +71,28 @@
 /games/planet-patchup-free/free-0541-dadcd08d207d.wasm
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/free-0541-e00ee182eb77.pck
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
 /games/planet-patchup-free/free-059-f0aa866ea27e.pck
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
 /games/planet-patchup-free/free-059-f0aa866ea27e.wasm
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/godot-web-ec83eba66e3c.side.wasm
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/godot-web-ec83eba66e3c.wasm
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
 /games/planet-patchup-free/libpp_core-g40-933aa18db7e2de4a.wasm
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/godot-web-ec83eba66e3c.audio.position.worklet.js
+  Cache-Control: public, max-age=31536000, immutable
+/games/planet-patchup-free/godot-web-ec83eba66e3c.audio.worklet.js
+  Cache-Control: public, max-age=31536000, immutable
+/games/planet-patchup-free/godot-web-ec83eba66e3c.js
+  Cache-Control: public, max-age=31536000, immutable
 # END GODOT FREE
