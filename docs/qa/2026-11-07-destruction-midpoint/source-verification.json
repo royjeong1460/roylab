@@ -1,0 +1,20 @@
+{
+  "nativeChangedFiles": [
+    "chain_physics.gd",
+    "export_presets.cfg",
+    "native_core/bin/libpp_core.android.template_release.arm32.so",
+    "native_core/bin/libpp_core.android.template_release.arm64.so",
+    "native_core/bin/libpp_core.ios.template_release.arm64.a",
+    "native_core/bin/libpp_core.macos.template_release.arm64.dylib",
+    "native_core/bin/libpp_core.web.template_release.wasm32.wasm",
+    "project.godot",
+    "world.gd"
+  ],
+  "onlyApprovedSourceLiteralChanges": true,
+  "unchangedMapCount": 44,
+  "allOtherProjectFilesUnchanged": true,
+  "sharedSourceHashesVerified": 19,
+  "saveDirectoriesUnchanged": true,
+  "importCompileExport": "no logged Godot errors",
+  "runtimeExecuted": false
+}

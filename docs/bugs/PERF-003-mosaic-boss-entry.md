@@ -53,3 +53,7 @@ The user accepted the6-Boss reduction qualitatively and approved applying the me
 ## 2026-11-07 · reduced-map direction adopted
 
 The user approved continuing with the0.5.52 reduced-map direction and requested a planning summary for destruction-stat upgrades. Source registry now marks that geometry as adopted. Quantitative FPS/loading checks and new upgrade tuning remain separate; no new game parameters, prices or save values were changed. Public web deployment was not requested. The five-trait proposal remains draft in docs/destruction-traits-plan-2026-11-07.md.
+
+##2026-11-07 · separate destruction-tuning comparison
+
+After adopting reduced geometry, the user requested midpoint destruction defaults.0.5.53(63) is update-installed as sequence4300: speed response8, chain base8, fall internal severity16/36cells/s, bond resistance0.03, fall propagation2.5. All44 map files are byte-identical to0.5.52; economy/profile/skills/collection are retained. This is a feel comparison, not another map-loading optimization or a measured FPS fix. Public web is unchanged;0.5.52 rollback remains available. See docs/qa/2026-11-07-destruction-midpoint/README.md.

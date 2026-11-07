@@ -1,0 +1,7 @@
+{
+  "sha256": "bb57d5b86c1c54ff7f0318dd7a5b81672a873580a278e549f13ad4f6cd2df694",
+  "file": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-destruction-midpoint-2026-11-07/project/native_core/bin/libpp_core.web.template_release.wasm32.wasm",
+  "publishedFile": "libpp_core-g40-bb57d5b86c1c54ff.wasm",
+  "flags": "threads=no precision=single production=yes lto=full optimize=speed",
+  "runtimeVerified": false
+}

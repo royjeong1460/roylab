@@ -16,6 +16,6 @@
   "pixel_kernel.h": "e4ebe6b982ee036ac987bf91f034e02a23c6eb6e658f549c46870a4afd7f2337",
   "bearing_kernel.cpp": "b5781b4886e404814931512cc381c8c0812cbbc125520730212f71babff1b67f",
   "world_kernel.h": "986f804b41eb917d3ee2ccfaf957c0e46c2008e62098796e828bcaa0b83dd951",
-  "world_kernel.cpp": "3d572222ed1874967e814cd26050616ed0c0686c33d85e71bf0fc59bcdd0d114",
+  "world_kernel.cpp": "b62e358f0a31be4dfb92e9c1118e71059865ad8c66a63d2dcec02df28e913bbd",
   "grain_kernel.cpp": "52577cac7a74d779dee8cb36aac6623caabcea23e96bc7c4c97a4e65e3c77fef"
 }

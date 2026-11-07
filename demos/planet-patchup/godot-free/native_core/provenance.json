@@ -7,13 +7,25 @@
   "emscripten": "4.0.20",
   "threads": false,
   "wasm": {
-    "file": "libpp_core-g40-933aa18db7e2de4a.wasm",
-    "sha256": "933aa18db7e2de4a19c87ab439960650474a783da188de42cf901347db25f2d7"
+    "file": "libpp_core-g40-bb57d5b86c1c54ff.wasm",
+    "sha256": "bb57d5b86c1c54ff7f0318dd7a5b81672a873580a278e549f13ad4f6cd2df694"
   },
   "macos": {
     "file": "libpp_core.macos.template_release.arm64.dylib",
-    "sha256": "786748abb43e66cbd8e066eabfb1108894fc852ef9a2194cdc5d2ee0471fcac4"
+    "sha256": "2001b80ad42e62dc7aa370c337f6b24bffa88340d9b6e91f3f68850c2e2e0c4a"
   },
   "templateSha256": "d19564ebc3602f80e78d6b9c3951affc90b5512d0471f8ac74f6c603c912aab5",
-  "runtimeVerified": false
+  "runtimeVerified": false,
+  "previousBuild": {
+    "wasm": {
+      "file": "libpp_core-g40-933aa18db7e2de4a.wasm",
+      "sha256": "933aa18db7e2de4a19c87ab439960650474a783da188de42cf901347db25f2d7"
+    },
+    "macos": {
+      "file": "libpp_core.macos.template_release.arm64.dylib",
+      "sha256": "2001b80ad42e62dc7aa370c337f6b24bffa88340d9b6e91f3f68850c2e2e0c4a"
+    }
+  },
+  "tuningRevision": "destruction-midpoint-2026-11-07",
+  "tuningChange": "Fall bond resistance 0.02 to 0.03 only; kernel API and other algorithms retained."
 }

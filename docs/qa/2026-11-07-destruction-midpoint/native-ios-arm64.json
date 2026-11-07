@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-destruction-midpoint-2026-11-07/extension/.venv/bin/scons",
+    "platform=ios",
+    "arch=arm64",
+    "target=template_release",
+    "api_version=4.6",
+    "build_profile=build-profile.json",
+    "-j6",
+    "ios_min_version=15.0"
+  ],
+  "files": {
+    "project/native_core/bin/libpp_core.ios.template_release.arm64.a": "d4d7bbc35b668f1a92075001ed5743604811248efe395408f7b5fcfe72e44803"
+  },
+  "runtimeVerified": false
+}

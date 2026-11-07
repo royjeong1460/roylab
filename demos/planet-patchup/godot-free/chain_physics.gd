@@ -4,7 +4,7 @@ var _native = ClassDB.instantiate("PPEffectKernel")
 
 # Port of arch/chain-world.js. Extra work is restricted to causal cross-building hits.
 var world
-var power := 10.0
+var power := 8.0
 var sequence := 0
 var chains := {}
 var tags := {}

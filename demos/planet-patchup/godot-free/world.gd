@@ -765,14 +765,14 @@ func fracture_unprofiled(piece, point: Vector2, speed: float, downward := true, 
 		measured_energy = 0.5 / (inverse * 0.002) * pow(minf(speed, 180) / 60.0, 2)
 	var fall: bool = downward and speed > 14 and piece != null and not context.get("chain", false)
 	var start_speed: float = context.get("speed_start", 40.0)
-	var activation := 1 - exp(-maxf(0, speed - (14.0 if fall else start_speed)) / (10.0 if fall else start_speed) * (1.0 if fall else 10.0))
+	var activation := 1 - exp(-maxf(0, speed - (14.0 if fall else start_speed)) / (10.0 if fall else start_speed) * (1.0 if fall else 8.0))
 	if activation <= 0 or measured_energy <= 0:
 		return
 	var pixels := material(piece)
 	if piece == null:
 		pixels = native_world.receiver(pixels, point, groups(static_ids()))
 	var count := pixels.size()
-	var severity := clampf((speed - 14) / 18, 0, 1) if fall else 0.0
+	var severity := clampf((speed - 16) / 20, 0, 1) if fall else 0.0
 	var energy := minf(measured_energy, count * 6)
 	var total := energy * 0.42 * activation
 	var motion_budget := total * (0.04 * severity if fall else 0.12) if piece != null else 0.0
@@ -801,7 +801,7 @@ func fracture_unprofiled(piece, point: Vector2, speed: float, downward := true, 
 	perf.begin(perf.FR_WAVE)
 	var distances: Array = fracture_graph.distances(graph, contact_ids)
 	perf.end()
-	var wave_reach := reach * ((1 + severity * 5) * 3 if fall else 3.0)
+	var wave_reach := reach * ((1 + severity * 5) * 2.5 if fall else 3.0)
 	var edges: Array = native_world.edges(graph, distances, normal, wave_reach, fall)
 	var contact_spent := contact_allowance - contact_budget
 	var crack_budget := (fracture_budget - contact_spent) * (severity if fall else 1.0)

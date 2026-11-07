@@ -385,7 +385,7 @@ Dictionary PPWorldKernel::crack(Node *world, Array remaining, Array before,
     if (active.is_empty())
       continue;
     double cost = double(edge["cost"]) *
-                  (fall ? 0.02 * std::max(1.0, span / 3) : 0.65),
+                  (fall ? 0.03 * std::max(1.0, span / 3) : 0.65),
            amount = std::min(1.0, budget / cost);
     connectivity->prepare();
     for (int64_t j = 0; j < active.size(); ++j) {

@@ -1,0 +1,47 @@
+{
+  "files": 13,
+  "artifacts": [
+    {
+      "file": "godot-web-ec83eba66e3c.audio.position.worklet.js",
+      "transportHash": true,
+      "decodedHash": true
+    },
+    {
+      "file": "godot-web-ec83eba66e3c.audio.worklet.js",
+      "transportHash": true,
+      "decodedHash": true
+    },
+    {
+      "file": "godot-web-ec83eba66e3c.js",
+      "transportHash": true,
+      "decodedHash": true
+    },
+    {
+      "file": "free-0541-299c1579848c.pck",
+      "transportHash": true,
+      "decodedHash": true
+    },
+    {
+      "file": "free-0541-299c1579848c.png",
+      "transportHash": true,
+      "decodedHash": true
+    },
+    {
+      "file": "godot-web-ec83eba66e3c.side.wasm",
+      "transportHash": true,
+      "decodedHash": true
+    },
+    {
+      "file": "godot-web-ec83eba66e3c.wasm",
+      "transportHash": true,
+      "decodedHash": true
+    },
+    {
+      "file": "libpp_core-g40-bb57d5b86c1c54ff.wasm",
+      "transportHash": true,
+      "decodedHash": true
+    }
+  ],
+  "runtimeExecuted": false,
+  "published": false
+}

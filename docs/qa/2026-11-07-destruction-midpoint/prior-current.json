@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "version": "0.5.52",
+  "build": 62,
+  "candidate": "ios-campaign-lite-2026-11-07",
+  "project": "qa/ios-campaign-lite-2026-11-07/project",
+  "nativeSource": "qa/perf-g40-2026-11-03/extension/src",
+  "delivery": "qa/ios-campaign-lite-2026-11-07/delivery.json",
+  "installedSequence": 4292,
+  "rollback": "qa/ios-mosaic-lite-2026-11-07/delivery.json",
+  "legacyGodotTree": "godot/ (v35 investigation archive; not current)",
+  "userFeedback": {
+    "date": "2026-11-07",
+    "report": "User adopts the current reduced-pixel campaign direction and requests destruction-upgrade planning.",
+    "scope": "Map direction approved; no numeric FPS/load-time guarantee or new tuning implementation. Public web deployment not requested."
+  },
+  "webSync": {
+    "version": "0.5.41",
+    "project": "demos/planet-patchup/godot-free",
+    "route": "/planet-patchup/play/",
+    "url": "https://roylab.pages.dev/planet-patchup/play/",
+    "manifestStem": "free-0541-ae30a3e88329",
+    "engineStem": "godot-web-ec83eba66e3c",
+    "delivery": "docs/qa/2026-11-07-sparse-maps/README.md",
+    "published": true,
+    "httpVerified": true,
+    "presentationPreviewUrl": "https://roylab.pages.dev/planet-patchup/play/?preview=story",
+    "campaignAutoTrigger": false,
+    "rollbackRequiresRetainedEconomy": true,
+    "releaseCommit": "95d6c6d97e6821649ee923a9d7ee5630ef19b08e",
+    "deploymentId": "ff47f943-814d-4f7a-a7fd-faaf86414cec"
+  },
+  "runtimeByAssistant": false,
+  "mapEncoding": "occupied-runs-v1",
+  "comparisonOnly": false,
+  "adoptedBaseline": "ios-campaign-lite-2026-11-07",
+  "comparison": {
+    "campaignMapsIncludingTutorial": 43,
+    "fallbackMaps": 1,
+    "beforeOriginalPixels": 608590,
+    "afterPixels": 391069,
+    "reductionPercent": 35.741796611840485,
+    "acceptedMosaicBossUnchanged": true,
+    "localWebStem": "free-0541-b4b579deabb8",
+    "publicWebUpdated": false
+  },
+  "mapDesignApproved": true
+}

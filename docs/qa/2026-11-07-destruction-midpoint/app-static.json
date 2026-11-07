@@ -1,0 +1,13 @@
+{
+  "version": "0.5.53",
+  "build": "63",
+  "bundleId": "com.roy.planetpatchup.godotcompare",
+  "app": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-destruction-midpoint-2026-11-07-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "pckSha256": "2edf9c8c79b28d78e2aa481573e634de0e83297569b7e2c7c9d4d3c1fef124b4",
+  "executableSha256": "80dbfb6c1622531a8bd6ad2c5786159d6d5f1bc273bdff785961ec5b35e67b2b",
+  "iosCoreSha256": "d4d7bbc35b668f1a92075001ed5743604811248efe395408f7b5fcfe72e44803",
+  "matchingExportedCore": [
+    "PPGodotCompare/native_core/bin/libpp_core.ios.template_release.arm64.a"
+  ],
+  "runtimeExecuted": false
+}

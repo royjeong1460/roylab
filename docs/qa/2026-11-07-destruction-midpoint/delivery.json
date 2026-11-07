@@ -1,0 +1,69 @@
+{
+  "version": "0.5.53",
+  "nativeBuild": 63,
+  "candidateOnly": true,
+  "publicDeployment": false,
+  "nativeApp": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-destruction-midpoint-2026-11-07-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativePackSha256": "2edf9c8c79b28d78e2aa481573e634de0e83297569b7e2c7c9d4d3c1fef124b4",
+  "nativeExecutableSha256": "80dbfb6c1622531a8bd6ad2c5786159d6d5f1bc273bdff785961ec5b35e67b2b",
+  "nativeSignatureVerified": true,
+  "nativeInstalled": true,
+  "installedSequence": 4300,
+  "installOutcome": "success",
+  "previousCandidate": "ios-campaign-lite-2026-11-07",
+  "rollbackDelivery": "qa/ios-campaign-lite-2026-11-07/delivery.json",
+  "nativeSource": "qa/ios-destruction-midpoint-2026-11-07/extension/src",
+  "nativeCoreLibraries": {
+    "libpp_core.android.template_release.arm32.so": "4d0543993c54e746468f3abb3fed57d428a268b30358da819b1742c131452ad6",
+    "libpp_core.android.template_release.arm64.so": "d9e6de0597142a485a3352bfdeb0ef3bef537646d27310a1a7880f7961f3c845",
+    "libpp_core.ios.template_release.arm64.a": "d4d7bbc35b668f1a92075001ed5743604811248efe395408f7b5fcfe72e44803",
+    "libpp_core.macos.template_release.arm64.dylib": "2001b80ad42e62dc7aa370c337f6b24bffa88340d9b6e91f3f68850c2e2e0c4a",
+    "libpp_core.web.template_release.wasm32.wasm": "bb57d5b86c1c54ff7f0318dd7a5b81672a873580a278e549f13ad4f6cd2df694"
+  },
+  "tuning": {
+    "scope": "Fixed default comparison only; no purchasable upgrade implementation.",
+    "speedResponse": {
+      "before": 10,
+      "draftInitial": 6,
+      "applied": 8
+    },
+    "chainPower": {
+      "before": 10,
+      "draftInitial": 6,
+      "applied": 8
+    },
+    "fallSeverityStart": {
+      "before": 14,
+      "draftInitial": 18,
+      "applied": 16
+    },
+    "fallSeverityFull": {
+      "before": 32,
+      "draftInitial": 40,
+      "applied": 36
+    },
+    "fallBondResistance": {
+      "before": 0.02,
+      "draftInitial": 0.04,
+      "applied": 0.03
+    },
+    "fallPropagation": {
+      "before": 3,
+      "draftInitial": 2,
+      "applied": 2.5
+    },
+    "minimumFallContactSpeedUnchanged": 14,
+    "normalCollisionStartUnchanged": 40,
+    "nonFallPropagationUnchanged": 3,
+    "gameRuntimeExecuted": false
+  },
+  "unchangedMapCount": 44,
+  "economySkillsCollectionProfileSourceUnchanged": true,
+  "saveDirectoriesUnchanged": true,
+  "localWebManifestStem": "free-0541-299c1579848c",
+  "localWebArtifactHashesVerified": true,
+  "localWebPublicRoot": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-destruction-midpoint-2026-11-07/local-web/public",
+  "runtimeExecutedByAgent": false,
+  "runtimeVerificationOwner": "user"
+}
