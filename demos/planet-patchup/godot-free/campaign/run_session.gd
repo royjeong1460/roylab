@@ -150,8 +150,12 @@ func _bodies_still() -> bool:
 	_settle_poses = poses
 	return still
 
-func _exhaust() -> void:
-	if world != null and world.charge <= 0.00000001:
+func _check_finish() -> void:
+	if world == null or phase != "working":
+		return
+	# Exact ID counts also end work when no blast target remains to spend battery on.
+	var all_pixelized: bool = world.initial > 0 and world.grains.size() + world.collected.size() >= world.initial
+	if world.charge <= 0.00000001 or all_pixelized:
 		request_finish()
 
 func request_finish() -> void:
@@ -163,7 +167,7 @@ func request_finish() -> void:
 func update(dt: float, _aim: Vector2, _from: Vector2, _collect: bool) -> void:
 	if world == null or paused or finish_ready or state != "active" or not is_finite(dt) or dt <= 0:
 		return
-	_exhaust()
+	_check_finish()
 	var before: float = world.elapsed
 	var step := minf(dt, 0.1)
 	var collecting := collection.active
@@ -177,7 +181,7 @@ func update(dt: float, _aim: Vector2, _from: Vector2, _collect: bool) -> void:
 	world.advance(step)
 	var simulated: float = maxf(0.0, world.elapsed - before)
 	work_ms += simulated * 1000.0
-	_exhaust()
+	_check_finish()
 	if phase == "finishing":
 		finishing_elapsed_ms += simulated * 1000.0
 		var changed: bool = pixelized() != _last_pixelized or world.fractures != _last_fractures
@@ -234,7 +238,7 @@ func update(dt: float, _aim: Vector2, _from: Vector2, _collect: bool) -> void:
 func press(point: Vector2, tool := "blast") -> bool:
 	if world == null or paused or finish_ready or state != "active" or phase != "working" or settling or not point.is_finite():
 		return false
-	_exhaust()
+	_check_finish()
 	if phase != "working":
 		return false
 	var owned_id := "bomb" if tool in ["blast", "bomb"] else tool
@@ -246,7 +250,7 @@ func press(point: Vector2, tool := "blast") -> bool:
 		attacks[owned_id] += 1
 		if owned_id not in used_tools:
 			used_tools.append(owned_id)
-	_exhaust()
+	_check_finish()
 	if guide != null:
 		guide.attack(point, accepted)
 	return accepted

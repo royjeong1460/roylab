@@ -17,3 +17,4 @@
 | [BUG-009](BUG-009-desktop-playfield-boundary.md) | 2026-11-06 | PC 웹에서 잔해가 화면 안쪽 경계에 막힘 | 사용자 확인 대기 |
 | [BUG-010](BUG-010-gear-unlock-guidance.md) | 2026-11-06 | 장비 해금 시점과 조건 안내 누락 | 사용자 확인 대기 |
 | [BUG-011](BUG-011-secondary-blast-audio.md) | 2026-11-06 | 후속 폭파와 충격 릴레이의 충격음 누락 | 사용자 확인 대기 |
+| [BUG-012](BUG-012-full-demolition-battery-remaining.md) | 2026-11-07 | 전체 파괴 후 배터리가 남으면 수집·종료 전환 누락 | 사용자 확인 대기 |
