@@ -1,0 +1,13 @@
+{
+  "nativeVersion": "0.5.52",
+  "nativeBuild": 62,
+  "installSequence": 4292,
+  "staticMapsRegeneratedExactly": 44,
+  "moduleGraphsPreserved": 44,
+  "acceptedBossUnchanged": true,
+  "intendedNativeDataBuildChanges": 46,
+  "localPayloadTransportDecodedHashesVerified": 8,
+  "originalPrimaryMapsPreserved": 44,
+  "originalPublicEntriesPreserved": true,
+  "runtimeExecutedByAssistant": false
+}

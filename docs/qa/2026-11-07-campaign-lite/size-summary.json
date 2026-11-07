@@ -1,0 +1,55 @@
+{
+  "campaignMapsIncludingTutorial": 43,
+  "fallbackMaps": 1,
+  "beforePixels": 608590,
+  "afterPixels": 391069,
+  "reductionPercent": 35.741796611840485,
+  "regions": [
+    {
+      "region": 1,
+      "name": "Arch Quarter",
+      "beforePixels": 24000,
+      "afterPixels": 15586,
+      "reductionPercent": 35.05833333333334
+    },
+    {
+      "region": 2,
+      "name": "Eave Alley",
+      "beforePixels": 48218,
+      "afterPixels": 30977,
+      "reductionPercent": 35.756356547347465
+    },
+    {
+      "region": 3,
+      "name": "Amber Bazaar",
+      "beforePixels": 90002,
+      "afterPixels": 57841,
+      "reductionPercent": 35.73365036332527
+    },
+    {
+      "region": 4,
+      "name": "Canal Works",
+      "beforePixels": 92502,
+      "afterPixels": 59455,
+      "reductionPercent": 35.725714038615386
+    },
+    {
+      "region": 5,
+      "name": "Terrace Heights",
+      "beforePixels": 143858,
+      "afterPixels": 92469,
+      "reductionPercent": 35.72203144767757
+    },
+    {
+      "region": 6,
+      "name": "Mosaic Basin",
+      "beforePixels": 209118,
+      "afterPixels": 134135,
+      "reductionPercent": 35.856788989948264
+    }
+  ],
+  "minMapReductionPercent": 32.0627802690583,
+  "maxMapReductionPercent": 37.29687499999999,
+  "pillarClearanceCells": 8,
+  "acceptedBossUnchanged": true
+}

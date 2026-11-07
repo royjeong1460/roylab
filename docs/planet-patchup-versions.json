@@ -11,15 +11,16 @@
     "skills": 10
   },
   "ios": {
-    "version": "0.5.51",
-    "build": 61,
+    "version": "0.5.52",
+    "build": 62,
     "installed": true,
-    "installSequence": 4284,
+    "installSequence": 4292,
     "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
-    "sourceCandidate": "qa/ios-mosaic-lite-2026-11-07/project",
+    "sourceCandidate": "qa/ios-campaign-lite-2026-11-07/project",
     "distribution": "development device",
-    "rollback": "qa/ios-sparse-maps-2026-11-07/delivery.json",
-    "comparisonOnly": true
+    "rollback": "qa/ios-mosaic-lite-2026-11-07/delivery.json",
+    "comparisonOnly": true,
+    "mapAuthoringRevision": "campaign-lite-2026-11-07"
   },
   "web": {
     "version": "0.5.41",

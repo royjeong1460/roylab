@@ -1,0 +1,1849 @@
+{
+  "scope": "Static authored JSON only; no game/physics/scene execution.",
+  "coordinate_scale": 0.8,
+  "maps": [
+    {
+      "file": "maps/amber-01-amber-terrain-frame-v1.json",
+      "source_sha256": "a216c6157bf14bf42512a27c018ceacd797eb2aa24ed038a4054117e08bbce17",
+      "output_sha256": "e52b4e806a9560be178429a23043b6f9ffd9e1b3866cf660e2979a4f6bbab7e8",
+      "before": {
+        "pixels": 6684,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 16
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "after": {
+        "pixels": 4315,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 14
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "grid_before": [
+        224,
+        192
+      ],
+      "grid_after": [
+        179,
+        154
+      ],
+      "reduction_fraction": 0.35442848593656495,
+      "pillar_pixels_restored": 39,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/amber-02-amber-terrain-frame-v1.json",
+      "source_sha256": "7c9515fe5a67ae3dc0bb009a5c26323992a203d229bc4d1c7c7190a8861badf3",
+      "output_sha256": "02b163411ca58fc5d7e9bd6a66530884cf745b8ad5d3e859c2a369722df5b7d4",
+      "before": {
+        "pixels": 8836,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 36
+        },
+        "modules": 13,
+        "module_links": 10
+      },
+      "after": {
+        "pixels": 5671,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 29
+        },
+        "modules": 13,
+        "module_links": 10
+      },
+      "grid_before": [
+        240,
+        208
+      ],
+      "grid_after": [
+        192,
+        166
+      ],
+      "reduction_fraction": 0.3581937528293345,
+      "pillar_pixels_restored": 36,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/amber-03-amber-terrain-frame-v1.json",
+      "source_sha256": "72cebe7db1ecfb1e1dae136753b115afdbaa09fd72af2a678d0251747a7a63fb",
+      "output_sha256": "6ba097c0ed4a78ddcad9230a4ebf4e883594bdac76823c05d890f5c677071e44",
+      "before": {
+        "pixels": 11090,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 36,
+          "2": 24
+        },
+        "modules": 21,
+        "module_links": 19
+      },
+      "after": {
+        "pixels": 7063,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 28,
+          "2": 19
+        },
+        "modules": 21,
+        "module_links": 19
+      },
+      "grid_before": [
+        256,
+        228
+      ],
+      "grid_after": [
+        205,
+        182
+      ],
+      "reduction_fraction": 0.36311992786293956,
+      "pillar_pixels_restored": 10,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/amber-04-amber-terrain-frame-v1.json",
+      "source_sha256": "a007d311ab2651cf319a0554c8a6bf94ba84f713fb48e59403114816f4718e05",
+      "output_sha256": "97946890514d774614074fec85f8e4dbc6d08424ff5052d1938606da561ca108",
+      "before": {
+        "pixels": 13200,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 18
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "after": {
+        "pixels": 8550,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 16
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "grid_before": [
+        288,
+        248
+      ],
+      "grid_after": [
+        230,
+        198
+      ],
+      "reduction_fraction": 0.3522727272727273,
+      "pillar_pixels_restored": 53,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/amber-05-amber-terrain-frame-v1.json",
+      "source_sha256": "afe8ed28e053787b3256571b9ef37e259e3a4921761ae14641d113d5cda10020",
+      "output_sha256": "4069ada99ea41351416ce61f1045c288d3a34b1de4a2c6731a08f634fb6b40c8",
+      "before": {
+        "pixels": 14152,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 30
+        },
+        "modules": 16,
+        "module_links": 12
+      },
+      "after": {
+        "pixels": 9099,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 26
+        },
+        "modules": 16,
+        "module_links": 12
+      },
+      "grid_before": [
+        304,
+        260
+      ],
+      "grid_after": [
+        243,
+        208
+      ],
+      "reduction_fraction": 0.35705200678349347,
+      "pillar_pixels_restored": 0,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/amber-06-amber-terrain-frame-v1.json",
+      "source_sha256": "642fcd03bd0f00bfa420f5045ce7dcd9d006102e5827c5976ef55833e0e4af71",
+      "output_sha256": "be7eae97a3ba9f7b62344b7c8ff5924de8881c1738a6f16ad8fa38e5bfa308ae",
+      "before": {
+        "pixels": 16796,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 86,
+          "1": 28
+        },
+        "modules": 20,
+        "module_links": 16
+      },
+      "after": {
+        "pixels": 10676,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 69,
+          "1": 22
+        },
+        "modules": 20,
+        "module_links": 16
+      },
+      "grid_before": [
+        328,
+        276
+      ],
+      "grid_after": [
+        262,
+        221
+      ],
+      "reduction_fraction": 0.3643724696356275,
+      "pillar_pixels_restored": 34,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/amber-boss-amber-terrain-frame-v1.json",
+      "source_sha256": "99818e19ace1e2e8c0026a7d1090201d1a4fb5b56938bf91239d0c180c971b77",
+      "output_sha256": "3d22678567beebfed6fc18782bdc51a1c87d772ff98cc45983b9550b620ed2ec",
+      "before": {
+        "pixels": 19244,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 20
+        },
+        "modules": 25,
+        "module_links": 24
+      },
+      "after": {
+        "pixels": 12467,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 18
+        },
+        "modules": 25,
+        "module_links": 24
+      },
+      "grid_before": [
+        352,
+        296
+      ],
+      "grid_after": [
+        282,
+        237
+      ],
+      "reduction_fraction": 0.35216171274163377,
+      "pillar_pixels_restored": 62,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/arch-0-arch-quarter-v2.json",
+      "source_sha256": "0b258e27646ce2d0416c3a1df7e20ed5218a74d3c42f83271433d4b30c0db69b",
+      "output_sha256": "200f3b234f393511f4627bb453495578a94c0d764977e13629f3843538c77560",
+      "before": {
+        "pixels": 892,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 10
+        },
+        "modules": 4,
+        "module_links": 3
+      },
+      "after": {
+        "pixels": 606,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8
+        },
+        "modules": 4,
+        "module_links": 3
+      },
+      "grid_before": [
+        80,
+        116
+      ],
+      "grid_after": [
+        64,
+        93
+      ],
+      "reduction_fraction": 0.320627802690583,
+      "pillar_pixels_restored": 0,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/arch-1-arch-quarter-v2.json",
+      "source_sha256": "960d0614b3e65eb173ee459dabd1d8cc900b60556559bd0ff5318188bb568a14",
+      "output_sha256": "bc7548e6f22d706e1d102dd8705297d9585b658c67a6234aa647a32b162f6ce3",
+      "before": {
+        "pixels": 2000,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 16,
+          "2": 27
+        },
+        "modules": 10,
+        "module_links": 6
+      },
+      "after": {
+        "pixels": 1341,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 21,
+          "1": 14
+        },
+        "modules": 10,
+        "module_links": 6
+      },
+      "grid_before": [
+        115,
+        157
+      ],
+      "grid_after": [
+        92,
+        126
+      ],
+      "reduction_fraction": 0.3295,
+      "pillar_pixels_restored": 41,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/arch-2-arch-quarter-v2.json",
+      "source_sha256": "4ca737bafa10c16a3022ae6b98660d099e4f457611e4236bbb0152edd862db1e",
+      "output_sha256": "4e3fa70bba16ed4f2e6e0fc4f5b154712b582b4daf9634bf866827859b22919b",
+      "before": {
+        "pixels": 2400,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 55,
+          "1": 16
+        },
+        "modules": 12,
+        "module_links": 6
+      },
+      "after": {
+        "pixels": 1508,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 12,
+          "2": 45
+        },
+        "modules": 12,
+        "module_links": 6
+      },
+      "grid_before": [
+        122,
+        130
+      ],
+      "grid_after": [
+        98,
+        104
+      ],
+      "reduction_fraction": 0.3716666666666667,
+      "pillar_pixels_restored": 23,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/arch-3-arch-quarter-v2.json",
+      "source_sha256": "9cfce03a119f3915d01efb662b2defc1dfca47b8d2fd643f8b37c1ba529a445b",
+      "output_sha256": "05759b7e4d1ab25869bb029f253fcf1c418b7baeb464eb211ca1536c302e1da1",
+      "before": {
+        "pixels": 2800,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 24,
+          "2": 52
+        },
+        "modules": 15,
+        "module_links": 9
+      },
+      "after": {
+        "pixels": 1898,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 20,
+          "2": 41
+        },
+        "modules": 15,
+        "module_links": 9
+      },
+      "grid_before": [
+        131,
+        130
+      ],
+      "grid_after": [
+        105,
+        104
+      ],
+      "reduction_fraction": 0.3221428571428572,
+      "pillar_pixels_restored": 70,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/arch-4-arch-quarter-v2.json",
+      "source_sha256": "6a6b3060134df0a246d25774fc91133ac459eca8f3e3a0c7046352b074319ca1",
+      "output_sha256": "cb70d4db3c641bc4fcace295f849bebc8449447b01c0e29d0b75154f1c1bff15",
+      "before": {
+        "pixels": 3200,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 24,
+          "2": 50
+        },
+        "modules": 14,
+        "module_links": 9
+      },
+      "after": {
+        "pixels": 2116,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 40,
+          "1": 19
+        },
+        "modules": 14,
+        "module_links": 9
+      },
+      "grid_before": [
+        138,
+        132
+      ],
+      "grid_after": [
+        110,
+        106
+      ],
+      "reduction_fraction": 0.33875,
+      "pillar_pixels_restored": 64,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/arch-5-arch-quarter-v2.json",
+      "source_sha256": "162bac201c81f7de4dcff042718b2733c8ba59f8f74c587df8ac335be9cc1947",
+      "output_sha256": "78bcd50509a5eeadb0a9969ab7c80d9137db92a04096c0f6213d51109fcdae8e",
+      "before": {
+        "pixels": 3600,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 78,
+          "1": 16
+        },
+        "modules": 17,
+        "module_links": 11
+      },
+      "after": {
+        "pixels": 2272,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 62,
+          "1": 14
+        },
+        "modules": 17,
+        "module_links": 11
+      },
+      "grid_before": [
+        144,
+        135
+      ],
+      "grid_after": [
+        115,
+        108
+      ],
+      "reduction_fraction": 0.36888888888888893,
+      "pillar_pixels_restored": 8,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/arch-6-arch-quarter-v2.json",
+      "source_sha256": "e636f428e7cab7bf51210d0a6b318b3c6c85034fef411a4aa3663a7c6810ee0f",
+      "output_sha256": "060b69a2a35d30017454c84c3be192d8fc120f61260fccf3a6c616324b24e8e5",
+      "before": {
+        "pixels": 4000,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8,
+          "2": 100
+        },
+        "modules": 15,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 2628,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 80,
+          "1": 7
+        },
+        "modules": 15,
+        "module_links": 13
+      },
+      "grid_before": [
+        141,
+        132
+      ],
+      "grid_after": [
+        113,
+        106
+      ],
+      "reduction_fraction": 0.34299999999999997,
+      "pillar_pixels_restored": 0,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/arch-7-arch-quarter-v2.json",
+      "source_sha256": "00e8d7d11903293ad6f4aead74873a5c276cf108748a765adf66404e99495daa",
+      "output_sha256": "be0e17e89bf1c4ae1458c8f5618eda4c54e27170e0695113a9ecb0c7bea0782e",
+      "before": {
+        "pixels": 6000,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 99,
+          "1": 24
+        },
+        "modules": 31,
+        "module_links": 29
+      },
+      "after": {
+        "pixels": 3823,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 80,
+          "1": 19
+        },
+        "modules": 31,
+        "module_links": 29
+      },
+      "grid_before": [
+        179,
+        146
+      ],
+      "grid_after": [
+        143,
+        117
+      ],
+      "reduction_fraction": 0.36283333333333334,
+      "pillar_pixels_restored": 65,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/canal-01-canal-terrain-frame-v1.json",
+      "source_sha256": "546518731a8611f0c730faf3041a7d3522575f2e82a5c4daef8deb94a7a264cb",
+      "output_sha256": "a87663035940ff852b3287f1d1f326ec4031fea95aa5f7992cb7b04df16071bc",
+      "before": {
+        "pixels": 6572,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 60
+        },
+        "modules": 16,
+        "module_links": 12
+      },
+      "after": {
+        "pixels": 4126,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 48
+        },
+        "modules": 16,
+        "module_links": 12
+      },
+      "grid_before": [
+        256,
+        224
+      ],
+      "grid_after": [
+        205,
+        179
+      ],
+      "reduction_fraction": 0.3721850273889227,
+      "pillar_pixels_restored": 19,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/canal-02-canal-terrain-frame-v1.json",
+      "source_sha256": "d08e97e50b914e6115032d72e0d5fedf3961d3a3ad88bb396bbc86744a5c08df",
+      "output_sha256": "b2770e30cb5ba2285e7177de528b265fb888d98be709c215a6f263df428582bd",
+      "before": {
+        "pixels": 10504,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 26
+        },
+        "modules": 14,
+        "module_links": 11
+      },
+      "after": {
+        "pixels": 6875,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 22
+        },
+        "modules": 14,
+        "module_links": 11
+      },
+      "grid_before": [
+        280,
+        240
+      ],
+      "grid_after": [
+        224,
+        192
+      ],
+      "reduction_fraction": 0.34548743335872045,
+      "pillar_pixels_restored": 73,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/canal-03-canal-terrain-frame-v1.json",
+      "source_sha256": "e1d1917d5cbada28fb2c9869bea16c9736b05abc61b79c2ce74787b6df8b89dc",
+      "output_sha256": "ce7828ebcda96696ee4225bef9f59f63978ab4a5ec45419564cd62028696bce7",
+      "before": {
+        "pixels": 12448,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 36,
+          "1": 32
+        },
+        "modules": 16,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 7949,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 26,
+          "2": 29
+        },
+        "modules": 16,
+        "module_links": 13
+      },
+      "grid_before": [
+        304,
+        264
+      ],
+      "grid_after": [
+        243,
+        211
+      ],
+      "reduction_fraction": 0.36142352185089976,
+      "pillar_pixels_restored": 0,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/canal-04-canal-terrain-frame-v1.json",
+      "source_sha256": "4389746d83bd9eee5cf536fbbb559fc4eb6dbbac34fad1e5e37578040b0afe76",
+      "output_sha256": "a250d10546924926e42e7b66f95c0bef8c925132117402589b4d12f279159584",
+      "before": {
+        "pixels": 12980,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 56
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "after": {
+        "pixels": 8466,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 45
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "grid_before": [
+        328,
+        288
+      ],
+      "grid_after": [
+        262,
+        230
+      ],
+      "reduction_fraction": 0.34776579352850534,
+      "pillar_pixels_restored": 14,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/canal-05-canal-terrain-frame-v1.json",
+      "source_sha256": "c25a4d260c2d5e80a3096a1f7261baf24cf081c544ba1320ce91388a5af2e75e",
+      "output_sha256": "d900cde83c00f5af3cd611162c6d183e06b9a9e9f20fa1ee049e16be846671f8",
+      "before": {
+        "pixels": 15098,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 54
+        },
+        "modules": 20,
+        "module_links": 15
+      },
+      "after": {
+        "pixels": 9759,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 44
+        },
+        "modules": 20,
+        "module_links": 15
+      },
+      "grid_before": [
+        352,
+        312
+      ],
+      "grid_after": [
+        282,
+        250
+      ],
+      "reduction_fraction": 0.35362299642336736,
+      "pillar_pixels_restored": 19,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/canal-06-canal-terrain-frame-v1.json",
+      "source_sha256": "1f5080e66eed87d282e6ae06a6ce7abc6c512d1bb7b2994851d647cf66276e81",
+      "output_sha256": "cc2642f17813465eb66678d96e2a895a8b393967864ef688abc17029a053cfa7",
+      "before": {
+        "pixels": 16884,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 40
+        },
+        "modules": 17,
+        "module_links": 15
+      },
+      "after": {
+        "pixels": 10958,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 34
+        },
+        "modules": 17,
+        "module_links": 15
+      },
+      "grid_before": [
+        368,
+        336
+      ],
+      "grid_after": [
+        294,
+        269
+      ],
+      "reduction_fraction": 0.35098317934138834,
+      "pillar_pixels_restored": 16,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/canal-boss-canal-terrain-frame-v1.json",
+      "source_sha256": "173bdf2004e6e55eeb1131ab82ea2c3da6d826ec2722d91fc0cc8829c50447b1",
+      "output_sha256": "3ec4c590c25ecbe7a42f46528fdef6e19e707d5021aca1a894a2da87fd9016b5",
+      "before": {
+        "pixels": 18016,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 60
+        },
+        "modules": 28,
+        "module_links": 25
+      },
+      "after": {
+        "pixels": 11322,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 47
+        },
+        "modules": 28,
+        "module_links": 25
+      },
+      "grid_before": [
+        384,
+        352
+      ],
+      "grid_after": [
+        307,
+        282
+      ],
+      "reduction_fraction": 0.3715586145648313,
+      "pillar_pixels_restored": 45,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/culture-yard-01-v1.json",
+      "source_sha256": "734d818bb7435a5baee4ada7529910ebcad39acc70a507a1bb1fdfa9d47228f2",
+      "output_sha256": "ba57db1c744e82f04a87dafd4f72cd71f9e94d1d0015d870c45304345a717c1e",
+      "before": {
+        "pixels": 4096,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 10,
+          "1": 8
+        },
+        "modules": 9,
+        "module_links": 6
+      },
+      "after": {
+        "pixels": 2656,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8,
+          "2": 8
+        },
+        "modules": 9,
+        "module_links": 6
+      },
+      "grid_before": [
+        176,
+        164
+      ],
+      "grid_after": [
+        141,
+        131
+      ],
+      "reduction_fraction": 0.3515625,
+      "pillar_pixels_restored": 40,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/culture-yard-02-v1.json",
+      "source_sha256": "a5225eadbaf6941a4cc44b1942742a4b5522975f37c6185aced23ad82407bf60",
+      "output_sha256": "b6ba60d26be46799c3378bd6fc1f8f7d105b33e7f4974e19cd5fd443c75ea65c",
+      "before": {
+        "pixels": 5216,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 6,
+          "2": 18
+        },
+        "modules": 8,
+        "module_links": 6
+      },
+      "after": {
+        "pixels": 3377,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 6,
+          "2": 14
+        },
+        "modules": 8,
+        "module_links": 6
+      },
+      "grid_before": [
+        192,
+        174
+      ],
+      "grid_after": [
+        154,
+        139
+      ],
+      "reduction_fraction": 0.35256901840490795,
+      "pillar_pixels_restored": 22,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/culture-yard-03-v1.json",
+      "source_sha256": "cd532b6f4527096b21bb0ffa523f0d273fea4515da7ff50b9f1d02114004eb06",
+      "output_sha256": "44fab2233fd383c18f3e99cc9cc856069320823072011597edf2090f5c69e607",
+      "before": {
+        "pixels": 5620,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 22
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "after": {
+        "pixels": 3625,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 18
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "grid_before": [
+        208,
+        186
+      ],
+      "grid_after": [
+        166,
+        149
+      ],
+      "reduction_fraction": 0.354982206405694,
+      "pillar_pixels_restored": 38,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/culture-yard-04-v1.json",
+      "source_sha256": "ed3cdc3da9861da2685f1352daf9f4aa20b86baaaba03c4929c0af8e331befb9",
+      "output_sha256": "4e100a50f640d5ded13ee1c90908a18a67e8ca45e7c82a1666380ba376a54b26",
+      "before": {
+        "pixels": 6400,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 4,
+          "2": 16
+        },
+        "modules": 11,
+        "module_links": 11
+      },
+      "after": {
+        "pixels": 4013,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 4,
+          "2": 13
+        },
+        "modules": 11,
+        "module_links": 11
+      },
+      "grid_before": [
+        224,
+        198
+      ],
+      "grid_after": [
+        179,
+        158
+      ],
+      "reduction_fraction": 0.37296874999999996,
+      "pillar_pixels_restored": 15,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/culture-yard-05-v1.json",
+      "source_sha256": "7341067408d3ab1447711dcadb12f11d26019e398fc35dc74162a98ec05faa70",
+      "output_sha256": "63d82d8cdb2db46f6dc53ecffb3cadf3efb1e326f3f5b905ee823c3b8541638e",
+      "before": {
+        "pixels": 7574,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 20,
+          "2": 32
+        },
+        "modules": 16,
+        "module_links": 15
+      },
+      "after": {
+        "pixels": 4879,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 26,
+          "1": 16
+        },
+        "modules": 16,
+        "module_links": 15
+      },
+      "grid_before": [
+        240,
+        214
+      ],
+      "grid_after": [
+        192,
+        171
+      ],
+      "reduction_fraction": 0.3558225508317929,
+      "pillar_pixels_restored": 6,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/culture-yard-06-v1.json",
+      "source_sha256": "e8ab0d5bdfd9512bb57a81ddbcaedf043cd10016f0c9abea4bbf68d3a3475645",
+      "output_sha256": "a0382eedd85cd920f908971d962d4a2d1cc2efc592786fa89d492fedd701418f",
+      "before": {
+        "pixels": 8440,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 20,
+          "2": 26
+        },
+        "modules": 20,
+        "module_links": 17
+      },
+      "after": {
+        "pixels": 5382,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 21,
+          "1": 16
+        },
+        "modules": 20,
+        "module_links": 17
+      },
+      "grid_before": [
+        256,
+        228
+      ],
+      "grid_after": [
+        205,
+        182
+      ],
+      "reduction_fraction": 0.3623222748815166,
+      "pillar_pixels_restored": 46,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/culture-yard-boss-v1.json",
+      "source_sha256": "0d5c98abb70f3e5d88d270728a6464d2daea5dd8dcc71fd2d384d0d9f774ada8",
+      "output_sha256": "5d0c1c132c76272ac6ad5b90412b24e71ea53fe93601c3a7f75714037b28b4c8",
+      "before": {
+        "pixels": 10872,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 14
+        },
+        "modules": 16,
+        "module_links": 20
+      },
+      "after": {
+        "pixels": 7045,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 13
+        },
+        "modules": 16,
+        "module_links": 20
+      },
+      "grid_before": [
+        256,
+        252
+      ],
+      "grid_after": [
+        205,
+        202
+      ],
+      "reduction_fraction": 0.3520051508462104,
+      "pillar_pixels_restored": 26,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/mosaic-01-mosaic-terrain-frame-v1.json",
+      "source_sha256": "e89e512e764b276aecb255d76802015045310c20d7726ffd2abc24da4eeb8312",
+      "output_sha256": "bd9e0e920e40dd55ccad573b4193e4e723cdd1ed72e8ac5bd8f1992a0a755a29",
+      "before": {
+        "pixels": 15864,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 32
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "after": {
+        "pixels": 10155,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 27
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "grid_before": [
+        352,
+        288
+      ],
+      "grid_after": [
+        282,
+        230
+      ],
+      "reduction_fraction": 0.35987140695915276,
+      "pillar_pixels_restored": 83,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/mosaic-02-mosaic-terrain-frame-v1.json",
+      "source_sha256": "b5773a0e1eb4bf7f4850332379b103ff3b809a8a0e340ba3563f6d75eb1893b7",
+      "output_sha256": "54eff3c6a3d341675d429ffdbf823696477cb5629e752655fcbd8d54f3315f8a",
+      "before": {
+        "pixels": 22980,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 50
+        },
+        "modules": 14,
+        "module_links": 11
+      },
+      "after": {
+        "pixels": 14777,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 42
+        },
+        "modules": 14,
+        "module_links": 11
+      },
+      "grid_before": [
+        400,
+        320
+      ],
+      "grid_after": [
+        320,
+        256
+      ],
+      "reduction_fraction": 0.3569625761531767,
+      "pillar_pixels_restored": 120,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/mosaic-03-mosaic-terrain-frame-v1.json",
+      "source_sha256": "4ec562d2fb1cbc99f41ab2846be51631e4ec09aeab3585bd6e5bf4a0b2d290de",
+      "output_sha256": "94309cf0abf2d9102ad9f61a5cfa5cad24eddf6253d76384e534a6db980d709a",
+      "before": {
+        "pixels": 26436,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 72
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "after": {
+        "pixels": 16767,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 57
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "grid_before": [
+        448,
+        352
+      ],
+      "grid_after": [
+        358,
+        282
+      ],
+      "reduction_fraction": 0.3657512482977757,
+      "pillar_pixels_restored": 19,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [
+        {
+          "x": 254,
+          "y": 72,
+          "pillar": 1,
+          "neighbor": 16
+        },
+        {
+          "x": 254,
+          "y": 73,
+          "pillar": 1,
+          "neighbor": 16
+        },
+        {
+          "x": 254,
+          "y": 74,
+          "pillar": 1,
+          "neighbor": 16
+        }
+      ],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/mosaic-04-mosaic-terrain-frame-v1.json",
+      "source_sha256": "aabb3b57ea22d8dc106a702207813fdda195d498e3479687f5346b1023783fdd",
+      "output_sha256": "4e56a9518bf0c4be8c2b7993e2867193005e23b2eb7f3d2a2e1a851970dc6a5c",
+      "before": {
+        "pixels": 30884,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 22
+        },
+        "modules": 16,
+        "module_links": 16
+      },
+      "after": {
+        "pixels": 19886,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 18
+        },
+        "modules": 16,
+        "module_links": 16
+      },
+      "grid_before": [
+        496,
+        384
+      ],
+      "grid_after": [
+        397,
+        307
+      ],
+      "reduction_fraction": 0.3561067219272115,
+      "pillar_pixels_restored": 222,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [
+        {
+          "x": 238,
+          "y": 128,
+          "pillar": 1,
+          "neighbor": 13
+        },
+        {
+          "x": 238,
+          "y": 129,
+          "pillar": 1,
+          "neighbor": 13
+        },
+        {
+          "x": 238,
+          "y": 130,
+          "pillar": 1,
+          "neighbor": 13
+        },
+        {
+          "x": 238,
+          "y": 131,
+          "pillar": 1,
+          "neighbor": 13
+        },
+        {
+          "x": 238,
+          "y": 132,
+          "pillar": 1,
+          "neighbor": 13
+        }
+      ],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/mosaic-05-mosaic-terrain-frame-v1.json",
+      "source_sha256": "bca9d34039d19aae113c85bd9ad47d3fe160d48aaafe3ce90d18712adca4e6f1",
+      "output_sha256": "123c1543ecf45aad802fb81579cd57f568ea8e3fa3e28919d516c4576bcbf0fe",
+      "before": {
+        "pixels": 33454,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 64
+        },
+        "modules": 16,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 21415,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 51
+        },
+        "modules": 16,
+        "module_links": 13
+      },
+      "grid_before": [
+        544,
+        416
+      ],
+      "grid_after": [
+        435,
+        333
+      ],
+      "reduction_fraction": 0.3598672804447899,
+      "pillar_pixels_restored": 0,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/mosaic-06-mosaic-terrain-frame-v1.json",
+      "source_sha256": "5941caed574f5015dcb532029c9047f477b91567d19886bb534b51f6d970a2f7",
+      "output_sha256": "7c4eee6f1f9b854d090014be1947191b89ab241daa5660bf5e542c13aa4ce8e2",
+      "before": {
+        "pixels": 32344,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 56
+        },
+        "modules": 17,
+        "module_links": 15
+      },
+      "after": {
+        "pixels": 20741,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 45
+        },
+        "modules": 17,
+        "module_links": 15
+      },
+      "grid_before": [
+        592,
+        464
+      ],
+      "grid_after": [
+        474,
+        371
+      ],
+      "reduction_fraction": 0.3587373237694781,
+      "pillar_pixels_restored": 60,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/mosaic-boss-mosaic-terrain-frame-v1.json",
+      "source_sha256": "7ce4023becac3175e88901a1eda862843b506662490e468b07f358dcad6f185c",
+      "output_sha256": "72e1f0e3078f1499945062a54e7edc6570306f9e6a05033a092a020ccb045807",
+      "before": {
+        "pixels": 47156,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 32
+        },
+        "modules": 24,
+        "module_links": 24
+      },
+      "after": {
+        "pixels": 30394,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 28
+        },
+        "modules": 24,
+        "module_links": 24
+      },
+      "grid_before": [
+        640,
+        512
+      ],
+      "grid_after": [
+        512,
+        410
+      ],
+      "reduction_fraction": 0.3554584782424294,
+      "pillar_pixels_restored": 268,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/terrace-01-terrace-terrain-frame-v1.json",
+      "source_sha256": "6e544ea510716d581c9cdd6fef0e4258471dcf8f1a92ff660964c9663224d31c",
+      "output_sha256": "128433aa57671eef8f0fb21b6970b24f171fec77e56f60c946f29e02628739d0",
+      "before": {
+        "pixels": 9840,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 32
+        },
+        "modules": 13,
+        "module_links": 10
+      },
+      "after": {
+        "pixels": 6334,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 27
+        },
+        "modules": 13,
+        "module_links": 10
+      },
+      "grid_before": [
+        304,
+        256
+      ],
+      "grid_after": [
+        243,
+        205
+      ],
+      "reduction_fraction": 0.3563008130081301,
+      "pillar_pixels_restored": 52,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/terrace-02-terrace-terrain-frame-v1.json",
+      "source_sha256": "a5bdbf34b0aa2553bd7b5bb902f6be65de85c72f4535f4589e2bc39d22c1004f",
+      "output_sha256": "04a997524e164586aaa1c9b645532e08f3c3fa16f3a71e782cf9b63e09d9917e",
+      "before": {
+        "pixels": 17396,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 6
+        },
+        "modules": 12,
+        "module_links": 12
+      },
+      "after": {
+        "pixels": 11207,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 6
+        },
+        "modules": 12,
+        "module_links": 12
+      },
+      "grid_before": [
+        336,
+        288
+      ],
+      "grid_after": [
+        269,
+        230
+      ],
+      "reduction_fraction": 0.35577144171073805,
+      "pillar_pixels_restored": 16,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/terrace-03-terrace-terrain-frame-v1.json",
+      "source_sha256": "c7cb2ec8d7ad6db3ef38ff904eb0148b247e901a32b95b39017f5170bbc09670",
+      "output_sha256": "aaead6a1c6c47e00a0880283454c4152e5394d5a4258c6d32e7cd3a08e487322",
+      "before": {
+        "pixels": 20164,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 34
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "after": {
+        "pixels": 12975,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 27
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "grid_before": [
+        376,
+        320
+      ],
+      "grid_after": [
+        301,
+        256
+      ],
+      "reduction_fraction": 0.3565264828407062,
+      "pillar_pixels_restored": 49,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/terrace-04-terrace-terrain-frame-v1.json",
+      "source_sha256": "724344fc33c1ac540a01fdff7b628fd33db2f1eeff4c698fe26f9b464be4f13b",
+      "output_sha256": "b75b86c95c1e29fa143f52ada68924a79f6ade92fdd8ca5cbdece0daa256604c",
+      "before": {
+        "pixels": 20894,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 34
+        },
+        "modules": 16,
+        "module_links": 14
+      },
+      "after": {
+        "pixels": 13300,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 27
+        },
+        "modules": 16,
+        "module_links": 14
+      },
+      "grid_before": [
+        408,
+        352
+      ],
+      "grid_after": [
+        326,
+        282
+      ],
+      "reduction_fraction": 0.3634536230496793,
+      "pillar_pixels_restored": 0,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/terrace-05-terrace-terrain-frame-v1.json",
+      "source_sha256": "3d7123a6d365064c97603d0f81fe75bfc076d64ede1134afc37d4eb4fdedc481",
+      "output_sha256": "c0a82f799b89cf800f565e753e96b4bf74b157f781171c227ac8b377279cc22e",
+      "before": {
+        "pixels": 20096,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 28
+        },
+        "modules": 13,
+        "module_links": 12
+      },
+      "after": {
+        "pixels": 12957,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 24
+        },
+        "modules": 13,
+        "module_links": 12
+      },
+      "grid_before": [
+        440,
+        384
+      ],
+      "grid_after": [
+        352,
+        307
+      ],
+      "reduction_fraction": 0.35524482484076436,
+      "pillar_pixels_restored": 58,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/terrace-06-terrace-terrain-frame-v1.json",
+      "source_sha256": "f0b8f0bd99ee74d902dac551c6177c24ee3a75797354fb3362604b2675b20ce1",
+      "output_sha256": "a92509975fd81af360cbf0d41c2920081318b1657eaf25a8ae43d7127b374b73",
+      "before": {
+        "pixels": 24008,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 54
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "after": {
+        "pixels": 15361,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 44
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "grid_before": [
+        472,
+        416
+      ],
+      "grid_after": [
+        378,
+        333
+      ],
+      "reduction_fraction": 0.3601716094635121,
+      "pillar_pixels_restored": 42,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "maps/terrace-boss-terrace-terrain-frame-v1.json",
+      "source_sha256": "e1dd092683ca0b572ee6883a2b71219c68e61e246837da9d7ccbd4e15a26039e",
+      "output_sha256": "cecf8f5e8643f290750bfc6292b50e97ab59a0304351008d41f2331c843eebcc",
+      "before": {
+        "pixels": 31460,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 48
+        },
+        "modules": 32,
+        "module_links": 30
+      },
+      "after": {
+        "pixels": 20335,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 39
+        },
+        "modules": 32,
+        "module_links": 30
+      },
+      "grid_before": [
+        512,
+        448
+      ],
+      "grid_after": [
+        410,
+        358
+      ],
+      "reduction_fraction": 0.35362364907819455,
+      "pillar_pixels_restored": 236,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    },
+    {
+      "file": "arch_lane.json",
+      "source_sha256": "e33fdd4d2570a333567fe717988fc2eaa7d86c28bf222c46b5e71dd83121c0de",
+      "output_sha256": "6b2ae6a45a13f6d7c3b8f493e6ae00db64906d196a7b81b1867b31dc67a08e4d",
+      "before": {
+        "pixels": 2000,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 16,
+          "2": 27
+        },
+        "modules": 10,
+        "module_links": 6
+      },
+      "after": {
+        "pixels": 1341,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 21,
+          "1": 14
+        },
+        "modules": 10,
+        "module_links": 6
+      },
+      "grid_before": [
+        115,
+        157
+      ],
+      "grid_after": [
+        92,
+        126
+      ],
+      "reduction_fraction": 0.3295,
+      "pillar_pixels_restored": 41,
+      "pillar_offsets": [],
+      "pillar_slot_clearance": [],
+      "module_graph_preserved": true
+    }
+  ],
+  "failures": []
+}
