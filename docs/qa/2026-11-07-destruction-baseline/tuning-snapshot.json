@@ -1,0 +1,157 @@
+{
+  "recorded_date": "2026-11-07",
+  "status": "record only; no new tuning adopted",
+  "user_feedback": "Impact now feels strong after floor-opening map changes; user asked to retain the tuning history.",
+  "ios_version": "0.5.49",
+  "ios_build": 59,
+  "web_stem": "free-0541-b7399322186d",
+  "source_record_commit": "0e0b783691de8a26e117e11653b7782aec41779e",
+  "runtime_executed_by_agent": false,
+  "source_hashes": {
+    "world.gd": "edcd23c6182988e2e6179640870003dda6e01bd3deae75d35026c1c5fe10d62b",
+    "chain_physics.gd": "2443d3282a6ab09177412771dff9080b5dcb36ee59f9719d80e2c578cbed2150",
+    "impact_physics.gd": "92165c7921602e5ff8efb6191db212ade5d0fcdc4ab2b12e55b962a88b0d0d5b",
+    "structure_physics.gd": "7f1e0fa865f9f02c8c68e8e5b70d7870fbf844e8b1f48191f22b475d3e65f8ae",
+    "blackhole_physics.gd": "40a4bc3fd85fe54a16d68dc5a4da9003661e51bcd288c787fe2753a684339a32",
+    "campaign/economy.gd": "7fd438a33d6e58030cd5c088426abcf2ccbd05cb14e0cb9ed2ec303d8d21d103",
+    "campaign/catalog.gd": "463c0a1bfd7871bb1f4f1913cd4ab0c38676646d2b55638aa0a858733bb0e772",
+    "data/balance.json": "7a99764e7084212ef82460ec22826c0bef3a6a0328835529e3f05b6a3d4a46dd",
+    "data/collection_upgrades.json": "65b2954b4725366fc444184ae5027e31c0f57e36e29811814f8458e66070b6ca",
+    "../godot-core-native/src/world_kernel.cpp": "3d572222ed1874967e814cd26050616ed0c0686c33d85e71bf0fc59bcdd0d114"
+  },
+  "ordinary_collision": {
+    "start_speed_cells_per_s": 40,
+    "speed_growth": 10,
+    "experiment_original_growth": 1,
+    "max_fraction_before_size_attenuation": 0.95
+  },
+  "chain": {
+    "power": 10,
+    "earlier_lab_default": 6,
+    "stage_step": 0.25,
+    "max_stage": 8,
+    "max_stage_multiplier": 27.5,
+    "fracture_start_speed": 8,
+    "min_contact_speed": 12,
+    "min_energy": 1.2,
+    "min_source_pixels": 64,
+    "min_source_approach": 4,
+    "exclude": [
+      "floor",
+      "same original group",
+      "already used recipient on a pair"
+    ]
+  },
+  "fall": {
+    "contact_start_speed": 14,
+    "internal_crack_start": 14,
+    "internal_crack_full": 32,
+    "previous_internal_crack_start": 30,
+    "previous_internal_crack_full": 75,
+    "activation_span": 10,
+    "previous_activation_span": 20,
+    "bond_resistance": 0.02,
+    "previous_bond_resistance": 0.65,
+    "contact_spread_width": 3,
+    "wave_scale": 3,
+    "previous_wave_scale": 1,
+    "energy_work_fraction": 0.42,
+    "direct_pixel_fraction_at_processing_1": 0.12,
+    "excludes_chain": true
+  },
+  "tilt": {
+    "supported_downward_torque_only": true,
+    "ramp_seconds": 10,
+    "maximum_response": 10,
+    "previous_ramp_seconds": 5,
+    "previous_maximum_response": 5,
+    "mass_inertia_retained": true
+  },
+  "blast_halo": {
+    "force": "clamp((power/efficiency -1)*4,0,5)",
+    "reach": "radius+2+force*1.6",
+    "strength": "(.65+force*.28)*efficiency"
+  },
+  "finite_track_effects": {
+    "blastForce": {
+      "cap": 30,
+      "start": 1,
+      "step": 0.05,
+      "unit": "base multiplier"
+    },
+    "blastRadius": {
+      "cap": 20,
+      "start": 3,
+      "step": 0.1,
+      "unit": "cells"
+    },
+    "blastReach": {
+      "cap": 20,
+      "start": 18,
+      "step": 0.5,
+      "unit": "cells"
+    },
+    "mix": {
+      "cap": 36,
+      "start": 1,
+      "step": 0.25,
+      "unit": "multiplier"
+    },
+    "wear": {
+      "cap": 36,
+      "start": 1,
+      "step": 0.25,
+      "unit": "multiplier"
+    }
+  },
+  "price_policy": {
+    "shockwave_tracks": [
+      "blastForce",
+      "blastRadius",
+      "blastReach"
+    ],
+    "first_original_prices": 5,
+    "later_original_cap_price_growth": 1.1,
+    "effect_step_not_changed_by_price_policy": true
+  },
+  "added_upgrade_factors": {
+    "debrisProcessing": {
+      "id": "debrisProcessing",
+      "name": "Debris Processing",
+      "base": 180,
+      "start": 1.0,
+      "sqrt_step": 0.08,
+      "unit": "collision multiplier"
+    },
+    "unlimited_tail": "1+.08*sqrt(max(0, level-original_cap))",
+    "aftershock_original_band": {
+      "trigger": 3,
+      "counts": [
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5
+      ],
+      "power_fractions": [
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        1
+      ]
+    },
+    "aftershock_unlimited_power_tail": true
+  },
+  "limits_note": "Activation, energy caps and separate fall/chain branches mean these are not flat final-damage multipliers."
+}
