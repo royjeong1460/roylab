@@ -28,11 +28,13 @@
     "manifestStem": "free-0541-b7399322186d",
     "engineStem": "godot-web-ec83eba66e3c",
     "delivery": "docs/qa/2026-11-07-ground-openings/README.md",
-    "published": false,
-    "httpVerified": false,
+    "published": true,
+    "httpVerified": true,
     "presentationPreviewUrl": "https://roylab.pages.dev/planet-patchup/play/?preview=story",
     "campaignAutoTrigger": false,
-    "rollbackRequiresRetainedEconomy": true
+    "rollbackRequiresRetainedEconomy": true,
+    "releaseCommit": "c40e31fa9969dc4b0dba5f32f6d49c8954bea1af",
+    "deploymentId": "31439f3d-8c44-4af2-aef1-f1d896c56112"
   },
   "previous": {
     "commonVersion": "0.5.40",

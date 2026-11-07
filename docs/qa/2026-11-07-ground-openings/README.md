@@ -43,7 +43,7 @@ Current pixel totals follow actual occupied geometry.29 maps lose pixels;3-6 gai
 
 ## Static audit
 
-All43 current occupied counts match map initial values. No occupied cell is buried, side-attached to a cliff or disconnected from a downward floor path. Each original assembly remains one connected assembly after authoring; modules, module ownership and down/right links are rebuilt. The static drawings for all43 maps were inspected; small floor cargo and structures already on open supports are retained. This does not establish initial physical stability or difficulty in the running engine.
+All43 current occupied counts match map initial values. No occupied cell is buried, side-attached to a cliff or disconnected from a downward floor path. Each original assembly remains one connected assembly after authoring; modules, module ownership and down/right links are rebuilt. The static drawings for all43 maps were inspected; small floor cargo and structures already on open supports are retained. The22 remaining floor spans wider than12cells belong to low cargo/rubble of at most30cells high; locations are listed in retained-wide-floor-cargo.csv. This does not establish initial physical stability or difficulty in the running engine.
 
 ## Replay and rollback
 

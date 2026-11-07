@@ -1,0 +1,23 @@
+map,x,ground_y,contact_width,direct_module_height,reason
+amber-03-amber-terrain-frame-v1,152,212,14,14,small floor cargo or low rubble; retain authored landing target
+amber-06-amber-terrain-frame-v1,170,208,18,24,small floor cargo or low rubble; retain authored landing target
+amber-06-amber-terrain-frame-v1,30,260,44,28,small floor cargo or low rubble; retain authored landing target
+arch-1-arch-quarter-v2,37,145,23,1,small floor cargo or low rubble; retain authored landing target
+arch-2-arch-quarter-v2,21,118,19,4,small floor cargo or low rubble; retain authored landing target
+arch-2-arch-quarter-v2,53,118,28,17,small floor cargo or low rubble; retain authored landing target
+arch-3-arch-quarter-v2,49,118,32,6,small floor cargo or low rubble; retain authored landing target
+arch-4-arch-quarter-v2,20,120,15,5,small floor cargo or low rubble; retain authored landing target
+arch-4-arch-quarter-v2,59,120,18,5,small floor cargo or low rubble; retain authored landing target
+arch-4-arch-quarter-v2,101,120,14,5,small floor cargo or low rubble; retain authored landing target
+arch-5-arch-quarter-v2,28,123,36,4,small floor cargo or low rubble; retain authored landing target
+arch-5-arch-quarter-v2,77,123,18,3,small floor cargo or low rubble; retain authored landing target
+arch-6-arch-quarter-v2,21,120,94,3,small floor cargo or low rubble; retain authored landing target
+arch-7-arch-quarter-v2,25,134,18,3,small floor cargo or low rubble; retain authored landing target
+arch-7-arch-quarter-v2,63,134,52,3,small floor cargo or low rubble; retain authored landing target
+arch-7-arch-quarter-v2,134,134,19,2,small floor cargo or low rubble; retain authored landing target
+canal-03-canal-terrain-frame-v1,100,248,18,12,small floor cargo or low rubble; retain authored landing target
+canal-03-canal-terrain-frame-v1,184,248,18,24,small floor cargo or low rubble; retain authored landing target
+culture-yard-02-v1,161,158,18,26,small floor cargo or low rubble; retain authored landing target
+culture-yard-04-v1,198,182,16,30,small floor cargo or low rubble; retain authored landing target
+culture-yard-05-v1,104,198,32,28,small floor cargo or low rubble; retain authored landing target
+culture-yard-06-v1,198,212,14,24,small floor cargo or low rubble; retain authored landing target

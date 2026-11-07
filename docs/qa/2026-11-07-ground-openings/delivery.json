@@ -15,11 +15,14 @@
   "nativeDelivery": "variants/godot-paid-port/qa/ios-ground-openings-2026-11-07/delivery.json",
   "rollbackWebStem": "free-0541-9e2c27890496",
   "rollbackNativeCandidate": "ios-shockwave-floor-maps-2026-11-07",
-  "published": false,
-  "httpVerified": false,
+  "published": true,
+  "httpVerified": true,
   "runtimeByAssistant": false,
   "runtimeVerificationOwner": "user",
   "nativeInstalled": true,
   "nativeInstallSequence": 4260,
-  "nativeSignatureVerified": true
+  "nativeSignatureVerified": true,
+  "releaseCommit": "c40e31fa9969dc4b0dba5f32f6d49c8954bea1af",
+  "deploymentId": "31439f3d-8c44-4af2-aef1-f1d896c56112",
+  "verifiedResponses": 13
 }

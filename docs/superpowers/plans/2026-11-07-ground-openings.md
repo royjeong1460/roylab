@@ -20,7 +20,7 @@ User-approved direction: retain substantial feet and a connected body, like the 
 - [x] Record explicit candidate locations in the authoring plan and implement deterministic guarded JSON authoring.
 - [x] Inspect the resulting before/after source-data drawings; confirm connected assemblies, floor-only contact, no buried or unsupported cells, catalog totals and historical bounds.
 - [x] Compile/export web and build the site. Prepare a new native candidate from CURRENT, sync only changed content/schema, compile/export/sign and update-install the same iPhone app.
-- [ ] Commit only scoped changes, publish the isolated branch, verify transport/decoded payload hashes, synchronize selected primary sources and update delivery/rollback records.
+- [x] Commit only scoped changes, publish the isolated branch, verify transport/decoded payload hashes, synchronize selected primary sources and update delivery/rollback records.
 
 ## Rollback
 
