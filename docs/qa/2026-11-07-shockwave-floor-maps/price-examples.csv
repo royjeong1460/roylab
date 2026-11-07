@@ -1,0 +1,19 @@
+track,purchase_number,previous_quote,new_quote,scope
+blastForce,1,180,180,source arithmetic only; not game/runtime validation
+blastForce,5,420,420,source arithmetic only; not game/runtime validation
+blastForce,6,460,460,source arithmetic only; not game/runtime validation
+blastForce,10,670,670,source arithmetic only; not game/runtime validation
+blastForce,15,1070,1070,source arithmetic only; not game/runtime validation
+blastForce,20,1730,1730,source arithmetic only; not game/runtime validation
+blastRadius,1,300,300,source arithmetic only; not game/runtime validation
+blastRadius,5,740,740,source arithmetic only; not game/runtime validation
+blastRadius,6,920,810,source arithmetic only; not game/runtime validation
+blastRadius,10,2240,1180,source arithmetic only; not game/runtime validation
+blastRadius,15,6830,1900,source arithmetic only; not game/runtime validation
+blastRadius,20,20820,3060,source arithmetic only; not game/runtime validation
+blastReach,1,150,150,source arithmetic only; not game/runtime validation
+blastReach,5,340,340,source arithmetic only; not game/runtime validation
+blastReach,6,410,370,source arithmetic only; not game/runtime validation
+blastReach,10,900,540,source arithmetic only; not game/runtime validation
+blastReach,15,2430,870,source arithmetic only; not game/runtime validation
+blastReach,20,6570,1390,source arithmetic only; not game/runtime validation

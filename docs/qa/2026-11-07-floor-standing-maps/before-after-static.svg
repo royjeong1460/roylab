@@ -1,0 +1,294 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1430" viewBox="0 0 1200 1430">
+<rect width="1200" height="1430" fill="#101b2a"/>
+<style>text{font-family:Arial,sans-serif;fill:#e8eff5}.title{font-size:24px}.label{font-size:18px}.note{font-size:15px;fill:#a9bfd1}</style>
+<text x="30" y="38" class="title">STATIC MAP DATA | Before / after</text>
+<text x="30" y="68" class="note">Blue: body. Gold: support. Pale: crown. Brown: solid terrain. Game runtime was not started.</text>
+<rect x="22" y="92" width="568" height="424" rx="10" fill="#18283a"/>
+<text x="38" y="120" class="label">5-5 | Notched sanctum / BEFORE</text>
+<text x="38" y="147" class="note">168-cell grounded sill</text>
+<g transform="translate(114.073,166) scale(0.872396)" shape-rendering="crispEdges">
+<rect width="440" height="384" fill="#0d1725"/>
+<rect x="0" y="368" width="124" height="16" fill="#6f5540"/>
+<rect x="124" y="344" width="24" height="40" fill="#6f5540"/>
+<rect x="148" y="320" width="24" height="64" fill="#6f5540"/>
+<rect x="172" y="296" width="268" height="88" fill="#6f5540"/>
+<rect x="234" y="124" width="108" height="2" fill="#d1dce0"/>
+<rect x="232" y="126" width="112" height="2" fill="#d1dce0"/>
+<rect x="230" y="128" width="116" height="2" fill="#d1dce0"/>
+<rect x="228" y="130" width="120" height="2" fill="#d1dce0"/>
+<rect x="232" y="132" width="112" height="40" fill="#62a6cd"/>
+<rect x="206" y="200" width="26" height="2" fill="#d1dce0"/>
+<rect x="344" y="200" width="26" height="2" fill="#d1dce0"/>
+<rect x="204" y="202" width="28" height="2" fill="#d1dce0"/>
+<rect x="344" y="202" width="28" height="2" fill="#d1dce0"/>
+<rect x="202" y="204" width="30" height="2" fill="#d1dce0"/>
+<rect x="344" y="204" width="30" height="2" fill="#d1dce0"/>
+<rect x="200" y="206" width="32" height="2" fill="#d1dce0"/>
+<rect x="344" y="206" width="32" height="2" fill="#d1dce0"/>
+<rect x="268" y="172" width="40" height="72" fill="#62a6cd"/>
+<rect x="204" y="208" width="28" height="36" fill="#62a6cd"/>
+<rect x="344" y="208" width="28" height="36" fill="#62a6cd"/>
+<rect x="204" y="244" width="52" height="8" fill="#62a6cd"/>
+<rect x="276" y="244" width="2" height="8" fill="#f2be49"/>
+<rect x="300" y="244" width="2" height="8" fill="#f2be49"/>
+<rect x="320" y="244" width="52" height="8" fill="#62a6cd"/>
+<rect x="20" y="256" width="76" height="2" fill="#d1dce0"/>
+<rect x="18" y="258" width="80" height="2" fill="#d1dce0"/>
+<rect x="16" y="260" width="84" height="2" fill="#d1dce0"/>
+<rect x="14" y="262" width="88" height="2" fill="#d1dce0"/>
+<rect x="204" y="252" width="168" height="44" fill="#62a6cd"/>
+<rect x="18" y="264" width="80" height="40" fill="#62a6cd"/>
+<rect x="26" y="304" width="2" height="64" fill="#f2be49"/>
+<rect x="88" y="304" width="2" height="64" fill="#f2be49"/>
+</g>
+<text x="38" y="504" class="note">23,120 cells | Same ID, dimensions and terrain</text>
+<rect x="612" y="92" width="568" height="424" rx="10" fill="#18283a"/>
+<text x="628" y="120" class="label">5-5 | Notched sanctum / AFTER</text>
+<text x="628" y="147" class="note">Two 2-cell legs + 24-cell fall clearance</text>
+<g transform="translate(704.073,166) scale(0.872396)" shape-rendering="crispEdges">
+<rect width="440" height="384" fill="#0d1725"/>
+<rect x="0" y="368" width="124" height="16" fill="#6f5540"/>
+<rect x="124" y="344" width="24" height="40" fill="#6f5540"/>
+<rect x="148" y="320" width="24" height="64" fill="#6f5540"/>
+<rect x="172" y="296" width="268" height="88" fill="#6f5540"/>
+<rect x="234" y="100" width="108" height="2" fill="#d1dce0"/>
+<rect x="232" y="102" width="112" height="2" fill="#d1dce0"/>
+<rect x="230" y="104" width="116" height="2" fill="#d1dce0"/>
+<rect x="228" y="106" width="120" height="2" fill="#d1dce0"/>
+<rect x="232" y="108" width="112" height="40" fill="#62a6cd"/>
+<rect x="206" y="176" width="26" height="2" fill="#d1dce0"/>
+<rect x="344" y="176" width="26" height="2" fill="#d1dce0"/>
+<rect x="204" y="178" width="28" height="2" fill="#d1dce0"/>
+<rect x="344" y="178" width="28" height="2" fill="#d1dce0"/>
+<rect x="202" y="180" width="30" height="2" fill="#d1dce0"/>
+<rect x="344" y="180" width="30" height="2" fill="#d1dce0"/>
+<rect x="200" y="182" width="32" height="2" fill="#d1dce0"/>
+<rect x="344" y="182" width="32" height="2" fill="#d1dce0"/>
+<rect x="268" y="148" width="40" height="72" fill="#62a6cd"/>
+<rect x="204" y="184" width="28" height="36" fill="#62a6cd"/>
+<rect x="344" y="184" width="28" height="36" fill="#62a6cd"/>
+<rect x="204" y="220" width="52" height="8" fill="#62a6cd"/>
+<rect x="276" y="220" width="2" height="8" fill="#f2be49"/>
+<rect x="300" y="220" width="2" height="8" fill="#f2be49"/>
+<rect x="320" y="220" width="52" height="8" fill="#62a6cd"/>
+<rect x="204" y="228" width="168" height="16" fill="#62a6cd"/>
+<rect x="204" y="244" width="16" height="8" fill="#62a6cd"/>
+<rect x="226" y="244" width="124" height="8" fill="#62a6cd"/>
+<rect x="356" y="244" width="16" height="8" fill="#62a6cd"/>
+<rect x="20" y="256" width="76" height="2" fill="#d1dce0"/>
+<rect x="18" y="258" width="80" height="2" fill="#d1dce0"/>
+<rect x="16" y="260" width="84" height="2" fill="#d1dce0"/>
+<rect x="14" y="262" width="88" height="2" fill="#d1dce0"/>
+<rect x="204" y="252" width="168" height="20" fill="#62a6cd"/>
+<rect x="220" y="272" width="2" height="24" fill="#f2be49"/>
+<rect x="354" y="272" width="2" height="24" fill="#f2be49"/>
+<rect x="18" y="264" width="80" height="40" fill="#62a6cd"/>
+<rect x="26" y="304" width="2" height="64" fill="#f2be49"/>
+<rect x="88" y="304" width="2" height="64" fill="#f2be49"/>
+</g>
+<text x="628" y="504" class="note">23,120 cells | Same ID, dimensions and terrain</text>
+<rect x="22" y="532" width="568" height="424" rx="10" fill="#18283a"/>
+<text x="38" y="560" class="label">5-6 | Cliff upright / BEFORE</text>
+<text x="38" y="587" class="note">24 side-contact cells</text>
+<g transform="translate(115.952,606) scale(0.805288)" shape-rendering="crispEdges">
+<rect width="472" height="416" fill="#0d1725"/>
+<rect x="0" y="400" width="128" height="16" fill="#6f5540"/>
+<rect x="128" y="376" width="24" height="40" fill="#6f5540"/>
+<rect x="152" y="352" width="24" height="64" fill="#6f5540"/>
+<rect x="176" y="328" width="24" height="88" fill="#6f5540"/>
+<rect x="200" y="304" width="272" height="112" fill="#6f5540"/>
+<rect x="234" y="80" width="96" height="2" fill="#d1dce0"/>
+<rect x="232" y="82" width="100" height="2" fill="#d1dce0"/>
+<rect x="230" y="84" width="104" height="2" fill="#d1dce0"/>
+<rect x="228" y="86" width="108" height="2" fill="#d1dce0"/>
+<rect x="232" y="88" width="100" height="32" fill="#62a6cd"/>
+<rect x="266" y="120" width="2" height="36" fill="#f2be49"/>
+<rect x="318" y="120" width="2" height="36" fill="#f2be49"/>
+<rect x="258" y="156" width="176" height="2" fill="#d1dce0"/>
+<rect x="256" y="158" width="180" height="2" fill="#d1dce0"/>
+<rect x="254" y="160" width="184" height="2" fill="#d1dce0"/>
+<rect x="252" y="162" width="188" height="2" fill="#d1dce0"/>
+<rect x="256" y="164" width="180" height="28" fill="#62a6cd"/>
+<rect x="130" y="202" width="20" height="2" fill="#d1dce0"/>
+<rect x="128" y="204" width="24" height="2" fill="#d1dce0"/>
+<rect x="126" y="206" width="28" height="2" fill="#d1dce0"/>
+<rect x="124" y="208" width="32" height="2" fill="#d1dce0"/>
+<rect x="340" y="222" width="56" height="2" fill="#d1dce0"/>
+<rect x="338" y="224" width="60" height="2" fill="#d1dce0"/>
+<rect x="336" y="226" width="64" height="2" fill="#d1dce0"/>
+<rect x="334" y="228" width="68" height="2" fill="#d1dce0"/>
+<rect x="338" y="230" width="60" height="34" fill="#62a6cd"/>
+<rect x="256" y="192" width="28" height="88" fill="#62a6cd"/>
+<rect x="348" y="264" width="2" height="16" fill="#f2be49"/>
+<rect x="386" y="264" width="2" height="16" fill="#f2be49"/>
+<rect x="256" y="280" width="180" height="24" fill="#62a6cd"/>
+<rect x="32" y="344" width="56" height="2" fill="#d1dce0"/>
+<rect x="30" y="346" width="60" height="2" fill="#d1dce0"/>
+<rect x="28" y="348" width="64" height="2" fill="#d1dce0"/>
+<rect x="26" y="350" width="68" height="2" fill="#d1dce0"/>
+<rect x="128" y="210" width="24" height="166" fill="#62a6cd"/>
+<rect x="30" y="352" width="60" height="48" fill="#62a6cd"/>
+</g>
+<text x="38" y="944" class="note">27,608 cells | Same ID, dimensions and terrain</text>
+<rect x="612" y="532" width="568" height="424" rx="10" fill="#18283a"/>
+<text x="628" y="560" class="label">5-6 | Cliff upright / AFTER</text>
+<text x="628" y="587" class="note">Upright and crown 2 cells left; 0 side contacts</text>
+<g transform="translate(705.952,606) scale(0.805288)" shape-rendering="crispEdges">
+<rect width="472" height="416" fill="#0d1725"/>
+<rect x="0" y="400" width="128" height="16" fill="#6f5540"/>
+<rect x="128" y="376" width="24" height="40" fill="#6f5540"/>
+<rect x="152" y="352" width="24" height="64" fill="#6f5540"/>
+<rect x="176" y="328" width="24" height="88" fill="#6f5540"/>
+<rect x="200" y="304" width="272" height="112" fill="#6f5540"/>
+<rect x="234" y="80" width="96" height="2" fill="#d1dce0"/>
+<rect x="232" y="82" width="100" height="2" fill="#d1dce0"/>
+<rect x="230" y="84" width="104" height="2" fill="#d1dce0"/>
+<rect x="228" y="86" width="108" height="2" fill="#d1dce0"/>
+<rect x="232" y="88" width="100" height="32" fill="#62a6cd"/>
+<rect x="266" y="120" width="2" height="36" fill="#f2be49"/>
+<rect x="318" y="120" width="2" height="36" fill="#f2be49"/>
+<rect x="258" y="156" width="176" height="2" fill="#d1dce0"/>
+<rect x="256" y="158" width="180" height="2" fill="#d1dce0"/>
+<rect x="254" y="160" width="184" height="2" fill="#d1dce0"/>
+<rect x="252" y="162" width="188" height="2" fill="#d1dce0"/>
+<rect x="256" y="164" width="180" height="28" fill="#62a6cd"/>
+<rect x="128" y="202" width="20" height="2" fill="#d1dce0"/>
+<rect x="126" y="204" width="24" height="2" fill="#d1dce0"/>
+<rect x="124" y="206" width="28" height="2" fill="#d1dce0"/>
+<rect x="122" y="208" width="32" height="2" fill="#d1dce0"/>
+<rect x="340" y="222" width="56" height="2" fill="#d1dce0"/>
+<rect x="338" y="224" width="60" height="2" fill="#d1dce0"/>
+<rect x="336" y="226" width="64" height="2" fill="#d1dce0"/>
+<rect x="334" y="228" width="68" height="2" fill="#d1dce0"/>
+<rect x="338" y="230" width="60" height="34" fill="#62a6cd"/>
+<rect x="256" y="192" width="28" height="88" fill="#62a6cd"/>
+<rect x="348" y="264" width="2" height="16" fill="#f2be49"/>
+<rect x="386" y="264" width="2" height="16" fill="#f2be49"/>
+<rect x="256" y="280" width="180" height="24" fill="#62a6cd"/>
+<rect x="32" y="344" width="56" height="2" fill="#d1dce0"/>
+<rect x="30" y="346" width="60" height="2" fill="#d1dce0"/>
+<rect x="28" y="348" width="64" height="2" fill="#d1dce0"/>
+<rect x="26" y="350" width="68" height="2" fill="#d1dce0"/>
+<rect x="126" y="210" width="24" height="166" fill="#62a6cd"/>
+<rect x="30" y="352" width="60" height="48" fill="#62a6cd"/>
+</g>
+<text x="628" y="944" class="note">27,608 cells | Same ID, dimensions and terrain</text>
+<rect x="22" y="972" width="568" height="424" rx="10" fill="#18283a"/>
+<text x="38" y="1000" class="label">6-6 | Notched confluence / BEFORE</text>
+<text x="38" y="1027" class="note">192-cell grounded sill + 28 side contacts</text>
+<g transform="translate(92.293,1046) scale(0.721983)" shape-rendering="crispEdges">
+<rect width="592" height="464" fill="#0d1725"/>
+<rect x="0" y="448" width="144" height="16" fill="#6f5540"/>
+<rect x="144" y="420" width="24" height="44" fill="#6f5540"/>
+<rect x="168" y="392" width="24" height="72" fill="#6f5540"/>
+<rect x="192" y="364" width="24" height="100" fill="#6f5540"/>
+<rect x="216" y="336" width="376" height="128" fill="#6f5540"/>
+<rect x="344" y="116" width="124" height="2" fill="#d1dce0"/>
+<rect x="340" y="118" width="132" height="2" fill="#d1dce0"/>
+<rect x="336" y="120" width="140" height="2" fill="#d1dce0"/>
+<rect x="332" y="122" width="148" height="2" fill="#d1dce0"/>
+<rect x="328" y="124" width="156" height="2" fill="#d1dce0"/>
+<rect x="324" y="126" width="164" height="2" fill="#d1dce0"/>
+<rect x="320" y="128" width="172" height="4" fill="#d1dce0"/>
+<rect x="330" y="132" width="152" height="48" fill="#62a6cd"/>
+<rect x="171" y="208" width="6" height="6" fill="#d1dce0"/>
+<rect x="165" y="214" width="30" height="6" fill="#d1dce0"/>
+<rect x="312" y="238" width="60" height="2" fill="#d1dce0"/>
+<rect x="456" y="238" width="44" height="2" fill="#d1dce0"/>
+<rect x="310" y="240" width="64" height="2" fill="#d1dce0"/>
+<rect x="454" y="240" width="48" height="2" fill="#d1dce0"/>
+<rect x="308" y="242" width="68" height="2" fill="#d1dce0"/>
+<rect x="452" y="242" width="52" height="2" fill="#d1dce0"/>
+<rect x="306" y="244" width="72" height="2" fill="#d1dce0"/>
+<rect x="450" y="244" width="56" height="2" fill="#d1dce0"/>
+<rect x="390" y="180" width="32" height="72" fill="#62a6cd"/>
+<rect x="168" y="220" width="24" height="38" fill="#62a6cd"/>
+<rect x="168" y="258" width="9" height="4" fill="#62a6cd"/>
+<rect x="183" y="258" width="9" height="4" fill="#62a6cd"/>
+<rect x="168" y="262" width="8" height="4" fill="#62a6cd"/>
+<rect x="184" y="262" width="8" height="4" fill="#62a6cd"/>
+<rect x="310" y="246" width="64" height="44" fill="#62a6cd"/>
+<rect x="454" y="246" width="48" height="44" fill="#62a6cd"/>
+<rect x="396" y="252" width="2" height="38" fill="#f2be49"/>
+<rect x="416" y="252" width="2" height="38" fill="#f2be49"/>
+<rect x="310" y="290" width="192" height="46" fill="#62a6cd"/>
+<rect x="168" y="266" width="7" height="80" fill="#62a6cd"/>
+<rect x="185" y="266" width="7" height="80" fill="#62a6cd"/>
+<rect x="55" y="352" width="26" height="2" fill="#d1dce0"/>
+<rect x="47" y="354" width="42" height="2" fill="#d1dce0"/>
+<rect x="41" y="356" width="54" height="2" fill="#d1dce0"/>
+<rect x="37" y="358" width="62" height="2" fill="#d1dce0"/>
+<rect x="34" y="360" width="68" height="2" fill="#d1dce0"/>
+<rect x="31" y="362" width="74" height="2" fill="#d1dce0"/>
+<rect x="29" y="364" width="78" height="2" fill="#d1dce0"/>
+<rect x="27" y="366" width="82" height="2" fill="#d1dce0"/>
+<rect x="26" y="368" width="84" height="2" fill="#d1dce0"/>
+<rect x="25" y="370" width="86" height="2" fill="#d1dce0"/>
+<rect x="24" y="372" width="88" height="4" fill="#d1dce0"/>
+<rect x="168" y="346" width="24" height="46" fill="#62a6cd"/>
+<rect x="32" y="376" width="72" height="72" fill="#62a6cd"/>
+</g>
+<text x="38" y="1384" class="note">37,192 cells | Same ID, dimensions and terrain</text>
+<rect x="612" y="972" width="568" height="424" rx="10" fill="#18283a"/>
+<text x="628" y="1000" class="label">6-6 | Notched confluence / AFTER</text>
+<text x="628" y="1027" class="note">Two floor legs; upright 2 cells left</text>
+<g transform="translate(682.293,1046) scale(0.721983)" shape-rendering="crispEdges">
+<rect width="592" height="464" fill="#0d1725"/>
+<rect x="0" y="448" width="144" height="16" fill="#6f5540"/>
+<rect x="144" y="420" width="24" height="44" fill="#6f5540"/>
+<rect x="168" y="392" width="24" height="72" fill="#6f5540"/>
+<rect x="192" y="364" width="24" height="100" fill="#6f5540"/>
+<rect x="216" y="336" width="376" height="128" fill="#6f5540"/>
+<rect x="344" y="92" width="124" height="2" fill="#d1dce0"/>
+<rect x="340" y="94" width="132" height="2" fill="#d1dce0"/>
+<rect x="336" y="96" width="140" height="2" fill="#d1dce0"/>
+<rect x="332" y="98" width="148" height="2" fill="#d1dce0"/>
+<rect x="328" y="100" width="156" height="2" fill="#d1dce0"/>
+<rect x="324" y="102" width="164" height="2" fill="#d1dce0"/>
+<rect x="320" y="104" width="172" height="4" fill="#d1dce0"/>
+<rect x="330" y="108" width="152" height="48" fill="#62a6cd"/>
+<rect x="169" y="208" width="6" height="6" fill="#d1dce0"/>
+<rect x="312" y="214" width="60" height="2" fill="#d1dce0"/>
+<rect x="456" y="214" width="44" height="2" fill="#d1dce0"/>
+<rect x="310" y="216" width="64" height="2" fill="#d1dce0"/>
+<rect x="454" y="216" width="48" height="2" fill="#d1dce0"/>
+<rect x="163" y="214" width="30" height="6" fill="#d1dce0"/>
+<rect x="308" y="218" width="68" height="2" fill="#d1dce0"/>
+<rect x="452" y="218" width="52" height="2" fill="#d1dce0"/>
+<rect x="306" y="220" width="72" height="2" fill="#d1dce0"/>
+<rect x="450" y="220" width="56" height="2" fill="#d1dce0"/>
+<rect x="390" y="156" width="32" height="72" fill="#62a6cd"/>
+<rect x="166" y="220" width="24" height="38" fill="#62a6cd"/>
+<rect x="166" y="258" width="9" height="4" fill="#62a6cd"/>
+<rect x="181" y="258" width="9" height="4" fill="#62a6cd"/>
+<rect x="310" y="222" width="64" height="44" fill="#62a6cd"/>
+<rect x="454" y="222" width="48" height="44" fill="#62a6cd"/>
+<rect x="396" y="228" width="2" height="38" fill="#f2be49"/>
+<rect x="416" y="228" width="2" height="38" fill="#f2be49"/>
+<rect x="166" y="262" width="8" height="4" fill="#62a6cd"/>
+<rect x="182" y="262" width="8" height="4" fill="#62a6cd"/>
+<rect x="310" y="266" width="192" height="16" fill="#62a6cd"/>
+<rect x="310" y="282" width="16" height="8" fill="#62a6cd"/>
+<rect x="332" y="282" width="148" height="8" fill="#62a6cd"/>
+<rect x="486" y="282" width="16" height="8" fill="#62a6cd"/>
+<rect x="310" y="290" width="192" height="22" fill="#62a6cd"/>
+<rect x="330" y="312" width="2" height="24" fill="#f2be49"/>
+<rect x="480" y="312" width="2" height="24" fill="#f2be49"/>
+<rect x="166" y="266" width="7" height="80" fill="#62a6cd"/>
+<rect x="183" y="266" width="7" height="80" fill="#62a6cd"/>
+<rect x="55" y="352" width="26" height="2" fill="#d1dce0"/>
+<rect x="47" y="354" width="42" height="2" fill="#d1dce0"/>
+<rect x="41" y="356" width="54" height="2" fill="#d1dce0"/>
+<rect x="37" y="358" width="62" height="2" fill="#d1dce0"/>
+<rect x="34" y="360" width="68" height="2" fill="#d1dce0"/>
+<rect x="31" y="362" width="74" height="2" fill="#d1dce0"/>
+<rect x="29" y="364" width="78" height="2" fill="#d1dce0"/>
+<rect x="27" y="366" width="82" height="2" fill="#d1dce0"/>
+<rect x="26" y="368" width="84" height="2" fill="#d1dce0"/>
+<rect x="25" y="370" width="86" height="2" fill="#d1dce0"/>
+<rect x="24" y="372" width="88" height="4" fill="#d1dce0"/>
+<rect x="166" y="346" width="24" height="46" fill="#62a6cd"/>
+<rect x="32" y="376" width="72" height="72" fill="#62a6cd"/>
+</g>
+<text x="628" y="1384" class="note">37,192 cells | Same ID, dimensions and terrain</text>
+</svg>

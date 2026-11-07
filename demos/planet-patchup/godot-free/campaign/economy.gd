@@ -3,8 +3,9 @@ extends RefCounted
 const Money = preload("res://campaign/money.gd")
 const RETIRED_TRACKS := ["suction", "range", "collectBatch", "collectInterval"]
 const RANGE_TRACKS := ["blastRadius", "blastReach", "wellReach", "wellDuration"]
-const BLAST_FORCE_ORIGINAL_PRICES := 5
-const BLAST_FORCE_LATE_GROWTH := 1.10
+const SHOCKWAVE_TRACKS := ["blastForce", "blastRadius", "blastReach"]
+const SHOCKWAVE_ORIGINAL_PRICES := 5
+const SHOCKWAVE_LATE_GROWTH := 1.10
 var catalog
 var progression
 var _price_cache := {}
@@ -20,20 +21,20 @@ func legacy_upgrade_cost(id: String, level: int) -> int:
 	var track: Dictionary = catalog.legacy_tracks[id]
 	return ceili(float(track.base) * pow(float(track.growth), level) / 10.0) * 10
 
-func _blast_force_cost(level: int) -> int:
-	if level < BLAST_FORCE_ORIGINAL_PRICES:
-		return legacy_upgrade_cost("blastForce", level)
-	var track: Dictionary = catalog.legacy_tracks.blastForce
-	var last_original := BLAST_FORCE_ORIGINAL_PRICES - 1
+func _shockwave_cost(id: String, level: int) -> int:
+	if level < SHOCKWAVE_ORIGINAL_PRICES:
+		return legacy_upgrade_cost(id, level)
+	var track: Dictionary = catalog.legacy_tracks[id]
+	var last_original := SHOCKWAVE_ORIGINAL_PRICES - 1
 	var anchor := float(track.base) * pow(float(track.growth), last_original)
-	return ceili(anchor * pow(BLAST_FORCE_LATE_GROWTH, level - last_original) / 10.0) * 10
+	return ceili(anchor * pow(SHOCKWAVE_LATE_GROWTH, level - last_original) / 10.0) * 10
 
 func upgrade_cost(id: String, level: int) -> Variant:
 	if level < 0 or level >= Money.MAX_SAFE_INTEGER:
 		return null
 	var track: Dictionary = catalog.tracks[id]
 	if catalog.legacy_tracks.has(id) and level < int(track.cap):
-		return _blast_force_cost(level) if id == "blastForce" else legacy_upgrade_cost(id, level)
+		return _shockwave_cost(id, level) if id in SHOCKWAVE_TRACKS else legacy_upgrade_cost(id, level)
 	var key := id + ":" + str(level)
 	if _price_cache.has(key):
 		return _price_cache[key]
@@ -125,9 +126,9 @@ func validate_purchase_totals(p: Dictionary) -> String:
 		var level := int(p.skills[id] if is_skill else p.upgrades[id])
 		var maximum := int(catalog.skills[id].get("max", 5)) if is_skill else int(catalog.tracks[id].get("cap", 0))
 		var prefix := legacy_skill_spent(id, mini(level, maximum)) if is_skill else legacy_track_spent(id, mini(level, maximum)) if maximum > 0 else 0
-		if id == "blastForce":
-			if not _valid_blast_force_total(amount, level, maximum, prefix):
-				return "purchase-blastForce"
+		if id in SHOCKWAVE_TRACKS:
+			if not _valid_shockwave_total(id, amount, level, maximum, prefix):
+				return "purchase-" + str(id)
 			continue
 		if level <= maximum:
 			if Money.compare(amount, prefix) != 0:
@@ -143,21 +144,21 @@ func validate_purchase_totals(p: Dictionary) -> String:
 				return "purchase-" + str(id)
 	return ""
 
-func _valid_blast_force_total(amount: Variant, level: int, cap: int, original_prefix: int) -> bool:
+func _valid_shockwave_total(id: String, amount: Variant, level: int, cap: int, original_prefix: int) -> bool:
 	# Old purchases may form any prefix, followed by purchases at the new prices.
 	var prefix := original_prefix
 	if level <= cap and Money.compare(amount, prefix) == 0:
 		return true
-	for previous in range(mini(level, cap) - 1, BLAST_FORCE_ORIGINAL_PRICES - 1, -1):
-		prefix += _blast_force_cost(previous) - legacy_upgrade_cost("blastForce", previous)
+	for previous in range(mini(level, cap) - 1, SHOCKWAVE_ORIGINAL_PRICES - 1, -1):
+		prefix += _shockwave_cost(id, previous) - legacy_upgrade_cost(id, previous)
 		if level <= cap and Money.compare(amount, prefix) == 0:
 			return true
 	if level <= cap:
 		return false
 	# Beyond the original cap, keep the ledger bounded without iterating unlimited levels.
 	var count := str(level - cap)
-	var first: Variant = upgrade_cost("blastForce", cap)
-	var old_last: Variant = Money.polynomial_cost(legacy_upgrade_cost("blastForce", cap - 1), level - cap, 25)
+	var first: Variant = upgrade_cost(id, cap)
+	var old_last: Variant = Money.polynomial_cost(legacy_upgrade_cost(id, cap - 1), level - cap, 25)
 	var minimum: Variant = Money.add(prefix, Money.multiply(first, count))
 	var maximum: Variant = Money.add(original_prefix, Money.multiply(old_last, count))
 	return Money.compare(amount, minimum) >= 0 and Money.compare(amount, maximum) <= 0

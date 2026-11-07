@@ -1,0 +1,243 @@
+{
+  "scope": "Static map data only; no game, test, scene, browser, device or simulation execution.",
+  "maps": {
+    "terrace-05-terrace-terrain-frame-v1": {
+      "before_sha256": "1010408d07f67feff0f3d6789a3f06c899315b5e3701e6827c85fc4c90b3c029",
+      "after_sha256": "5072fad40dad0286012c82b87544b9668ff2fcd9cc77113a046f90acdda2d824",
+      "before": {
+        "pixels": 23120,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 168,
+          "1": 4
+        },
+        "modules": 11,
+        "module_links": 10
+      },
+      "after": {
+        "pixels": 23120,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8
+        },
+        "modules": 13,
+        "module_links": 12
+      },
+      "moves": [
+        [
+          [
+            0,
+            1,
+            4,
+            5,
+            7,
+            8,
+            9
+          ],
+          0,
+          -24
+        ]
+      ],
+      "added_legs": [
+        [
+          220,
+          272,
+          2,
+          24
+        ],
+        [
+          354,
+          272,
+          2,
+          24
+        ]
+      ],
+      "removed_windows": [
+        [
+          220,
+          244,
+          6,
+          8
+        ],
+        [
+          350,
+          244,
+          6,
+          8
+        ]
+      ],
+      "fall_clearance_cells": 24
+    },
+    "terrace-06-terrace-terrain-frame-v1": {
+      "before_sha256": "b654d5f09bae8f21a3eedd05ed177c9913b186825d563c01acab61bd67e528a5",
+      "after_sha256": "552a41162872fa06654ebde6c9813f4434444325ad1c68d196a40657ebf6efcd",
+      "before": {
+        "pixels": 27608,
+        "buried_cells": 0,
+        "cliff_side_contacts": 24,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 264
+        },
+        "modules": 14,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 27608,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 262
+        },
+        "modules": 14,
+        "module_links": 13
+      },
+      "moves": [
+        [
+          [
+            6,
+            11
+          ],
+          -2,
+          0
+        ]
+      ],
+      "added_legs": [],
+      "removed_windows": [],
+      "fall_clearance_cells": null
+    },
+    "mosaic-06-mosaic-terrain-frame-v1": {
+      "before_sha256": "371b37e3730665ecbb2dd470b2af3d957340fdc1012a2a99ccb5ccc9159fed68",
+      "after_sha256": "053c9cfee853bc0f2b2a0acce0ccfe9a7a442fde57eac4fc92e50aa47accf935",
+      "before": {
+        "pixels": 37192,
+        "buried_cells": 0,
+        "cliff_side_contacts": 28,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 288
+        },
+        "modules": 11,
+        "module_links": 9
+      },
+      "after": {
+        "pixels": 37192,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 94,
+          "1": 4
+        },
+        "modules": 13,
+        "module_links": 11
+      },
+      "moves": [
+        [
+          [
+            0,
+            1,
+            2,
+            4,
+            6,
+            8,
+            9
+          ],
+          0,
+          -24
+        ],
+        [
+          [
+            3,
+            7
+          ],
+          -2,
+          0
+        ]
+      ],
+      "added_legs": [
+        [
+          330,
+          312,
+          2,
+          24
+        ],
+        [
+          480,
+          312,
+          2,
+          24
+        ]
+      ],
+      "removed_windows": [
+        [
+          326,
+          282,
+          6,
+          8
+        ],
+        [
+          480,
+          282,
+          6,
+          8
+        ]
+      ],
+      "fall_clearance_cells": 24
+    }
+  },
+  "campaign_audit": {
+    "maps": 43,
+    "buried_cells": 0,
+    "cliff_side_contacts": 0,
+    "ungrounded_cells": 0,
+    "untouched_map_count": 40,
+    "untouched_map_sha256": {
+      "canal-01-canal-terrain-frame-v1.json": "1aebf0595e6b971f3d9c0270cc09e2c624d5587b560e6041bd4825f9608f7468",
+      "mosaic-04-mosaic-terrain-frame-v1.json": "ebef37876fdf066bdf863d763065395b18018c0e5ef6d9e9d606ca79774b2023",
+      "amber-05-amber-terrain-frame-v1.json": "e37f2f4c5e4e5bc2a5f23540a60683f1f843c099a5bc58ca42a5e7704a960b5d",
+      "canal-04-canal-terrain-frame-v1.json": "76f92ad1f3c74a673151f12cd752a30da8a23cb7c18c4a64e24b1912ef201d1f",
+      "terrace-04-terrace-terrain-frame-v1.json": "f5d812fa216860c6d993c1229a65edb70eaaa6555d234350c5dbd5d26e2b50f1",
+      "culture-yard-06-v1.json": "afb14a0829367afad078179791b9420b0d2fb45e8bae21983e05f5e149cd1d17",
+      "arch-5-arch-quarter-v2.json": "e27a9ea2cbe26531373f72d5336364f32a7bc76aff4f60a9781ecf5f081f3639",
+      "arch-0-arch-quarter-v2.json": "5d212ec52080a87c62b6da427381b478cf761a39508fe7a1fd1d3d3e86e498f7",
+      "terrace-03-terrace-terrain-frame-v1.json": "ad19e6e233f7d30d7e36e2c92e4913f25503d4ecbf9bd2ffbb90ae5a27c19f7e",
+      "amber-04-amber-terrain-frame-v1.json": "fec18ee9482bdaab5f56e4f8ab3dfcd28fcbb871055f7dd4625ecf43d9fe95b0",
+      "canal-05-canal-terrain-frame-v1.json": "3706d60d4c755bf528deb965354e2612b691d13ff776f4e233087fae0a116420",
+      "canal-boss-canal-terrain-frame-v1.json": "b9c7869b711dc995902a946202b50207a5a3aac54d0229d83cbb404b732da575",
+      "culture-yard-04-v1.json": "f751143a4796c52530d63d8967eef6ff51798b7b82d83adcb4873ea11bb4a399",
+      "amber-01-amber-terrain-frame-v1.json": "b7b58081c07a18c322acbc4563acc411460a1369f803c60c4a7bf1c3903b8e5c",
+      "mosaic-01-mosaic-terrain-frame-v1.json": "0cdb70c9b298b1f28d6d5c90571d2c6fb3bfd2a6ea46008206c75e9568c9e4b2",
+      "amber-boss-amber-terrain-frame-v1.json": "f97cc53cc7ccbe61e4124846a930f5cf3336d025596100ab7dd292c011fbff41",
+      "terrace-boss-terrace-terrain-frame-v1.json": "7d0447db584bca23c2e07576f3c65db5fc08e806b670c3564c90aa322a0c12ca",
+      "terrace-02-terrace-terrain-frame-v1.json": "3b1bc2ebaf79294c3f8bfb83646afc786242df256941338b88a75a4831c96181",
+      "mosaic-02-mosaic-terrain-frame-v1.json": "cfcd6c5c9399269b52e73e47cba1451f3090237f067e8e4dee31bf97403199e3",
+      "arch-4-arch-quarter-v2.json": "c4b099fcfc8a4a6bf607beaf794a3a7ab09c15cc82c7ad7daa6076ec1bc5b6cc",
+      "culture-yard-05-v1.json": "972252fc21af2d2fe66d1c51a604013f6b44aa8fa7a5334b1898cb7eceb4cba7",
+      "arch-1-arch-quarter-v2.json": "9c8f1ef8fe8e6ff7cb496948d83afa4b81a0f191f6dfec693dc7bd8cd859e5e9",
+      "arch-2-arch-quarter-v2.json": "4549df3ba023d08064f333373b9d1c0c379417bff044f99d95f1dfe5ccdbc59e",
+      "terrace-01-terrace-terrain-frame-v1.json": "8aa5d82271ff48cfa990efe3683a2e8b19137da6b1b0af7fe9352414115375e2",
+      "mosaic-03-mosaic-terrain-frame-v1.json": "ddcf4204b256eaa6d146480786131db0f6d2d5ca7894dfbe8997ed06a5460295",
+      "arch-7-arch-quarter-v2.json": "f9c99e58372df2ebf75b325d50cb0520a728c639e2ffaf6cba7c07e3df1ffc8f",
+      "mosaic-boss-mosaic-terrain-frame-v1.json": "6b75023aa265a2a8530ab040ec1fe61255d778ae66488481515c363bfe9e682c",
+      "culture-yard-boss-v1.json": "4aac570b59c086a59f35f9422af65ff9f40ee7aabb2463ef767512e25b91349b",
+      "amber-02-amber-terrain-frame-v1.json": "8bd858a293baeb651594f37dc89855a8f048199be30eb62494d41496661596e0",
+      "canal-03-canal-terrain-frame-v1.json": "6eb14569f8b38913ee1169a315f5baf653568ccc2fac65941d5e1c6b037a6a1a",
+      "canal-06-canal-terrain-frame-v1.json": "85933b816f3e65c69cc949bd9f2288ebfd1889a960cce7772041bdb93d24c1cf",
+      "culture-yard-01-v1.json": "5cd3cffd7483a264e2f9f7a91f44ef736decbe347b07a88ddae838b216b11d2b",
+      "arch-3-arch-quarter-v2.json": "e147d786925ebf5e2efe21758e5f9560d899d3978e671798b647ccd813e35798",
+      "culture-yard-03-v1.json": "3f7a165259383f6abf0f2803d72ad917f213124a87a2dfdd2c8bc4d21d373be9",
+      "arch-6-arch-quarter-v2.json": "f32934bcefbad2dccb551693cdae4d5c76cac1606e827116934a72bb579cd81d",
+      "amber-06-amber-terrain-frame-v1.json": "d9b78d29f37ecc196237861dd2550cea96cebf577de3dc4778c613177aae5229",
+      "culture-yard-02-v1.json": "c24cefcd9681d18df522ef8d8538bc7a5702f07c5ed90dd220723a5b7c4663a5",
+      "mosaic-05-mosaic-terrain-frame-v1.json": "5d046b74b1d8b211c05c2caad703ae90054edfb03bdb8150a3b839d3b9835d01",
+      "amber-03-amber-terrain-frame-v1.json": "823c5a870265896227f5858f205bc500b5ef79bfc14df76cb47977e236e45e58",
+      "canal-02-canal-terrain-frame-v1.json": "100fc566da4630929ed517018d74c49283607f890aba04718f28540f0ac64f8d"
+    }
+  }
+}
