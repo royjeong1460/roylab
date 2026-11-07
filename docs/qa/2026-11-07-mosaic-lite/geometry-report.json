@@ -1,0 +1,219 @@
+{
+  "before": {
+    "pixels": 47156,
+    "buried_cells": 0,
+    "cliff_side_contacts": 0,
+    "ungrounded_cells": 0,
+    "floor_contact_roles": {
+      "1": 32
+    },
+    "modules": 24,
+    "module_links": 24
+  },
+  "after": {
+    "pixels": 30394,
+    "buried_cells": 0,
+    "cliff_side_contacts": 0,
+    "ungrounded_cells": 0,
+    "floor_contact_roles": {
+      "1": 28
+    },
+    "modules": 24,
+    "module_links": 24
+  },
+  "pillars": [
+    {
+      "before": [
+        126,
+        108,
+        2,
+        176
+      ],
+      "after": [
+        101,
+        86,
+        2,
+        141
+      ]
+    },
+    {
+      "before": [
+        510,
+        108,
+        2,
+        140
+      ],
+      "after": [
+        408,
+        86,
+        2,
+        112
+      ]
+    },
+    {
+      "before": [
+        290,
+        228,
+        2,
+        24
+      ],
+      "after": [
+        232,
+        182,
+        2,
+        20
+      ]
+    },
+    {
+      "before": [
+        348,
+        228,
+        2,
+        24
+      ],
+      "after": [
+        278,
+        182,
+        2,
+        20
+      ]
+    },
+    {
+      "before": [
+        500,
+        296,
+        2,
+        104
+      ],
+      "after": [
+        400,
+        237,
+        2,
+        83
+      ]
+    },
+    {
+      "before": [
+        580,
+        296,
+        2,
+        104
+      ],
+      "after": [
+        464,
+        237,
+        2,
+        83
+      ]
+    },
+    {
+      "before": [
+        62,
+        338,
+        2,
+        158
+      ],
+      "after": [
+        50,
+        270,
+        2,
+        127
+      ]
+    },
+    {
+      "before": [
+        138,
+        338,
+        2,
+        158
+      ],
+      "after": [
+        110,
+        270,
+        2,
+        127
+      ]
+    },
+    {
+      "before": [
+        294,
+        424,
+        2,
+        10
+      ],
+      "after": [
+        235,
+        339,
+        2,
+        8
+      ]
+    },
+    {
+      "before": [
+        340,
+        424,
+        2,
+        10
+      ],
+      "after": [
+        272,
+        339,
+        2,
+        8
+      ]
+    },
+    {
+      "before": [
+        244,
+        440,
+        12,
+        8
+      ],
+      "after": [
+        195,
+        352,
+        10,
+        6
+      ]
+    },
+    {
+      "before": [
+        384,
+        440,
+        12,
+        8
+      ],
+      "after": [
+        307,
+        352,
+        10,
+        6
+      ]
+    }
+  ],
+  "before_assemblies": [
+    23568,
+    23588
+  ],
+  "after_assemblies": [
+    15247,
+    15147
+  ],
+  "grid_before": [
+    640,
+    512
+  ],
+  "grid_after": [
+    512,
+    410
+  ],
+  "pixel_reduction_fraction": 0.3554584782424294,
+  "site": "mosaic-boss-mosaic-terrain-frame-v1",
+  "source_sha256": "7ce4023becac3175e88901a1eda862843b506662490e468b07f358dcad6f185c",
+  "output_sha256": "72e1f0e3078f1499945062a54e7edc6570306f9e6a05033a092a020ccb045807",
+  "encoded_bytes": 413950,
+  "scope": "Static authored file data only; no physics, scene or game execution.",
+  "public_release": false,
+  "per_pixel_reward_unchanged": true,
+  "boss_bonuses_unchanged": true
+}

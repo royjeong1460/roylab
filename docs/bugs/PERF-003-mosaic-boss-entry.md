@@ -39,3 +39,9 @@
 ## 2026-11-07 저장 형식 개선 후보
 
 사용자 승인에 따라43개 현장/튜토리얼과 별도 fallback에서 빈칸을 저장하지 않는 occupied-runs-v1 형식을 적용했다.6보스 JSON은3,597,098 →620,584 bytes이며 픽셀47,156개와 전체640×512 좌표는 동일하다. 읽는 경계에서 기존 배열로 복원하고 원래 모듈 목록·픽셀 순서는 유지한다. 전체 파일 정적 복원 대조와 import/compile/export를 수행했다. 실제 진입 시간·메모리·FPS는 여전히 미측정이다. 최종 빌드/설치/배포 근거는 docs/qa/2026-11-07-sparse-maps/delivery.json에 별도로 기록한다.
+
+##2026-11-07 storage optimization follow-up and reduced-pixel candidate
+
+After0.5.50 storage changes, the user reports both map-entry pauses and explosion/collapse hitches; platform and exact map were not specified in that follow-up. These are reports, not measured regressions. Source inspection confirms occupied-runs expansion happens at map load, not in combat. Entry still restores dense grids and synchronously prepares original coordinates, support calibration, atlas, materials and colliders. Combat still processes due explosions and pending collision fractures synchronously; delayed skill actions are not a resumable per-frame work-budget scheduler.
+
+The user approved reducing6-Boss pixels first. Comparison0.5.51(61) is installed as sequence4284:47,156 →30,394 pixels and640×512 →512×410 grid. The other42 maps remain unchanged.24 role modules/24 links/two assemblies are preserved by static data checks. Public web remains the0.5.50 data release. Timing/FPS and physical feel remain unverified pending user play. See docs/qa/2026-11-07-mosaic-lite/README.md. This is not marked resolved.

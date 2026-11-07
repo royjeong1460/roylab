@@ -1,0 +1,33 @@
+{
+  "version": "0.5.51",
+  "nativeBuild": 61,
+  "candidateOnly": true,
+  "publicDeployment": false,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativePackSha256": "a0966053d12ed8d85111bfc303c67e8e7c70b7086973654edc5ef0713a8df2dc",
+  "nativeSignatureVerified": true,
+  "previousCandidate": "ios-sparse-maps-2026-11-07",
+  "rollbackDelivery": "qa/ios-sparse-maps-2026-11-07/delivery.json",
+  "mapId": "mosaic-boss-mosaic-terrain-frame-v1",
+  "beforePixels": 47156,
+  "afterPixels": 30394,
+  "gridBefore": [
+    640,
+    512
+  ],
+  "gridAfter": [
+    512,
+    410
+  ],
+  "otherMapsUnchanged": 42,
+  "physicsSkillEconomyCollectionSourceUnchanged": true,
+  "perPixelRewardUnchanged": true,
+  "maxRawPixelRewardReduced": true,
+  "nativeInstalled": true,
+  "runtimeExecutedByAgent": false,
+  "runtimeVerificationOwner": "user",
+  "localWebManifestStem": "free-0541-ff1c89611183",
+  "installedSequence": 4284,
+  "installOutcome": "success",
+  "localNativeEvidence": "variants/godot-paid-port/qa/ios-mosaic-lite-2026-11-07/delivery.json"
+}
