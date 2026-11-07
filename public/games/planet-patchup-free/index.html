@@ -109,7 +109,7 @@ body {
 		</noscript>
 
 		<div id="status">
-			<img id="status-splash" class="show-image--false fullsize--true use-filter--true" src="free-0541-b7399322186d.png" alt="">
+			<img id="status-splash" class="show-image--false fullsize--true use-filter--true" src="free-0541-ae30a3e88329.png" alt="">
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
 		</div>
@@ -117,7 +117,7 @@ body {
 		<script src="godot-web-ec83eba66e3c.js" onerror="PPFreeWebEngineError()"></script>
 		<script>
 if(typeof Engine === "function"){
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"godot-web-ec83eba66e3c","experimentalVK":false,"fileSizes":{"free-0541-b7399322186d.pck":57025864,"godot-web-ec83eba66e3c.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libpp_core-g40-933aa18db7e2de4a.wasm"],"godotPoolSize":4,"mainPack":"free-0541-b7399322186d.pck"};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"godot-web-ec83eba66e3c","experimentalVK":false,"fileSizes":{"free-0541-ae30a3e88329.pck":19683116,"godot-web-ec83eba66e3c.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libpp_core-g40-933aa18db7e2de4a.wasm"],"godotPoolSize":4,"mainPack":"free-0541-ae30a3e88329.pck"};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -207,7 +207,7 @@ const engine = new Engine(GODOT_CONFIG);
 		setStatusMode('progress');
 		const startAfterBridge=engine.startGame.bind(engine);
 const fetchBeforeGame=globalThis.fetch.bind(globalThis);
-const compressedTypes=new Map([["free-0541-b7399322186d.pck","application/octet-stream"],["godot-web-ec83eba66e3c.side.wasm","application/wasm"],["godot-web-ec83eba66e3c.wasm","application/wasm"],["libpp_core-g40-933aa18db7e2de4a.wasm","application/wasm"]].map(([name,type])=>[new URL(name,document.baseURI).href,type]));
+const compressedTypes=new Map([["free-0541-ae30a3e88329.pck","application/octet-stream"],["godot-web-ec83eba66e3c.side.wasm","application/wasm"],["godot-web-ec83eba66e3c.wasm","application/wasm"],["libpp_core-g40-933aa18db7e2de4a.wasm","application/wasm"]].map(([name,type])=>[new URL(name,document.baseURI).href,type]));
 engine.startGame=options=>globalThis.PPFreeWebReady.then(()=>{
  if(typeof DecompressionStream!=="function")throw new Error("Please update your browser to load this game.");
  globalThis.fetch=async(resource,options)=>{

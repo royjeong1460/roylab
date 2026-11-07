@@ -1,6 +1,7 @@
 extends Node2D
 
 const PerformanceProbe = preload("res://performance_probe.gd")
+const MapData = preload("res://campaign/map_data.gd")
 var perf := PerformanceProbe.new()
 var native_pixels = ClassDB.instantiate("PPPixelKernel")
 var native_world = ClassDB.instantiate("PPWorldKernel")
@@ -195,7 +196,10 @@ func is_terrain_cell(id: int) -> bool:
 
 func _ready() -> void:
 	if fixture.is_empty():
-		fixture = JSON.parse_string(FileAccess.get_file_as_string("res://data/arch_lane.json"))
+		fixture = MapData.expand(JSON.parse_string(FileAccess.get_file_as_string("res://data/arch_lane.json")))
+		if fixture.is_empty():
+			push_error("Invalid Arch Lane map encoding")
+			return
 	assert(fixture is Dictionary, "Arch Lane fixture must exist")
 	width = int(fixture.width)
 	height = int(fixture.height)

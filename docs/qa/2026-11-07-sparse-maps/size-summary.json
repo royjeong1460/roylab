@@ -1,0 +1,41 @@
+{
+  "campaign_maps": 43,
+  "fallback_maps": 1,
+  "raw_json_before": 44480199,
+  "raw_json_after": 7531845,
+  "raw_json_reduction_percent": 83.07,
+  "boss": {
+    "file": "maps/mosaic-boss-mosaic-terrain-frame-v1.json",
+    "id": "mosaic-boss-mosaic-terrain-frame-v1",
+    "pixels": 47156,
+    "grid_cells": 327680,
+    "before_bytes": 3597098,
+    "after_bytes": 620584,
+    "before_gzip_bytes": 148773,
+    "after_gzip_bytes": 170150,
+    "before_sha256": "8fde1ff6dd5850f6b2f0b48c1d96eef498319f7638e3df9fa9c18759638eec46",
+    "after_sha256": "7ce4023becac3175e88901a1eda862843b506662490e468b07f358dcad6f185c",
+    "logical_sha256": "ee63d29868448484789f06b6c91b26f551eee7e636649621eb6bfc2234acd0ca",
+    "exact_full_dictionary_roundtrip": true,
+    "runs": 11737
+  },
+  "pck_before": {
+    "file": "free-0541-b7399322186d.pck",
+    "encoding": "gzip-payload",
+    "bytes": 13214768,
+    "decodedBytes": 57025864,
+    "sha256": "2bab40cc6b4d44b90179f65754932b788bee7d25763bb8ba53669e0f14a06738",
+    "decodedSha256": "5d09020db70219b623808f49d7557905ec7cf3b2b0ed27044b3c862e7b5c397b"
+  },
+  "pck_after": {
+    "file": "free-0541-ae30a3e88329.pck",
+    "encoding": "gzip-payload",
+    "bytes": 13493476,
+    "decodedBytes": 19683116,
+    "sha256": "60242eb3a4374db4ec6e98fde022d81512625a895b118a70b92ed46f3374ef79",
+    "decodedSha256": "8df2a53df3c4dc104f4bbc002a7d4770af724d0651637e87e28323df5fb5f842"
+  },
+  "web_stem": "free-0541-ae30a3e88329",
+  "engine_stem": "godot-web-ec83eba66e3c",
+  "runtime_by_agent": false
+}

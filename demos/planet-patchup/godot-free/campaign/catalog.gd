@@ -1,5 +1,6 @@
 extends RefCounted
 
+const MapData = preload("res://campaign/map_data.gd")
 const MAP_CACHE_LIMIT := 2
 const RETIRED_TRACKS := ["suction", "range", "collectBatch", "collectInterval"]
 var regions: Array = []
@@ -119,6 +120,13 @@ func site(id: String) -> Dictionary:
 		return {}
 	var value := _read_dictionary("res://data/maps/" + id + ".json")
 	if value.is_empty():
+		return {}
+	if value.get("width") != _metadata[id].get("width") or value.get("height") != _metadata[id].get("height"):
+		last_error = "Site dimensions differ from catalog: " + id
+		return {}
+	value = MapData.expand(value)
+	if value.is_empty():
+		last_error = "Invalid map encoding: " + id
 		return {}
 	var width: int = int(value.get("width", 0))
 	var height: int = int(value.get("height", 0))

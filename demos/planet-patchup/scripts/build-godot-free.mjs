@@ -29,6 +29,12 @@ for(const [index,region] of campaign.regions.entries()){
  if(region.index!==index||sites.length!==7||sites.filter(site=>site.boss).length!==1||JSON.stringify(region.sites)!==JSON.stringify(sites.map(site=>site.id)))fail('Incorrect campaign membership for region '+index);
 }
 if(JSON.stringify(readdirSync(path.join(source,'data/maps')).filter(n=>n.endsWith('.json')).sort())!==JSON.stringify(expectedMaps))fail('Map directory differs from the campaign.');
+for(const relative of [...expectedMaps.map(name=>'data/maps/'+name),'data/arch_lane.json']){
+ const map=json(path.join(source,relative)),runs=map.pixel_runs;
+ if(map.schema_version!==2||map.encoding!=='occupied-runs-v1'||!Array.isArray(runs)||runs.length%6||['cells','roles','colors','module_of'].some(key=>key in map))fail('Map must use occupied-only storage: '+relative);
+ let pixels=0;for(let offset=1;offset<runs.length;offset+=6)pixels+=runs[offset];
+ if(pixels!==map.initial)fail('Sparse map pixel count differs: '+relative);
+}
 const balance=json(path.join(source,'data/balance.json'));
 const expansion=json(path.join(source,'data/skill_expansion.json'));
 const allowedSkills=['aftershock','expand','gravity','orbital','recharge','relay','seismic','slam','sonic','wave'];

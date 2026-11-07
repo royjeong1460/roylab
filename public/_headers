@@ -125,3 +125,7 @@
 /games/planet-patchup-free/free-0541-b7399322186d.pck
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/games/planet-patchup-free/free-0541-ae30a3e88329.pck
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
