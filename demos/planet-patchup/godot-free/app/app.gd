@@ -189,6 +189,17 @@ func start_run(mode: String, site_id := "") -> void:
 	notice = ""
 	get_tree().paused = false
 	feedback.unlock()
+	if result.mode == "tutorial":
+		navigate("tutorial_intro", result)
+		return
+	_begin_play(result)
+
+func complete_tutorial_intro() -> void:
+	if current_screen != "tutorial_intro" or journey.current_run == null:
+		return
+	_begin_play(payload.duplicate())
+
+func _begin_play(result: Dictionary) -> void:
 	feedback.set_game_paused(false)
 	feedback.prepare_sortie()
 	play_view = PlayView.new()
@@ -414,11 +425,16 @@ func _failure_text(result: Dictionary) -> String:
 	return _render_notice(str(descriptions[reason])) if descriptions.has(reason) else _render_notice("Could not complete this action (%s). Your previous progress has been kept.", [reason])
 
 func _active_changed(active: bool) -> void:
+	if current_screen == "tutorial_intro":
+		return
 	if not active and journey.current_run != null:
 		journey.journal.checkpoint(journey.current_run, {"closed": false, "paused": true})
 		pause_run()
 
 func _back_requested() -> void:
+	if current_screen == "tutorial_intro":
+		view.finish()
+		return
 	if screens.close_popup():
 		return
 	if journey.current_run != null:
@@ -435,7 +451,7 @@ func _back_requested() -> void:
 		show_settings("home")
 
 func _process(dt: float) -> void:
-	if web_bridge.available() and journey.current_run != null:
+	if web_bridge.available() and journey.current_run != null and journey.current_run.world != null:
 		_web_clock += maxf(0.0, dt)
 		if _web_clock >= 0.5:
 			_web_clock = 0.0

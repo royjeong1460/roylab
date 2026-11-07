@@ -2,6 +2,7 @@ extends RefCounted
 
 const UITheme = preload("res://app/ui_theme.gd")
 const PlanetHome = preload("res://presentation/planet_home.gd")
+const TutorialIntro = preload("res://presentation/tutorial_intro.gd")
 const EnvironmentReceipt = preload("res://presentation/environment_receipt.gd")
 const L10n = preload("res://app/localization.gd")
 const GameSkin = preload("res://app/skin.gd")
@@ -209,6 +210,7 @@ func build(screen: String, payload: Dictionary = {}) -> Control:
 	_hud.clear()
 	match screen:
 		"home": return _home()
+		"tutorial_intro": return _tutorial_intro()
 		"regions": return _regions()
 		"maps": return _maps()
 		"workshop", "loadout": return _workshop(payload)
@@ -221,6 +223,12 @@ func build(screen: String, payload: Dictionary = {}) -> Control:
 		"import_confirm": return _import_confirm(payload)
 		"build_info": return _build_info()
 		_: return _error(payload)
+
+func _tutorial_intro() -> Control:
+	var intro := TutorialIntro.new()
+	intro.setup(catalog, app.lifecycle)
+	intro.finished.connect(app.complete_tutorial_intro)
+	return intro
 
 func _home() -> Control:
 	var page := _composition(true)
