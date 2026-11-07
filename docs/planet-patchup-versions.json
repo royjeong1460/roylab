@@ -11,22 +11,28 @@
     "skills": 10
   },
   "ios": {
-    "version": "0.5.41",
-    "build": 50,
+    "version": "0.5.49",
+    "build": 59,
     "installed": true,
-    "installSequence": 3868,
+    "installSequence": 4260,
     "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
-    "sourceCandidate": "qa/unified-2026-11-06/project",
-    "distribution": "development device"
+    "sourceCandidate": "qa/ios-ground-openings-2026-11-07/project",
+    "distribution": "development device",
+    "rollback": "qa/ios-shockwave-floor-maps-2026-11-07/delivery.json"
   },
   "web": {
     "version": "0.5.41",
     "project": "demos/planet-patchup/godot-free",
     "route": "/planet-patchup/play/",
     "url": "https://roylab.pages.dev/planet-patchup/play/",
-    "manifestStem": "free-0541-f7b25a63fc26",
+    "manifestStem": "free-0541-b7399322186d",
     "engineStem": "godot-web-ec83eba66e3c",
-    "delivery": "docs/qa/2026-11-06-web-tool-buttons/README.md"
+    "delivery": "docs/qa/2026-11-07-ground-openings/README.md",
+    "published": false,
+    "httpVerified": false,
+    "presentationPreviewUrl": "https://roylab.pages.dev/planet-patchup/play/?preview=story",
+    "campaignAutoTrigger": false,
+    "rollbackRequiresRetainedEconomy": true
   },
   "previous": {
     "commonVersion": "0.5.40",
@@ -57,5 +63,6 @@
     }
   },
   "runtimeVerificationOwner": "user",
-  "history": "docs/planet-patchup-version-history.md"
+  "history": "docs/planet-patchup-version-history.md",
+  "mapAuthoringRevision": "ground-openings-2026-11-07"
 }

@@ -1,0 +1,888 @@
+{
+  "baseline_commit": "2eeae4f4d37ba78b181d2c7221f66b369663c652",
+  "maps": [
+    {
+      "id": "amber-01-amber-terrain-frame-v1",
+      "input_sha256": "b7b58081c07a18c322acbc4563acc411460a1369f803c60c4a7bf1c3903b8e5c",
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            184,
+            176,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 10
+        }
+      ]
+    },
+    {
+      "id": "amber-02-amber-terrain-frame-v1",
+      "input_sha256": "8bd858a293baeb651594f37dc89855a8f048199be30eb62494d41496661596e0",
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            56,
+            192,
+            126
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        },
+        {
+          "module": 3,
+          "contact": [
+            206,
+            192,
+            20
+          ],
+          "leg_width": 4,
+          "preferred_depth": 15
+        }
+      ]
+    },
+    {
+      "id": "amber-03-amber-terrain-frame-v1",
+      "input_sha256": "823c5a870265896227f5858f205bc500b5ef79bfc14df76cb47977e236e45e58",
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            204,
+            184,
+            32
+          ],
+          "leg_width": 6,
+          "preferred_depth": 17
+        },
+        {
+          "module": 7,
+          "contact": [
+            22,
+            180,
+            34
+          ],
+          "leg_width": 6,
+          "preferred_depth": 15
+        },
+        {
+          "module": 8,
+          "contact": [
+            112,
+            212,
+            32
+          ],
+          "leg_width": 6,
+          "preferred_depth": 10
+        }
+      ]
+    },
+    {
+      "id": "amber-04-amber-terrain-frame-v1",
+      "input_sha256": "fec18ee9482bdaab5f56e4f8ab3dfcd28fcbb871055f7dd4625ecf43d9fe95b0",
+      "openings": [
+        {
+          "module": 4,
+          "contact": [
+            24,
+            232,
+            26
+          ],
+          "leg_width": 5,
+          "preferred_depth": 24
+        }
+      ]
+    },
+    {
+      "id": "amber-05-amber-terrain-frame-v1",
+      "input_sha256": "e37f2f4c5e4e5bc2a5f23540a60683f1f843c099a5bc58ca42a5e7704a960b5d",
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            22,
+            244,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 3,
+          "contact": [
+            188,
+            244,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 5,
+          "contact": [
+            260,
+            244,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 11
+        }
+      ]
+    },
+    {
+      "id": "amber-06-amber-terrain-frame-v1",
+      "input_sha256": "d9b78d29f37ecc196237861dd2550cea96cebf577de3dc4778c613177aae5229",
+      "openings": [
+        {
+          "module": 7,
+          "contact": [
+            196,
+            208,
+            112
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        }
+      ]
+    },
+    {
+      "id": "amber-boss-amber-terrain-frame-v1",
+      "input_sha256": "f97cc53cc7ccbe61e4124846a930f5cf3336d025596100ab7dd292c011fbff41",
+      "openings": [
+        {
+          "module": 18,
+          "contact": [
+            174,
+            248,
+            20
+          ],
+          "leg_width": 4,
+          "preferred_depth": 10
+        }
+      ]
+    },
+    {
+      "id": "canal-01-canal-terrain-frame-v1",
+      "input_sha256": "1aebf0595e6b971f3d9c0270cc09e2c624d5587b560e6041bd4825f9608f7468",
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            14,
+            208,
+            80
+          ],
+          "leg_width": 12,
+          "preferred_depth": 22
+        },
+        {
+          "module": 3,
+          "contact": [
+            120,
+            208,
+            64
+          ],
+          "leg_width": 12,
+          "preferred_depth": 10
+        },
+        {
+          "module": 4,
+          "contact": [
+            226,
+            208,
+            18
+          ],
+          "leg_width": 4,
+          "preferred_depth": 10
+        }
+      ]
+    },
+    {
+      "id": "canal-02-canal-terrain-frame-v1",
+      "input_sha256": "100fc566da4630929ed517018d74c49283607f890aba04718f28540f0ac64f8d",
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            242,
+            224,
+            26
+          ],
+          "leg_width": 5,
+          "preferred_depth": 12
+        },
+        {
+          "module": 6,
+          "contact": [
+            134,
+            224,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 10
+        }
+      ]
+    },
+    {
+      "id": "canal-03-canal-terrain-frame-v1",
+      "input_sha256": "6eb14569f8b38913ee1169a315f5baf653568ccc2fac65941d5e1c6b037a6a1a",
+      "openings": [
+        {
+          "module": 3,
+          "contact": [
+            18,
+            208,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 20
+        },
+        {
+          "module": 3,
+          "contact": [
+            256,
+            208,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 20
+        },
+        {
+          "module": 4,
+          "contact": [
+            130,
+            248,
+            36
+          ],
+          "leg_width": 6,
+          "preferred_depth": 10
+        }
+      ]
+    },
+    {
+      "id": "canal-04-canal-terrain-frame-v1",
+      "input_sha256": "76f92ad1f3c74a673151f12cd752a30da8a23cb7c18c4a64e24b1912ef201d1f",
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            104,
+            272,
+            136
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        },
+        {
+          "module": 6,
+          "contact": [
+            12,
+            232,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 10
+        },
+        {
+          "module": 7,
+          "contact": [
+            278,
+            232,
+            40
+          ],
+          "leg_width": 7,
+          "preferred_depth": 10
+        }
+      ]
+    },
+    {
+      "id": "canal-05-canal-terrain-frame-v1",
+      "input_sha256": "3706d60d4c755bf528deb965354e2612b691d13ff776f4e233087fae0a116420",
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            26,
+            296,
+            20
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 3,
+          "contact": [
+            234,
+            296,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 4,
+          "contact": [
+            98,
+            296,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 12
+        },
+        {
+          "module": 5,
+          "contact": [
+            308,
+            296,
+            28
+          ],
+          "leg_width": 5,
+          "preferred_depth": 12
+        }
+      ]
+    },
+    {
+      "id": "canal-06-canal-terrain-frame-v1",
+      "input_sha256": "85933b816f3e65c69cc949bd9f2288ebfd1889a960cce7772041bdb93d24c1cf",
+      "openings": [
+        {
+          "module": 4,
+          "contact": [
+            250,
+            272,
+            28
+          ],
+          "leg_width": 5,
+          "preferred_depth": 24
+        },
+        {
+          "module": 5,
+          "contact": [
+            308,
+            272,
+            44
+          ],
+          "leg_width": 8,
+          "preferred_depth": 12
+        },
+        {
+          "module": 6,
+          "contact": [
+            104,
+            320,
+            36
+          ],
+          "leg_width": 6,
+          "preferred_depth": 16
+        }
+      ]
+    },
+    {
+      "id": "canal-boss-canal-terrain-frame-v1",
+      "input_sha256": "b9c7869b711dc995902a946202b50207a5a3aac54d0229d83cbb404b732da575",
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            316,
+            288,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 24
+        },
+        {
+          "module": 7,
+          "contact": [
+            16,
+            288,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 24
+        },
+        {
+          "module": 8,
+          "contact": [
+            180,
+            336,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 9,
+          "contact": [
+            124,
+            336,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 22
+        },
+        {
+          "module": 10,
+          "contact": [
+            236,
+            336,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 22
+        }
+      ]
+    },
+    {
+      "id": "culture-yard-03-v1",
+      "input_sha256": "3f7a165259383f6abf0f2803d72ad917f213124a87a2dfdd2c8bc4d21d373be9",
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            24,
+            170,
+            20
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 4,
+          "contact": [
+            164,
+            170,
+            26
+          ],
+          "leg_width": 5,
+          "preferred_depth": 10
+        }
+      ]
+    },
+    {
+      "id": "culture-yard-05-v1",
+      "input_sha256": "972252fc21af2d2fe66d1c51a604013f6b44aa8fa7a5334b1898cb7eceb4cba7",
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            190,
+            198,
+            28
+          ],
+          "leg_width": 5,
+          "preferred_depth": 15
+        },
+        {
+          "module": 7,
+          "contact": [
+            26,
+            198,
+            28
+          ],
+          "leg_width": 5,
+          "preferred_depth": 12
+        }
+      ]
+    },
+    {
+      "id": "culture-yard-06-v1",
+      "input_sha256": "afb14a0829367afad078179791b9420b0d2fb45e8bae21983e05f5e149cd1d17",
+      "openings": [
+        {
+          "module": 7,
+          "contact": [
+            12,
+            212,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 23
+        },
+        {
+          "module": 8,
+          "contact": [
+            222,
+            212,
+            18
+          ],
+          "leg_width": 4,
+          "preferred_depth": 17
+        }
+      ]
+    },
+    {
+      "id": "mosaic-01-mosaic-terrain-frame-v1",
+      "input_sha256": "0cdb70c9b298b1f28d6d5c90571d2c6fb3bfd2a6ea46008206c75e9568c9e4b2",
+      "openings": [
+        {
+          "module": 4,
+          "contact": [
+            112,
+            272,
+            128
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        }
+      ]
+    },
+    {
+      "id": "mosaic-02-mosaic-terrain-frame-v1",
+      "input_sha256": "cfcd6c5c9399269b52e73e47cba1451f3090237f067e8e4dee31bf97403199e3",
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            14,
+            252,
+            50
+          ],
+          "leg_width": 9,
+          "preferred_depth": 10
+        },
+        {
+          "module": 6,
+          "contact": [
+            160,
+            304,
+            80
+          ],
+          "leg_width": 12,
+          "preferred_depth": 16
+        }
+      ]
+    },
+    {
+      "id": "mosaic-03-mosaic-terrain-frame-v1",
+      "input_sha256": "ddcf4204b256eaa6d146480786131db0f6d2d5ca7894dfbe8997ed06a5460295",
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            356,
+            256,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        },
+        {
+          "module": 7,
+          "contact": [
+            20,
+            256,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 23
+        },
+        {
+          "module": 8,
+          "contact": [
+            190,
+            336,
+            68
+          ],
+          "leg_width": 12,
+          "preferred_depth": 16
+        }
+      ]
+    },
+    {
+      "id": "mosaic-04-mosaic-terrain-frame-v1",
+      "input_sha256": "ebef37876fdf066bdf863d763065395b18018c0e5ef6d9e9d606ca79774b2023",
+      "openings": [
+        {
+          "module": 9,
+          "contact": [
+            424,
+            368,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 20
+        }
+      ]
+    },
+    {
+      "id": "mosaic-05-mosaic-terrain-frame-v1",
+      "input_sha256": "5d046b74b1d8b211c05c2caad703ae90054edfb03bdb8150a3b839d3b9835d01",
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            368,
+            312,
+            36
+          ],
+          "leg_width": 6,
+          "preferred_depth": 24
+        },
+        {
+          "module": 4,
+          "contact": [
+            446,
+            312,
+            70
+          ],
+          "leg_width": 12,
+          "preferred_depth": 15
+        },
+        {
+          "module": 5,
+          "contact": [
+            242,
+            312,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 14
+        }
+      ]
+    },
+    {
+      "id": "mosaic-06-mosaic-terrain-frame-v1",
+      "input_sha256": "053c9cfee853bc0f2b2a0acce0ccfe9a7a442fde57eac4fc92e50aa47accf935",
+      "openings": [
+        {
+          "module": 3,
+          "contact": [
+            168,
+            392,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 4,
+          "contact": [
+            310,
+            336,
+            192
+          ],
+          "leg_width": 12,
+          "preferred_depth": 22
+        },
+        {
+          "module": 5,
+          "contact": [
+            32,
+            448,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 17
+        }
+      ],
+      "reference_commit": "5b98142",
+      "pre_moves": [
+        {
+          "modules": [
+            3,
+            7
+          ],
+          "dx": -2,
+          "dy": 0
+        }
+      ]
+    },
+    {
+      "id": "mosaic-boss-mosaic-terrain-frame-v1",
+      "input_sha256": "6b75023aa265a2a8530ab040ec1fe61255d778ae66488481515c363bfe9e682c",
+      "openings": [
+        {
+          "module": 13,
+          "contact": [
+            244,
+            448,
+            152
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        }
+      ]
+    },
+    {
+      "id": "terrace-01-terrace-terrain-frame-v1",
+      "input_sha256": "8aa5d82271ff48cfa990efe3683a2e8b19137da6b1b0af7fe9352414115375e2",
+      "openings": [
+        {
+          "module": 4,
+          "contact": [
+            82,
+            240,
+            140
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        }
+      ]
+    },
+    {
+      "id": "terrace-03-terrace-terrain-frame-v1",
+      "input_sha256": "ad19e6e233f7d30d7e36e2c92e4913f25503d4ecbf9bd2ffbb90ae5a27c19f7e",
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            328,
+            240,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 24
+        },
+        {
+          "module": 7,
+          "contact": [
+            18,
+            240,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 22
+        },
+        {
+          "module": 8,
+          "contact": [
+            166,
+            304,
+            40
+          ],
+          "leg_width": 7,
+          "preferred_depth": 14
+        }
+      ]
+    },
+    {
+      "id": "terrace-04-terrace-terrain-frame-v1",
+      "input_sha256": "f5d812fa216860c6d993c1229a65edb70eaaa6555d234350c5dbd5d26e2b50f1",
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            30,
+            336,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 4,
+          "contact": [
+            354,
+            336,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 5,
+          "contact": [
+            178,
+            336,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 21
+        }
+      ]
+    },
+    {
+      "id": "terrace-05-terrace-terrain-frame-v1",
+      "input_sha256": "5072fad40dad0286012c82b87544b9668ff2fcd9cc77113a046f90acdda2d824",
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            204,
+            296,
+            168
+          ],
+          "leg_width": 12,
+          "preferred_depth": 21
+        }
+      ],
+      "reference_commit": "5b98142",
+      "pre_moves": []
+    },
+    {
+      "id": "terrace-06-terrace-terrain-frame-v1",
+      "input_sha256": "552a41162872fa06654ebde6c9813f4434444325ad1c68d196a40657ebf6efcd",
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            256,
+            304,
+            180
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        },
+        {
+          "module": 6,
+          "contact": [
+            128,
+            376,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        },
+        {
+          "module": 8,
+          "contact": [
+            30,
+            400,
+            60
+          ],
+          "leg_width": 11,
+          "preferred_depth": 12
+        }
+      ]
+    },
+    {
+      "id": "terrace-boss-terrace-terrain-frame-v1",
+      "input_sha256": "7d0447db584bca23c2e07576f3c65db5fc08e806b670c3564c90aa322a0c12ca",
+      "openings": [
+        {
+          "module": 12,
+          "contact": [
+            184,
+            360,
+            144
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24
+        },
+        {
+          "module": 14,
+          "contact": [
+            464,
+            312,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 18
+        },
+        {
+          "module": 17,
+          "contact": [
+            22,
+            432,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24
+        }
+      ]
+    }
+  ]
+}

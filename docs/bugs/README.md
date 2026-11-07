@@ -18,3 +18,4 @@
 | [BUG-010](BUG-010-gear-unlock-guidance.md) | 2026-11-06 | 장비 해금 시점과 조건 안내 누락 | 사용자 확인 대기 |
 | [BUG-011](BUG-011-secondary-blast-audio.md) | 2026-11-06 | 후속 폭파와 충격 릴레이의 충격음 누락 | 사용자 확인 대기 |
 | [BUG-013](BUG-013-full-demolition-battery-remaining.md) | 2026-11-07 | 전체 파괴 후 배터리가 남으면 수집·종료 전환 누락 | 사용자 확인 대기 |
+| [BUG-014](BUG-014-broad-grounded-bodies.md) | 2026-11-07 | 바닥 전체에 붙은 몸통 하단을 다리·개구부 구조로 변경 | 사용자 확인 대기 |

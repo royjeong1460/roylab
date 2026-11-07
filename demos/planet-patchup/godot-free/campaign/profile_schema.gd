@@ -257,7 +257,8 @@ func _validate_common(p: Dictionary, legacy: bool) -> String:
 		var record = p.stageRecords[id]
 		if meta.is_empty() or progression.site_region(str(id)) < 0 or not record is Dictionary:
 			return "record-site"
-		var limit := maxi(20000, int(meta.get("initial", 0)))
+		# Authored openings reduce current pixels without invalidating older clears.
+		var limit := maxi(20000, maxi(int(meta.get("initial", 0)), int(meta.get("record_total_limit", 0))))
 		if not uint(record.get("total")) or record.total < 1 or record.total > limit or not uint(record.get("recovered")) or record.recovered > record.total:
 			return "record-total"
 	if not p.get("equipped") is Dictionary:

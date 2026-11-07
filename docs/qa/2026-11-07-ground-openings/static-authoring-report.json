@@ -1,0 +1,2901 @@
+{
+  "scope": "Static JSON authoring only; no tests, scenes, runtime, simulation or device launch.",
+  "baseline_commit": "2eeae4f4d37ba78b181d2c7221f66b369663c652",
+  "maps": {
+    "amber-01-amber-terrain-frame-v1": {
+      "before_sha256": "b7b58081c07a18c322acbc4563acc411460a1369f803c60c4a7bf1c3903b8e5c",
+      "after_sha256": "7e5ad6f8ff93d032778a7a40861066c364914bb098a594a1f98ca1afcd6a1a88",
+      "before": {
+        "pixels": 6844,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8,
+          "2": 24
+        },
+        "modules": 10,
+        "module_links": 7
+      },
+      "after": {
+        "pixels": 6684,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 16
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            184,
+            176,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 160,
+          "pillar_cells": 80,
+          "void": [
+            188,
+            166,
+            16,
+            10
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 6844
+    },
+    "amber-02-amber-terrain-frame-v1": {
+      "before_sha256": "8bd858a293baeb651594f37dc89855a8f048199be30eb62494d41496661596e0",
+      "after_sha256": "fab5681e118371836e48ddca7327b931ed790a94c74498d55eb3a78a40800ec9",
+      "before": {
+        "pixels": 9832,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 4,
+          "2": 146
+        },
+        "modules": 9,
+        "module_links": 6
+      },
+      "after": {
+        "pixels": 8836,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 36
+        },
+        "modules": 13,
+        "module_links": 10
+      },
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            56,
+            192,
+            126
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 8,
+          "removed": 816,
+          "pillar_cells": 192,
+          "void": [
+            68,
+            184,
+            102,
+            8
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 3,
+          "contact": [
+            206,
+            192,
+            20
+          ],
+          "leg_width": 4,
+          "preferred_depth": 15,
+          "depth": 15,
+          "removed": 180,
+          "pillar_cells": 120,
+          "void": [
+            210,
+            177,
+            12,
+            15
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 9832
+    },
+    "amber-03-amber-terrain-frame-v1": {
+      "before_sha256": "823c5a870265896227f5858f205bc500b5ef79bfc14df76cb47977e236e45e58",
+      "after_sha256": "10f898c8598a0ab0edfff8fbfefc696a1a7addddf19b59e19c914bfccf78502d",
+      "before": {
+        "pixels": 11960,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 122
+        },
+        "modules": 15,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 11090,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 36,
+          "2": 24
+        },
+        "modules": 21,
+        "module_links": 19
+      },
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            204,
+            184,
+            32
+          ],
+          "leg_width": 6,
+          "preferred_depth": 17,
+          "depth": 17,
+          "removed": 340,
+          "pillar_cells": 204,
+          "void": [
+            210,
+            167,
+            20,
+            17
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 7,
+          "contact": [
+            22,
+            180,
+            34
+          ],
+          "leg_width": 6,
+          "preferred_depth": 15,
+          "depth": 15,
+          "removed": 330,
+          "pillar_cells": 180,
+          "void": [
+            28,
+            165,
+            22,
+            15
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 8,
+          "contact": [
+            112,
+            212,
+            32
+          ],
+          "leg_width": 6,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 200,
+          "pillar_cells": 120,
+          "void": [
+            118,
+            202,
+            20,
+            10
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 11960
+    },
+    "amber-04-amber-terrain-frame-v1": {
+      "before_sha256": "fec18ee9482bdaab5f56e4f8ab3dfcd28fcbb871055f7dd4625ecf43d9fe95b0",
+      "after_sha256": "eda8bdb06d85571a3b7042c72f81f1ddc10daf2e1b0ad131e7a509c9a75003e4",
+      "before": {
+        "pixels": 13584,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 26,
+          "1": 8
+        },
+        "modules": 10,
+        "module_links": 7
+      },
+      "after": {
+        "pixels": 13200,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 18
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "openings": [
+        {
+          "module": 4,
+          "contact": [
+            24,
+            232,
+            26
+          ],
+          "leg_width": 5,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 384,
+          "pillar_cells": 240,
+          "void": [
+            29,
+            208,
+            16,
+            24
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 13584
+    },
+    "amber-05-amber-terrain-frame-v1": {
+      "before_sha256": "e37f2f4c5e4e5bc2a5f23540a60683f1f843c099a5bc58ca42a5e7704a960b5d",
+      "after_sha256": "ea2d53938b98532dddd58ca3cccc722eb13c1c0821f0f9aab53575272eda6747",
+      "before": {
+        "pixels": 15140,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 78,
+          "1": 4
+        },
+        "modules": 10,
+        "module_links": 6
+      },
+      "after": {
+        "pixels": 14152,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 30
+        },
+        "modules": 16,
+        "module_links": 12
+      },
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            22,
+            244,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 384,
+          "pillar_cells": 192,
+          "void": [
+            26,
+            220,
+            16,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 3,
+          "contact": [
+            188,
+            244,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 384,
+          "pillar_cells": 192,
+          "void": [
+            192,
+            220,
+            16,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 5,
+          "contact": [
+            260,
+            244,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 11,
+          "depth": 11,
+          "removed": 220,
+          "pillar_cells": 110,
+          "void": [
+            265,
+            233,
+            20,
+            11
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 15140
+    },
+    "amber-06-amber-terrain-frame-v1": {
+      "before_sha256": "d9b78d29f37ecc196237861dd2550cea96cebf577de3dc4778c613177aae5229",
+      "after_sha256": "fe50e2b1688e8acef3edcd09ced9e42b1415c77eef7e701b854683e2e24264b7",
+      "before": {
+        "pixels": 16508,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 198,
+          "1": 4
+        },
+        "modules": 18,
+        "module_links": 14
+      },
+      "after": {
+        "pixels": 16796,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 86,
+          "1": 28
+        },
+        "modules": 20,
+        "module_links": 16
+      },
+      "openings": [
+        {
+          "module": 7,
+          "contact": [
+            196,
+            208,
+            112
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 12,
+          "removed": -288,
+          "pillar_cells": 288,
+          "void": [
+            208,
+            196,
+            88,
+            12
+          ],
+          "method": "raised-six-cell-sill",
+          "moved_cells": 9120
+        }
+      ],
+      "historical_record_total_limit": 16796
+    },
+    "amber-boss-amber-terrain-frame-v1": {
+      "before_sha256": "f97cc53cc7ccbe61e4124846a930f5cf3336d025596100ab7dd292c011fbff41",
+      "after_sha256": "4788b03241d20d7ffed9af7b48b422f90bc81f15dbb3dc30850b66d1061b215f",
+      "before": {
+        "pixels": 19364,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 12,
+          "2": 20
+        },
+        "modules": 23,
+        "module_links": 22
+      },
+      "after": {
+        "pixels": 19244,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 20
+        },
+        "modules": 25,
+        "module_links": 24
+      },
+      "openings": [
+        {
+          "module": 18,
+          "contact": [
+            174,
+            248,
+            20
+          ],
+          "leg_width": 4,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 120,
+          "pillar_cells": 80,
+          "void": [
+            178,
+            238,
+            12,
+            10
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 19364
+    },
+    "canal-01-canal-terrain-frame-v1": {
+      "before_sha256": "1aebf0595e6b971f3d9c0270cc09e2c624d5587b560e6041bd4825f9608f7468",
+      "after_sha256": "4b65c12d7d42d280eae3a1d17bf881caea84ee4881bde70b55948cdc2f8b345e",
+      "before": {
+        "pixels": 8192,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 162,
+          "1": 4
+        },
+        "modules": 10,
+        "module_links": 6
+      },
+      "after": {
+        "pixels": 6572,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 60
+        },
+        "modules": 16,
+        "module_links": 12
+      },
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            14,
+            208,
+            80
+          ],
+          "leg_width": 12,
+          "preferred_depth": 22,
+          "depth": 20,
+          "removed": 1120,
+          "pillar_cells": 480,
+          "void": [
+            26,
+            188,
+            56,
+            20
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 3,
+          "contact": [
+            120,
+            208,
+            64
+          ],
+          "leg_width": 12,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 400,
+          "pillar_cells": 240,
+          "void": [
+            132,
+            198,
+            40,
+            10
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 4,
+          "contact": [
+            226,
+            208,
+            18
+          ],
+          "leg_width": 4,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 100,
+          "pillar_cells": 80,
+          "void": [
+            230,
+            198,
+            10,
+            10
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 8192
+    },
+    "canal-02-canal-terrain-frame-v1": {
+      "before_sha256": "100fc566da4630929ed517018d74c49283607f890aba04718f28540f0ac64f8d",
+      "after_sha256": "47b2f399cabb3e3a06837a7f22f201c141256d05562e33754c5df9419d5d3b8b",
+      "before": {
+        "pixels": 10856,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 50,
+          "1": 8
+        },
+        "modules": 10,
+        "module_links": 7
+      },
+      "after": {
+        "pixels": 10504,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 26
+        },
+        "modules": 14,
+        "module_links": 11
+      },
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            242,
+            224,
+            26
+          ],
+          "leg_width": 5,
+          "preferred_depth": 12,
+          "depth": 12,
+          "removed": 192,
+          "pillar_cells": 120,
+          "void": [
+            247,
+            212,
+            16,
+            12
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 6,
+          "contact": [
+            134,
+            224,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 160,
+          "pillar_cells": 80,
+          "void": [
+            138,
+            214,
+            16,
+            10
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 10856
+    },
+    "canal-03-canal-terrain-frame-v1": {
+      "before_sha256": "6eb14569f8b38913ee1169a315f5baf653568ccc2fac65941d5e1c6b037a6a1a",
+      "after_sha256": "c93ac8c27d2a63d0db8990416fb5e15dda1a2b2af3d562d85e27128881391762",
+      "before": {
+        "pixels": 13488,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 132
+        },
+        "modules": 10,
+        "module_links": 7
+      },
+      "after": {
+        "pixels": 12448,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 36,
+          "1": 32
+        },
+        "modules": 16,
+        "module_links": 13
+      },
+      "openings": [
+        {
+          "module": 3,
+          "contact": [
+            18,
+            208,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 20,
+          "depth": 20,
+          "removed": 400,
+          "pillar_cells": 200,
+          "void": [
+            23,
+            188,
+            20,
+            20
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 3,
+          "contact": [
+            256,
+            208,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 20,
+          "depth": 20,
+          "removed": 400,
+          "pillar_cells": 200,
+          "void": [
+            261,
+            188,
+            20,
+            20
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 4,
+          "contact": [
+            130,
+            248,
+            36
+          ],
+          "leg_width": 6,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 240,
+          "pillar_cells": 120,
+          "void": [
+            136,
+            238,
+            24,
+            10
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 13488
+    },
+    "canal-04-canal-terrain-frame-v1": {
+      "before_sha256": "76f92ad1f3c74a673151f12cd752a30da8a23cb7c18c4a64e24b1912ef201d1f",
+      "after_sha256": "2be68eea40f059f4a17652923fcaf8aa98b9f7b4f6d8ba313147d4f7f110d4f7",
+      "before": {
+        "pixels": 14252,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 228
+        },
+        "modules": 14,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 12980,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 56
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            104,
+            272,
+            136
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 6,
+          "removed": 672,
+          "pillar_cells": 144,
+          "void": [
+            116,
+            266,
+            112,
+            6
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 6,
+          "contact": [
+            12,
+            232,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 340,
+          "pillar_cells": 180,
+          "void": [
+            21,
+            222,
+            34,
+            10
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 7,
+          "contact": [
+            278,
+            232,
+            40
+          ],
+          "leg_width": 7,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 260,
+          "pillar_cells": 140,
+          "void": [
+            285,
+            222,
+            26,
+            10
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 14252
+    },
+    "canal-05-canal-terrain-frame-v1": {
+      "before_sha256": "3706d60d4c755bf528deb965354e2612b691d13ff776f4e233087fae0a116420",
+      "after_sha256": "8eb0977efbfc3e37d4e5cce836237e0e3264926b85d377acee62c5c31f277e4f",
+      "before": {
+        "pixels": 16562,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 144,
+          "1": 4
+        },
+        "modules": 12,
+        "module_links": 7
+      },
+      "after": {
+        "pixels": 15098,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 54
+        },
+        "modules": 20,
+        "module_links": 15
+      },
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            26,
+            296,
+            20
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 288,
+          "pillar_cells": 192,
+          "void": [
+            30,
+            272,
+            12,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 3,
+          "contact": [
+            234,
+            296,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 384,
+          "pillar_cells": 192,
+          "void": [
+            238,
+            272,
+            16,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 4,
+          "contact": [
+            98,
+            296,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 12,
+          "depth": 12,
+          "removed": 576,
+          "pillar_cells": 288,
+          "void": [
+            110,
+            284,
+            48,
+            12
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 5,
+          "contact": [
+            308,
+            296,
+            28
+          ],
+          "leg_width": 5,
+          "preferred_depth": 12,
+          "depth": 12,
+          "removed": 216,
+          "pillar_cells": 120,
+          "void": [
+            313,
+            284,
+            18,
+            12
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 16562
+    },
+    "canal-06-canal-terrain-frame-v1": {
+      "before_sha256": "85933b816f3e65c69cc949bd9f2288ebfd1889a960cce7772041bdb93d24c1cf",
+      "after_sha256": "689bb604276363daabc0997af3560d0d857340191f1b50ab2df6cf8670c2f66c",
+      "before": {
+        "pixels": 18036,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 108,
+          "1": 2
+        },
+        "modules": 11,
+        "module_links": 9
+      },
+      "after": {
+        "pixels": 16884,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 40
+        },
+        "modules": 17,
+        "module_links": 15
+      },
+      "openings": [
+        {
+          "module": 4,
+          "contact": [
+            250,
+            272,
+            28
+          ],
+          "leg_width": 5,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 432,
+          "pillar_cells": 240,
+          "void": [
+            255,
+            248,
+            18,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 5,
+          "contact": [
+            308,
+            272,
+            44
+          ],
+          "leg_width": 8,
+          "preferred_depth": 12,
+          "depth": 12,
+          "removed": 336,
+          "pillar_cells": 192,
+          "void": [
+            316,
+            260,
+            28,
+            12
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 6,
+          "contact": [
+            104,
+            320,
+            36
+          ],
+          "leg_width": 6,
+          "preferred_depth": 16,
+          "depth": 16,
+          "removed": 384,
+          "pillar_cells": 192,
+          "void": [
+            110,
+            304,
+            24,
+            16
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 18036
+    },
+    "canal-boss-canal-terrain-frame-v1": {
+      "before_sha256": "b9c7869b711dc995902a946202b50207a5a3aac54d0229d83cbb404b732da575",
+      "after_sha256": "07527c8c0828549c087c96d92c4e22196017ee0576d27bf96f886bdb3a8961de",
+      "before": {
+        "pixels": 19928,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 170
+        },
+        "modules": 18,
+        "module_links": 15
+      },
+      "after": {
+        "pixels": 18016,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 60
+        },
+        "modules": 28,
+        "module_links": 25
+      },
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            316,
+            288,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 480,
+          "pillar_cells": 432,
+          "void": [
+            325,
+            264,
+            34,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 7,
+          "contact": [
+            16,
+            288,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 480,
+          "pillar_cells": 432,
+          "void": [
+            25,
+            264,
+            34,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 8,
+          "contact": [
+            180,
+            336,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 336,
+          "pillar_cells": 192,
+          "void": [
+            184,
+            312,
+            14,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 9,
+          "contact": [
+            124,
+            336,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 22,
+          "depth": 22,
+          "removed": 308,
+          "pillar_cells": 176,
+          "void": [
+            128,
+            314,
+            14,
+            22
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 10,
+          "contact": [
+            236,
+            336,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 22,
+          "depth": 22,
+          "removed": 308,
+          "pillar_cells": 176,
+          "void": [
+            240,
+            314,
+            14,
+            22
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 19928
+    },
+    "culture-yard-03-v1": {
+      "before_sha256": "3f7a165259383f6abf0f2803d72ad917f213124a87a2dfdd2c8bc4d21d373be9",
+      "after_sha256": "a42933ef2b2ab02fc59e073286583eb8f0f28c1b0f6cc19fb99edee346aa4763",
+      "before": {
+        "pixels": 6068,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 46,
+          "1": 4
+        },
+        "modules": 8,
+        "module_links": 5
+      },
+      "after": {
+        "pixels": 5620,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 22
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            24,
+            170,
+            20
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 288,
+          "pillar_cells": 192,
+          "void": [
+            28,
+            146,
+            12,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 4,
+          "contact": [
+            164,
+            170,
+            26
+          ],
+          "leg_width": 5,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 160,
+          "pillar_cells": 100,
+          "void": [
+            169,
+            160,
+            16,
+            10
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 6068
+    },
+    "culture-yard-05-v1": {
+      "before_sha256": "972252fc21af2d2fe66d1c51a604013f6b44aa8fa7a5334b1898cb7eceb4cba7",
+      "after_sha256": "fdabf0ee7a8c2ff9ca405952b3cc27ad2e19533a3c62941dc43075d227cf686e",
+      "before": {
+        "pixels": 8060,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 88
+        },
+        "modules": 12,
+        "module_links": 11
+      },
+      "after": {
+        "pixels": 7574,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 20,
+          "2": 32
+        },
+        "modules": 16,
+        "module_links": 15
+      },
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            190,
+            198,
+            28
+          ],
+          "leg_width": 5,
+          "preferred_depth": 15,
+          "depth": 15,
+          "removed": 270,
+          "pillar_cells": 150,
+          "void": [
+            195,
+            183,
+            18,
+            15
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 7,
+          "contact": [
+            26,
+            198,
+            28
+          ],
+          "leg_width": 5,
+          "preferred_depth": 12,
+          "depth": 12,
+          "removed": 216,
+          "pillar_cells": 120,
+          "void": [
+            31,
+            186,
+            18,
+            12
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 8060
+    },
+    "culture-yard-06-v1": {
+      "before_sha256": "afb14a0829367afad078179791b9420b0d2fb45e8bae21983e05f5e149cd1d17",
+      "after_sha256": "f6dbf29402445d8bfd20706d3f47d9c96e592351915ef5f11ca17e1b51dd0802",
+      "before": {
+        "pixels": 8932,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 66,
+          "1": 4
+        },
+        "modules": 16,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 8440,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 20,
+          "2": 26
+        },
+        "modules": 20,
+        "module_links": 17
+      },
+      "openings": [
+        {
+          "module": 7,
+          "contact": [
+            12,
+            212,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 23,
+          "depth": 23,
+          "removed": 322,
+          "pillar_cells": 184,
+          "void": [
+            16,
+            189,
+            14,
+            23
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 8,
+          "contact": [
+            222,
+            212,
+            18
+          ],
+          "leg_width": 4,
+          "preferred_depth": 17,
+          "depth": 17,
+          "removed": 170,
+          "pillar_cells": 136,
+          "void": [
+            226,
+            195,
+            10,
+            17
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 8932
+    },
+    "mosaic-01-mosaic-terrain-frame-v1": {
+      "before_sha256": "0cdb70c9b298b1f28d6d5c90571d2c6fb3bfd2a6ea46008206c75e9568c9e4b2",
+      "after_sha256": "f5eb2fcfa7034c8ab94648a194984d1a63336221226fe0e9736f18443f4b2a45",
+      "before": {
+        "pixels": 17928,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8,
+          "2": 128
+        },
+        "modules": 10,
+        "module_links": 7
+      },
+      "after": {
+        "pixels": 15864,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 32
+        },
+        "modules": 12,
+        "module_links": 9
+      },
+      "openings": [
+        {
+          "module": 4,
+          "contact": [
+            112,
+            272,
+            128
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 2064,
+          "pillar_cells": 576,
+          "void": [
+            124,
+            248,
+            104,
+            24
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 17928
+    },
+    "mosaic-02-mosaic-terrain-frame-v1": {
+      "before_sha256": "cfcd6c5c9399269b52e73e47cba1451f3090237f067e8e4dee31bf97403199e3",
+      "after_sha256": "38f80483eba2e91dc10b5c7dc6fe2925a4a79ef4f2827606113317233f37613d",
+      "before": {
+        "pixels": 24196,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 130,
+          "1": 8
+        },
+        "modules": 10,
+        "module_links": 7
+      },
+      "after": {
+        "pixels": 22980,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 50
+        },
+        "modules": 14,
+        "module_links": 11
+      },
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            14,
+            252,
+            50
+          ],
+          "leg_width": 9,
+          "preferred_depth": 10,
+          "depth": 10,
+          "removed": 320,
+          "pillar_cells": 180,
+          "void": [
+            23,
+            242,
+            32,
+            10
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 6,
+          "contact": [
+            160,
+            304,
+            80
+          ],
+          "leg_width": 12,
+          "preferred_depth": 16,
+          "depth": 16,
+          "removed": 896,
+          "pillar_cells": 384,
+          "void": [
+            172,
+            288,
+            56,
+            16
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 24196
+    },
+    "mosaic-03-mosaic-terrain-frame-v1": {
+      "before_sha256": "ddcf4204b256eaa6d146480786131db0f6d2d5ca7894dfbe8997ed06a5460295",
+      "after_sha256": "a04645551ab676a40207bd2ed2509753d342c0b916bb117475f1452219183e03",
+      "before": {
+        "pixels": 28296,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 212
+        },
+        "modules": 14,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 26436,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 72
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            356,
+            256,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 648,
+          "pillar_cells": 576,
+          "void": [
+            368,
+            232,
+            48,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 7,
+          "contact": [
+            20,
+            256,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 23,
+          "depth": 23,
+          "removed": 564,
+          "pillar_cells": 552,
+          "void": [
+            32,
+            233,
+            48,
+            23
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 8,
+          "contact": [
+            190,
+            336,
+            68
+          ],
+          "leg_width": 12,
+          "preferred_depth": 16,
+          "depth": 16,
+          "removed": 648,
+          "pillar_cells": 384,
+          "void": [
+            202,
+            320,
+            44,
+            16
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 28296
+    },
+    "mosaic-04-mosaic-terrain-frame-v1": {
+      "before_sha256": "ebef37876fdf066bdf863d763065395b18018c0e5ef6d9e9d606ca79774b2023",
+      "after_sha256": "4d3d998f90eab81529a4babacd3bfad309e200ba349f6a70c7bb636777067d23",
+      "before": {
+        "pixels": 31468,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 4,
+          "2": 52
+        },
+        "modules": 14,
+        "module_links": 14
+      },
+      "after": {
+        "pixels": 30884,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 22
+        },
+        "modules": 16,
+        "module_links": 16
+      },
+      "openings": [
+        {
+          "module": 9,
+          "contact": [
+            424,
+            368,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 20,
+          "depth": 20,
+          "removed": 584,
+          "pillar_cells": 360,
+          "void": [
+            433,
+            348,
+            34,
+            20
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 31468
+    },
+    "mosaic-05-mosaic-terrain-frame-v1": {
+      "before_sha256": "5d046b74b1d8b211c05c2caad703ae90054edfb03bdb8150a3b839d3b9835d01",
+      "after_sha256": "8a77cd7d83988df9614012dc3b0799af3abcdd3a77ebb89a7715cdd9bc20ea9a",
+      "before": {
+        "pixels": 35392,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 178,
+          "1": 4
+        },
+        "modules": 10,
+        "module_links": 7
+      },
+      "after": {
+        "pixels": 33454,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 64
+        },
+        "modules": 16,
+        "module_links": 13
+      },
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            368,
+            312,
+            36
+          ],
+          "leg_width": 6,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 576,
+          "pillar_cells": 288,
+          "void": [
+            374,
+            288,
+            24,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 4,
+          "contact": [
+            446,
+            312,
+            70
+          ],
+          "leg_width": 12,
+          "preferred_depth": 15,
+          "depth": 15,
+          "removed": 690,
+          "pillar_cells": 360,
+          "void": [
+            458,
+            297,
+            46,
+            15
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 5,
+          "contact": [
+            242,
+            312,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 14,
+          "depth": 14,
+          "removed": 672,
+          "pillar_cells": 336,
+          "void": [
+            254,
+            298,
+            48,
+            14
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 35392
+    },
+    "mosaic-06-mosaic-terrain-frame-v1": {
+      "before_sha256": "053c9cfee853bc0f2b2a0acce0ccfe9a7a442fde57eac4fc92e50aa47accf935",
+      "after_sha256": "f42c36188f006290a14b8dec80e446fa08cefada4bed55e0bcc059d53feff35c",
+      "before": {
+        "pixels": 37192,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 94,
+          "1": 4
+        },
+        "modules": 13,
+        "module_links": 11
+      },
+      "after": {
+        "pixels": 32344,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 56
+        },
+        "modules": 17,
+        "module_links": 15
+      },
+      "openings": [
+        {
+          "module": 3,
+          "contact": [
+            168,
+            392,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 336,
+          "pillar_cells": 192,
+          "void": [
+            172,
+            368,
+            14,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 4,
+          "contact": [
+            310,
+            336,
+            192
+          ],
+          "leg_width": 12,
+          "preferred_depth": 22,
+          "depth": 22,
+          "removed": 3696,
+          "pillar_cells": 528,
+          "void": [
+            322,
+            314,
+            168,
+            22
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 5,
+          "contact": [
+            32,
+            448,
+            72
+          ],
+          "leg_width": 12,
+          "preferred_depth": 17,
+          "depth": 17,
+          "removed": 816,
+          "pillar_cells": 408,
+          "void": [
+            44,
+            431,
+            48,
+            17
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 37192
+    },
+    "mosaic-boss-mosaic-terrain-frame-v1": {
+      "before_sha256": "6b75023aa265a2a8530ab040ec1fe61255d778ae66488481515c363bfe9e682c",
+      "after_sha256": "8fde1ff6dd5850f6b2f0b48c1d96eef498319f7638e3df9fa9c18759638eec46",
+      "before": {
+        "pixels": 48180,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8,
+          "2": 152
+        },
+        "modules": 22,
+        "module_links": 22
+      },
+      "after": {
+        "pixels": 47156,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 32
+        },
+        "modules": 24,
+        "module_links": 24
+      },
+      "openings": [
+        {
+          "module": 13,
+          "contact": [
+            244,
+            448,
+            152
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 8,
+          "removed": 1024,
+          "pillar_cells": 192,
+          "void": [
+            256,
+            440,
+            128,
+            8
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 48180
+    },
+    "terrace-01-terrace-terrain-frame-v1": {
+      "before_sha256": "8aa5d82271ff48cfa990efe3683a2e8b19137da6b1b0af7fe9352414115375e2",
+      "after_sha256": "47162204d40d1b5814ca27e1f09f662e190e42fe30371c0ff8a977be8ab1d5a1",
+      "before": {
+        "pixels": 11928,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8,
+          "2": 140
+        },
+        "modules": 11,
+        "module_links": 8
+      },
+      "after": {
+        "pixels": 9840,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 32
+        },
+        "modules": 13,
+        "module_links": 10
+      },
+      "openings": [
+        {
+          "module": 4,
+          "contact": [
+            82,
+            240,
+            140
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 18,
+          "removed": 2088,
+          "pillar_cells": 432,
+          "void": [
+            94,
+            222,
+            116,
+            18
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 11928
+    },
+    "terrace-03-terrace-terrain-frame-v1": {
+      "before_sha256": "ad19e6e233f7d30d7e36e2c92e4913f25503d4ecbf9bd2ffbb90ae5a27c19f7e",
+      "after_sha256": "f7883187c70d6ca1ede5566a93370b5d6fc7538b2c3d4e804447276587d25254",
+      "before": {
+        "pixels": 21448,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 100
+        },
+        "modules": 14,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 20164,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 34
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "openings": [
+        {
+          "module": 6,
+          "contact": [
+            328,
+            240,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 480,
+          "pillar_cells": 240,
+          "void": [
+            333,
+            216,
+            20,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 7,
+          "contact": [
+            18,
+            240,
+            30
+          ],
+          "leg_width": 5,
+          "preferred_depth": 22,
+          "depth": 22,
+          "removed": 440,
+          "pillar_cells": 220,
+          "void": [
+            23,
+            218,
+            20,
+            22
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 8,
+          "contact": [
+            166,
+            304,
+            40
+          ],
+          "leg_width": 7,
+          "preferred_depth": 14,
+          "depth": 14,
+          "removed": 364,
+          "pillar_cells": 196,
+          "void": [
+            173,
+            290,
+            26,
+            14
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 21448
+    },
+    "terrace-04-terrace-terrain-frame-v1": {
+      "before_sha256": "f5d812fa216860c6d993c1229a65edb70eaaa6555d234350c5dbd5d26e2b50f1",
+      "after_sha256": "6a4d0cdf06fdf484116f84762ea8c77a495c03cf1a2e20f0f98279bac5fd0915",
+      "before": {
+        "pixels": 22376,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 100
+        },
+        "modules": 10,
+        "module_links": 8
+      },
+      "after": {
+        "pixels": 20894,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 34
+        },
+        "modules": 16,
+        "module_links": 14
+      },
+      "openings": [
+        {
+          "module": 2,
+          "contact": [
+            30,
+            336,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 384,
+          "pillar_cells": 192,
+          "void": [
+            34,
+            312,
+            16,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 4,
+          "contact": [
+            354,
+            336,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 384,
+          "pillar_cells": 192,
+          "void": [
+            358,
+            312,
+            16,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 5,
+          "contact": [
+            178,
+            336,
+            52
+          ],
+          "leg_width": 9,
+          "preferred_depth": 21,
+          "depth": 21,
+          "removed": 714,
+          "pillar_cells": 378,
+          "void": [
+            187,
+            315,
+            34,
+            21
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 22376
+    },
+    "terrace-05-terrace-terrain-frame-v1": {
+      "before_sha256": "5072fad40dad0286012c82b87544b9668ff2fcd9cc77113a046f90acdda2d824",
+      "after_sha256": "e3c53b617934eb701f6278a477ad0fa42701e3275dfffb2d5b12ee76e19c5499",
+      "before": {
+        "pixels": 23120,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 8
+        },
+        "modules": 13,
+        "module_links": 12
+      },
+      "after": {
+        "pixels": 20096,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 28
+        },
+        "modules": 13,
+        "module_links": 12
+      },
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            204,
+            296,
+            168
+          ],
+          "leg_width": 12,
+          "preferred_depth": 21,
+          "depth": 21,
+          "removed": 3024,
+          "pillar_cells": 504,
+          "void": [
+            216,
+            275,
+            144,
+            21
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 23120
+    },
+    "terrace-06-terrace-terrain-frame-v1": {
+      "before_sha256": "552a41162872fa06654ebde6c9813f4434444325ad1c68d196a40657ebf6efcd",
+      "after_sha256": "91352931caa24a9f295f3ffa8ed98d77ee598e6c6c2f6591f837c7e84c9649b9",
+      "before": {
+        "pixels": 27608,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 262
+        },
+        "modules": 14,
+        "module_links": 13
+      },
+      "after": {
+        "pixels": 24008,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 54
+        },
+        "modules": 20,
+        "module_links": 19
+      },
+      "openings": [
+        {
+          "module": 5,
+          "contact": [
+            256,
+            304,
+            180
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 18,
+          "removed": 2808,
+          "pillar_cells": 432,
+          "void": [
+            268,
+            286,
+            156,
+            18
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 6,
+          "contact": [
+            128,
+            376,
+            22
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 336,
+          "pillar_cells": 192,
+          "void": [
+            132,
+            352,
+            14,
+            24
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 8,
+          "contact": [
+            30,
+            400,
+            60
+          ],
+          "leg_width": 11,
+          "preferred_depth": 12,
+          "depth": 12,
+          "removed": 456,
+          "pillar_cells": 264,
+          "void": [
+            41,
+            388,
+            38,
+            12
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 27608
+    },
+    "terrace-boss-terrace-terrain-frame-v1": {
+      "before_sha256": "7d0447db584bca23c2e07576f3c65db5fc08e806b670c3564c90aa322a0c12ca",
+      "after_sha256": "624c3ea6dc6632a2262fefbf243e29ca5f54de4e0a0bd9e26bfe22ab5f283bb0",
+      "before": {
+        "pixels": 33092,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "2": 192,
+          "1": 8
+        },
+        "modules": 26,
+        "module_links": 24
+      },
+      "after": {
+        "pixels": 31460,
+        "buried_cells": 0,
+        "cliff_side_contacts": 0,
+        "ungrounded_cells": 0,
+        "floor_contact_roles": {
+          "1": 48
+        },
+        "modules": 32,
+        "module_links": 30
+      },
+      "openings": [
+        {
+          "module": 12,
+          "contact": [
+            184,
+            360,
+            144
+          ],
+          "leg_width": 12,
+          "preferred_depth": 24,
+          "depth": 8,
+          "removed": 960,
+          "pillar_cells": 192,
+          "void": [
+            196,
+            352,
+            120,
+            8
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 14,
+          "contact": [
+            464,
+            312,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 18,
+          "depth": 18,
+          "removed": 288,
+          "pillar_cells": 144,
+          "void": [
+            468,
+            294,
+            16,
+            18
+          ],
+          "method": "underside-opening"
+        },
+        {
+          "module": 17,
+          "contact": [
+            22,
+            432,
+            24
+          ],
+          "leg_width": 4,
+          "preferred_depth": 24,
+          "depth": 24,
+          "removed": 384,
+          "pillar_cells": 192,
+          "void": [
+            26,
+            408,
+            16,
+            24
+          ],
+          "method": "underside-opening"
+        }
+      ],
+      "historical_record_total_limit": 33092
+    }
+  },
+  "campaign_audit": [
+    {
+      "id": "amber-01-amber-terrain-frame-v1",
+      "changed": true,
+      "pixels": 6684,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 16
+      },
+      "modules": 12,
+      "module_links": 9,
+      "sha256": "7e5ad6f8ff93d032778a7a40861066c364914bb098a594a1f98ca1afcd6a1a88"
+    },
+    {
+      "id": "amber-02-amber-terrain-frame-v1",
+      "changed": true,
+      "pixels": 8836,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 36
+      },
+      "modules": 13,
+      "module_links": 10,
+      "sha256": "fab5681e118371836e48ddca7327b931ed790a94c74498d55eb3a78a40800ec9"
+    },
+    {
+      "id": "amber-03-amber-terrain-frame-v1",
+      "changed": true,
+      "pixels": 11090,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 36,
+        "2": 24
+      },
+      "modules": 21,
+      "module_links": 19,
+      "sha256": "10f898c8598a0ab0edfff8fbfefc696a1a7addddf19b59e19c914bfccf78502d"
+    },
+    {
+      "id": "amber-04-amber-terrain-frame-v1",
+      "changed": true,
+      "pixels": 13200,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 18
+      },
+      "modules": 12,
+      "module_links": 9,
+      "sha256": "eda8bdb06d85571a3b7042c72f81f1ddc10daf2e1b0ad131e7a509c9a75003e4"
+    },
+    {
+      "id": "amber-05-amber-terrain-frame-v1",
+      "changed": true,
+      "pixels": 14152,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 30
+      },
+      "modules": 16,
+      "module_links": 12,
+      "sha256": "ea2d53938b98532dddd58ca3cccc722eb13c1c0821f0f9aab53575272eda6747"
+    },
+    {
+      "id": "amber-06-amber-terrain-frame-v1",
+      "changed": true,
+      "pixels": 16796,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "2": 86,
+        "1": 28
+      },
+      "modules": 20,
+      "module_links": 16,
+      "sha256": "fe50e2b1688e8acef3edcd09ced9e42b1415c77eef7e701b854683e2e24264b7"
+    },
+    {
+      "id": "amber-boss-amber-terrain-frame-v1",
+      "changed": true,
+      "pixels": 19244,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 20
+      },
+      "modules": 25,
+      "module_links": 24,
+      "sha256": "4788b03241d20d7ffed9af7b48b422f90bc81f15dbb3dc30850b66d1061b215f"
+    },
+    {
+      "id": "arch-0-arch-quarter-v2",
+      "changed": false,
+      "pixels": 892,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 10
+      },
+      "modules": 4,
+      "module_links": 3,
+      "sha256": "5d212ec52080a87c62b6da427381b478cf761a39508fe7a1fd1d3d3e86e498f7"
+    },
+    {
+      "id": "arch-1-arch-quarter-v2",
+      "changed": false,
+      "pixels": 2000,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 16,
+        "2": 27
+      },
+      "modules": 10,
+      "module_links": 6,
+      "sha256": "9c8f1ef8fe8e6ff7cb496948d83afa4b81a0f191f6dfec693dc7bd8cd859e5e9"
+    },
+    {
+      "id": "arch-2-arch-quarter-v2",
+      "changed": false,
+      "pixels": 2400,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "2": 55,
+        "1": 16
+      },
+      "modules": 12,
+      "module_links": 6,
+      "sha256": "4549df3ba023d08064f333373b9d1c0c379417bff044f99d95f1dfe5ccdbc59e"
+    },
+    {
+      "id": "arch-3-arch-quarter-v2",
+      "changed": false,
+      "pixels": 2800,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 24,
+        "2": 52
+      },
+      "modules": 15,
+      "module_links": 9,
+      "sha256": "e147d786925ebf5e2efe21758e5f9560d899d3978e671798b647ccd813e35798"
+    },
+    {
+      "id": "arch-4-arch-quarter-v2",
+      "changed": false,
+      "pixels": 3200,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 24,
+        "2": 50
+      },
+      "modules": 14,
+      "module_links": 9,
+      "sha256": "c4b099fcfc8a4a6bf607beaf794a3a7ab09c15cc82c7ad7daa6076ec1bc5b6cc"
+    },
+    {
+      "id": "arch-5-arch-quarter-v2",
+      "changed": false,
+      "pixels": 3600,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "2": 78,
+        "1": 16
+      },
+      "modules": 17,
+      "module_links": 11,
+      "sha256": "e27a9ea2cbe26531373f72d5336364f32a7bc76aff4f60a9781ecf5f081f3639"
+    },
+    {
+      "id": "arch-6-arch-quarter-v2",
+      "changed": false,
+      "pixels": 4000,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 8,
+        "2": 100
+      },
+      "modules": 15,
+      "module_links": 13,
+      "sha256": "f32934bcefbad2dccb551693cdae4d5c76cac1606e827116934a72bb579cd81d"
+    },
+    {
+      "id": "arch-7-arch-quarter-v2",
+      "changed": false,
+      "pixels": 6000,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "2": 99,
+        "1": 24
+      },
+      "modules": 31,
+      "module_links": 29,
+      "sha256": "f9c99e58372df2ebf75b325d50cb0520a728c639e2ffaf6cba7c07e3df1ffc8f"
+    },
+    {
+      "id": "canal-01-canal-terrain-frame-v1",
+      "changed": true,
+      "pixels": 6572,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 60
+      },
+      "modules": 16,
+      "module_links": 12,
+      "sha256": "4b65c12d7d42d280eae3a1d17bf881caea84ee4881bde70b55948cdc2f8b345e"
+    },
+    {
+      "id": "canal-02-canal-terrain-frame-v1",
+      "changed": true,
+      "pixels": 10504,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 26
+      },
+      "modules": 14,
+      "module_links": 11,
+      "sha256": "47b2f399cabb3e3a06837a7f22f201c141256d05562e33754c5df9419d5d3b8b"
+    },
+    {
+      "id": "canal-03-canal-terrain-frame-v1",
+      "changed": true,
+      "pixels": 12448,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "2": 36,
+        "1": 32
+      },
+      "modules": 16,
+      "module_links": 13,
+      "sha256": "c93ac8c27d2a63d0db8990416fb5e15dda1a2b2af3d562d85e27128881391762"
+    },
+    {
+      "id": "canal-04-canal-terrain-frame-v1",
+      "changed": true,
+      "pixels": 12980,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 56
+      },
+      "modules": 20,
+      "module_links": 19,
+      "sha256": "2be68eea40f059f4a17652923fcaf8aa98b9f7b4f6d8ba313147d4f7f110d4f7"
+    },
+    {
+      "id": "canal-05-canal-terrain-frame-v1",
+      "changed": true,
+      "pixels": 15098,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 54
+      },
+      "modules": 20,
+      "module_links": 15,
+      "sha256": "8eb0977efbfc3e37d4e5cce836237e0e3264926b85d377acee62c5c31f277e4f"
+    },
+    {
+      "id": "canal-06-canal-terrain-frame-v1",
+      "changed": true,
+      "pixels": 16884,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 40
+      },
+      "modules": 17,
+      "module_links": 15,
+      "sha256": "689bb604276363daabc0997af3560d0d857340191f1b50ab2df6cf8670c2f66c"
+    },
+    {
+      "id": "canal-boss-canal-terrain-frame-v1",
+      "changed": true,
+      "pixels": 18016,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 60
+      },
+      "modules": 28,
+      "module_links": 25,
+      "sha256": "07527c8c0828549c087c96d92c4e22196017ee0576d27bf96f886bdb3a8961de"
+    },
+    {
+      "id": "culture-yard-01-v1",
+      "changed": false,
+      "pixels": 4096,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "2": 10,
+        "1": 8
+      },
+      "modules": 9,
+      "module_links": 6,
+      "sha256": "5cd3cffd7483a264e2f9f7a91f44ef736decbe347b07a88ddae838b216b11d2b"
+    },
+    {
+      "id": "culture-yard-02-v1",
+      "changed": false,
+      "pixels": 5216,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 6,
+        "2": 18
+      },
+      "modules": 8,
+      "module_links": 6,
+      "sha256": "c24cefcd9681d18df522ef8d8538bc7a5702f07c5ed90dd220723a5b7c4663a5"
+    },
+    {
+      "id": "culture-yard-03-v1",
+      "changed": true,
+      "pixels": 5620,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 22
+      },
+      "modules": 12,
+      "module_links": 9,
+      "sha256": "a42933ef2b2ab02fc59e073286583eb8f0f28c1b0f6cc19fb99edee346aa4763"
+    },
+    {
+      "id": "culture-yard-04-v1",
+      "changed": false,
+      "pixels": 6400,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 4,
+        "2": 16
+      },
+      "modules": 11,
+      "module_links": 11,
+      "sha256": "f751143a4796c52530d63d8967eef6ff51798b7b82d83adcb4873ea11bb4a399"
+    },
+    {
+      "id": "culture-yard-05-v1",
+      "changed": true,
+      "pixels": 7574,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 20,
+        "2": 32
+      },
+      "modules": 16,
+      "module_links": 15,
+      "sha256": "fdabf0ee7a8c2ff9ca405952b3cc27ad2e19533a3c62941dc43075d227cf686e"
+    },
+    {
+      "id": "culture-yard-06-v1",
+      "changed": true,
+      "pixels": 8440,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 20,
+        "2": 26
+      },
+      "modules": 20,
+      "module_links": 17,
+      "sha256": "f6dbf29402445d8bfd20706d3f47d9c96e592351915ef5f11ca17e1b51dd0802"
+    },
+    {
+      "id": "culture-yard-boss-v1",
+      "changed": false,
+      "pixels": 10872,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 14
+      },
+      "modules": 16,
+      "module_links": 20,
+      "sha256": "4aac570b59c086a59f35f9422af65ff9f40ee7aabb2463ef767512e25b91349b"
+    },
+    {
+      "id": "mosaic-01-mosaic-terrain-frame-v1",
+      "changed": true,
+      "pixels": 15864,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 32
+      },
+      "modules": 12,
+      "module_links": 9,
+      "sha256": "f5eb2fcfa7034c8ab94648a194984d1a63336221226fe0e9736f18443f4b2a45"
+    },
+    {
+      "id": "mosaic-02-mosaic-terrain-frame-v1",
+      "changed": true,
+      "pixels": 22980,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 50
+      },
+      "modules": 14,
+      "module_links": 11,
+      "sha256": "38f80483eba2e91dc10b5c7dc6fe2925a4a79ef4f2827606113317233f37613d"
+    },
+    {
+      "id": "mosaic-03-mosaic-terrain-frame-v1",
+      "changed": true,
+      "pixels": 26436,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 72
+      },
+      "modules": 20,
+      "module_links": 19,
+      "sha256": "a04645551ab676a40207bd2ed2509753d342c0b916bb117475f1452219183e03"
+    },
+    {
+      "id": "mosaic-04-mosaic-terrain-frame-v1",
+      "changed": true,
+      "pixels": 30884,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 22
+      },
+      "modules": 16,
+      "module_links": 16,
+      "sha256": "4d3d998f90eab81529a4babacd3bfad309e200ba349f6a70c7bb636777067d23"
+    },
+    {
+      "id": "mosaic-05-mosaic-terrain-frame-v1",
+      "changed": true,
+      "pixels": 33454,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 64
+      },
+      "modules": 16,
+      "module_links": 13,
+      "sha256": "8a77cd7d83988df9614012dc3b0799af3abcdd3a77ebb89a7715cdd9bc20ea9a"
+    },
+    {
+      "id": "mosaic-06-mosaic-terrain-frame-v1",
+      "changed": true,
+      "pixels": 32344,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 56
+      },
+      "modules": 17,
+      "module_links": 15,
+      "sha256": "f42c36188f006290a14b8dec80e446fa08cefada4bed55e0bcc059d53feff35c"
+    },
+    {
+      "id": "mosaic-boss-mosaic-terrain-frame-v1",
+      "changed": true,
+      "pixels": 47156,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 32
+      },
+      "modules": 24,
+      "module_links": 24,
+      "sha256": "8fde1ff6dd5850f6b2f0b48c1d96eef498319f7638e3df9fa9c18759638eec46"
+    },
+    {
+      "id": "terrace-01-terrace-terrain-frame-v1",
+      "changed": true,
+      "pixels": 9840,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 32
+      },
+      "modules": 13,
+      "module_links": 10,
+      "sha256": "47162204d40d1b5814ca27e1f09f662e190e42fe30371c0ff8a977be8ab1d5a1"
+    },
+    {
+      "id": "terrace-02-terrace-terrain-frame-v1",
+      "changed": false,
+      "pixels": 17396,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 6
+      },
+      "modules": 12,
+      "module_links": 12,
+      "sha256": "3b1bc2ebaf79294c3f8bfb83646afc786242df256941338b88a75a4831c96181"
+    },
+    {
+      "id": "terrace-03-terrace-terrain-frame-v1",
+      "changed": true,
+      "pixels": 20164,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 34
+      },
+      "modules": 20,
+      "module_links": 19,
+      "sha256": "f7883187c70d6ca1ede5566a93370b5d6fc7538b2c3d4e804447276587d25254"
+    },
+    {
+      "id": "terrace-04-terrace-terrain-frame-v1",
+      "changed": true,
+      "pixels": 20894,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 34
+      },
+      "modules": 16,
+      "module_links": 14,
+      "sha256": "6a4d0cdf06fdf484116f84762ea8c77a495c03cf1a2e20f0f98279bac5fd0915"
+    },
+    {
+      "id": "terrace-05-terrace-terrain-frame-v1",
+      "changed": true,
+      "pixels": 20096,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 28
+      },
+      "modules": 13,
+      "module_links": 12,
+      "sha256": "e3c53b617934eb701f6278a477ad0fa42701e3275dfffb2d5b12ee76e19c5499"
+    },
+    {
+      "id": "terrace-06-terrace-terrain-frame-v1",
+      "changed": true,
+      "pixels": 24008,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 54
+      },
+      "modules": 20,
+      "module_links": 19,
+      "sha256": "91352931caa24a9f295f3ffa8ed98d77ee598e6c6c2f6591f837c7e84c9649b9"
+    },
+    {
+      "id": "terrace-boss-terrace-terrain-frame-v1",
+      "changed": true,
+      "pixels": 31460,
+      "buried_cells": 0,
+      "cliff_side_contacts": 0,
+      "ungrounded_cells": 0,
+      "floor_contact_roles": {
+        "1": 48
+      },
+      "modules": 32,
+      "module_links": 30,
+      "sha256": "624c3ea6dc6632a2262fefbf243e29ca5f54de4e0a0bd9e26bfe22ab5f283bb0"
+    }
+  ]
+}
