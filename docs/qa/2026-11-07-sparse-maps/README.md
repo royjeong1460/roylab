@@ -23,3 +23,10 @@ No device loading speed, FPS, memory, persistence replay or gameplay result is c
 Web import/compile/export and the site build completed. Native candidate0.5.50(60) uses the same codec/data and unchanged g40 C++ core. Signing/install and public HTTP results are recorded separately in delivery.json. The assistant runs no game tests, scenes, simulations, browsers or device apps. User owns runtime checks.
 
 Restore map files and loader sources as one unit when rolling back. Native0.5.49(59) and web free-0541-b7399322186d retain the prior format. No save migration or reset is introduced. For authoring, unpack to a separate working directory, edit there, then pack back; the static build guard rejects accidental dense active-map exports.
+
+### Final delivery evidence
+
+- Source release commit: `95d6c6d97e6821649ee923a9d7ee5630ef19b08e`. Cloudflare Pages deployment: `ff47f943-814d-4f7a-a7fd-faaf86414cec`, completed successfully.
+- Public canonical/alias HTML, manifest, shell and payloads:13 static HTTP responses match local artifact hashes; gzip decoded PCK/WASM hashes and headers are verified in `http-verification.json`.
+- iOS0.5.50(60) code signature and bundle verified; update-installed in place as sequence4276. No device app launch or gameplay check was performed.
+- Registry: `variants/godot-paid-port/CURRENT.json`. Static data roundtrip is44/44; runtime/loading verification remains with the user.

@@ -36,3 +36,12 @@
 The g40 release now includes all six regions, 42 campaign sites plus the tutorial, and ten skills on both platforms. The home and region list show `?` after the sixth region. The previous web test entry leads to the unified game. iOS build 50 installed as sequence 3868. The preceding web release and iOS g40(49) are the rollback reference.
 
 [Release evidence](qa/2026-11-06-unified-godot/README.md)
+
+
+## 2026-11-07 · occupied-only map storage / iOS0.5.50(60)
+
+All43 campaign/tutorial maps and the standalone fallback now omit empty cells using `occupied-runs-v1`. Decode restores the exact original fields, pixel IDs, colors, role/module arrays and module order before existing physics.44/44 full static file roundtrips matched. The43 campaign JSONs total44,480,199 →7,531,845bytes;6-Boss3,597,098 →620,584bytes while retaining47,156 occupied pixels. Physics, skills, upgrades, collection, rewards and save paths are unchanged.
+
+Web `free-0541-ae30a3e88329` published;13 static HTTP responses plus transport/decoded payload hashes verified. Engine cache stem stays `godot-web-ec83eba66e3c`. iOS0.5.50(60) was signed and update-installed as sequence4276 without launch. Smaller plain data is not a measured loading-speed improvement; compressed web PCK is278,708bytes larger. Rollback: native0.5.49(59), web `free-0541-b7399322186d`; restore loader and map format together.
+
+[Storage and delivery evidence](qa/2026-11-07-sparse-maps/README.md)

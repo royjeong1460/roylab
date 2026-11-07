@@ -18,8 +18,12 @@
   "nativeDelivery": "qa/ios-sparse-maps-2026-11-07/delivery.json",
   "rollbackWebStem": "free-0541-b7399322186d",
   "rollbackNativeCandidate": "ios-ground-openings-2026-11-07",
-  "published": false,
-  "httpVerified": false,
+  "published": true,
+  "httpVerified": true,
   "runtimeByAssistant": false,
-  "runtimeVerificationOwner": "user"
+  "runtimeVerificationOwner": "user",
+  "releaseCommit": "95d6c6d97e6821649ee923a9d7ee5630ef19b08e",
+  "deploymentId": "ff47f943-814d-4f7a-a7fd-faaf86414cec",
+  "httpResponses": 13,
+  "httpEvidence": "http-verification.json"
 }

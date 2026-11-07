@@ -14,7 +14,7 @@ Do not omit module lists or reorder their BFS pixel arrays in this change. Those
 - [x] Add a shared decoder and use it at the catalog and standalone fallback read boundaries, before existing world/camera fitting. Reject malformed run strides, invalid integer values, overlaps, bounds, cell counts and modules.
 - [x] Add a guarded offline pack/unpack authoring tool. Before writing, statically roundtrip every file and compare every original field/array/order; this is file-data validation, not a game test.
 - [x] Convert all44 active JSON files. Record raw and standalone gzip sizes; assert exact decoded map/pixel counts and unchanged campaigns/physics/skills/economy/profile sources. Keep dense snapshots outside the package.
-- [ ] Import/compile/export web and a new native0.5.50(60) candidate. Build site, sign/update-install existing iPhone app without launch. Publish the isolated branch, verify HTTP artifact and decoded hashes, update registry and rollback records.
+- [x] Import/compile/export web and a new native0.5.50(60) candidate. Build site, sign/update-install existing iPhone app without launch. Publish the isolated branch, verify HTTP artifact and decoded hashes, update registry and rollback records.
 
 User owns all runtime, scene, device, browser, gameplay and loading-time testing. Agent performs source inspection, static serialization assertions, import/compile/export, signing/install and static HTTP only. File size reduction is not a measured loading-speed result.
 
