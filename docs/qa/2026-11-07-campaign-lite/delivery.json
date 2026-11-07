@@ -1,7 +1,7 @@
 {
   "version": "0.5.52",
   "nativeBuild": 62,
-  "candidateOnly": true,
+  "candidateOnly": false,
   "publicDeployment": false,
   "nativeBundle": "com.roy.planetpatchup.godotcompare",
   "nativePackSha256": "b5594a4a7b7ea3353bf5bccb68e6810025902bb6c2b7235f4879221c177c1f7d",
@@ -25,5 +25,12 @@
   "localWebArtifactHashesVerified": true,
   "installedSequence": 4292,
   "installOutcome": "success",
-  "localNativeEvidence": "variants/godot-paid-port/qa/ios-campaign-lite-2026-11-07/delivery.json"
+  "localNativeEvidence": "variants/godot-paid-port/qa/ios-campaign-lite-2026-11-07/delivery.json",
+  "candidateOnlyAtInstall": true,
+  "mapDesignApproved": true,
+  "userFeedback": {
+    "date": "2026-11-07",
+    "report": "User adopts the current reduced-pixel campaign direction and requests destruction-upgrade planning.",
+    "scope": "Map direction approved; no numeric FPS/load-time guarantee or new tuning implementation. Public web deployment not requested."
+  }
 }

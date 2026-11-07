@@ -31,3 +31,7 @@ The user continues normal progression and checks the same loadouts in early maps
 ## Final delivery evidence
 
 iOS0.5.52(62) was update-installed successfully as sequence4292 after build, PCK, bundle and code-signature verification. The local web package is `free-0541-b4b579deabb8`; all eight payload transport/decoded hashes match. Public web remains `free-0541-ae30a3e88329`. No app/browser/game execution was performed by the assistant.
+
+## 2026-11-07 user direction approval
+
+The user said to continue with the reduced-map configuration and moved on to planning destruction-stat upgrades. This adopts the0.5.52 map direction while retaining all original data and rollback candidates. It does not establish numeric FPS/load-time results or authorize public web deployment. The new upgrade proposal is in docs/destruction-traits-plan-2026-11-07.md and is not implemented.

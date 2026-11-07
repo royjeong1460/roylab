@@ -19,8 +19,9 @@
     "sourceCandidate": "qa/ios-campaign-lite-2026-11-07/project",
     "distribution": "development device",
     "rollback": "qa/ios-mosaic-lite-2026-11-07/delivery.json",
-    "comparisonOnly": true,
-    "mapAuthoringRevision": "campaign-lite-2026-11-07"
+    "comparisonOnly": false,
+    "mapAuthoringRevision": "campaign-lite-2026-11-07",
+    "mapDesignApproved": true
   },
   "web": {
     "version": "0.5.41",

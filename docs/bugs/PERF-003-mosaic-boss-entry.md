@@ -49,3 +49,7 @@ The user approved reducing6-Boss pixels first. Comparison0.5.51(61) is installed
 ## 2026-11-07 · all-map reduced-pixel comparison
 
 The user accepted the6-Boss reduction qualitatively and approved applying the method to other maps, retaining structure and originals, for further iPhone play. Comparison0.5.52(62) is update-installed as sequence4292. All43 campaign/tutorial maps total608,590 →391,069 occupied pixels (35.74% fewer versus original0.5.50); fallback is also reduced. All44 original module adjacency graphs are preserved by static file inspection, with no buried/cliff-attached/ungrounded cells. The accepted6-Boss output is byte-identical to0.5.51. Runtime physics/skill/economy/profile/collection source is unchanged. Exact FPS/loading/stability remains a user check. Public web is not deployed by this comparison. Original0.5.50 and boss-only0.5.51 candidates are retained. See docs/qa/2026-11-07-campaign-lite/README.md.
+
+## 2026-11-07 · reduced-map direction adopted
+
+The user approved continuing with the0.5.52 reduced-map direction and requested a planning summary for destruction-stat upgrades. Source registry now marks that geometry as adopted. Quantitative FPS/loading checks and new upgrade tuning remain separate; no new game parameters, prices or save values were changed. Public web deployment was not requested. The five-trait proposal remains draft in docs/destruction-traits-plan-2026-11-07.md.
