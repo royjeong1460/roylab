@@ -3,6 +3,7 @@ extends RefCounted
 const UITheme = preload("res://app/ui_theme.gd")
 const PlanetHome = preload("res://presentation/planet_home.gd")
 const TutorialIntro = preload("res://presentation/tutorial_intro.gd")
+const StorySequence = preload("res://presentation/story_sequence.gd")
 const EnvironmentReceipt = preload("res://presentation/environment_receipt.gd")
 const L10n = preload("res://app/localization.gd")
 const GameSkin = preload("res://app/skin.gd")
@@ -211,6 +212,8 @@ func build(screen: String, payload: Dictionary = {}) -> Control:
 	match screen:
 		"home": return _home()
 		"tutorial_intro": return _tutorial_intro()
+		"presentation_preview": return _presentation_preview()
+		"presentation_sequence": return _presentation_sequence(payload)
 		"regions": return _regions()
 		"maps": return _maps()
 		"workshop", "loadout": return _workshop(payload)
@@ -229,6 +232,24 @@ func _tutorial_intro() -> Control:
 	intro.setup(catalog, app.lifecycle)
 	intro.finished.connect(app.complete_tutorial_intro)
 	return intro
+
+func _presentation_preview() -> Control:
+	var page := _page("Presentation preview", "", "home", 0.0, true)
+	page.content.add_child(_label("Preview only · Progress is unchanged.", 12, UITheme.MUTED))
+	page.content.add_child(_button("Ending · 15 seconds", func(): app.show_presentation("ending"), false, true))
+	page.content.add_child(_label("Region transitions · 3 seconds", 16, UITheme.GOLD))
+	for index in range(5):
+		var from := L10n.text(str(catalog.region(index).name))
+		var to := L10n.text(str(catalog.region(index + 1).name))
+		page.content.add_child(_button(from + " → " + to, func(): app.show_presentation("transition", index)))
+		page.content.add_child(_label(StorySequence.TRANSITIONS[index], 13, UITheme.MUTED))
+	return page.root
+
+func _presentation_sequence(payload: Dictionary) -> Control:
+	var sequence := StorySequence.new()
+	sequence.setup(catalog, app.lifecycle, str(payload.get("kind", "ending")), int(payload.get("region", 0)))
+	sequence.finished.connect(func(): app.navigate("presentation_preview"))
+	return sequence
 
 func _home() -> Control:
 	var page := _composition(true)
@@ -914,6 +935,8 @@ func _audio_options(content: VBoxContainer) -> void:
 func _settings(payload: Dictionary) -> Control:
 	_settings_from = str(payload.get("from","home"))
 	var page := _page("Options","SYSTEM · SETUP",_settings_from,0.0,true)
+	if app.presentation_preview_enabled and journey.current_run == null:
+		page.content.add_child(_button("Presentation preview",func(): app.navigate("presentation_preview")))
 	page.content.add_child(_label("언어 / Language",16,UITheme.GOLD))
 	var languages := HBoxContainer.new()
 	for entry in [["ko","한국어"],["en","English"]]:

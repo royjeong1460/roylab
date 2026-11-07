@@ -13,6 +13,9 @@ var _feedback_callback
 func available() -> bool:
 	return OS.has_feature("web") and shell != null
 
+func presentation_preview_requested() -> bool:
+	return OS.has_feature("web") and bool(JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('preview') === 'story'"))
+
 func bootstrap(journey) -> void:
 	if not OS.has_feature("web"):
 		return

@@ -44,6 +44,7 @@ var _hud_clock := 0.0
 var _finishing := false
 var _reset_revision := -1
 var _settings_from := "home"
+var presentation_preview_enabled := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -110,7 +111,9 @@ func _ready() -> void:
 	screens.setup(self, catalog, journey, feedback)
 	get_viewport().size_changed.connect(_layout)
 	_layout()
-	navigate("home")
+	var preview_requested: bool = web_bridge.presentation_preview_requested()
+	presentation_preview_enabled = preview_requested or bool(ProjectSettings.get_setting("presentation/preview_enabled", false))
+	navigate("presentation_preview" if preview_requested else "home")
 	web_bridge.emit_event("ready")
 
 func _layout() -> void:
@@ -198,6 +201,12 @@ func complete_tutorial_intro() -> void:
 	if current_screen != "tutorial_intro" or journey.current_run == null:
 		return
 	_begin_play(payload.duplicate())
+
+func show_presentation(kind: String, region := 0) -> void:
+	if not presentation_preview_enabled or journey.current_run != null:
+		return
+	feedback.unlock()
+	navigate("presentation_sequence", {"kind": kind, "region": clampi(region, 0, 4)})
 
 func _begin_play(result: Dictionary) -> void:
 	feedback.set_game_paused(false)
@@ -432,6 +441,9 @@ func _active_changed(active: bool) -> void:
 		pause_run()
 
 func _back_requested() -> void:
+	if current_screen in ["presentation_preview", "presentation_sequence"]:
+		navigate("presentation_preview" if current_screen == "presentation_sequence" else "home")
+		return
 	if current_screen == "tutorial_intro":
 		view.finish()
 		return

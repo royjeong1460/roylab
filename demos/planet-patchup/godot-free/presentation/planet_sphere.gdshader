@@ -38,6 +38,7 @@ vec3 base_color(vec2 uv) {
 	return original;
 }
 void fragment() {
+	float opacity = COLOR.a;
 	// Match the original 192px framebuffer, displayed at 2x with nearest edges.
 	vec2 pixel = floor(UV * 192.0);
 	vec2 normal = (pixel-vec2(95.5))/85.0;
@@ -68,4 +69,5 @@ void fragment() {
 		float rim=max(0.0,(rr-0.95)/0.05);
 		COLOR=vec4(mix(dirty,clean,amount)*light*(1.0-rim*0.18)+vec3(116.0,110.0,112.0)/255.0*rim*0.18,1.0);
 	}
+	COLOR.a *= opacity;
 }
