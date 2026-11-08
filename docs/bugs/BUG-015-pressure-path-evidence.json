@@ -1,0 +1,37 @@
+{
+  "scope": "Static call-chain and arithmetic bounds; no runtime reproduction",
+  "version": "0.5.53(63)",
+  "userLoadout": [
+    "expand",
+    "wave"
+  ],
+  "userLocation": "between pillar and body; any map",
+  "boundedLocalRadius": 4.0,
+  "propagatedCrackIgnoresLocalRadius": true,
+  "reachDerivedFrom": "full recipient material toward body center",
+  "bounds": {
+    "expand": {
+      "minimumBasePressure": 1.5,
+      "propagationThreshold": 1.25,
+      "minimumDepthFactor": 0.7,
+      "maximumBondToughness": 1.15,
+      "minimumPropagatedBondIncrement": 1.0043478260869567,
+      "onePulseSeversOnCrackBonds": true
+    },
+    "wave": {
+      "minimumBasePressure": 1.6,
+      "propagationThreshold": 1.25,
+      "minimumDepthFactor": 0.7,
+      "maximumBondToughness": 1.15,
+      "minimumPropagatedBondIncrement": 1.071304347826087,
+      "onePulseSeversOnCrackBonds": true
+    }
+  },
+  "files": {
+    "project/impact_physics.gd": "92165c7921602e5ff8efb6191db212ade5d0fcdc4ab2b12e55b962a88b0d0d5b",
+    "project/skill_physics.gd": "83785a2ffd081f28792eeb2d1fdc97406a1892bb7a2cff92ead04b8daa3d4303",
+    "project/campaign/catalog.gd": "e47c7ade1dd73e669ca4067996cdb090fb25b774ae5a4a1779ab241e999d66d9",
+    "extension/src/effect_kernel.cpp": "3ff99624996d7f4293154f794d6728194e10b334ee57987a8240620dafec02a3"
+  },
+  "runtimeExecuted": false
+}
