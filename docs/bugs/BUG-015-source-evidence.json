@@ -1,0 +1,15 @@
+{
+  "candidate": "0.5.53(63)",
+  "runtimeExecuted": false,
+  "sourceHashes": {
+    "world.gd": "5f2e019342915fa7f91af9694041d7238de147eae271600ddce43968f46bc67b",
+    "skill_physics.gd": "83785a2ffd081f28792eeb2d1fdc97406a1892bb7a2cff92ead04b8daa3d4303",
+    "impact_physics.gd": "92165c7921602e5ff8efb6191db212ade5d0fcdc4ab2b12e55b962a88b0d0d5b",
+    "presentation/skill_vfx.gd": "6e8954b956a1c9e3c3d601006c9d5cf02aa89e2099a98c26ab477338e73f6fde"
+  },
+  "cppSourceHashes": {
+    "world_kernel.cpp": "b62e358f0a31be4dfb92e9c1118e71059865ad8c66a63d2dcec02df28e913bbd",
+    "effect_kernel.cpp": "3ff99624996d7f4293154f794d6728194e10b334ee57987a8240620dafec02a3",
+    "pixel_kernel.cpp": "5a53519ef14e756cf76c6c94cebdcfefaadc1c7fcaa0f43fc90a815c9f3fd77a"
+  }
+}

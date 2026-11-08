@@ -20,3 +20,5 @@
 | [BUG-013](BUG-013-full-demolition-battery-remaining.md) | 2026-11-07 | 전체 파괴 후 배터리가 남으면 수집·종료 전환 누락 | 사용자 확인 대기 |
 | [BUG-014](BUG-014-broad-grounded-bodies.md) | 2026-11-07 | 바닥 전체에 붙은 몸통 하단을 다리·개구부 구조로 변경 | 사용자 확인 대기 |
 | [PERF-003](PERF-003-mosaic-boss-entry.md) | 2026-11-07 | 6지역 보스 현장 입장 로딩 지연 | 맵 크기·초기화 경로 확인 · 시간 미측정 |
+
+| [BUG-015](BUG-015-blast-radius-after-nearby-hit.md) | 2026-11-08 | 가까운 지점 재폭파 시 반경이 갑자기 커지는 제보 | 누적 균열·패시브·표시 경로 조사 · 관찰 원인 미확정 |
