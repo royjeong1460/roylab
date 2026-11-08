@@ -1,0 +1,124 @@
+{
+  "source": "/Users/roy/Downloads/ScreenRecording_11-08-2026 22-05-26_1.mov",
+  "sha256": "03ecdec1fe0438b18a9dd843b1e50ace953205c981ef255f6d5baab5edd682bd",
+  "metadata": {
+    "duration": 13.735,
+    "fps": 59.48307418823242,
+    "height": 640,
+    "source": "/Users/roy/Downloads/ScreenRecording_11-08-2026 22-05-26_1.mov",
+    "width": 294
+  },
+  "method": "Offline frame extraction and manual reading of visible HUD; no game runtime executed.",
+  "installedVersionCompared": "0.5.55(65)",
+  "mapTitleVisible": "갑문 패널 거리",
+  "samples": [
+    {
+      "sampleVideoSeconds": 1,
+      "primaryNumber": 5,
+      "attackGameSeconds": 5.63,
+      "radius": 5.0,
+      "haloRadius": 15.0,
+      "direct": 65,
+      "extra": 197,
+      "smallFragments": 197,
+      "bodyLimit": 0,
+      "unclassified": 0
+    },
+    {
+      "sampleVideoSeconds": 2,
+      "primaryNumber": 6,
+      "attackGameSeconds": 13.4,
+      "radius": 5.0,
+      "haloRadius": 15.0,
+      "direct": 81,
+      "extra": 0,
+      "smallFragments": 0,
+      "bodyLimit": 0,
+      "unclassified": 0
+    },
+    {
+      "sampleVideoSeconds": 3,
+      "primaryNumber": 7,
+      "attackGameSeconds": 14.3,
+      "radius": 5.0,
+      "haloRadius": 15.0,
+      "direct": 79,
+      "extra": 0,
+      "smallFragments": 0,
+      "bodyLimit": 0,
+      "unclassified": 0
+    },
+    {
+      "sampleVideoSeconds": 4,
+      "primaryNumber": 8,
+      "attackGameSeconds": 15.12,
+      "radius": 5.0,
+      "haloRadius": 15.0,
+      "direct": 22,
+      "extra": 0,
+      "smallFragments": 0,
+      "bodyLimit": 0,
+      "unclassified": 0
+    },
+    {
+      "sampleVideoSeconds": 5,
+      "primaryNumber": 9,
+      "attackGameSeconds": 15.8,
+      "radius": 5.0,
+      "haloRadius": 15.0,
+      "direct": 28,
+      "extra": 45,
+      "smallFragments": 45,
+      "bodyLimit": 0,
+      "unclassified": 0
+    },
+    {
+      "sampleVideoSeconds": 6,
+      "primaryNumber": 10,
+      "attackGameSeconds": 17.03,
+      "radius": 5.0,
+      "haloRadius": 15.0,
+      "direct": 63,
+      "extra": 88,
+      "smallFragments": 88,
+      "bodyLimit": 0,
+      "unclassified": 0
+    },
+    {
+      "sampleVideoSeconds": 9,
+      "primaryNumber": 11,
+      "attackGameSeconds": 19.88,
+      "radius": 5.0,
+      "haloRadius": 15.0,
+      "direct": 80,
+      "extra": 0,
+      "smallFragments": 0,
+      "bodyLimit": 0,
+      "unclassified": 0
+    },
+    {
+      "sampleVideoSeconds": 10,
+      "primaryNumber": 12,
+      "attackGameSeconds": 20.57,
+      "radius": 5.0,
+      "haloRadius": 15.0,
+      "direct": 67,
+      "extra": 88,
+      "smallFragments": 61,
+      "bodyLimit": 27,
+      "unclassified": 0
+    }
+  ],
+  "confirmed": [
+    "All eight displayed primary radius values are5.00cells; all displayed halo radii are15.00cells.",
+    "All eight displayed unclassified immediate counts are0.",
+    "Extra conversions include small-fragment conversions, with27 body-limit pixels on primary12.",
+    "Attack5 is a previously completed attack visible when resuming, not a new attack at video1s."
+  ],
+  "notConfirmed": [
+    "How many small-fragment pixels were produced during blast-cut versus blast-halo; extraByPhase is in exported JSON, not visible on HUD.",
+    "An exact causal attribution for later fall/pressure/chain conversions; HUD later window is temporal-only."
+  ],
+  "gameCodeChanged": false,
+  "runtimeByAssistant": false
+}
