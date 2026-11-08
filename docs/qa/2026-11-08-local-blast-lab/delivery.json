@@ -1,0 +1,29 @@
+{
+  "baseline": "0.5.55(65)",
+  "localURL": "http://127.0.0.1:8805/game.html",
+  "serverBind": "127.0.0.1",
+  "skillCount": 10,
+  "normalSites": 36,
+  "bossSites": 6,
+  "unlocks": "all maps, bosses, tools and skills; two passive/two active slots",
+  "sourceOverrides": [
+    "project.godot",
+    "export_presets.cfg",
+    "campaign/profile_schema.gd",
+    "campaign/progression.gd",
+    "campaign/run_journal.gd",
+    "app/screens.gd"
+  ],
+  "physicsAndSkillSourcesUnchanged": true,
+  "mapFilesUnchanged": 44,
+  "nativeCoreLibrariesUnchanged": true,
+  "saveDirectory": "PlanetPatchupLocalBlastLab20261108",
+  "nativeCurrentUnchanged": true,
+  "userFacingPageOpened": true,
+  "initialHomeVisible": true,
+  "gameplayTestedByAssistant": false,
+  "autoLocalJournalMirror": "records/*.json on user-generated checkpoints; receiver not exercised with synthetic gameplay data",
+  "importCompileExport": "passed",
+  "staticHTTP": "HTML and main/native WASM200; application/wasm; COOP/COEP headers",
+  "publicDeployment": false
+}

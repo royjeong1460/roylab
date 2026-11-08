@@ -1,0 +1,131 @@
+--- a/project.godot
++++ b/project.godot
+@@ -18,7 +18,7 @@
+ config/version="0.5.55"
+ run/main_scene="res://app/app.tscn"
+ config/use_custom_user_dir=true
+-config/custom_user_dir_name="PlanetPatchupGodotPaid"
++config/custom_user_dir_name="PlanetPatchupLocalBlastLab20261108"
+ config/features=PackedStringArray("4.6")
+ boot_splash/bg_color=Color(0.0980392, 0.168627, 0.196078, 1)
+ boot_splash/show_image=false
+@@ -52,6 +52,10 @@
+ 
+ preview_enabled=true
+ 
++[qa]
++
++local_lab=true
++
+ [rendering]
+ 
+ textures/canvas_textures/default_texture_filter=0
+--- a/export_presets.cfg
++++ b/export_presets.cfg
+@@ -12,8 +12,8 @@
+ script_export_mode=2
+ 
+ [preset.0.options]
+-custom_template/debug="/Users/roy/Developer/breakout/orbrixcopy/.tools/web_nothreads_release.zip"
+-custom_template/release="/Users/roy/Developer/breakout/orbrixcopy/.tools/web_nothreads_release.zip"
++custom_template/debug="/Users/roy/Developer/sand/.local-tools/web-g40/web_dlink_nothreads_release.zip"
++custom_template/release="/Users/roy/Developer/sand/.local-tools/web-g40/web_dlink_nothreads_release.zip"
+ variant/thread_support=false
+ html/export_icon=false
+ html/canvas_resize_policy=2
+--- a/campaign/profile_schema.gd
++++ b/campaign/profile_schema.gd
+@@ -34,6 +34,32 @@
+ 		"bossRewards": {}, "selectedRegion": 0, "lastSite": null, "runCount": 0, "bossAttempts": 0,
+ 		"workMs": 0, "firstClearMs": null, "history": [], "purchases": []}
+ 	p.purchaseTotals = economy.initial_purchase_totals(p)
++	if bool(ProjectSettings.get_setting("qa/local_lab",false)):
++		p.tutorial = "done"
++		p.selectedRegion = 2
++		p.lastSite = "canal-05-canal-terrain-frame-v1"
++		p.owned.append("blackhole")
++		for id in catalog.skills:
++			p.skills[id] = 5 if id == "expand" else 1
++		p.equipped = {"passive":["expand","wave"],"active":["orbital","seismic"]}
++		p.upgrades.blastForce = 25
++		p.upgrades.blastRadius = 20
++		p.upgrades.blastReach = 12
++		p.upgrades.battery = 24
++		p.purchaseTotals.blackhole = 2000
++		for id in catalog.tracks:
++			var amount := 0
++			for previous in range(int(p.upgrades[id])):
++				amount += int(economy.upgrade_cost(id,previous))
++			p.purchaseTotals[id] = amount
++		for id in catalog.skills:
++			var amount := 0
++			for previous in range(int(p.skills[id])):
++				amount += int(economy.skill_cost(id,previous))
++			p.purchaseTotals[id] = amount
++		p.spent = economy.total_spent(p)
++		p.parts = 10000000
++		p.earned = int(p.spent)+int(p.parts)
+ 	return p
+ 
+ static func uint(value: Variant) -> bool:
+--- a/campaign/progression.gd
++++ b/campaign/progression.gd
+@@ -29,6 +29,8 @@
+ 		"restoration": 1.0 if all_clear else 0.8 if cleared else clears / 7.0 * 0.65}
+ 
+ func region_open(p: Dictionary, index: int) -> bool:
++	if bool(ProjectSettings.get_setting("qa/local_lab",false)):
++		return index >= 0 and index < catalog.regions.size()
+ 	if index < 0 or index >= catalog.regions.size():
+ 		return false
+ 	for previous in range(index):
+@@ -47,6 +49,8 @@
+ 	return index if region_open(p, index) else 0
+ 
+ func stage_open(p: Dictionary, id: String) -> bool:
++	if bool(ProjectSettings.get_setting("qa/local_lab",false)):
++		return not catalog.metadata(id).is_empty()
+ 	var meta: Dictionary = catalog.metadata(id)
+ 	var index := site_region(id)
+ 	if meta.is_empty() or not region_open(p, index):
+@@ -82,6 +86,8 @@
+ 	return count
+ 
+ func gear_available(p: Dictionary, id: String) -> bool:
++	if bool(ProjectSettings.get_setting("qa/local_lab",false)):
++		return id == "blackhole" or catalog.skills.has(id)
+ 	var unlock := gear_unlock_info(id)
+ 	if unlock.is_empty():
+ 		return false
+--- a/campaign/run_journal.gd
++++ b/campaign/run_journal.gd
+@@ -66,6 +66,9 @@
+ 	file.close()
+ 	if error != OK or DirAccess.rename_absolute(ProjectSettings.globalize_path(path + ".tmp"), ProjectSettings.globalize_path(path)) != OK:
+ 		_fail()
++	if OS.has_feature("web") and bool(ProjectSettings.get_setting("qa/local_lab",false)):
++		var body := JSON.stringify(JSON.stringify(record))
++		JavaScriptBridge.eval("fetch('/local-records',{method:'POST',headers:{'Content-Type':'application/json'},body:"+body+"}).catch(()=>{});",true)
+ 
+ func prune() -> void:
+ 	var list := records()
+--- a/app/screens.gd
++++ b/app/screens.gd
+@@ -267,7 +267,7 @@
+ 	var subtitle := _label("Save the planet!", 11, Color("b5c4b9"))
+ 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ 	_place(fixed, subtitle, Rect2(0,80,390,24))
+-	var title := _label("PLANET\nPATCHUP", 30, Color("f3d79c"))
++	var title := _label("LOCAL\nBLAST LAB", 30, Color("f3d79c"))
+ 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ 	title.add_theme_color_override("font_shadow_color", Color("84593b"))
+ 	title.add_theme_constant_override("shadow_offset_y", 3)
+@@ -983,6 +983,8 @@
+ 			if app.play_view!=null: app.play_view.toggle_fit()
+ 			app.resume_run()))
+ 		page.content.add_child(_button("Collect & return · upgrade equipment",func(): app.finish_run()))
++	if bool(ProjectSettings.get_setting("qa/local_lab",false)):
++		page.content.add_child(_button("Export records",func(): app.export_profile()))
+ 	_audio_options(page.content)
+ 	return page.root
+ 
