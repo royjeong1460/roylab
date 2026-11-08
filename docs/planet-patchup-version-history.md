@@ -51,3 +51,5 @@ Web `free-0541-ae30a3e88329` published;13 static HTTP responses plus transport/d
 고정/분리 상태의 압력·주변 균열 좌표 조회를 동일하게 적용하도록 C++의 읽기 전용 Dictionary 참조 오류 두 곳을 수정했다. 폭파 반경/스킬 강도 수치는 유지한다. 이미 승인한 reduced-map/중간값/압력 scope도 현재 로컬·iPhone과 같은 설정으로 웹에 반영한다.0.5.56(66)은 iPhone에 sequence4372로 설치되어 있으며, 사용자가 현재 로컬 상태의 전체 업데이트를 승인했다.
 
 로컬 Web에서 공유 메모리를 요구하는 모듈을 non-threaded 엔진과 혼용한 빌드 오류(BUG-016)는 threads=no/production/LTO 옵션 고정으로 복구했다. 사용자 시작 화면 진입 확인을 받았다. 공개 Web 배포·HTTP 결과는 별도 [전달 기록](qa/2026-11-08-static-fracture-release/README.md)에 남긴다. 기존 저장 경로·진행은 초기화하지 않는다.
+
+공개 전달 완료: release96f9626 / Pages84347a84-322b-4632-b96a-f0c583311bb7 / web free-0541-6ee74427fb5e.15개 정적 HTTP 및 encoded/decoded 해시 확인. iPhone0.5.56(66) 설치본은 동일하게 유지.

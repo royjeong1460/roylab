@@ -17,10 +17,16 @@
   "nativeDelivery": "qa/ios-static-fracture-2026-11-08/delivery.json",
   "rollbackWebStem": "free-0541-ae30a3e88329",
   "rollbackNativeDelivery": "qa/ios-blast-trace-2026-11-08/delivery.json",
-  "published": false,
-  "httpVerified": false,
+  "published": true,
+  "httpVerified": true,
   "runtimeByAssistant": false,
   "runtimeVerificationOwner": "user",
   "userLocalStartingScreenConfirmed": true,
-  "userApprovedPublicAdoption": true
+  "userApprovedPublicAdoption": true,
+  "releaseCommit": "96f9626e06e4601a030363033b71ea2450543dec",
+  "pushOutcome": "fast-forward origin main c39a1e0..96f9626",
+  "deploymentId": "84347a84-322b-4632-b96a-f0c583311bb7",
+  "deploymentStatus": "success",
+  "httpResponses": 15,
+  "httpEvidence": "http-verification.json"
 }

@@ -25,3 +25,5 @@ pressure_bonds and halo_bonds accept optional scope_center/scope_radius argument
 ## 2026-11-08 static fracture coordinate fix
 
 The two pressure/halo ID-to-coordinate assignments now copy ID and Vector2 values before another readonly Dictionary lookup. Readonly caching, scopes, all damage/radius constants and fall/chain kernels are retained. Native0.5.56(66) and the all-skills loopback lab carry this consistency fix. A fixed building may receive previously missing bond damage; user A/B gameplay verification is pending. The free Web source/library pair is prepared locally; public deployment is separate. Evidence and rollback: docs/qa/2026-11-08-static-fracture/README.md.
+
+Public adoption followed user approval: free-0541-6ee74427fb5e / release96f9626, with matching non-threaded native module667d8633d21ce150. See docs/qa/2026-11-08-static-fracture-release/README.md for public HTTP and iPhone evidence.

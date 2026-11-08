@@ -1,8 +1,8 @@
 {
   "version": "0.5.56",
   "nativeBuild": 66,
-  "candidateOnly": true,
-  "publicDeployment": false,
+  "candidateOnly": false,
+  "publicDeployment": true,
   "nativeApp": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-static-fracture-2026-11-08-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
   "nativeBundle": "com.roy.planetpatchup.godotcompare",
   "package": {
@@ -44,11 +44,19 @@
   },
   "runtimeExecutedByAgent": false,
   "runtimeVerificationOwner": "user",
-  "status": "Installed; awaiting user gameplay comparison. Fixed buildings may fracture more because previously missing bond damage now applies.",
+  "status": "Adopted and published; original recurrence/feel remains user verification.",
   "webStartupCorrection": {
     "bug": "BUG-016",
     "record": "local-web-startup-fix/report.json",
     "userConfirmedStartingScreen": true,
     "nativeAppUnchanged": true
+  },
+  "publicWeb": {
+    "url": "https://roylab.pages.dev/planet-patchup/play/",
+    "stem": "free-0541-6ee74427fb5e",
+    "releaseCommit": "96f9626e06e4601a030363033b71ea2450543dec",
+    "deploymentId": "84347a84-322b-4632-b96a-f0c583311bb7",
+    "httpVerified": true,
+    "delivery": "docs/qa/2026-11-08-static-fracture-release/README.md"
   }
 }
