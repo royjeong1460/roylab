@@ -1,0 +1,145 @@
+{
+  "date": "2026-11-08",
+  "bug": "BUG-015",
+  "analysisOnly": true,
+  "gameCodeModified": false,
+  "runtimeByAssistant": false,
+  "currentNativeSource": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-pressure-scope-2026-11-08/extension/src",
+  "files": {
+    "src/effect_kernel.cpp": {
+      "sha256": "20d739240699c91d7ac033dc98bf3a204a8d66ae7a123acf3df8b95581ca22c2"
+    },
+    "src/world_kernel.cpp": {
+      "sha256": "b62e358f0a31be4dfb92e9c1118e71059865ad8c66a63d2dcec02df28e913bbd"
+    },
+    "src/pixel_kernel.cpp": {
+      "sha256": "5a53519ef14e756cf76c6c94cebdcfefaadc1c7fcaa0f43fc90a815c9f3fd77a"
+    },
+    "vendor/godot-cpp/src/variant/packed_arrays.cpp": {
+      "sha256": "b594799e5cd35ef6b649ae732d958c7eeb154800aaa565d3a38c98baff9d3564"
+    },
+    "vendor/godot-cpp/tools/common_compiler_flags.py": {
+      "sha256": "7621b8cc86ad799e1f45a430d44fc38a8f4d59b744ededef2abb5b77e5592290"
+    }
+  },
+  "officialSources": [
+    "https://github.com/godotengine/godot/blob/4.6.2-stable/core/variant/dictionary.cpp#L93-L130",
+    "https://github.com/godotengine/godot/blob/4.6.2-stable/core/extension/gdextension_interface.cpp#L1209-L1216"
+  ],
+  "faultyExpression": "by[p[\"id\"]] = p[\"q\"];",
+  "locations": [
+    "effect_kernel.cpp:84 pressure_bonds",
+    "effect_kernel.cpp:148 halo_bonds"
+  ],
+  "sourceFinding": "Static material pixels are read-only dictionaries. Non-const indexing returns a shared temporary Variant; reading id while retaining q reference overwrites the value copied into the ID-to-coordinate table. Detached material uses writable fresh dictionaries.",
+  "inference": "Static halo/pressure distance checks are corrupted; switching to detached material can abruptly activate the intended broader damage. This matches user state-change report and captured halo counts but requires user A/B verification after a targeted fix.",
+  "record": {
+    "file": "c5fecb299077791f20eb6f7d.json",
+    "sha256": "a3ecee47c83d478e7f3d019261a92783952e2d106dbfa4998becaf2963bba1ba",
+    "map": "terrace-06-terrace-terrain-frame-v1",
+    "shots": [
+      {
+        "primaryNumber": 1.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 77.0,
+        "extra": 0.0,
+        "extraByPhase": {},
+        "haloChangedBonds": 0.0,
+        "bodyCountAfter": 0.0
+      },
+      {
+        "primaryNumber": 2.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 48.0,
+        "extra": 0.0,
+        "extraByPhase": {},
+        "haloChangedBonds": 0.0,
+        "bodyCountAfter": 0.0
+      },
+      {
+        "primaryNumber": 3.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 56.0,
+        "extra": 0.0,
+        "extraByPhase": {},
+        "haloChangedBonds": 0.0,
+        "bodyCountAfter": 0.0
+      },
+      {
+        "primaryNumber": 4.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 67.0,
+        "extra": 0.0,
+        "extraByPhase": {},
+        "haloChangedBonds": 0.0,
+        "bodyCountAfter": 0.0
+      },
+      {
+        "primaryNumber": 5.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 67.0,
+        "extra": 0.0,
+        "extraByPhase": {},
+        "haloChangedBonds": 0.0,
+        "bodyCountAfter": 0.0
+      },
+      {
+        "primaryNumber": 6.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 74.0,
+        "extra": 2.0,
+        "extraByPhase": {
+          "blast-cut": 2.0
+        },
+        "haloChangedBonds": 0.0,
+        "bodyCountAfter": 0.0
+      },
+      {
+        "primaryNumber": 7.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 30.0,
+        "extra": 0.0,
+        "extraByPhase": {},
+        "haloChangedBonds": 0.0,
+        "bodyCountAfter": 0.0
+      },
+      {
+        "primaryNumber": 8.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 71.0,
+        "extra": 35.0,
+        "extraByPhase": {
+          "blast-halo": 35.0
+        },
+        "haloChangedBonds": 442.0,
+        "bodyCountAfter": 1.0
+      },
+      {
+        "primaryNumber": 9.0,
+        "radius": 5.0,
+        "haloRadius": 15.0,
+        "direct": 60.0,
+        "extra": 50.0,
+        "extraByPhase": {
+          "blast-cut": 1.0,
+          "blast-halo": 49.0
+        },
+        "haloChangedBonds": 161.0,
+        "bodyCountAfter": 1.0
+      }
+    ]
+  },
+  "limitations": [
+    "Current trace records global body count, not per-target pose or material type.",
+    "No engine runtime probe or corrected-build gameplay comparison was performed.",
+    "Correcting lookup can also increase fixed-building fracture response; do not describe it as an unconditional nerf."
+  ]
+}

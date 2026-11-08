@@ -1,6 +1,6 @@
 # BUG-015 · 가까운 지점 재폭파 시 반경이 갑자기 커지는 제보
 
-- 제보일:2026-11-08. 상태:압력 범위 수정 설치 후 사용자 영상상 현상 지속·원인 추가 조사 중. 실기 장면 재현은 사용자 검증 범위임.
+- 제보일:2026-11-08. 상태:압력 범위 수정 후 현상 지속. C++ 읽기 전용 좌표 조회 오류를 소스에서 확인했으며, 사용자 기록의 상태 전환과 부합함. 수정 및 전후 실기 확인은 아직 하지 않음.
 - 관찰:폭파한 뒤 그 주변을 다시 폭파했을 때, 작은 폭파 반경이 한 번 매우 커진 것으로 보임.
 - 사용자 추가 답변:최근 설치한 아이폰 앱에서 관찰했고, 실제 건물 픽셀이 넓게 사라진 쪽 같다고 답함(“1번 같아”). 관찰 플랫폼은0.5.53(63)으로 특정했으며, 실제 파괴 여부는 사용자 추정임. 후속 답변에서 압력 확산(expand) + 지면 파동(wave) 장착, 맵 공통으로 다리와 몸통 사이에서 관찰한다고 구체화함. 타수·업그레이드 레벨·당시 실기 이벤트는 미확인임.
 - 조사 기준:CURRENT.json의 iPhone0.5.53(63), `qa/ios-destruction-midpoint-2026-11-07/project`와 해당 C++ 소스. 공개 웹 기록의 releaseCommit95d6c6d 원본도 대조함.
@@ -130,3 +130,21 @@ Godot import/compile-only/pack, Xcode Release 및 서명/패키지 검증은 통
 소스 경로:분리된 body를 cut_at으로 공격하면 remaining IDs의 연결 그룹을 검사/재구성한다. 이어 기본 blast_halo가 직접 삭제 원보다 넓은 결합에 손상을 누적하고, 움직이는 조각은 groups→_rebuild를 즉시 수행한다. 그 과정에서 생긴16픽셀 이하의 독립 파편은 작은 강체로 남기지 않고 모래로 바뀐다. 따라서 ‘고정 건물의 작은 구멍’과 ‘이미 분리된 몸통의 주변 파편화’가 시각적으로 다르게 나타날 수 있다. 계측은 특히 추가 픽셀화의 지배적인 단계가 blast-halo임을 확인했다.
 
 수정 대상은 기본 폭파의 균열/파편 전환 경로이며 낙하·실제 충돌 연쇄를 먼저 낮출 근거는 없다. 기본/파편 상태의 피해 범위를 일관되게 정의하고, 실제 충돌로 더 부서지는 경로와 구분하는 방향을 검토한다. 이번에는 코드·수치·현재 설치본·열린 로컬 페이지를 변경하지 않았다. 스냅샷/집계: `qa/bug015-local-analysis-2026-11-08/analysis.json`과 함께 보관한 사용자 기록.
+
+## 2026-11-08 · 고정/분리 상태 차이를 만드는 C++ 좌표 조회 오류
+
+추가 추적 결과, 앞 절의 halo/작은 파편 전환은 추가 픽셀화가 발생하는 단계이고, **분리 전후 왜 갑자기 달라지는가**에는 별도의 데이터 조회 오류가 있다. 고정 구조물도 check_supports에서 연결 그룹을 검사하므로, 단순히 ‘고정 건물은 그룹을 검사하지 않고 분리체만 검사한다’는 설명은 맞지 않는다.
+
+- 현재 nativeSource의 `world_kernel.cpp:10~18`은 고정 픽셀의 id/q Dictionary를 캐시하면서 make_read_only() 한다.
+- `pixel_kernel.cpp:133~145`의 분리체 material은 변환 좌표를 새 Dictionary에 넣으며 읽기 전용으로 만들지 않는다.
+- 공통 `effect_kernel.cpp:84,148`에는 `by[p["id"]] = p["q"];`가 있다. pressure_bonds와 halo_bonds 양쪽이 해당한다.
+- Godot4.6.2의 **비const Dictionary operator[]는 읽기 전용 Dictionary를 조회할 때 하나의 임시 Variant 저장소를 재사용**한다. godot-cpp의 비const operator[]도 이 엔진 함수를 그대로 호출한다. 따라서 위 표현에서 q의 참조를 얻고 이어 id를 조회하면 같은 임시 값이 덮여, 좌표가 들어가야 할 by[id]에 정수 ID가 복사된다. C++17의 대입식은 오른쪽을 왼쪽보다 먼저 평가하며, 해당 godot-cpp 빌드 설정도 C++17이다.
+- 이후 이 값을 Vector2 좌표로 사용해 결합 중점과 폭파점 거리를 계산하므로 고정 측의 균열 거리 판정이 잘못된다. 분리 후 새 material은 이 임시 참조 문제를 피하므로, 같은 입력 수치라도 정상적인 넓은 halo가 갑자기 적용될 수 있다. 속도 때문에 폭파 radius를 키우는 코드가 아니다.
+
+공식 근거: [Godot4.6.2 Dictionary 구현](https://github.com/godotengine/godot/blob/4.6.2-stable/core/variant/dictionary.cpp#L93-L130), [GDExtension Dictionary 연결](https://github.com/godotengine/godot/blob/4.6.2-stable/core/extension/gdextension_interface.cpp#L1209-L1216). 프로젝트에 포함된 godot-cpp `packed_arrays.cpp:243~251`과 `tools/common_compiler_flags.py:35~39`도 대조했다.
+
+사용자 로컬 기록 `terrace-06-terrace-terrain-frame-v1`의1~7타는 전역 분리 몸체0/haloChangedBonds0이다.8타는 몸체1/haloChangedBonds442/halo 추가 전환35,9타는 몸체1/haloChangedBonds161/halo 추가 전환49다. 모든 직접 반경5/halo반경15는 그대로다. 이 기록은 위 소스 오류와 일치하는 정황이지만, 개별 대상 상태나 중간 by의 타입을 계측한 자료는 아니므로 실기 인과 확정/수정 검증으로 표기하지 않는다.
+
+우선 수정 후보는 두 조회문에서 ID와 좌표를 각각 값으로 복사한 뒤 매핑하는 것이다. 읽기 전용 캐시나 낙하/연쇄 수치는 유지할 수 있다. 다만 이 오류를 고치면 그동안 누락되던 **고정 구조물의 균열도 더 잘 적용될 수 있으므로**, 단순 약화 패치로 설명하면 안 된다. 자료 읽기 일관성을 먼저 고친 후 동일 조건의 사용자 전후 비교로 halo 위력 자체를 판단해야 한다.
+
+이번 작업은 소스/공식 구현/사용자 기록 분석 및 문서화만 했다. 게임 코드·물리 수치·라이브러리·현재 설치본·로컬 서버를 변경하지 않았고 테스트·씬·시뮬레이션·브라우저 조작·기기 앱 실행은 하지 않았다. 근거 파일과 원본 체크포인트는 `BUG-015-readonly-coordinate-evidence.json` 및 native QA의 `bug015-local-analysis-2026-11-08/`에 보관한다.
