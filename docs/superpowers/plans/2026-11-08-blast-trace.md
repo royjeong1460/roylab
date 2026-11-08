@@ -11,7 +11,7 @@ Constraints: Preserve0.5.54 source/app and CURRENT for rollback. Same app ID/sav
 - [x] Add six-line top HUD and last-shot comparison, separate from optional performance overlay. Retain battery five-tap toggle.
 - [x] Add attackTrace to current journal at existing checkpoints; JSON export retains all kept records. Show warning via existing journal warning on persistence failure.
 - [x] Compile-only adapters on pinned Godot4.6.2; inspect diff and compare unchanged kernel/skill/data hashes. Build iOS0.5.55(65), verify signature/package.
-- [ ] Update-install on iPhone without launch; initial attempt blocked by CoreDevice4016, awaiting USB/unlock.
-- [ ] Record delivery/install/rollback and user-only gameplay verification, then update CURRENT only after build/install evidence.
+- [x] Update-installed on iPhone without launch as sequence4364 after user USB/unlock; original4016 attempt retained.
+- [x] Recorded delivery/install/rollback and user-only gameplay verification; updated CURRENT after successful install receipt.
 
 Validation: static batch coverage for every emit_grain caller, no new pixel iteration, JSON bounds/schema and compile-only. Static checks do not prove gameplay counts or UI readability; user supplies replay/video. No runtime test is authorized.

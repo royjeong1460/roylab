@@ -15,12 +15,16 @@
     "rollbackAppPackUnchanged": true,
     "runtimeExecuted": false
   },
-  "nativeInstalled": false,
-  "installBlocker": "CoreDevice4016; device development tunnel unavailable; user asked to reconnect/unlock",
+  "nativeInstalled": true,
   "rollbackDelivery": "qa/ios-pressure-scope-2026-11-08/delivery.json",
   "nativeSourceUnchanged": "qa/ios-pressure-scope-2026-11-08/extension/src",
   "physicsAndSkillsUnchanged": true,
   "records": "Existing local journal records[].attackTrace; checkpoints every5simulation seconds, pause/background/end/export",
   "runtimeExecutedByAgent": false,
-  "runtimeVerificationOwner": "user"
+  "runtimeVerificationOwner": "user",
+  "installedSequence": 4364,
+  "installOutcome": "success",
+  "installReceipt": "device-install-retry.json",
+  "initialInstallBlockerResolved": "User reconnected USB and unlocked iPhone after initial CoreDevice4016.",
+  "deviceAppLaunchedByAssistant": false
 }

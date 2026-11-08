@@ -26,6 +26,6 @@ The assistant did not run tests, scenes, simulations, gameplay, a browser or the
 
 ## Delivery and rollback
 
-Build/signature/package verification:package-verification.json. Install status:device-install.json/device-install.log and delivery.json. The first installation attempt was blocked by CoreDevice4016; awaiting a reachable/unlocked physical iPhone. CURRENT remains0.5.54 until installation succeeds.
+Build/signature/package verification:package-verification.json. Install status:device-install.json/device-install.log and delivery.json. The first installation attempt was blocked by CoreDevice4016. After the user reconnected/unlocked the iPhone, update installation succeeded as sequence4364. CURRENT now points to0.5.55(65). The app was not launched. Original0.5.54 source/app and prior-current.json remain available.
 
 Rollback app:`../../native/build/ios-pressure-scope-2026-11-08-derived/Build/Products/Release-iphoneos/PPGodotCompare.app`. Update-install it in place (never uninstall/reset), then restore prior-current.json. No public web deployment was performed.
