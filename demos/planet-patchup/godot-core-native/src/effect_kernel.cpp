@@ -81,7 +81,10 @@ int64_t PPEffectKernel::pressure_bonds(Array material, Dictionary bonds,
     if (scope_radius >= 0.0 &&
         q(p).distance_squared_to(scope_center) > scope_squared)
       continue;
-    by[p["id"]] = p["q"];
+    // Read-only Dictionary indexing reuses a temporary; copy before the next read.
+    const int64_t pid = p["id"];
+    const Vector2 pixel_position = p["q"];
+    by[pid] = pixel_position;
   }
   Vector2 axis;
   double reach = 1;
@@ -145,7 +148,10 @@ int64_t PPEffectKernel::halo_bonds(Array material, Dictionary bonds,
     if (scope_radius >= 0.0 &&
         q(p).distance_squared_to(scope_center) > scope_squared)
       continue;
-    by[p["id"]] = p["q"];
+    // Read-only Dictionary indexing reuses a temporary; copy before the next read.
+    const int64_t pid = p["id"];
+    const Vector2 pixel_position = p["q"];
+    by[pid] = pixel_position;
   }
   int64_t local = 0;
   for (int k = 0; k < material.size(); k++) {

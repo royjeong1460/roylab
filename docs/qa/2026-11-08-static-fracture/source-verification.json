@@ -1,0 +1,25 @@
+{
+  "changedFiles": [
+    "project/project.godot",
+    "project/export_presets.cfg",
+    "project/diagnostics/blast_trace.gd",
+    "project/native_core/bin/libpp_core.macos.template_release.arm64.dylib",
+    "project/native_core/bin/libpp_core.web.template_release.wasm32.wasm",
+    "project/native_core/bin/libpp_core.ios.template_release.arm64.a",
+    "extension/src/effect_kernel.cpp"
+  ],
+  "codeDiff": "Exactly two readonly Dictionary ID/coordinate value-copy assignments; inverse restores prior source byte-for-byte.",
+  "allOtherNativeSourcesUnchanged": true,
+  "allOtherProjectInputsUnchanged": true,
+  "authoredMapsUnchangedAndPackaged": 44,
+  "priorCandidateSourceUnchanged": true,
+  "gameplayExecuted": false,
+  "libraryHashes": {
+    "libpp_core.macos.template_release.arm64.dylib": "ef29791809a65a99063441b39e6131058d12ecf123869f4c67f977e8177b8209",
+    "libpp_core.android.template_release.arm32.so": "adee664c959758849680d21240ba526b9f7a481baf77eb7bce47b4e013155598",
+    "libpp_core.web.template_release.wasm32.wasm": "d2e5f5c93620c77606f92acdc361a518e424f5b0019c5b25225a37252626ecfa",
+    "libpp_core.ios.template_release.arm64.a": "d9c323ff6c3919aeca3f61d1982b61a97eff2d46adb3bc3129b1cec8343e12aa",
+    "libpp_core.android.template_release.arm64.so": "fb8b32b3a72554197ac6cca779a2c680e2681a3b5bf5141cfaf64334cf17f0d3"
+  },
+  "nativePckSha256": "9b4bbb43bb0a28d22babbd82b93179541df249412be34a1d53bf167223e3bf49"
+}

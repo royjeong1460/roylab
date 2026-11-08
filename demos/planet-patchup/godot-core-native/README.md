@@ -21,3 +21,7 @@ Destruction-midpoint0.5.53 changes only the fall internal bond-resistance litera
 ##2026-11-08 pressure-scope fix
 
 pressure_bonds and halo_bonds accept optional scope_center/scope_radius arguments (default radius−1 disables scope). Scoped calls include only pixels inside the live circle in the bond lookup; both source and neighbor IDs must belong before any bond write. Only expand/wave pressure and expand final-burst metadata supply a scope. Existing unscoped callers retain their prior arithmetic and iteration order; fall/world kernels remain byte-identical to0.5.53. Updated bindings, built libraries and GDScript adapters must be delivered together. Build/install evidence and0.5.53 rollback: docs/qa/2026-11-08-pressure-scope/README.md.
+
+## 2026-11-08 static fracture coordinate fix
+
+The two pressure/halo ID-to-coordinate assignments now copy ID and Vector2 values before another readonly Dictionary lookup. Readonly caching, scopes, all damage/radius constants and fall/chain kernels are retained. Native0.5.56(66) and the all-skills loopback lab carry this consistency fix. A fixed building may receive previously missing bond damage; user A/B gameplay verification is pending. The free Web source/library pair is prepared locally; public deployment is separate. Evidence and rollback: docs/qa/2026-11-08-static-fracture/README.md.

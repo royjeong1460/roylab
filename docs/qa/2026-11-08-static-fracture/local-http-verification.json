@@ -1,0 +1,65 @@
+{
+  "staticOnly": true,
+  "files": [
+    {
+      "file": "game.js",
+      "status": 200,
+      "sha256": "f3ec2db2acf90e2413035417a6d2ded643248791c1de7987ff68492a4610de27",
+      "mime": "text/javascript"
+    },
+    {
+      "file": "index.html",
+      "status": 200,
+      "sha256": "ac342284e30d6f4fef28a880bda252ac4b68caf712fa6b1905aee436c824a291",
+      "mime": "text/html"
+    },
+    {
+      "file": "game.png",
+      "status": 200,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e",
+      "mime": "image/png"
+    },
+    {
+      "file": "game.side.wasm",
+      "status": 200,
+      "sha256": "6cf851a8cab85aba0770b76a838cea5e2f63fbe02b1b95963e0d6582d42d17e1",
+      "mime": "application/wasm"
+    },
+    {
+      "file": "game.audio.position.worklet.js",
+      "status": 200,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8",
+      "mime": "text/javascript"
+    },
+    {
+      "file": "game.audio.worklet.js",
+      "status": 200,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3",
+      "mime": "text/javascript"
+    },
+    {
+      "file": "game.wasm",
+      "status": 200,
+      "sha256": "9c50d494628b80586f585292048331268076b74c403bcb066519f8ce2102cc35",
+      "mime": "application/wasm"
+    },
+    {
+      "file": "game.html",
+      "status": 200,
+      "sha256": "eb54ea94c873527c63d1bbb61999ca3d3715147a0e45f7cfc7f9eab1e18ece74",
+      "mime": "text/html"
+    },
+    {
+      "file": "libpp_core.web.template_release.wasm32.wasm",
+      "status": 200,
+      "sha256": "d2e5f5c93620c77606f92acdc361a518e424f5b0019c5b25225a37252626ecfa",
+      "mime": "application/wasm"
+    },
+    {
+      "file": "game.pck",
+      "status": 200,
+      "sha256": "fd23e95597143f94028fbb58e49ef496b90d6168ca1370146be887e0ac3cc102",
+      "mime": "application/octet-stream"
+    }
+  ]
+}

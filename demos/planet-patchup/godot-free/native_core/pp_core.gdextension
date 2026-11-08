@@ -5,4 +5,4 @@ reloadable = false
 
 [libraries]
 macos = "res://native_core/bin/libpp_core.macos.template_release.arm64.dylib"
-web.release.nothreads.wasm32 = "res://native_core/bin/libpp_core-g40-f7f46ed0a9d21d26.wasm"
+web.release.nothreads.wasm32 = "res://native_core/bin/libpp_core-g40-d2e5f5c93620c776.wasm"

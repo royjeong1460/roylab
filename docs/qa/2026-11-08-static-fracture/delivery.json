@@ -1,0 +1,46 @@
+{
+  "version": "0.5.56",
+  "nativeBuild": 66,
+  "candidateOnly": true,
+  "publicDeployment": false,
+  "nativeApp": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-static-fracture-2026-11-08-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "package": {
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "version": "0.5.56",
+    "build": "66",
+    "pckSha256": "9b4bbb43bb0a28d22babbd82b93179541df249412be34a1d53bf167223e3bf49",
+    "executableSha256": "b3bb983b4636428e8cd313984756fa55e36d6831cee73195299d45823e4a4ef0",
+    "signatureVerified": true,
+    "rollbackAppUnchanged": true,
+    "runtimeExecuted": false,
+    "nativeArchiveSha256": "d9c323ff6c3919aeca3f61d1982b61a97eff2d46adb3bc3129b1cec8343e12aa"
+  },
+  "nativeInstalled": true,
+  "installedSequence": 4372,
+  "installReceipt": "device-install.json",
+  "deviceAppLaunchedByAssistant": false,
+  "nativeSource": "qa/ios-static-fracture-2026-11-08/extension/src",
+  "change": "Copy ID and Vector2 before another readonly Dictionary lookup in pressure_bonds and halo_bonds.",
+  "damageRadiusAndStrengthConstantsUnchanged": true,
+  "fallAndChainSourceUnchanged": true,
+  "mapsEconomyCollectionAndSavePathsUnchanged": true,
+  "rollbackDelivery": "qa/ios-blast-trace-2026-11-08/delivery.json",
+  "localLab": {
+    "url": "http://127.0.0.1:8805/game.html",
+    "project": "qa/local-blast-lab-2026-11-08/project",
+    "sameOriginAndSaveNamespace": true,
+    "priorPackage": "qa/ios-static-fracture-2026-11-08/before/local-lab",
+    "staticHttpHashVerification": "evidence/local-http-verification.json"
+  },
+  "freeWebCandidate": {
+    "stem": "free-0541-fcf226762756",
+    "engineStem": "godot-web-ec83eba66e3c",
+    "artifactHashesVerified": 8,
+    "publiclyDeployed": false,
+    "manifest": "free-web-build-manifest.json"
+  },
+  "runtimeExecutedByAgent": false,
+  "runtimeVerificationOwner": "user",
+  "status": "Installed; awaiting user gameplay comparison. Fixed buildings may fracture more because previously missing bond damage now applies."
+}
