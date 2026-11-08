@@ -1,0 +1,13 @@
+{
+  "version": "0.5.54",
+  "build": "64",
+  "bundleId": "com.roy.planetpatchup.godotcompare",
+  "app": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-pressure-scope-2026-11-08-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "pckSha256": "6544a6044268cfdb50ed846f9f82a4f9785888e5a604d68f5ef7ebf3c56983a4",
+  "executableSha256": "dd4c238f668ca898e64f1f5bc47f31f05c0f26b1a50a28b99951ffaa5c9e7f66",
+  "iosCoreSha256": "2ab39eb07f2bab91c077a5a7396e6d1ea941897b62e88979c27f1c791944209b",
+  "matchingExportedCore": [
+    "PPGodotCompare/native_core/bin/libpp_core.ios.template_release.arm64.a"
+  ],
+  "runtimeExecuted": false
+}

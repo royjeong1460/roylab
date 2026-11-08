@@ -669,7 +669,7 @@ func blast_unprofiled(input) -> void:
 		piece.limit_motion()
 	enforce_body_budget()
 	var efficiency := float(bomb.get("fracture_efficiency", 1.0)) if secondary else float(stats.get("blastFractureEfficiency", 1.0))
-	impact_physics.blast_halo(point, radius, power, efficiency)
+	impact_physics.blast_halo(point, radius, power, efficiency, bomb.get("scope_center", point), float(bomb.get("scope_radius", -1.0)))
 	blasts += 1
 	events.append({"kind": "blast", "time": elapsed, "count": count, "x": point.x, "y": point.y, "radius": radius, "power": power, "secondary": secondary, "vfx": bomb.get("vfx", "aftershock" if bomb.get("kind") == "echo" else "relay" if bomb.get("kind") == "relay-hit" else ""), "heavy": bomb.get("heavy", false), "audio": bomb.get("audio", true)})
 	skill_physics.on_primary_blast(bomb, count > 0 or impulses > 0)

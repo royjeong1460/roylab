@@ -27,10 +27,15 @@ struct PixelScan {
 void PPEffectKernel::_bind_methods() {
 #define B(name, ...)                                                           \
   ClassDB::bind_method(D_METHOD(#name, __VA_ARGS__), &PPEffectKernel::name)
-  B(pressure_bonds, "material", "bonds", "width", "count", "point", "strength",
-    "direction", "radius", "propagates", "position");
-  B(halo_bonds, "material", "bonds", "width", "count", "point", "reach",
-    "strength");
+  ClassDB::bind_method(
+      D_METHOD("pressure_bonds", "material", "bonds", "width", "count", "point",
+               "strength", "direction", "radius", "propagates", "position",
+               "scope_center", "scope_radius"),
+      &PPEffectKernel::pressure_bonds, DEFVAL(Vector2()), DEFVAL(-1.0));
+  ClassDB::bind_method(
+      D_METHOD("halo_bonds", "material", "bonds", "width", "count", "point",
+               "reach", "strength", "scope_center", "scope_radius"),
+      &PPEffectKernel::halo_bonds, DEFVAL(Vector2()), DEFVAL(-1.0));
   B(structure_material, "world");
   B(surface, "world", "piece");
   B(nearest, "material", "point", "radius", "inclusive");
@@ -66,10 +71,16 @@ int64_t PPEffectKernel::pressure_bonds(Array material, Dictionary bonds,
                                        int64_t width, int64_t count,
                                        Vector2 point, double strength,
                                        Vector2 direction, double radius,
-                                       bool propagates, Vector2 position) {
+                                       bool propagates, Vector2 position,
+                                       Vector2 scope_center, double scope_radius) {
   Dictionary by;
+  const double scope_squared = scope_radius * scope_radius;
   for (int k = 0; k < material.size(); k++) {
     Dictionary p = material[k];
+    // Both bond endpoints must belong to the live skill circle.
+    if (scope_radius >= 0.0 &&
+        q(p).distance_squared_to(scope_center) > scope_squared)
+      continue;
     by[p["id"]] = p["q"];
   }
   Vector2 axis;
@@ -86,6 +97,8 @@ int64_t PPEffectKernel::pressure_bonds(Array material, Dictionary bonds,
   for (int k = 0; k < material.size(); k++) {
     Dictionary p = material[k];
     int64_t pid = p["id"];
+    if (scope_radius >= 0.0 && !by.has(pid))
+      continue;
     Vector2 firstq = p["q"];
     Array ns = PPFractureGraph::neighbors(pid, width, count);
     for (int j = 0; j < ns.size(); j++) {
@@ -123,16 +136,23 @@ int64_t PPEffectKernel::pressure_bonds(Array material, Dictionary bonds,
 }
 int64_t PPEffectKernel::halo_bonds(Array material, Dictionary bonds,
                                    int64_t width, int64_t count, Vector2 point,
-                                   double reach, double strength) {
+                                   double reach, double strength,
+                                   Vector2 scope_center, double scope_radius) {
   Dictionary by;
+  const double scope_squared = scope_radius * scope_radius;
   for (int k = 0; k < material.size(); k++) {
     Dictionary p = material[k];
+    if (scope_radius >= 0.0 &&
+        q(p).distance_squared_to(scope_center) > scope_squared)
+      continue;
     by[p["id"]] = p["q"];
   }
   int64_t local = 0;
   for (int k = 0; k < material.size(); k++) {
     Dictionary p = material[k];
     int64_t pid = p["id"];
+    if (scope_radius >= 0.0 && !by.has(pid))
+      continue;
     Array ns = PPFractureGraph::neighbors(pid, width, count);
     for (int j = 0; j < ns.size(); j++) {
       int64_t id = ns[j];

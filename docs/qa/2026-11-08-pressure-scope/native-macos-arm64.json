@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-pressure-scope-2026-11-08/extension/.venv/bin/scons",
+    "platform=macos",
+    "arch=arm64",
+    "target=template_release",
+    "api_version=4.6",
+    "build_profile=build-profile.json",
+    "-j6"
+  ],
+  "files": {
+    "project/native_core/bin/libpp_core.macos.template_release.arm64.dylib": "d70fc64d52e25c0c9d973ad53e785e851151355d2154816bcb25e6e360f8bae6"
+  },
+  "runtimeVerified": false
+}

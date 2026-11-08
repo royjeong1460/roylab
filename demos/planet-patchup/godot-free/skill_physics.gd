@@ -357,7 +357,7 @@ func _pressure(point: Vector2, radius: float, strength: float, detail := false) 
 			if detail:
 				stamp = Time.get_ticks_usec()
 			# Nearest is read-only; apply consumes this material before any rebuild.
-			world.impact_physics.apply(closest, strength, {"piece": piece, "direction": direction, "source": "pressure", "radius": 4.0, "_material": material})
+			world.impact_physics.apply(closest, strength, {"piece": piece, "direction": direction, "source": "pressure", "radius": 4.0, "_material": material, "scope_center": point, "scope_radius": radius})
 			if detail:
 				world.perf.note_detail("pressure_apply", Time.get_ticks_usec() - stamp)
 
@@ -541,7 +541,7 @@ func _fields_step_unprofiled(dt: float) -> void:
 			if detail:
 				world.perf.note_detail("pressure_kick", Time.get_ticks_usec() - stamp)
 		if field.age >= field.duration:
-			_secondary_blast({"kind": "expand", "vfx": "expand", "audio": false, "p": field.p, "radius": field.tuning.final_radius, "power": field.tuning.final_power})
+			_secondary_blast({"kind": "expand", "vfx": "expand", "audio": false, "p": field.p, "radius": field.tuning.final_radius, "power": field.tuning.final_power, "scope_center": field.p, "scope_radius": field.radius})
 			_visual("expand", field.p, field.radius, 0.7)
 	fields = fields.filter(func(field): return field.age < field.duration)
 

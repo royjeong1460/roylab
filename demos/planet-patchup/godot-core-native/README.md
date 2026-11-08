@@ -1,6 +1,6 @@
 # Shared Godot native core ·0.5.40
 
-Source snapshot of accepted iPhone g40/0.5.40(49), shared with the free Web build. No maps, skill catalog, saves or private telemetry are present here. Optimized algorithms and API retain the accepted baseline; later fixed tuning revisions are recorded below; edition content and entitlement controls belong to Godot scripts/data.
+Source snapshot of accepted iPhone g40/0.5.40(49), shared with the free Web build. No maps, skill catalog, saves or private telemetry are present here. Other optimized algorithms retain the accepted baseline; later tuning and optional pressure-scope revisions are recorded below; edition content and entitlement controls belong to Godot scripts/data.
 
 The pinned Godot4.6.2/godot-cpp4.6 single-precision dependency, SCons version and compiler flags are in dependency-lock.json. Sources are content-hashed in source-manifest.json. Native build evidence and Web SDK/template pins are recorded in docs/qa/2026-11-03-common-g40. Public distribution contains the built side module; this source directory is outside the exported Godot project.
 
@@ -17,3 +17,7 @@ Output: `work/project/native_core/bin/libpp_core.web.template_release.wasm32.was
 ##2026-11-07 tuning comparison
 
 Destruction-midpoint0.5.53 changes only the fall internal bond-resistance literal in world_kernel.cpp from0.02 to0.03. No other kernel computation/API is changed. Source manifest and rebuilt Web/macOS provenance identify this separate tuning revision; the earlier immutable published kernel remains preserved. Native iOS/Web plus Android library build evidence is in docs/qa/2026-11-07-destruction-midpoint. Runtime remains user verification.
+
+##2026-11-08 pressure-scope fix
+
+pressure_bonds and halo_bonds accept optional scope_center/scope_radius arguments (default radius−1 disables scope). Scoped calls include only pixels inside the live circle in the bond lookup; both source and neighbor IDs must belong before any bond write. Only expand/wave pressure and expand final-burst metadata supply a scope. Existing unscoped callers retain their prior arithmetic and iteration order; fall/world kernels remain byte-identical to0.5.53. Updated bindings, built libraries and GDScript adapters must be delivered together. Build/install evidence and0.5.53 rollback: docs/qa/2026-11-08-pressure-scope/README.md.

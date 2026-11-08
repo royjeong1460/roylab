@@ -1,0 +1,15 @@
+{
+  "verificationKind": "Static source/data/package inspection only; no runtime tests",
+  "onlyCppFilesChanged": [
+    "effect_kernel.cpp",
+    "effect_kernel.h"
+  ],
+  "unchangedMaps": 44,
+  "fallAndChainSourceUnchanged": true,
+  "onlyWorldGdChange": "forward optional final burst scope to halo",
+  "otherSkillNumbersEconomyProfileCollectionDataUnchanged": true,
+  "scope": "both endpoint pixel centers within live field/pulse circle",
+  "unscopedDefault": -1,
+  "nativeChecks": "source dictionary excludes outside endpoints; source ID and neighbor ID required before bond write",
+  "runtimeExecuted": false
+}

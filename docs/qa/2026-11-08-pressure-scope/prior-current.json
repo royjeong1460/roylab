@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "version": "0.5.53",
+  "build": 63,
+  "candidate": "ios-destruction-midpoint-2026-11-07",
+  "project": "qa/ios-destruction-midpoint-2026-11-07/project",
+  "nativeSource": "qa/ios-destruction-midpoint-2026-11-07/extension/src",
+  "delivery": "qa/ios-destruction-midpoint-2026-11-07/delivery.json",
+  "installedSequence": 4300,
+  "rollback": "qa/ios-campaign-lite-2026-11-07/delivery.json",
+  "legacyGodotTree": "godot/ (v35 investigation archive; not current)",
+  "userFeedback": {
+    "date": "2026-11-07",
+    "report": "User approved fixed midpoint defaults between current tuning and proposed initial values.",
+    "scope": "Installed comparison awaits user gameplay; reduced-map direction remains adopted. No new upgrade purchases or public deployment."
+  },
+  "webSync": {
+    "version": "0.5.41",
+    "project": "demos/planet-patchup/godot-free",
+    "route": "/planet-patchup/play/",
+    "url": "https://roylab.pages.dev/planet-patchup/play/",
+    "manifestStem": "free-0541-ae30a3e88329",
+    "engineStem": "godot-web-ec83eba66e3c",
+    "delivery": "docs/qa/2026-11-07-sparse-maps/README.md",
+    "published": true,
+    "httpVerified": true,
+    "presentationPreviewUrl": "https://roylab.pages.dev/planet-patchup/play/?preview=story",
+    "campaignAutoTrigger": false,
+    "rollbackRequiresRetainedEconomy": true,
+    "releaseCommit": "95d6c6d97e6821649ee923a9d7ee5630ef19b08e",
+    "deploymentId": "ff47f943-814d-4f7a-a7fd-faaf86414cec"
+  },
+  "runtimeByAssistant": false,
+  "mapEncoding": "occupied-runs-v1",
+  "comparisonOnly": true,
+  "adoptedBaseline": "ios-campaign-lite-2026-11-07",
+  "comparison": {
+    "kind": "destruction-midpoint",
+    "previousVersion": "0.5.52(62)",
+    "mapsUnchanged": 44,
+    "tuning": {
+      "scope": "Fixed default comparison only; no purchasable upgrade implementation.",
+      "speedResponse": {
+        "before": 10,
+        "draftInitial": 6,
+        "applied": 8
+      },
+      "chainPower": {
+        "before": 10,
+        "draftInitial": 6,
+        "applied": 8
+      },
+      "fallSeverityStart": {
+        "before": 14,
+        "draftInitial": 18,
+        "applied": 16
+      },
+      "fallSeverityFull": {
+        "before": 32,
+        "draftInitial": 40,
+        "applied": 36
+      },
+      "fallBondResistance": {
+        "before": 0.02,
+        "draftInitial": 0.04,
+        "applied": 0.03
+      },
+      "fallPropagation": {
+        "before": 3,
+        "draftInitial": 2,
+        "applied": 2.5
+      },
+      "minimumFallContactSpeedUnchanged": 14,
+      "normalCollisionStartUnchanged": 40,
+      "nonFallPropagationUnchanged": 3,
+      "gameRuntimeExecuted": false
+    },
+    "localWebStem": "free-0541-299c1579848c",
+    "publicWebUpdated": false
+  },
+  "mapDesignApproved": true
+}

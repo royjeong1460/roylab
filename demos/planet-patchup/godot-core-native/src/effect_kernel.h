@@ -13,10 +13,12 @@ public:
   int64_t pressure_bonds(Array material, Dictionary bonds, int64_t width,
                          int64_t count, Vector2 point, double strength,
                          Vector2 direction, double radius, bool propagates,
-                         Vector2 position);
+                         Vector2 position, Vector2 scope_center = Vector2(),
+                         double scope_radius = -1.0);
   int64_t halo_bonds(Array material, Dictionary bonds, int64_t width,
                      int64_t count, Vector2 point, double reach,
-                     double strength);
+                     double strength, Vector2 scope_center = Vector2(),
+                     double scope_radius = -1.0);
   Array structure_material(Object *world);
   Array surface(Object *world, Object *piece);
   Dictionary nearest(Array material, Vector2 point, double radius,

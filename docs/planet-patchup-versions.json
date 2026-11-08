@@ -11,18 +11,19 @@
     "skills": 10
   },
   "ios": {
-    "version": "0.5.53",
-    "build": 63,
+    "version": "0.5.54",
+    "build": 64,
     "installed": true,
-    "installSequence": 4300,
+    "installSequence": 4356,
     "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
-    "sourceCandidate": "qa/ios-destruction-midpoint-2026-11-07/project",
+    "sourceCandidate": "qa/ios-pressure-scope-2026-11-08/project",
     "distribution": "development device",
-    "rollback": "qa/ios-campaign-lite-2026-11-07/delivery.json",
+    "rollback": "qa/ios-destruction-midpoint-2026-11-07/delivery.json",
     "comparisonOnly": true,
     "mapAuthoringRevision": "campaign-lite-2026-11-07",
     "mapDesignApproved": true,
-    "tuningRevision": "destruction-midpoint-2026-11-07"
+    "tuningRevision": "destruction-midpoint-2026-11-07",
+    "behaviorRevision": "pressure-scope-2026-11-08"
   },
   "web": {
     "version": "0.5.41",

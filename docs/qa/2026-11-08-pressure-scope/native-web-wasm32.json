@@ -1,0 +1,7 @@
+{
+  "file": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-pressure-scope-2026-11-08/project/native_core/bin/libpp_core.web.template_release.wasm32.wasm",
+  "publishedFile": "libpp_core-g40-f7f46ed0a9d21d26.wasm",
+  "sha256": "f7f46ed0a9d21d26d9b259df2465c3e20fec1c44bfcd0a411df63e76498ac201",
+  "flags": "threads=no precision=single production=yes lto=full optimize=speed",
+  "runtimeVerified": false
+}
