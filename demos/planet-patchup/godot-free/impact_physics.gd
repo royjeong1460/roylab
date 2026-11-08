@@ -9,7 +9,9 @@ func setup(owner_world) -> void:
 
 func apply(point: Vector2, strength: float, context: Dictionary) -> int:
 	world.perf.begin(world.perf.DAMAGE)
+	world.blast_trace.push(str(context.get("source", "pressure")))
 	var result: int = apply_unprofiled(point, strength, context)
+	world.blast_trace.pop()
 	world.perf.end()
 	return result
 
@@ -41,7 +43,9 @@ func apply_unprofiled(point: Vector2, strength: float, context: Dictionary) -> i
 
 func blast_halo(point: Vector2, radius: float, power: float, efficiency := 1.0, scope_center := Vector2.ZERO, scope_radius := -1.0) -> int:
 	world.perf.begin(world.perf.DAMAGE)
+	world.blast_trace.push("blast-halo")
 	var result: int = blast_halo_unprofiled(point, radius, power, efficiency, scope_center, scope_radius)
+	world.blast_trace.pop()
 	world.perf.end()
 	return result
 
@@ -69,6 +73,7 @@ func blast_halo_unprofiled(point: Vector2, radius: float, power: float, efficien
 			static_changed = true
 	if static_changed:
 		world.check_supports()
+	world.blast_trace.halo(reach, strength, changed)
 	if changed:
 		world.enforce_body_budget()
 		world.rasterize()

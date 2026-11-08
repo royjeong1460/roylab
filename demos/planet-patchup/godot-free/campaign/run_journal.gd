@@ -129,6 +129,8 @@ func checkpoint(run, options: Dictionary = {}) -> void:
 	if current.is_empty() or run == null:
 		return
 	current.latest = run.snapshot()
+	if run.world != null and run.world.blast_trace.enabled:
+		current.attackTrace = run.world.blast_trace.export_data()
 	current.closed = options.get("closed", false)
 	current.checkpointAt = _now()
 	current.pauses += int(options.get("paused", false))

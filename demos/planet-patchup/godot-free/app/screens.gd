@@ -41,6 +41,7 @@ var _offer_popup: Control
 var _menu_theme: Theme
 var _settings_from := "home"
 var _performance_updated := 0
+var _attack_trace_updated := 0
 var _diagnostic_taps: Array[int] = []
 
 func setup(application, source_catalog, source_journey, source_feedback) -> void:
@@ -1098,6 +1099,15 @@ func _play_hud() -> Control:
 	notice_scroll.add_child(notice_label)
 	notice_panel.visible = false
 	root.add_child(notice_panel)
+	var attack_panel := PanelContainer.new()
+	attack_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	attack_panel.add_theme_stylebox_override("panel",UITheme.box(Color(0.035,0.065,0.09,0.94),Color("bca367"),1,6))
+	var attack_label := _label("폭파 진단 · 공격 대기",12,Color("fff0cd"))
+	attack_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	attack_panel.add_child(attack_label)
+	attack_panel.visible = bool(ProjectSettings.get_setting("diagnostics/attack_trace",false))
+	root.add_child(attack_panel)
+	_attack_trace_updated = 0
 	var performance_panel := PanelContainer.new()
 	performance_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	performance_panel.add_theme_stylebox_override("panel",UITheme.box(Color(0.035,0.065,0.09,0.94),Color("bca367"),1,6))
@@ -1238,9 +1248,12 @@ func _play_hud() -> Control:
 		diagnostic_button.size = Vector2(79,44)
 		pause.position = Vector2(width-56,header_center-22)
 		pause.size = Vector2(44,44)
-		performance_panel.position = Vector2(8,PlayLayout.TOP+4)
+		attack_panel.position = Vector2(8,PlayLayout.TOP+4)
+		attack_panel.size = Vector2(width-16,126)
+		var attack_height := attack_panel.size.y+4 if attack_panel.visible else 0.0
+		performance_panel.position = Vector2(8,PlayLayout.TOP+4+attack_height)
 		performance_panel.size = Vector2(width-16,184)
-		var diagnostic_height := performance_panel.size.y+4 if performance_panel.visible else 0.0
+		var diagnostic_height := attack_height + (performance_panel.size.y+4 if performance_panel.visible else 0.0)
 		fit.position = Vector2(width-80,62+diagnostic_height)
 		fit.size = Vector2(72,50)
 		notice_panel.position = Vector2(16,64+diagnostic_height)
@@ -1299,6 +1312,7 @@ func _play_hud() -> Control:
 		tutorial_panel.size = Vector2(minf(320,maxf(0,width-104)),0)
 	root.resized.connect(layout)
 	root.ready.connect(layout)
+	_hud["attack_trace"] = attack_label
 	_hud["performance"] = performance
 	_hud["performance_panel"] = performance_panel
 	_hud.merge({"battery":battery,"tools":tools,"passives":passive_slots,"actives":active_slots,"tutorial_panel":tutorial_panel,"tutorial_title":tutorial_title,"tutorial_copy":tutorial_copy,"minimap":minimap,"fit":fit,"tip":tip,"notice":notice_label,"notice_panel":notice_panel,"skip_guide":skip,"skip_wait":skip_wait,"layout":layout})
@@ -1316,6 +1330,9 @@ func _update_hud_unprofiled(play_view) -> void:
 	if _hud.is_empty() or play_view==null or play_view.world==null or not is_instance_valid(_hud.get("battery")):
 		return
 	var world = play_view.world
+	if world.blast_trace.enabled and Time.get_ticks_msec() - _attack_trace_updated >= 100:
+		_attack_trace_updated = Time.get_ticks_msec()
+		_hud.attack_trace.text = world.blast_trace.hud_text()
 	if world.perf.enabled and Time.get_ticks_msec() - _performance_updated >= 250:
 		_performance_updated = Time.get_ticks_msec()
 		_hud.performance.text = world.perf.report()

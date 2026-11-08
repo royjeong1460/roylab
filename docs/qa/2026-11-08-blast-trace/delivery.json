@@ -1,0 +1,26 @@
+{
+  "version": "0.5.55",
+  "nativeBuild": 65,
+  "candidateOnly": true,
+  "publicDeployment": false,
+  "nativeApp": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-blast-trace-2026-11-08-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "package": {
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "version": "0.5.55",
+    "build": "65",
+    "pckSha256": "36ad0653778fd1ec016d72a0c20db4b142d8bb3e8748f72f856fb691114dd24c",
+    "executableSha256": "15df295d530e328878efa711a792c5757bebfa10fcee9236caa22fdb64406738",
+    "signatureVerifiedUnsandboxed": true,
+    "rollbackAppPackUnchanged": true,
+    "runtimeExecuted": false
+  },
+  "nativeInstalled": false,
+  "installBlocker": "CoreDevice4016; device development tunnel unavailable; user asked to reconnect/unlock",
+  "rollbackDelivery": "qa/ios-pressure-scope-2026-11-08/delivery.json",
+  "nativeSourceUnchanged": "qa/ios-pressure-scope-2026-11-08/extension/src",
+  "physicsAndSkillsUnchanged": true,
+  "records": "Existing local journal records[].attackTrace; checkpoints every5simulation seconds, pause/background/end/export",
+  "runtimeExecutedByAgent": false,
+  "runtimeVerificationOwner": "user"
+}

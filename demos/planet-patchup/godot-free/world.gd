@@ -36,6 +36,8 @@ var final_collection := false
 var final_collection_active := false
 var finishing_requested := false
 var finishing_supports: Dictionary = {}
+const BlastTrace = preload("res://diagnostics/blast_trace.gd")
+var blast_trace := BlastTrace.new()
 const S := 4.0
 const MAX_PLAYFIELD_CELLS := 640 * 512
 const COLLECTIBLE_FILL := Color("a8dfc4")
@@ -273,6 +275,7 @@ func reset() -> void:
 	events.clear()
 	impact_samples.clear()
 	bonds.clear()
+	blast_trace.reset()
 	elapsed = 0
 	structure_clock = 0
 	used_tools.clear()
@@ -497,6 +500,7 @@ func add_piece_unprofiled(ids: Array, parent_piece = null, keep_body := false):
 	# Detached chips are collectible sand, not another rigid body and collider set.
 	if ids.size() < 4 or (ids.size() <= SAND_FRAGMENT_MAX and not keep_body and not structure_physics.fragment_is_linked(ids, parent_piece)):
 		sand_fragment_count += 1
+		blast_trace.pixels("small-fragment", ids.size(), elapsed)
 		for id in ids:
 			emit_grain(id, parent_piece.pixel_position(id) if parent_piece else original_point(id), parent_piece.pixel_velocity(id) if parent_piece else Vector2.ZERO)
 		return null
@@ -515,6 +519,7 @@ func enforce_body_budget() -> void:
 	if not pending_links:
 		for piece in pieces.duplicate():
 			if piece.ids.size() <= SAND_FRAGMENT_MAX and not is_instance_valid(piece.hinge) and not structure_physics.fragment_is_linked(piece.ids, piece):
+				blast_trace.pixels("small-fragment", piece.ids.size(), elapsed)
 				for id in piece.ids:
 					emit_grain(id, piece.pixel_position(id), piece.pixel_velocity(id))
 				sand_fragment_count += 1
@@ -524,6 +529,7 @@ func enforce_body_budget() -> void:
 	var largest_first := pieces.duplicate()
 	largest_first.sort_custom(func(a, b): return a.ids.size() > b.ids.size())
 	for piece in largest_first.slice(BODY_LIMIT):
+		blast_trace.pixels("body-limit", piece.ids.size(), elapsed)
 		for id in piece.ids:
 			emit_grain(id, piece.pixel_position(id), piece.pixel_velocity(id))
 		remove_piece(piece)
@@ -630,6 +636,7 @@ func cut_at(point: Vector2, radius: float) -> int:
 	for piece in pieces:
 		materials.append({"piece": piece, "ids": piece.ids, "pixels": material(piece), "original": _original_points, "origin": piece.origin_center, "rotation": piece.rotation, "velocity": piece.linear_velocity, "angular": piece.angular_velocity})
 	var result: Dictionary = native_world.cut(materials, point, radius, cells)
+	blast_trace.direct(result.candidates.size(), float(result.candidates[-1].d) if not result.candidates.is_empty() else -1.0)
 	for pixel in result.candidates:
 		emit_grain(pixel.id, pixel.q, pixel.velocity)
 	cells = result.cells
@@ -653,6 +660,7 @@ func blast_unprofiled(input) -> void:
 	var radius: float = bomb.get("radius", stats.bombRadius)
 	var power: float = bomb.get("power", stats.bombPower)
 	var secondary: bool = bomb.get("secondary", false) or bomb.get("ideaSecondary", false)
+	blast_trace.begin_blast(bomb, point, radius, power, elapsed, grains.size() + collected.size())
 	if not secondary:
 		chain_physics.arm(point, radius + 1)
 	var count := cut_at(point, radius)
@@ -673,6 +681,7 @@ func blast_unprofiled(input) -> void:
 	blasts += 1
 	events.append({"kind": "blast", "time": elapsed, "count": count, "x": point.x, "y": point.y, "radius": radius, "power": power, "secondary": secondary, "vfx": bomb.get("vfx", "aftershock" if bomb.get("kind") == "echo" else "relay" if bomb.get("kind") == "relay-hit" else ""), "heavy": bomb.get("heavy", false), "audio": bomb.get("audio", true)})
 	skill_physics.on_primary_blast(bomb, count > 0 or impulses > 0)
+	blast_trace.finish_blast(grains.size() + collected.size(), pieces.size(), skill_physics.counts)
 	_blast_depth -= 1
 	if _blast_depth == 0:
 		_flush_static_surface()
@@ -746,7 +755,9 @@ func _release_compression(children: Array, point: Vector2, budget: float) -> flo
 
 func fracture(piece, point: Vector2, speed: float, downward := true, context: Dictionary = {}) -> void:
 	perf.begin(perf.FRACTURE)
+	blast_trace.push("chain" if context.get("chain", false) else "fall" if downward and speed > 14 and piece != null else "collision")
 	fracture_unprofiled(piece, point, speed, downward, context)
+	blast_trace.pop()
 	perf.end()
 
 func fracture_unprofiled(piece, point: Vector2, speed: float, downward := true, context: Dictionary = {}) -> void:
@@ -816,6 +827,7 @@ func fracture_unprofiled(piece, point: Vector2, speed: float, downward := true, 
 	var emissions: Array = crushing.removed
 	if piece != null:
 		emissions = native_world.emissions(emissions, _original_points, piece.origin_center, piece.rotation, piece.linear_velocity, piece.angular_velocity)
+	blast_trace.pixels("collision-crush", emissions.size(), elapsed)
 	for pixel in emissions:
 		emit_grain(pixel.id, pixel.q, pixel.velocity if piece != null else Vector2.ZERO)
 	if piece == null and not crushing.removed.is_empty():
@@ -843,6 +855,7 @@ func live_hinge_section(piece) -> Dictionary:
 	return structure_physics.live_hinge_section(piece)
 
 func _snap_hinge(piece, section: Dictionary) -> void:
+	blast_trace.push("pillar-snap")
 	if is_instance_valid(piece.hinge):
 		piece.hinge.queue_free()
 	piece.hinge = null
@@ -851,6 +864,7 @@ func _snap_hinge(piece, section: Dictionary) -> void:
 	var snapping: Dictionary = native_world.snap(cells, section.cuts, width, _original_points)
 	cells = snapping.cells
 	var emitted: int = snapping.emitted.size()
+	blast_trace.pixels("pillar-snap", emitted, elapsed)
 	if emitted > 0:
 		_static_dirty = true
 	for pixel in snapping.emitted:
@@ -858,6 +872,7 @@ func _snap_hinge(piece, section: Dictionary) -> void:
 	events.append({"kind": "pillar-snap", "time": elapsed, "x": section.pivot, "y": section.y + 1, "width": section.width, "utilization": section.utilization, "count": emitted})
 	released += emitted
 	check_supports()
+	blast_trace.pop()
 
 func _advance_hinges(dt: float) -> void:
 	perf.begin(perf.SUPPORT)

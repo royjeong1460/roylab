@@ -155,6 +155,7 @@ func _sample_wear(samples: Array, dt: float) -> void:
 func _flush_wear() -> void:
 	if not _wear_dirty and not _live_dirty:
 		return
+	world.blast_trace.push("blackhole-wear")
 	var removed := 0
 	if _wear_dirty:
 		_wear_dirty = false
@@ -166,6 +167,7 @@ func _flush_wear() -> void:
 			var eroded: Array = partition.eroded
 			if eroded.is_empty():
 				continue
+			world.blast_trace.pixels("wear", eroded.size(), world.elapsed)
 			for id in eroded:
 				world.emit_grain(id, piece.pixel_position(id), piece.pixel_velocity(id))
 			var partitions: Array = world.groups(remaining)
@@ -182,3 +184,4 @@ func _flush_wear() -> void:
 		world.enforce_body_budget()
 		world.rasterize()
 		world.events.append({"kind": "contact-wear", "time": world.elapsed, "count": removed, "total": worn_pixels})
+	world.blast_trace.pop()

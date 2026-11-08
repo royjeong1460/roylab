@@ -1,0 +1,17 @@
+{
+  "world.gd stripped observers matches old": true,
+  "impact_physics.gd stripped observers matches old": true,
+  "blackhole_physics.gd stripped observers matches old": true,
+  "skill_physics.gd unchanged": true,
+  "chain_physics.gd unchanged": true,
+  "piece.gd unchanged": true,
+  "grain_physics.gd unchanged": true,
+  "bearing_constraint.gd unchanged": true,
+  "campaign/economy.gd unchanged": true,
+  "campaign/profile_store.gd unchanged": true,
+  "campaign/run_session.gd unchanged": true,
+  "all baseline originals unchanged": true,
+  "mapCount": 43,
+  "gameplayRuntimeExecuted": false,
+  "scope": "Static source identity and observer removal checks, not a game/test execution."
+}
