@@ -1,6 +1,6 @@
 # Planet Patchup 공통 버전과 성능 수정 기록
 
-현재 버전 기준은 [버전 원장](planet-patchup-versions.json) 하나로 관리한다. 공통 기준0.5.40(g40), 무료판0.5.40-free, 유료 iOS0.5.40(49)이다. 공통 알고리즘/수치의 기준을 맞춘 것이며 무료판은 Arch8맵/3스킬/패시브·광역 각1칸, 앱은6문화권/전체스킬로 콘텐츠 범위가 다르다. 플랫폼 간 실제 물리/FPS가 동일하다는 보장은 아니다.
+현재 기준은 [버전 원장](planet-patchup-versions.json)으로 관리한다. 웹과 iPhone은6지역·일반36곳/보스6곳·튜토리얼·스킬10개를 무료 제공한다. iPhone0.5.56(66)의 고정 좌표 조회 수정과 같은 파괴 설정을 웹에 채택한다. 웹 셸 버전 표시는0.5.41을 유지하며 실제 산출물은 content-hash와 behaviorRevision으로 구분한다. 플랫폼 간 FPS·체감 일치는 사용자 확인 범위다.
 
 ## 채택 기준과 보관본
 
@@ -45,3 +45,9 @@ All43 campaign/tutorial maps and the standalone fallback now omit empty cells us
 Web `free-0541-ae30a3e88329` published;13 static HTTP responses plus transport/decoded payload hashes verified. Engine cache stem stays `godot-web-ec83eba66e3c`. iOS0.5.50(60) was signed and update-installed as sequence4276 without launch. Smaller plain data is not a measured loading-speed improvement; compressed web PCK is278,708bytes larger. Rollback: native0.5.49(59), web `free-0541-b7399322186d`; restore loader and map format together.
 
 [Storage and delivery evidence](qa/2026-11-07-sparse-maps/README.md)
+
+## 2026-11-08 · 고정 건물 좌표 조회 수정 채택
+
+고정/분리 상태의 압력·주변 균열 좌표 조회를 동일하게 적용하도록 C++의 읽기 전용 Dictionary 참조 오류 두 곳을 수정했다. 폭파 반경/스킬 강도 수치는 유지한다. 이미 승인한 reduced-map/중간값/압력 scope도 현재 로컬·iPhone과 같은 설정으로 웹에 반영한다.0.5.56(66)은 iPhone에 sequence4372로 설치되어 있으며, 사용자가 현재 로컬 상태의 전체 업데이트를 승인했다.
+
+로컬 Web에서 공유 메모리를 요구하는 모듈을 non-threaded 엔진과 혼용한 빌드 오류(BUG-016)는 threads=no/production/LTO 옵션 고정으로 복구했다. 사용자 시작 화면 진입 확인을 받았다. 공개 Web 배포·HTTP 결과는 별도 [전달 기록](qa/2026-11-08-static-fracture-release/README.md)에 남긴다. 기존 저장 경로·진행은 초기화하지 않는다.

@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "commonVersion": "0.5.41",
+  "commonBaseline": "g40",
+  "edition": "unified-free",
+  "content": {
+    "regions": 6,
+    "normalMaps": 36,
+    "bossMaps": 6,
+    "tutorials": 1,
+    "skills": 10
+  },
+  "ios": {
+    "version": "0.5.50",
+    "build": 60,
+    "installed": true,
+    "installSequence": 4276,
+    "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
+    "sourceCandidate": "qa/ios-sparse-maps-2026-11-07/project",
+    "distribution": "development device",
+    "rollback": "qa/ios-ground-openings-2026-11-07/delivery.json"
+  },
+  "web": {
+    "version": "0.5.41",
+    "project": "demos/planet-patchup/godot-free",
+    "route": "/planet-patchup/play/",
+    "url": "https://roylab.pages.dev/planet-patchup/play/",
+    "manifestStem": "free-0541-ae30a3e88329",
+    "engineStem": "godot-web-ec83eba66e3c",
+    "delivery": "docs/qa/2026-11-07-sparse-maps/README.md",
+    "published": true,
+    "httpVerified": true,
+    "presentationPreviewUrl": "https://roylab.pages.dev/planet-patchup/play/?preview=story",
+    "campaignAutoTrigger": false,
+    "rollbackRequiresRetainedEconomy": true,
+    "releaseCommit": "95d6c6d97e6821649ee923a9d7ee5630ef19b08e",
+    "deploymentId": "ff47f943-814d-4f7a-a7fd-faaf86414cec"
+  },
+  "previous": {
+    "commonVersion": "0.5.40",
+    "ios": {
+      "version": "0.5.40",
+      "build": 49,
+      "engine": "Godot4.6.2 Compatibility + C++",
+      "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
+      "sourceSnapshot": "demos/planet-patchup/godot-core-native/src",
+      "installed": true,
+      "installSequence": 3716,
+      "userFeedback": "2026-11-03: not bad; no numeric FPS guarantee",
+      "rollback": "g39 /0.5.39(48)"
+    },
+    "web": {
+      "version": "0.5.40-free",
+      "engine": "Godot4.6.2 Compatibility + C++ WebAssembly (single thread)",
+      "project": "demos/planet-patchup/godot-free",
+      "route": "/planet-patchup/play/",
+      "published": true,
+      "content": "Arch8maps,3skills,one passive and one active slot",
+      "previousRelease": "bda5601 /0.5.34-free",
+      "releaseCommit": "5abb5aed1b1461e1298f2d188a43567f5f570527",
+      "url": "https://roylab.pages.dev/planet-patchup/play/",
+      "manifestStem": "free-0540-4cd73924be76",
+      "delivery": "docs/qa/2026-11-03-common-g40/delivery.json",
+      "httpVerified": true
+    }
+  },
+  "runtimeVerificationOwner": "user",
+  "history": "docs/planet-patchup-version-history.md",
+  "mapAuthoringRevision": "ground-openings-2026-11-07",
+  "mapEncoding": "occupied-runs-v1"
+}

@@ -116,7 +116,7 @@ func finish_blast(pixelized: int, bodies: int, passives: Dictionary) -> void:
 		parent.nestedNew += int(row.observedNew)
 
 func export_data() -> Dictionary:
-	return {"schemaVersion": 1, "build": "0.5.55(65)", "units": "logical-cells/pixels",
+	return {"schemaVersion": 1, "build": "0.5.56(66)", "units": "logical-cells/pixels",
 		"laterAttribution": "temporal observation after primary, not proven causality",
 		"detonations": rows.duplicate(true), "conversions": conversions.duplicate(true),
 		"droppedDetonations": dropped_rows, "droppedConversions": dropped_events,
@@ -124,7 +124,7 @@ func export_data() -> Dictionary:
 
 func hud_text() -> String:
 	if latest.is_empty():
-		return "폭파 진단 g55 · 공격 대기\n실제 반경 / 직접 제거 / 추가 픽셀화\n공격 후 낙하·스킬은 ‘이후’로 별도 기록"
+		return "폭파 진단 g56 · 공격 대기\n실제 반경 / 직접 제거 / 추가 픽셀화\n공격 후 낙하·스킬은 ‘이후’로 별도 기록"
 	var row := latest
 	var types: Dictionary = row.extraByMechanism
 	var small := int(types.get("small-fragment", 0))

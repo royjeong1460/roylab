@@ -1,0 +1,58 @@
+Godot import: passed (/var/folders/j0/ckthjmvx2c3gx4673wxb2cg80000gn/T/pp-godot-free-0541-LFEZ0I/logs/import.log)
+Godot compile: passed (/var/folders/j0/ckthjmvx2c3gx4673wxb2cg80000gn/T/pp-godot-free-0541-LFEZ0I/logs/compile.log)
+Godot export: passed (/var/folders/j0/ckthjmvx2c3gx4673wxb2cg80000gn/T/pp-godot-free-0541-LFEZ0I/logs/export.log)
+vite v8.3.3 building client environment for production...
+transforming...
+✓ 7 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-godot-shell/godot-shell-assets/shell-CehdKP2w.css   2.03 kB │ gzip: 0.82 kB
+dist-godot-shell/godot-shell-assets/shell-BnxlxNYt.js   13.72 kB │ gzip: 5.60 kB
+
+✓ built in 24ms
+{
+  "built": "free-0541-6ee74427fb5e",
+  "files": [
+    {
+      "file": "godot-web-ec83eba66e3c.audio.position.worklet.js",
+      "bytes": 2973,
+      "decodedBytes": 2973
+    },
+    {
+      "file": "godot-web-ec83eba66e3c.audio.worklet.js",
+      "bytes": 7298,
+      "decodedBytes": 7298
+    },
+    {
+      "file": "godot-web-ec83eba66e3c.js",
+      "bytes": 5552570,
+      "decodedBytes": 5552570
+    },
+    {
+      "file": "free-0541-6ee74427fb5e.pck",
+      "bytes": 12774647,
+      "decodedBytes": 17100024
+    },
+    {
+      "file": "free-0541-6ee74427fb5e.png",
+      "bytes": 21443,
+      "decodedBytes": 21443
+    },
+    {
+      "file": "godot-web-ec83eba66e3c.side.wasm",
+      "bytes": 10041388,
+      "decodedBytes": 41124149
+    },
+    {
+      "file": "godot-web-ec83eba66e3c.wasm",
+      "bytes": 584666,
+      "decodedBytes": 1509558
+    },
+    {
+      "file": "libpp_core-g40-667d8633d21ce150.wasm",
+      "bytes": 318871,
+      "decodedBytes": 1687548
+    }
+  ],
+  "manifest": "/Users/roy/Developer/sand/variants/web-blast-cost-release-20261106/demos/planet-patchup/dist-godot-free/build-manifest.json"
+}

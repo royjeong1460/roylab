@@ -31,10 +31,12 @@
     "project": "qa/local-blast-lab-2026-11-08/project",
     "sameOriginAndSaveNamespace": true,
     "priorPackage": "qa/ios-static-fracture-2026-11-08/before/local-lab",
-    "staticHttpHashVerification": "evidence/local-http-verification.json"
+    "staticHttpHashVerification": "local-web-startup-fix/http-verification.json",
+    "webBuildRevision": "nothreads-correction-1",
+    "userStartingScreenConfirmed": true
   },
   "freeWebCandidate": {
-    "stem": "free-0541-fcf226762756",
+    "stem": "free-0541-2217fbb38ec0",
     "engineStem": "godot-web-ec83eba66e3c",
     "artifactHashesVerified": 8,
     "publiclyDeployed": false,
@@ -42,5 +44,11 @@
   },
   "runtimeExecutedByAgent": false,
   "runtimeVerificationOwner": "user",
-  "status": "Installed; awaiting user gameplay comparison. Fixed buildings may fracture more because previously missing bond damage now applies."
+  "status": "Installed; awaiting user gameplay comparison. Fixed buildings may fracture more because previously missing bond damage now applies.",
+  "webStartupCorrection": {
+    "bug": "BUG-016",
+    "record": "local-web-startup-fix/report.json",
+    "userConfirmedStartingScreen": true,
+    "nativeAppUnchanged": true
+  }
 }

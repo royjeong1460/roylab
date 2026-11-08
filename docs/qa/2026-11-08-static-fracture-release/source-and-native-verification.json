@@ -1,0 +1,14 @@
+{
+  "mapInputsIdentical": 44,
+  "campaignBalanceSkillsIdentical": true,
+  "skillFallChainGrainPieceEconomyIdentical": true,
+  "diagnosticRecordVersionMatchesNative": true,
+  "publicPerformanceOverlayDefault": false,
+  "localTestOverrideAbsent": true,
+  "webSaveNamespaceRetained": "PlanetPatchupGodotFreeWeb",
+  "webNativeSha256": "667d8633d21ce1508878961ba504519990ede02b697874b42251324a7e0df18b",
+  "iPhoneVersion": "0.5.56(66)",
+  "installedSequence": 4372,
+  "iPhonePackageStillMatchesInstalledReceipt": true,
+  "runtimeExecutedByAgent": false
+}

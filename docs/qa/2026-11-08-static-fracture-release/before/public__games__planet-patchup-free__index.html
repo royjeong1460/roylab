@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head><script src="/planet-patchup/routes.js"></script>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<title>Planet Patchup · 플레이</title>
+		<style>
+html, body, #canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	color: white;
+	background-color: black;
+	overflow: hidden;
+	touch-action: none;
+}
+
+#canvas {
+	display: block;
+}
+
+#canvas:focus {
+	outline: none;
+}
+
+#status, #status-splash, #status-progress {
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+#status, #status-splash {
+	top: 0;
+	bottom: 0;
+}
+
+#status {
+	background-color: #192b32;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	visibility: hidden;
+}
+
+#status-splash {
+	max-height: 100%;
+	max-width: 100%;
+	margin: auto;
+}
+
+#status-splash.show-image--false {
+	display: none;
+}
+
+#status-splash.fullsize--true {
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+
+#status-splash.use-filter--false {
+	image-rendering: pixelated;
+}
+
+#status-progress, #status-notice {
+	display: none;
+}
+
+#status-progress {
+	bottom: 10%;
+	width: 50%;
+	margin: 0 auto;
+}
+
+#status-notice {
+	background-color: #5b3943;
+	border-radius: 0.5rem;
+	border: 1px solid #9b3943;
+	color: #e0e0e0;
+	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	line-height: 1.3;
+	margin: 0 2rem;
+	overflow: hidden;
+	padding: 1rem;
+	text-align: center;
+	z-index: 1;
+}
+		</style>
+
+	<script>globalThis.PPFreeWebReady=new Promise((resolve,reject)=>{globalThis.PPFreeWebResolve=resolve;globalThis.PPFreeWebReject=reject;});globalThis.PPFreeWebEngineError=()=>{
+ const overlay=document.getElementById('status'),notice=document.getElementById('status-notice');
+ document.getElementById('status-progress').style.display='none';
+ document.getElementById('status-splash').style.display='none';
+ notice.textContent='Game files could not be loaded. Reload to try again.';
+ const reload=document.createElement('button');reload.type='button';reload.textContent='Reload';reload.onclick=()=>location.reload();
+ notice.append(document.createElement('br'),reload);notice.style.display='block';overlay.style.visibility='visible';
+};</script><link rel="stylesheet" href="./godot-shell-assets/shell-CehdKP2w.css"><script type="module" src="./godot-shell-assets/shell-BnxlxNYt.js" onerror="PPFreeWebReject(new Error('Game interface could not be loaded. Please reload.'))"></script></head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+
+		<div id="status">
+			<img id="status-splash" class="show-image--false fullsize--true use-filter--true" src="free-0541-ae30a3e88329.png" alt="">
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+		</div>
+
+		<script src="godot-web-ec83eba66e3c.js" onerror="PPFreeWebEngineError()"></script>
+		<script>
+if(typeof Engine === "function"){
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"godot-web-ec83eba66e3c","experimentalVK":false,"fileSizes":{"free-0541-ae30a3e88329.pck":19683116,"godot-web-ec83eba66e3c.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libpp_core-g40-933aa18db7e2de4a.wasm"],"godotPoolSize":4,"mainPack":"free-0541-ae30a3e88329.pck"};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		setStatusMode('progress');
+		const startAfterBridge=engine.startGame.bind(engine);
+const fetchBeforeGame=globalThis.fetch.bind(globalThis);
+const compressedTypes=new Map([["free-0541-ae30a3e88329.pck","application/octet-stream"],["godot-web-ec83eba66e3c.side.wasm","application/wasm"],["godot-web-ec83eba66e3c.wasm","application/wasm"],["libpp_core-g40-933aa18db7e2de4a.wasm","application/wasm"]].map(([name,type])=>[new URL(name,document.baseURI).href,type]));
+engine.startGame=options=>globalThis.PPFreeWebReady.then(()=>{
+ if(typeof DecompressionStream!=="function")throw new Error("Please update your browser to load this game.");
+ globalThis.fetch=async(resource,options)=>{
+  const type=compressedTypes.get(new URL(resource instanceof Request?resource.url:resource,document.baseURI).href);
+  const response=await fetchBeforeGame(resource,options);
+  if(!type||!response.ok)return response;
+  const headers=new Headers(response.headers);headers.delete("Content-Encoding");headers.delete("Content-Length");headers.set("Content-Type",type);
+  return new Response(response.body.pipeThrough(new DecompressionStream("gzip")),{status:response.status,statusText:response.statusText,headers});
+ };
+ return startAfterBridge({...options,persistentPaths:["/userfs/PlanetPatchupGodotFreeWeb"]});
+});
+engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+		}, displayFailureNotice);
+	}
+}());
+		}else{PPFreeWebEngineError();}
+</script>
+	</body>
+</html>

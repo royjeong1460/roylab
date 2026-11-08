@@ -7,8 +7,8 @@
   "emscripten": "4.0.20",
   "threads": false,
   "wasm": {
-    "file": "libpp_core-g40-d2e5f5c93620c776.wasm",
-    "sha256": "d2e5f5c93620c77606f92acdc361a518e424f5b0019c5b25225a37252626ecfa"
+    "file": "libpp_core-g40-667d8633d21ce150.wasm",
+    "sha256": "667d8633d21ce1508878961ba504519990ede02b697874b42251324a7e0df18b"
   },
   "macos": {
     "file": "libpp_core.macos.template_release.arm64.dylib",
@@ -18,8 +18,8 @@
   "runtimeVerified": false,
   "previousBuild": {
     "wasm": {
-      "file": "libpp_core-g40-f7f46ed0a9d21d26.wasm",
-      "sha256": "f7f46ed0a9d21d26d9b259df2465c3e20fec1c44bfcd0a411df63e76498ac201"
+      "file": "libpp_core-g40-d2e5f5c93620c776.wasm",
+      "sha256": "d2e5f5c93620c77606f92acdc361a518e424f5b0019c5b25225a37252626ecfa"
     },
     "macos": {
       "file": "libpp_core.macos.template_release.arm64.dylib",
@@ -29,5 +29,7 @@
   "tuningRevision": "destruction-midpoint-2026-11-07",
   "tuningChange": "Retains0.5.53 midpoint tuning; pressure_bonds/halo_bonds add optional field scope. Other kernels retained.",
   "behaviorRevision": "static-fracture-coordinates-2026-11-08",
-  "coordinateFix": "Copy ID and Vector2 before the next read-only Dictionary index in pressure_bonds and halo_bonds. Strength/radius/tuning retained."
+  "coordinateFix": "Copy ID and Vector2 before the next read-only Dictionary index in pressure_bonds and halo_bonds. Strength/radius/tuning retained.",
+  "webBuildFlags": "threads=no precision=single production=yes lto=full optimize=speed",
+  "webStartupCorrection": "Rebuilt module for the existing non-threaded engine; prior local candidate required shared memory."
 }

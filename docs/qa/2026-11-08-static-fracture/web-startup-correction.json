@@ -1,0 +1,119 @@
+{
+  "date": "2026-11-08",
+  "bug": "BUG-016",
+  "cause": "Web native module built with default threads=true; existing single-thread engine has non-shared memory. Initial artifact fetch/hash checks did not detect this ABI mismatch.",
+  "before": {
+    "sha256": "d2e5f5c93620c77606f92acdc361a518e424f5b0019c5b25225a37252626ecfa",
+    "features": [
+      [
+        43,
+        "atomics"
+      ],
+      [
+        43,
+        "bulk-memory"
+      ],
+      [
+        43,
+        "bulk-memory-opt"
+      ],
+      [
+        43,
+        "call-indirect-overlong"
+      ],
+      [
+        43,
+        "exception-handling"
+      ],
+      [
+        43,
+        "multivalue"
+      ],
+      [
+        43,
+        "mutable-globals"
+      ],
+      [
+        43,
+        "nontrapping-fptoint"
+      ],
+      [
+        43,
+        "reference-types"
+      ],
+      [
+        43,
+        "sign-ext"
+      ]
+    ],
+    "memoryImports": [
+      {
+        "module": "env",
+        "name": "memory",
+        "flags": 3
+      }
+    ]
+  },
+  "after": {
+    "sha256": "667d8633d21ce1508878961ba504519990ede02b697874b42251324a7e0df18b",
+    "features": [
+      [
+        43,
+        "bulk-memory"
+      ],
+      [
+        43,
+        "bulk-memory-opt"
+      ],
+      [
+        43,
+        "call-indirect-overlong"
+      ],
+      [
+        43,
+        "exception-handling"
+      ],
+      [
+        43,
+        "multivalue"
+      ],
+      [
+        43,
+        "mutable-globals"
+      ],
+      [
+        43,
+        "nontrapping-fptoint"
+      ],
+      [
+        43,
+        "reference-types"
+      ],
+      [
+        43,
+        "sign-ext"
+      ]
+    ],
+    "memoryImports": [
+      {
+        "module": "env",
+        "name": "memory",
+        "flags": 0
+      }
+    ]
+  },
+  "fixedFlags": "threads=no precision=single production=yes lto=full optimize=speed",
+  "localUrl": "http://127.0.0.1:8805/game.html?v=56-web2",
+  "localHTTP": "10 static files status200/hash-match",
+  "freeWebCandidate": "free-0541-2217fbb38ec0",
+  "freeArtifactsVerified": 8,
+  "publicDeployment": false,
+  "iPhoneBuildUnchanged": "0.5.56(66) / sequence4372",
+  "physicsSourceUnchanged": true,
+  "userConfirmation": {
+    "date": "2026-11-08",
+    "message": "시작 화면이 뜸",
+    "scope": "User confirmed local starting screen only, not physical behavior or performance."
+  },
+  "runtimeExecutedByAssistant": false
+}

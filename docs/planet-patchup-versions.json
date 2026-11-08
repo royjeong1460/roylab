@@ -11,35 +11,39 @@
     "skills": 10
   },
   "ios": {
-    "version": "0.5.54",
-    "build": 64,
+    "version": "0.5.56",
+    "build": 66,
     "installed": true,
-    "installSequence": 4356,
+    "installSequence": 4372,
     "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
-    "sourceCandidate": "qa/ios-pressure-scope-2026-11-08/project",
+    "sourceCandidate": "qa/ios-static-fracture-2026-11-08/project",
     "distribution": "development device",
-    "rollback": "qa/ios-destruction-midpoint-2026-11-07/delivery.json",
-    "comparisonOnly": true,
+    "rollback": "qa/ios-blast-trace-2026-11-08/delivery.json",
+    "comparisonOnly": false,
     "mapAuthoringRevision": "campaign-lite-2026-11-07",
     "mapDesignApproved": true,
     "tuningRevision": "destruction-midpoint-2026-11-07",
-    "behaviorRevision": "pressure-scope-2026-11-08"
+    "behaviorRevision": "static-fracture-coordinates-2026-11-08"
   },
   "web": {
     "version": "0.5.41",
     "project": "demos/planet-patchup/godot-free",
     "route": "/planet-patchup/play/",
     "url": "https://roylab.pages.dev/planet-patchup/play/",
-    "manifestStem": "free-0541-ae30a3e88329",
+    "manifestStem": "free-0541-6ee74427fb5e",
     "engineStem": "godot-web-ec83eba66e3c",
-    "delivery": "docs/qa/2026-11-07-sparse-maps/README.md",
-    "published": true,
-    "httpVerified": true,
+    "delivery": "docs/qa/2026-11-08-static-fracture-release/README.md",
+    "published": false,
+    "httpVerified": false,
     "presentationPreviewUrl": "https://roylab.pages.dev/planet-patchup/play/?preview=story",
     "campaignAutoTrigger": false,
     "rollbackRequiresRetainedEconomy": true,
-    "releaseCommit": "95d6c6d97e6821649ee923a9d7ee5630ef19b08e",
-    "deploymentId": "ff47f943-814d-4f7a-a7fd-faaf86414cec"
+    "releaseCommit": null,
+    "deploymentId": null,
+    "behaviorRevision": "static-fracture-coordinates-2026-11-08",
+    "status": "build-ready pending approved publication",
+    "rollbackManifestStem": "free-0541-ae30a3e88329",
+    "versionLabelNote": "Web shell remains0.5.41; immutable package and native behavior revision identify the current .56 fixes."
   },
   "previous": {
     "commonVersion": "0.5.40",
@@ -71,6 +75,8 @@
   },
   "runtimeVerificationOwner": "user",
   "history": "docs/planet-patchup-version-history.md",
-  "mapAuthoringRevision": "ground-openings-2026-11-07",
-  "mapEncoding": "occupied-runs-v1"
+  "mapAuthoringRevision": "campaign-lite-2026-11-07",
+  "mapEncoding": "occupied-runs-v1",
+  "behaviorRevision": "static-fracture-coordinates-2026-11-08",
+  "coreFixVersion": "0.5.56"
 }
