@@ -14,6 +14,10 @@ Godot native import/compile/pack and Web import/compile/export passed. Xcode Rel
 
 Webfree-0541-1e77c4c0731c published by releasebda3c9a699b554629043b7d562047eec728b6aa2; Cloudflare Pages27263c65-dfe9-4c6d-a8c5-398eec5d945c succeeded. All15static HTTP responses match, including transport and decoded WASM/PCK hashes. No browser/gameplay verification. Old public payload retained for rollback.
 
-## Native installation boundary
+## Native installation boundary (before user reconnect)
 
 Native0.5.58(68) Release/signature/package checks passed. Device lists initially and on recheck reported all paired iPhones disconnected. User reconnect/unlock request remains pending; no install success is claimed. CURRENT retains installed0.5.57(67) and records this candidate under pendingNativeUpdate. Existing app/data were not removed or reset.
+
+## Final iPhone delivery
+
+After the user connected/unlocked the device, CoreDevice update-installed0.5.58(68) successfully, sequence4640. Same com.roy.planetpatchup.godotcompare; no uninstall/reset or app launch. The success receipt remains at candidate/device-install.json. CURRENT now adopts this candidate and retains0.5.57 rollback. Web payload remains free-0541-1e77c4c0731c, with its existing15-response transport/decoded hash verification. User owns actual app/web play, save, outline visibility and FPS validation.

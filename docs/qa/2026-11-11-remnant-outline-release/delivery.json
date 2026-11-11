@@ -13,8 +13,8 @@
     "oldAppRetainedUnchanged": true,
     "runtimeExecuted": false
   },
-  "nativeInstalled": false,
-  "installOutcome": "waiting for device connection; all paired iPhones reported disconnected",
+  "nativeInstalled": true,
+  "installOutcome": "success",
   "rollbackDelivery": "qa/ios-diagnostics-hidden-2026-11-11/delivery.json",
   "nativeSourceUnchanged": "qa/ios-static-fracture-2026-11-08/extension/src",
   "webStem": "free-0541-1e77c4c0731c",
@@ -29,5 +29,9 @@
   "mapsEconomyProgressionNativeLibrariesUnchanged": true,
   "releaseCommit": "bda3c9a699b554629043b7d562047eec728b6aa2",
   "deploymentId": "27263c65-dfe9-4c6d-a8c5-398eec5d945c",
-  "httpResponses": 15
+  "httpResponses": 15,
+  "installedSequence": 4640,
+  "installReceipt": "device-install.json",
+  "installReceiptSha256": "e01104771d2ee3a641cd2d2871750ea992d78353c6ccbf17e43c366a584224b4",
+  "connectionBlockerResolved": true
 }

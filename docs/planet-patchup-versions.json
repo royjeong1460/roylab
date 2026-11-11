@@ -11,19 +11,19 @@
     "skills": 10
   },
   "ios": {
-    "version": "0.5.57",
-    "build": 67,
+    "version": "0.5.58",
+    "build": 68,
     "installed": true,
-    "installSequence": 4512,
+    "installSequence": 4640,
     "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
-    "sourceCandidate": "qa/ios-diagnostics-hidden-2026-11-11/project",
+    "sourceCandidate": "qa/ios-remnant-outline-2026-11-11/project",
     "distribution": "development device",
-    "rollback": "qa/ios-static-fracture-2026-11-08/delivery.json",
+    "rollback": "qa/ios-diagnostics-hidden-2026-11-11/delivery.json",
     "comparisonOnly": false,
     "mapAuthoringRevision": "campaign-lite-2026-11-07",
     "mapDesignApproved": true,
     "tuningRevision": "destruction-midpoint-2026-11-07",
-    "behaviorRevision": "static-fracture-coordinates-2026-11-08",
+    "behaviorRevision": "tiny-remnants-small-outlines-2026-11-11",
     "diagnosticsVisibilityRevision": 1,
     "attackTraceDefault": false,
     "performanceOverlayDefault": false
@@ -85,13 +85,5 @@
   "mapAuthoringRevision": "campaign-lite-2026-11-07",
   "mapEncoding": "occupied-runs-v1",
   "behaviorRevision": "static-fracture-coordinates-2026-11-08",
-  "coreFixVersion": "0.5.56",
-  "pendingIosUpdate": {
-    "version": "0.5.58",
-    "build": 68,
-    "sourceCandidate": "qa/ios-remnant-outline-2026-11-11/project",
-    "signatureVerified": true,
-    "installed": false,
-    "status": "built; waiting for device connection"
-  }
+  "coreFixVersion": "0.5.56"
 }
