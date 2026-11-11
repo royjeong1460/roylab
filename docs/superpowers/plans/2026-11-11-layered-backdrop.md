@@ -23,8 +23,8 @@
 - [x] Implement shared placement/support helper, centered cultural layout, terrain-aligned waste and upper-half random weather. Add Arch assets as region0 catalog data; route every playable culture through CultureBackdrop.
 - [x] Copy only the approved presentation files/catalog into current Web and native candidate. Adapt the existing g40 cascade lab to use the same presentation without refreshing its physics.
 - [x] Compile/import/export all three projects; statically verify shared-file equality, asset references, all original map/native/skill/save inputs and packaged resources. Do not run project tests.
-- [ ] Build signed iOS0.5.60(70), verify bundle/version/PCK/signature, attempt update-install without launch. Build Web/static site, publish through isolated release branch, verify transport and decoded hashes.
-- [ ] Record local URLs, public deployment, package/build/install evidence separately; retain rollback. User validates visuals, gameplay, camera feel and device saves.
+- [x] Build signed iOS0.5.60(70), verify bundle/version/PCK/signature, attempt update-install without launch. Build Web/static site, publish through isolated release branch, verify transport and decoded hashes.
+- [x] Record local URLs, public deployment, package/build/install evidence separately; retain rollback. User validates visuals, gameplay, camera feel and device saves.
 
 ## Verification details
 

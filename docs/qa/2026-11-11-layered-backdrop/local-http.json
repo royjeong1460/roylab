@@ -1,0 +1,25 @@
+{
+  "records": [
+    {
+      "port": 8893,
+      "path": "/design-preview/cascade-play-lab-2026-11-03/",
+      "status": 200,
+      "sha256": "6d34a88c755b024cec1df79462d5ec5944455428e60abeaa4742308741185735"
+    },
+    {
+      "port": 8894,
+      "path": "/game.html",
+      "status": 200,
+      "sha256": "33b03ace40bd05d9964333053681a128fd03656f5bccd54a52fc54e25fb6f00d"
+    },
+    {
+      "port": 8807,
+      "path": "/planet-patchup/play/",
+      "status": 200,
+      "sha256": "9727767d74d8030381dd51c956fdd3bf5ea66d2519707deb9b9c2ca7aae0ff76"
+    }
+  ],
+  "latestCampaignPckMatches": true,
+  "latestCascadePckMatches": true,
+  "gameStarted": false
+}

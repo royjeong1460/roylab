@@ -20,8 +20,8 @@
   "rollbackDelivery": "qa/ios-remnant-outline-2026-11-11/delivery.json",
   "nativeSourceUnchanged": "qa/ios-static-fracture-2026-11-08/extension/src",
   "webStem": "free-0541-de43994c2e71",
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "rollbackWebStem": "free-0541-1e77c4c0731c",
   "publicUrl": "https://roylab.pages.dev/planet-patchup/play/",
   "localCampaignUrl": "http://127.0.0.1:8807/planet-patchup/play/",
@@ -30,5 +30,9 @@
   "deviceAppLaunchedByAssistant": false,
   "mapsEconomyProgressionNativeLibrariesUnchanged": true,
   "scope": "Presentation only: centered cultural main, fixed seeded auxiliaries, terrain-aligned decorative waste, independent viewport cloudy/sunny weather",
-  "presentationRevision": "terrain-aware-layered-backdrop-2026-11-11"
+  "presentationRevision": "terrain-aware-layered-backdrop-2026-11-11",
+  "releaseCommit": "c796d0a74000f23686239114e5f6d280411e1a4c",
+  "deploymentId": "c0d6a74c-e195-430c-9e6a-f592278b42a0",
+  "httpResponses": 15,
+  "userValidation": "pending: visuals, gameplay, saves, camera feel and performance"
 }

@@ -13,3 +13,7 @@ Local40-map unlimited-battery lab: http://127.0.0.1:8893/design-preview/cascade-
 The Web package was imported/compiled/exported, inspected for the six-region catalog/helper and transport/decoded SHA256 equality. Static site build passed. Public deployment and HTTP verification are recorded separately in delivery.json; do not infer public delivery from these build checks.
 
 Rollback: native qa/ios-remnant-outline-2026-11-11/delivery.json, Web free-0541-1e77c4c0731c. Existing package/art/source backups remain intact. The native0.5.59 diagnostic candidate remains preserved and deferred.
+
+## Final delivery
+
+Web free-0541-de43994c2e71 published by c796d0a74000f23686239114e5f6d280411e1a4c; Pages c0d6a74c-e195-430c-9e6a-f592278b42a0 succeeded. All15static production responses and transport/decoded hashes match. iPhone0.5.60(70) final installation sequence4668. Both local HTTP endpoints serve the final PCK bytes. No game/browser/device app was launched; user visual/gameplay/save/FPS confirmation remains pending.
