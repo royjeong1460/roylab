@@ -1,0 +1,13 @@
+--- a/project/campaign/profile_schema.gd
++++ b/project/campaign/profile_schema.gd
+@@ -22,0 +23,4 @@
++	if bool(ProjectSettings.get_setting("qa/finish_repro", false)):
++		var seed = JSON.parse_string(FileAccess.get_file_as_string("res://data/repro-profile.json"))
++		if seed is Dictionary:
++			return seed.duplicate(true)
+--- a/project/campaign/run_journal.gd
++++ b/project/campaign/run_journal.gd
+@@ -55,0 +56,3 @@
++	if OS.has_feature("web") and bool(ProjectSettings.get_setting("qa/finish_repro", false)):
++		var body := JSON.stringify(JSON.stringify(record, "", true))
++		JavaScriptBridge.eval("fetch('/local-records',{method:'POST',headers:{'Content-Type':'application/json'},body:" + body + "}).catch(()=>{});", true)

@@ -1,0 +1,21 @@
+{
+  "mapId": "arch-3-arch-quarter-v2",
+  "phase": "working",
+  "initialPixels": 1898,
+  "pixelized": 1870,
+  "ledger": {
+    "chunks": 28,
+    "collected": 0,
+    "grains": 1870,
+    "static": 0
+  },
+  "batteryPercent": 40.48,
+  "pixelizedPercent": 98.52,
+  "stableLedgerSampleCount": 5,
+  "orbitalUses": 1,
+  "sonicUses": 1,
+  "userReportsNoVisibleRemnantsAndNoVisibleSatellite": true,
+  "bodyPositionsAbsentFromOldJournal": true,
+  "rootOfInvisibilityUnconfirmed": true,
+  "source": "Read-only user-generated iPhone journal; raw profile/journal/device IDs not checked in."
+}

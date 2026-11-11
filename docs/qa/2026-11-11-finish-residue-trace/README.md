@@ -1,0 +1,11 @@
+# 1-3 remaining-body and skill trace candidate ·2026-11-11
+
+User reported all visible blocks gone with41% battery, no outlines, and no visible satellite. Read-only game journal copy confirms map arch-3-arch-quarter-v2: initial1898, grains1870, static0, chunks28, collected0, capacity201.622776601684, remaining81.6227766016838(40.48%). Same count persists in latest5samples. Finish requires all1898 IDs pixelized, so it correctly remains working with28IDs still in body objects. Existing record does not include body positions or visibility; the reason those28IDs are unseen is unconfirmed. Full Documents copy timed out; targeted latest journal read succeeded. Raw user data remains local only.
+
+Diagnostic-only candidate0.5.59(69), same app ID/save namespace. Add bounded journal data when structural remainder<=64pixels: body IDs/position/velocity/screen/world/terrain inclusion, visibility/mesh/outline counts, and existing skill deployment/history. Capture accepted/declined active requests without changing activation logic. No per-frame scan, force, cleanup threshold, settlement or reward changes. Core/maps/libraries unchanged. No tests/scenes/gameplay/browser/device launch; compile/build/sign only.
+
+Plan: preserve0.5.58; implement/compile/pack/build/sign and verify source scope; wait for user to settle the currently stuck run before update-install so unsettled pixels are not forfeited. User replays1-3; read journal to identify exact hidden-body location before choosing a gameplay fix. Public Web and CURRENT remain0.5.58 until the diagnostic update is explicitly installed. Rollback: prior-current.json plus previous candidate/app.
+
+Private raw journal and device copy receipts remain outside Git. analysis.json contains only derived counts for the reported run. This is a diagnostic candidate, not a proven gameplay fix.
+
+Build: native import/compile/pack and Xcode Release passed; strict deep signature verification and bundle/PCK identity passed.0.5.59(69) is ready but not installed. User was asked to settle the current1-3 run and return to the menu before install, to preserve unbanked1870pixels. No test/scene/runtime launched. This candidate records evidence only; the hidden-body root cause is still open.

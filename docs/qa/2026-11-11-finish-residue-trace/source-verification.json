@@ -1,0 +1,18 @@
+{
+  "changed": [
+    "campaign/run_journal.gd",
+    "campaign/run_session.gd",
+    "export_presets.cfg",
+    "project.godot"
+  ],
+  "added": [
+    "diagnostics/residue_trace.gd",
+    "diagnostics/residue_trace.gd.uid"
+  ],
+  "unchangedInputs": 1374,
+  "gameplayWorldPhysicsSkillsRewardsMapsNativeLibrariesUnchanged": true,
+  "sampledOnlyWhenRemainingAtMostPixels": 64,
+  "captureDuringExistingJournalCheckpoints": true,
+  "skillAttemptLimit": 16,
+  "runtimeExecuted": false
+}

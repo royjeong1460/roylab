@@ -1,0 +1,14 @@
+{
+  "profileAbilityAndWalletParity": true,
+  "gameplaySourceParity058": true,
+  "diagnosticsFrom059": true,
+  "buildStages": [
+    "import",
+    "compile",
+    "export"
+  ],
+  "namespace": "PlanetPatchupFinishRepro20261111",
+  "port": 8806,
+  "publicAndIphoneUnchanged": true,
+  "runtimeExecuted": false
+}

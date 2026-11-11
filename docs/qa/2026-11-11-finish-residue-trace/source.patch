@@ -1,0 +1,119 @@
+--- a/project/campaign/run_journal.gd
++++ b/project/campaign/run_journal.gd
+@@ -3,0 +4 @@
++const ResidueTrace = preload("res://diagnostics/residue_trace.gd")
+@@ -131,0 +133,6 @@
++	var residue: Dictionary = ResidueTrace.capture(run.world, current.latest.get("ledger", {})) if run.world != null else {}
++	if not residue.is_empty():
++		residue.at = _now()
++		residue.simulationMs = run.work_ms
++		residue.ledger = current.latest.get("ledger", {}).duplicate()
++		current.residueTrace = residue
+@@ -140,0 +148,10 @@
++
++func skill_attempt(run, skill_id: String, accepted: bool) -> void:
++	if current.is_empty() or run.world == null:
++		return
++	var attempts: Array = current.get("skillAttempts", [])
++	if not accepted and not attempts.is_empty() and attempts[-1].id == skill_id and not attempts[-1].accepted:
++		return
++	attempts.append({"id": skill_id, "accepted": accepted, "at": _now(), "phase": run.phase, "uses": run.skill_uses.duplicate(), "deployment": ResidueTrace.skill_state(run.world)})
++	current.skillAttempts = attempts.slice(maxi(0, attempts.size() - 16))
++	checkpoint(run)
+--- a/project/campaign/run_session.gd
++++ b/project/campaign/run_session.gd
+@@ -277,0 +278,2 @@
++		if journal != null:
++			journal.skill_attempt(self, skill_id, false)
+@@ -282,0 +285,2 @@
++	if journal != null:
++		journal.skill_attempt(self, skill_id, accepted)
+--- a/project/export_presets.cfg
++++ b/project/export_presets.cfg
+@@ -41,2 +41,2 @@
+-application/short_version="0.5.58"
+-application/version="68"
++application/short_version="0.5.59"
++application/version="69"
+--- a/project/project.godot
++++ b/project/project.godot
+@@ -18 +18 @@
+-config/version="0.5.58"
++config/version="0.5.59"
+--- /dev/null
++++ b/project/diagnostics/residue_trace.gd
+@@ -0,0 +1,70 @@
++extends RefCounted
++
++static func _number(value: float):
++	return value if is_finite(value) else null
++
++static func _point(value: Vector2) -> Array:
++	return [_number(value.x), _number(value.y)]
++
++static func skill_state(world) -> Dictionary:
++	var skill = world.skill_physics
++	var active: Dictionary = skill.active
++	var state := {"uses": skill.uses.duplicate(), "id": active.get("id", ""), "targets": [], "projectiles": []}
++	for target in active.get("targets", []):
++		state.targets.append(_number(float(target)))
++	for key in ["age", "next", "left", "right", "top"]:
++		if active.has(key):
++			state[key] = _number(float(active[key]))
++	for projectile in active.get("projectiles", []).slice(0, 8):
++		state.projectiles.append({"position": [_number(projectile.x), _number(projectile.y)], "vy": _number(projectile.vy)})
++	var history: Array = []
++	for event in skill.history.slice(maxi(0, skill.history.size() - 8)):
++		var row := {"kind": event.get("kind", ""), "time": event.get("time", 0.0)}
++		if event.get("p") is Vector2:
++			row.position = _point(event.p)
++		history.append(row)
++	state.history = history
++	return state
++
++static func capture(world, ledger: Dictionary) -> Dictionary:
++	var remaining := int(ledger.get("static", 0)) + int(ledger.get("chunks", 0))
++	if remaining <= 0 or remaining > 64:
++		return {}
++	var viewport = world.get_viewport()
++	var area: Rect2 = viewport.get_visible_rect()
++	var camera = viewport.get_camera_2d()
++	if camera != null and camera.has_method("fitted_world_bounds"):
++		area = camera.area
++	var bodies: Array = []
++	for piece in world.pieces:
++		var low := Vector2(INF, INF)
++		var high := Vector2(-INF, -INF)
++		var invalid := 0
++		var outside := 0
++		var below := 0
++		var on_screen := 0
++		var transform: Transform2D = piece.get_global_transform_with_canvas()
++		for id in piece.ids:
++			var point: Vector2 = piece.pixel_position(id)
++			if not point.is_finite():
++				invalid += 1
++				continue
++			low = low.min(point)
++			high = high.max(point)
++			outside += int(point.x < 0 or point.x >= world.width or point.y < 0 or point.y >= world.height)
++			below += int(point.x >= 0 and point.x < world.width and point.y > world.ground_y(point.x) + 1.0)
++			var screen: Vector2 = transform * ((world.original_point(id) - piece.origin_center) * 4.0)
++			on_screen += int(screen.is_finite() and area.has_point(screen))
++		var surfaces: Array = []
++		for child in piece.get_children():
++			if child is MeshInstance2D:
++				var segments := 0
++				if child.mesh != null and child.mesh.has_meta("local_outline_segments_v3"):
++					for layer in child.mesh.get_meta("local_outline_segments_v3"):
++						segments += layer.size() / 2
++				surfaces.append({"visible": child.is_visible_in_tree(), "meshSurfaces": child.mesh.get_surface_count() if child.mesh != null else 0, "outlineSegments": segments})
++		bodies.append({"pixels": piece.ids.size(), "ids": piece.ids.duplicate(), "positionCells": _point(piece.position / 4.0), "screenCenter": _point(transform.origin), "rotation": _number(piece.rotation), "velocity": _point(piece.linear_velocity), "angularVelocity": _number(piece.angular_velocity), "sleeping": piece.sleeping, "hinged": is_instance_valid(piece.hinge), "supportAlive": piece.support_id >= 0 and piece.support_id < world.cells.size() and world.cells[piece.support_id] != 0, "linked": world.structure_physics.fragment_is_linked(piece.ids, piece), "visible": piece.is_visible_in_tree(), "boundsCells": [_point(low), _point(high)], "invalidPixels": invalid, "outsideWorldPixels": outside, "belowGroundPixels": below, "onScreenPixels": on_screen, "render": surfaces})
++	var pending := 0
++	for joint in world.structure_physics.yield_joints:
++		pending += int(joint.phase == "yielding" and joint.pending)
++	return {"schema": 1, "worldSize": [world.width, world.height], "playArea": [_point(area.position), _point(area.size)], "staticIds": world.static_ids().duplicate(), "bodies": bodies, "pendingJoints": pending, "skills": skill_state(world)}
+--- /dev/null
++++ b/project/diagnostics/residue_trace.gd.uid
+@@ -0,0 +1 @@
++uid://bggoild865e7p
