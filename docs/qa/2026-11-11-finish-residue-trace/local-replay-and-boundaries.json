@@ -1,0 +1,35 @@
+{
+  "mapId": "arch-3-arch-quarter-v2",
+  "localUserReplay": {
+    "finished": true,
+    "total": 1898,
+    "collected": 1898,
+    "remainingChunks": 0,
+    "remainingStatic": 0,
+    "batteryRemaining": 117.622776601684,
+    "blastCount": 7,
+    "skillUses": {
+      "gravity": 0,
+      "orbital": 1,
+      "recharge": 0,
+      "seismic": 0,
+      "sonic": 1
+    }
+  },
+  "observedMaterialTopAtSonicDeployment": -29.7401390075684,
+  "meaning": "Native bounds() returns minimum actual structural pixel y; negative means above logical map top. Not evidence of permanent escape.",
+  "sourceBoundaryReview": {
+    "mapWidth": 105,
+    "mapHeight": 104,
+    "floorY": 94,
+    "ceilingCollider": false,
+    "sideWalls": "Rect2(-10,-height,10,height*3), Rect2(width,-height,10,height*3)",
+    "groundDepthBottom": "floor_y+10",
+    "speedCapCellsPerSecond": 180,
+    "continuousCollisionDetection": true,
+    "rigidBodyOutOfBoundsRecovery": false
+  },
+  "iphone28PixelEscapeUnconfirmed": true,
+  "gameplayCodeChanged": false,
+  "runtimeRunByAssistant": false
+}
