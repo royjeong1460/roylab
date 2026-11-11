@@ -1,0 +1,26 @@
+{
+  "namespace": "PlanetPatchupLocalBlastLab20261108",
+  "origin": "http://127.0.0.1:8805",
+  "sourceChanged": [
+    "structure_physics.gd",
+    "world.gd",
+    "project.godot",
+    "diagnostics/blast_trace.gd"
+  ],
+  "sourceAdded": [
+    "presentation/piece_outline.gd",
+    "presentation/piece_outline.gd.uid"
+  ],
+  "unchangedInputs": 1372,
+  "buildStages": [
+    "import",
+    "compile",
+    "export"
+  ],
+  "runtimeExecuted": false,
+  "recordsPreserved": 8,
+  "releasePointerUnchanged": true,
+  "sourcePatch": "source.patch",
+  "publicWebUpdated": false,
+  "iphoneUpdated": false
+}

@@ -1,0 +1,99 @@
+--- a/project/structure_physics.gd
++++ b/project/structure_physics.gd
+@@ -5,0 +6 @@
++const TINY_REMNANT_MAX := 4
+@@ -199,0 +201,4 @@
++	var live_supports := {}
++	for piece in world.pieces:
++		if is_instance_valid(piece.hinge):
++			live_supports[piece.support_id] = true
+@@ -202 +207,7 @@
+-		if not group.any(func(id): return world.grounded_id(id)):
++		var tiny: bool = group.size() <= TINY_REMNANT_MAX and not group.any(func(id): return live_supports.has(id))
++		if tiny:
++			world.blast_trace.push("tiny-ground-remnant")
++			world.release(group)
++			world.blast_trace.pop()
++			changed = true
++		elif not group.any(func(id): return world.grounded_id(id)):
+--- a/project/world.gd
++++ b/project/world.gd
+@@ -11,0 +12 @@
++const PieceOutline = preload("res://presentation/piece_outline.gd")
+@@ -414,0 +416,4 @@
++	if surface.mesh != null:
++		var outline := PieceOutline.new()
++		outline.configure(surface.mesh, pixel_rects, center, S)
++		surface.add_child(outline)
+--- a/project/project.godot
++++ b/project/project.godot
+@@ -18 +18 @@
+-config/version="0.5.56"
++config/version="0.5.57-local-remnants-v1"
+--- a/project/diagnostics/blast_trace.gd
++++ b/project/diagnostics/blast_trace.gd
+@@ -119 +119 @@
+-	return {"schemaVersion": 1, "build": "0.5.56(66)", "units": "logical-cells/pixels",
++	return {"schemaVersion": 1, "build": "local-remnants-outline-v1", "units": "logical-cells/pixels",
+--- /dev/null
++++ b/project/presentation/piece_outline.gd
+@@ -0,0 +1,55 @@
++extends Node2D
++
++const CACHE_KEY := "local_outline_segments_v1"
++const OUTER := Color("fae8b3")
++const INNER := Color("17363c")
++var _segments := PackedVector2Array()
++
++func configure(source: Mesh, rectangles: Array, center: Vector2, pixel_scale: float) -> void:
++	if source.has_meta(CACHE_KEY):
++		_segments = source.get_meta(CACHE_KEY)
++	else:
++		var horizontal := {}
++		var vertical := {}
++		for value in rectangles:
++			var rect: Rect2 = value
++			var end := rect.end
++			_edge(horizontal, rect.position.y, rect.position.x, end.x)
++			_edge(horizontal, end.y, rect.position.x, end.x)
++			_edge(vertical, rect.position.x, rect.position.y, end.y)
++			_edge(vertical, end.x, rect.position.y, end.y)
++		_append_edges(horizontal, false, center, pixel_scale)
++		_append_edges(vertical, true, center, pixel_scale)
++		source.set_meta(CACHE_KEY, _segments)
++	queue_redraw()
++
++func _edge(lines: Dictionary, at: float, start: float, end: float) -> void:
++	if not lines.has(at):
++		lines[at] = {}
++	var changes: Dictionary = lines[at]
++	changes[start] = int(changes.get(start, 0)) + 1
++	changes[end] = int(changes.get(end, 0)) - 1
++
++func _append_edges(lines: Dictionary, vertical: bool, center: Vector2, pixel_scale: float) -> void:
++	for at in lines:
++		var changes: Dictionary = lines[at]
++		var positions: Array = changes.keys()
++		positions.sort()
++		var coverage := 0
++		var previous := 0.0
++		for value in positions:
++			var coordinate := float(value)
++			# Shared edges occur twice; only the actual silhouette has odd coverage.
++			if coverage % 2 == 1 and coordinate > previous:
++				var start := Vector2(float(at), previous) if vertical else Vector2(previous, float(at))
++				var end := Vector2(float(at), coordinate) if vertical else Vector2(coordinate, float(at))
++				_segments.append((start - center) * pixel_scale)
++				_segments.append((end - center) * pixel_scale)
++			coverage += int(changes[value])
++			previous = coordinate
++
++func _draw() -> void:
++	if _segments.is_empty():
++		return
++	draw_multiline(_segments, OUTER, 3.6)
++	draw_multiline(_segments, INNER, 1.8)
+--- /dev/null
++++ b/project/presentation/piece_outline.gd.uid
+@@ -0,0 +1 @@
++uid://gu6vry4xcwa2
