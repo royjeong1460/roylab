@@ -11,14 +11,14 @@
     "skills": 10
   },
   "ios": {
-    "version": "0.5.60",
-    "build": 70,
+    "version": "0.5.61",
+    "build": 71,
     "installed": true,
-    "installSequence": 4668,
+    "installSequence": 4676,
     "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
-    "sourceCandidate": "qa/ios-layered-backdrop-2026-11-11/project",
+    "sourceCandidate": "qa/ios-boundary-guard-2026-11-11/project",
     "distribution": "development device",
-    "rollback": "qa/ios-remnant-outline-2026-11-11/delivery.json",
+    "rollback": "qa/ios-layered-backdrop-2026-11-11/delivery.json",
     "comparisonOnly": false,
     "mapAuthoringRevision": "campaign-lite-2026-11-07",
     "mapDesignApproved": true,
@@ -27,7 +27,8 @@
     "diagnosticsVisibilityRevision": 1,
     "attackTraceDefault": false,
     "performanceOverlayDefault": false,
-    "presentationRevision": "terrain-aware-layered-backdrop-2026-11-11"
+    "presentationRevision": "terrain-aware-layered-backdrop-2026-11-11",
+    "boundaryRevision": "whole-fragment-boundary-guard-2026-11-11"
   },
   "web": {
     "version": "0.5.41",

@@ -1,0 +1,19 @@
+{
+  "changedNativeInputs": [
+    "boundary_guard.gd",
+    "boundary_guard.gd.uid",
+    "campaign/run_journal.gd",
+    "export_presets.cfg",
+    "piece.gd",
+    "project.godot",
+    "world.gd"
+  ],
+  "allOtherNativeInputsByteIdentical": true,
+  "webAndNativeBoundaryFilesByteIdentical": true,
+  "localFixtureImported": false,
+  "performanceOverlayDefault": false,
+  "nativeSaveDirectory": "PlanetPatchupGodotPaid",
+  "webSaveDirectory": "PlanetPatchupGodotFreeWeb",
+  "rollback": "qa/ios-layered-backdrop-2026-11-11/delivery.json",
+  "runtimeExecuted": false
+}

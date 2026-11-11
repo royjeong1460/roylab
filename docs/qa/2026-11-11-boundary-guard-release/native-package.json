@@ -1,0 +1,10 @@
+{
+  "bundle": "com.roy.planetpatchup.godotcompare",
+  "version": "0.5.61",
+  "build": "71",
+  "signatureVerified": true,
+  "pckSha256": "a340ed0f68f3f71ce7920b8de207ec274fba1e862611d2ee1518d4d37de66a8c",
+  "executableSha256": "54f2c2975fcca9e3690a34c49b8e35ec81ce4df241c80653227f9f1b4b9c987a",
+  "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-boundary-guard-2026-11-11-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "appLaunched": false
+}

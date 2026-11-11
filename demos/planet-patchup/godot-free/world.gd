@@ -82,6 +82,8 @@ var _static_geometry_ids: Array = []
 var _static_geometry_rects: Array = []
 var _static_geometry_shapes: Array = []
 var _static_outline_groups: Array = []
+var boundary_guard_count := 0
+var boundary_guard_history: Array = []
 var width := 115
 var height := 157
 var floor_y := 145
@@ -241,11 +243,14 @@ func _ready() -> void:
 		_add_collider(boundary, Rect2(span.x, span.y, span.w, floor_y + 10 - span.y))
 	for rect in [Rect2(-10, -height, 10, height * 3), Rect2(width, -height, 10, height * 3)]:
 		_add_collider(boundary, rect)
+	_add_collider(boundary, Rect2(-10, -height - 10, width + 20, 10))
 	var skills: Dictionary = starting_equipped.get("skills", {})
 	skill_physics.configure_loadout(starting_equipped.get("passive", []), starting_equipped.get("active", []), skills, "paid")
 	reset()
 
 func reset() -> void:
+	boundary_guard_count = 0
+	boundary_guard_history.clear()
 	sand_fragment_count = 0
 	structure_physics.reset()
 	blackhole_physics.reset()
@@ -557,6 +562,12 @@ func remove_piece(piece) -> void:
 	pieces.erase(piece)
 	remove_child(piece)
 	piece.queue_free()
+
+func note_boundary_correction(pixel_count: int, before: Vector2, after: Vector2, reason: String) -> void:
+	boundary_guard_count += 1
+	boundary_guard_history.append({"time": elapsed, "pixels": pixel_count, "from": [before.x / S, before.y / S] if before.is_finite() else null, "to": [after.x / S, after.y / S], "reason": reason})
+	if boundary_guard_history.size() > 16:
+		boundary_guard_history.pop_front()
 
 func emit_grain(id: int, point: Vector2, velocity: Vector2) -> void:
 	var grain := {"id": id, "p": point, "v": velocity, "rest": false}

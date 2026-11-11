@@ -2,6 +2,7 @@ extends RigidBody2D
 
 const S := 4.0
 const BearingConstraint = preload("res://bearing_constraint.gd")
+const BoundaryGuard = preload("res://boundary_guard.gd")
 var ids: Array = []
 var origin_center := Vector2.ZERO
 var owner_world: Node
@@ -11,6 +12,7 @@ var previous_angular := 0.0
 var previous_contacts := {}
 var hinge: Node2D
 var bearing_solver := BearingConstraint.new()
+var boundary_guard := BoundaryGuard.new()
 var bearing_constraint := {}
 var constraint_impulse := {"x": 0.0, "y": 0.0, "angle": 0.0}
 var support_id := -1
@@ -83,6 +85,7 @@ func configure(world: Node, pixels: Array, parent_piece = null) -> void:
 		set_meta("blackhole_rubbing_time", parent_piece.get_meta("blackhole_rubbing_time", 0.0))
 	previous_velocity = linear_velocity
 	previous_angular = angular_velocity
+	boundary_guard.setup(self, world, pixel_rects, origin_center, parent_piece.boundary_guard if same_geometry else null)
 
 func pixel_position(id: int) -> Vector2:
 	return (position + ((owner_world.original_point(id) - origin_center) * S).rotated(rotation)) / S
@@ -131,6 +134,12 @@ func _integrate_forces_unprofiled(state: PhysicsDirectBodyState2D) -> void:
 	if owner_world == null or owner_world.paused:
 		return
 	state.integrate_forces()
+	if boundary_guard.constrain(state, self):
+		# Contacts from the old escaped pose must not create a phantom impact.
+		limit_motion()
+		previous_velocity = state.linear_velocity
+		previous_angular = state.angular_velocity
+		return
 	var contact_result: Dictionary = _native_contacts.sample(self, state, owner_world, previous_contacts, previous_velocity, previous_angular, last_impact)
 	owner_world.pending_contacts.append_array(contact_result.pending)
 	var best: Dictionary = contact_result.best
@@ -145,5 +154,6 @@ func _integrate_forces_unprofiled(state: PhysicsDirectBodyState2D) -> void:
 	previous_contacts = contacts
 	solve_bearing(state)
 	limit_motion()
+	boundary_guard.constrain(state, self)
 	previous_velocity = state.linear_velocity
 	previous_angular = state.angular_velocity

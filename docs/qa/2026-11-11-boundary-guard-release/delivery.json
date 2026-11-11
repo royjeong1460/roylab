@@ -1,0 +1,32 @@
+{
+  "version": "0.5.61",
+  "nativeBuild": 71,
+  "nativeApp": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-boundary-guard-2026-11-11-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "package": {
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "version": "0.5.61",
+    "build": "71",
+    "signatureVerified": true,
+    "pckSha256": "a340ed0f68f3f71ce7920b8de207ec274fba1e862611d2ee1518d4d37de66a8c",
+    "executableSha256": "54f2c2975fcca9e3690a34c49b8e35ec81ce4df241c80653227f9f1b4b9c987a",
+    "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-boundary-guard-2026-11-11-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "appLaunched": false
+  },
+  "nativeInstalled": true,
+  "installedSequence": 4676,
+  "installReceipt": "device-install.json",
+  "installReceiptSha256": "e203d1b07902cd6e03e14a424be5235326f353dfe30765fb306abf98e3facd46",
+  "rollbackDelivery": "qa/ios-layered-backdrop-2026-11-11/delivery.json",
+  "nativeSourceUnchanged": "qa/ios-static-fracture-2026-11-08/extension/src",
+  "webStem": "free-0541-86669d993e76",
+  "webPublished": false,
+  "httpVerified": false,
+  "rollbackWebStem": "free-0541-de43994c2e71",
+  "publicUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "runtimeExecutedByAgent": false,
+  "deviceAppLaunchedByAssistant": false,
+  "mapsEconomyProgressionNativeLibrariesUnchanged": true,
+  "scope": "Close physics enclosure at existing side-wall top; whole-fragment boundary guard retaining IDs and bounded journal corrections",
+  "userValidation": "pending: physical boundary behavior, saves, feel and FPS"
+}
