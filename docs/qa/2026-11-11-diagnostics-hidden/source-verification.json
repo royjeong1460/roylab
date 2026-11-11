@@ -1,0 +1,16 @@
+{
+  "nativeChangedFiles": [
+    "project.godot",
+    "export_presets.cfg",
+    "platform/diagnostics.gd"
+  ],
+  "sharedDiagnosticsHelperMatches": true,
+  "attackAndPerformanceDefaultsFalseBoth": true,
+  "legacyVisibleWithoutRevisionIgnored": true,
+  "explicitFiveTapPreferencePersistsWithRevision": true,
+  "profileAndGameplaySourceUnchanged": true,
+  "allOtherBaselineInputsUnchanged": true,
+  "nativeLibrariesUnchanged": true,
+  "runtimeExecuted": false,
+  "reviewScope": "Static branches/source checks plus compiler/export, not executed preference cases or device UI."
+}

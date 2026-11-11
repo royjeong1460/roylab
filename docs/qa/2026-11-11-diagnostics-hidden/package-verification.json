@@ -1,0 +1,77 @@
+{
+  "publicOutFilesMatch": [
+    {
+      "path": "planet-patchup/play/index.html",
+      "sha256": "f720cbe959f5ff410add8c605f27b10622eb1ea620a0628936c439bf0de6c0e1",
+      "bytes": 7905
+    },
+    {
+      "path": "games/planet-patchup-free/index.html",
+      "sha256": "f740e631c726cd8cb6998e76d7768646d5b8fed967081689ed0034f73d525005",
+      "bytes": 7864
+    },
+    {
+      "path": "_headers",
+      "sha256": "69c11de8cddff423d82c2cd2ce09bed76dba40f1ecbe4a901cee74b3a8cc3efa",
+      "bytes": 6176
+    },
+    {
+      "path": "games/planet-patchup-free/godot-web-ec83eba66e3c.audio.position.worklet.js",
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8",
+      "bytes": 2973
+    },
+    {
+      "path": "games/planet-patchup-free/godot-web-ec83eba66e3c.audio.worklet.js",
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3",
+      "bytes": 7298
+    },
+    {
+      "path": "games/planet-patchup-free/godot-web-ec83eba66e3c.js",
+      "sha256": "f3ec2db2acf90e2413035417a6d2ded643248791c1de7987ff68492a4610de27",
+      "bytes": 5552570
+    },
+    {
+      "path": "games/planet-patchup-free/free-0541-cfbbdac90df2.pck",
+      "sha256": "dc6fe7a78230af548e1aca118aed172fd415c48e219a9c97b48e3e55649aa47f",
+      "bytes": 12774757
+    },
+    {
+      "path": "games/planet-patchup-free/free-0541-cfbbdac90df2.png",
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e",
+      "bytes": 21443
+    },
+    {
+      "path": "games/planet-patchup-free/godot-web-ec83eba66e3c.side.wasm",
+      "sha256": "1bd41b05eddbd1f86f95b703d8f5d99159d02a95a63321e0c0165900431bbc8d",
+      "bytes": 10041388
+    },
+    {
+      "path": "games/planet-patchup-free/godot-web-ec83eba66e3c.wasm",
+      "sha256": "183fabbbe7ff9f5dc237d3273b6c198daca484bde8b9e5e081a0ba6d2113058b",
+      "bytes": 584666
+    },
+    {
+      "path": "games/planet-patchup-free/libpp_core-g40-667d8633d21ce150.wasm",
+      "sha256": "8830b20870627c44ec54674c2dc6274372ada3854832abe04ec424ddeb0048cb",
+      "bytes": 318871
+    },
+    {
+      "path": "games/planet-patchup-free/godot-shell-assets/shell-BnxlxNYt.js",
+      "sha256": "42622669e142835392281ffca27fbe031c05b809baadbe5c05efbabb46b1035c",
+      "bytes": 13728
+    },
+    {
+      "path": "games/planet-patchup-free/godot-shell-assets/shell-CehdKP2w.css",
+      "sha256": "c7934456a4bafd98c1c5db2c19c3f447b386aa946224ab93ce73adfb5925907c",
+      "bytes": 2037
+    },
+    {
+      "path": "games/planet-patchup-free/free-0541-cfbbdac90df2-manifest.json",
+      "sha256": "1fe5cac687d2657694f5802ba2de9d3574a5b0eb0cf36841568e486a4d719701",
+      "bytes": 6592
+    }
+  ],
+  "encodedDecodedArtifactsMatch": 8,
+  "nativeModuleUnchanged": true,
+  "gameOrBrowserStarted": false
+}

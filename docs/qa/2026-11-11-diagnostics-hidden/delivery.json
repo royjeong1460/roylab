@@ -1,0 +1,32 @@
+{
+  "version": "0.5.57",
+  "nativeBuild": 67,
+  "nativeApp": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-diagnostics-hidden-2026-11-11-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "package": {
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "version": "0.5.57",
+    "build": "67",
+    "pckSha256": "be49d04a4c7806f0ef5ae00579349c1c7e80593e2db28ff2459abe806c104a86",
+    "executableSha256": "6e9d73e588a5a836e5ad226710e9dd7643f7e891c55350ce3805851e52465761",
+    "signatureVerified": true,
+    "oldAppRetainedUnchanged": true,
+    "runtimeExecuted": false
+  },
+  "nativeInstalled": false,
+  "installOutcome": "blocked",
+  "installBlocker": "CoreDevice4000 / developer connection reset by peer; USB/unlocked device requested.",
+  "rollbackDelivery": "qa/ios-static-fracture-2026-11-08/delivery.json",
+  "nativeSourceUnchanged": "qa/ios-static-fracture-2026-11-08/extension/src",
+  "visibilityRevision": 1,
+  "attackTraceDefault": false,
+  "performanceDefault": false,
+  "legacyVisiblePreferenceIgnored": true,
+  "fiveTapToggleRetained": true,
+  "gameplayAndProgressSourceUnchanged": true,
+  "webStem": "free-0541-cfbbdac90df2",
+  "webPublished": false,
+  "httpVerified": false,
+  "runtimeExecutedByAgent": false,
+  "deviceAppLaunchedByAssistant": false
+}

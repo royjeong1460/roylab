@@ -23,28 +23,37 @@
     "mapAuthoringRevision": "campaign-lite-2026-11-07",
     "mapDesignApproved": true,
     "tuningRevision": "destruction-midpoint-2026-11-07",
-    "behaviorRevision": "static-fracture-coordinates-2026-11-08"
+    "behaviorRevision": "static-fracture-coordinates-2026-11-08",
+    "pendingUpdate": {
+      "version": "0.5.57",
+      "build": 67,
+      "sourceCandidate": "qa/ios-diagnostics-hidden-2026-11-11/project",
+      "signedBuildReady": true,
+      "installed": false,
+      "reason": "device development connection unavailable"
+    }
   },
   "web": {
     "version": "0.5.41",
     "project": "demos/planet-patchup/godot-free",
     "route": "/planet-patchup/play/",
     "url": "https://roylab.pages.dev/planet-patchup/play/",
-    "manifestStem": "free-0541-6ee74427fb5e",
+    "manifestStem": "free-0541-cfbbdac90df2",
     "engineStem": "godot-web-ec83eba66e3c",
-    "delivery": "docs/qa/2026-11-08-static-fracture-release/README.md",
-    "published": true,
-    "httpVerified": true,
+    "delivery": "docs/qa/2026-11-11-diagnostics-hidden/README.md",
+    "published": false,
+    "httpVerified": false,
     "presentationPreviewUrl": "https://roylab.pages.dev/planet-patchup/play/?preview=story",
     "campaignAutoTrigger": false,
     "rollbackRequiresRetainedEconomy": true,
-    "releaseCommit": "96f9626e06e4601a030363033b71ea2450543dec",
-    "deploymentId": "84347a84-322b-4632-b96a-f0c583311bb7",
+    "releaseCommit": null,
+    "deploymentId": null,
     "behaviorRevision": "static-fracture-coordinates-2026-11-08",
-    "status": "published and static HTTP verified",
+    "status": "built pending publication",
     "rollbackManifestStem": "free-0541-ae30a3e88329",
     "versionLabelNote": "Web shell remains0.5.41; immutable package and native behavior revision identify the current .56 fixes.",
-    "sourceWorktree": "variants/web-blast-cost-release-20261106/demos/planet-patchup/godot-free"
+    "sourceWorktree": "variants/web-blast-cost-release-20261106/demos/planet-patchup/godot-free",
+    "diagnosticsVisibilityRevision": 1
   },
   "previous": {
     "commonVersion": "0.5.40",

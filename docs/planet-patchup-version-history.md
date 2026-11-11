@@ -53,3 +53,7 @@ Web `free-0541-ae30a3e88329` published;13 static HTTP responses plus transport/d
 로컬 Web에서 공유 메모리를 요구하는 모듈을 non-threaded 엔진과 혼용한 빌드 오류(BUG-016)는 threads=no/production/LTO 옵션 고정으로 복구했다. 사용자 시작 화면 진입 확인을 받았다. 공개 Web 배포·HTTP 결과는 별도 [전달 기록](qa/2026-11-08-static-fracture-release/README.md)에 남긴다. 기존 저장 경로·진행은 초기화하지 않는다.
 
 공개 전달 완료: release96f9626 / Pages84347a84-322b-4632-b96a-f0c583311bb7 / web free-0541-6ee74427fb5e.15개 정적 HTTP 및 encoded/decoded 해시 확인. iPhone0.5.56(66) 설치본은 동일하게 유지.
+
+## 2026-11-11 · 상단 진단 정보 기본 숨김
+
+무료 웹과 iPhone의 진단 UI를 기본 숨김으로 요청받았다. 강제 attack_trace를 끄고 성능 표시 기본false를 유지하며, 기존 diagnostics.cfg의 visible=true는 새 visibility_revision1이 없으면 읽지 않는다. 배터리5회 터치의 이후 선택은 revision1과 함께 저장된다. 진행·강화·물리·스킬·수집 코드는 유지하며 숨김 설정만 바꾼다. iPhone0.5.57(67) 빌드/서명 준비와 실제 설치 상태는 [전달 기록](qa/2026-11-11-diagnostics-hidden/README.md)에 구분한다.
