@@ -1,0 +1,21 @@
+{
+  "changed": [
+    "campaign/run_journal.gd",
+    "piece.gd",
+    "project.godot",
+    "world.gd"
+  ],
+  "added": [
+    "boundary_guard.gd",
+    "boundary_guard.gd.uid"
+  ],
+  "unchangedInputs": 1377,
+  "profileMapsSkillsEconomyNativeModulesUnchanged": true,
+  "all43MapTerrainCoverageAndFloorIdBoundsReviewed": true,
+  "loopbackUrl": "http://127.0.0.1:8806/game.html?v=boundary-1",
+  "namespace": "PlanetPatchupFinishRepro20261111",
+  "bodyGeometryAndIdsRetained": true,
+  "runtimeExecuted": false,
+  "publicDeploy": false,
+  "iosInstall": false
+}
