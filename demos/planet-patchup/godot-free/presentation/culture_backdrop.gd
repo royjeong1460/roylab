@@ -4,6 +4,7 @@ const GameSkin = preload("res://app/skin.gd")
 const CloudLayer = preload("res://presentation/cloud_layer.gd")
 const GroundLayer = preload("res://presentation/culture_ground.gd")
 const ScrapBank = preload("res://presentation/culture_scrap_bank.gd")
+const Layout = preload("res://presentation/scenery_layout.gd")
 static var _environments: Dictionary = {}
 var _config: Dictionary = {}
 var _state: Dictionary = {}
@@ -15,6 +16,7 @@ var _terrain_rect := Rect2()
 var _clip := Control.new()
 var _scenery := Node2D.new()
 var _ground: GroundLayer
+var _weather: CloudLayer
 
 func setup(world: Node2D, region: int, restoration := 0.0) -> void:
 	var extent := Vector2(world.width,world.height)*4.0
@@ -39,33 +41,28 @@ func setup(world: Node2D, region: int, restoration := 0.0) -> void:
 	var layout := Node2D.new()
 	var factor := extent.x/float(_config.reference_width)
 	_scenery_floor = world.floor_y*4.0
-	# Distant scenery stands behind the highest foreground ledge, not the valley floor.
+	# The distant ground clears the highest support; objects use their own local surface.
 	for segment in world.terrain:
 		_scenery_floor = minf(_scenery_floor,float(segment.y)*4.0)
 	layout.scale = Vector2.ONE*factor
-	layout.position.y = _scenery_floor-float(_config.reference_floor)*factor
 	_scenery.add_child(layout)
 	_terrain = load(str(_state.terrain))
-	_terrain_rect = Rect2(layout.position,_terrain.get_size()*factor)
-	for node in _state.objects:
+	var terrain_factor := factor if region != 0 else extent.x/_terrain.get_width()
+	var terrain_floor := float(_config.reference_floor) if region != 0 else float(_terrain.get_height())
+	_terrain_rect = Rect2(Vector2(0,_scenery_floor-terrain_floor*terrain_factor),_terrain.get_size()*terrain_factor)
+	for node in Layout.objects(world,_config):
 		var building: bool = node.role == "building"
 		var alpha := (0.56 if building else 0.66) if _tier == "0" else (0.78 if building else 0.84)
 		_sprite(layout,node,2 if building else 3,alpha)
 	if _state.revival is String:
-		_image(layout,_state.revival,Vector2.ZERO,Vector2.ONE,4)
+		_image(layout,_state.revival,Vector2(0,_scenery_floor/factor-float(_config.reference_floor)),Vector2.ONE,4)
 	var bank := ScrapBank.new()
-	bank.z_index = 4
+	bank.z_index = 5
 	_scenery.add_child(bank)
 	bank.setup(world,_config,_state,_scenery_floor,_tier)
-	for node in _state.waste:
-		var heap: Dictionary = node.duplicate()
-		# Broader unclean heaps overlap; preserve centers, flips and the restored layouts.
-		if _tier == "0":
-			heap.width = float(heap.width)*1.4
-		_sprite(layout,heap,5,0.96)
-	var clouds := CloudLayer.new()
-	_scenery.add_child(clouds)
-	clouds.setup(extent,world.floor_y*4.0,0.24 if _tier == "0" else 0.58)
+	_weather = CloudLayer.new()
+	_scenery.add_child(_weather)
+	_weather.setup(extent,world.floor_y*4.0,0.62)
 	_ground = GroundLayer.new()
 	_ground.z_index = 8
 	_scenery.add_child(_ground)
@@ -80,6 +77,10 @@ func cover_view(bounds: Rect2) -> void:
 		_scenery.position = -bounds.position
 		_ground.cover_view(bounds)
 	queue_redraw()
+
+func weather_view(bounds: Rect2) -> void:
+	if _weather != null:
+		_weather.cover_view(bounds)
 
 func environment_style() -> Dictionary:
 	var sky := Color(str(_state.get("sky","aaa99c")))
@@ -116,7 +117,8 @@ func _draw() -> void:
 	draw_rect(_view_bounds,environment_style().sky)
 	if _terrain == null:
 		return
-	draw_rect(Rect2(_view_bounds.position.x,_scenery_floor,_view_bounds.size.x,_view_bounds.end.y-_scenery_floor),Color(str(_state.terrain_fill)))
+	if _view_bounds.end.y > _scenery_floor:
+		draw_rect(Rect2(_view_bounds.position.x,_scenery_floor,_view_bounds.size.x,_view_bounds.end.y-_scenery_floor),Color(str(_state.terrain_fill)))
 	# Mirror only the distant terrain at each edge so the skyline meets without duplicating props.
 	var width := _terrain_rect.size.x
 	for tile in range(floori(_view_bounds.position.x/width),ceili(_view_bounds.end.x/width)):
@@ -125,3 +127,10 @@ func _draw() -> void:
 		draw_set_transform(Vector2(x,_terrain_rect.position.y),0.0,Vector2(-1 if mirrored else 1,1))
 		draw_texture_rect(_terrain,Rect2(Vector2.ZERO,_terrain_rect.size),false)
 	draw_set_transform(Vector2.ZERO)
+	if _tier == "1" and _config.culture == "arch":
+		# Retain the Arch clear-state water and small green patches from the old backdrop.
+		draw_rect(Rect2(width*0.04,_scenery_floor-5,width*0.29,5),Color("83a8aa"))
+		draw_rect(Rect2(width*0.07,_scenery_floor-4,width*0.12,1),Color("a8ced0"))
+		for x in [0.02,0.37,0.71,0.93]:
+			draw_rect(Rect2(roundf(width*x),_scenery_floor-3,12,3),Color("8f9f74"))
+			draw_rect(Rect2(roundf(width*x)+3,_scenery_floor-6,4,3),Color("8f9f74"))

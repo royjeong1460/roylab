@@ -1,0 +1,27 @@
+{
+  "changedNativeInputs": [
+    "background.gd",
+    "project.godot",
+    "export_presets.cfg",
+    "app/play_view.gd",
+    "data/culture_environments.json",
+    "presentation/culture_scrap_bank.gd",
+    "presentation/culture_backdrop.gd",
+    "presentation/scenery_layout.gd",
+    "presentation/scenery_layout.gd.uid",
+    "presentation/cloud_layer.gd",
+    "presentation/culture_ground.gd"
+  ],
+  "sharedFilesMatchAllThree": true,
+  "originalNativePhysicsMapsSkillsEconomyStorageUnchanged": true,
+  "localG40PhysicsUnchanged": true,
+  "weatherIndependentOfRestoration": true,
+  "weatherBound": "upper half of current camera viewport",
+  "fixedScenery": "site-seeded, built once",
+  "reviewFixes": [
+    "nonpositive ground spans ignored",
+    "partial caps limited to subdivisions",
+    "Arch clear-state water/green preserved"
+  ],
+  "runtimeExecuted": false
+}

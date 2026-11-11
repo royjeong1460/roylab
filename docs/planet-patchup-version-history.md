@@ -59,3 +59,8 @@ Web `free-0541-ae30a3e88329` published;13 static HTTP responses plus transport/d
 무료 웹과 iPhone의 진단 UI를 기본 숨김으로 요청받았다. 강제 attack_trace를 끄고 성능 표시 기본false를 유지하며, 기존 diagnostics.cfg의 visible=true는 새 visibility_revision1이 없으면 읽지 않는다. 배터리5회 터치의 이후 선택은 revision1과 함께 저장된다. 진행·강화·물리·스킬·수집 코드는 유지하며 숨김 설정만 바꾼다. iPhone0.5.57(67) 빌드/서명 준비와 실제 설치 상태는 [전달 기록](qa/2026-11-11-diagnostics-hidden/README.md)에 구분한다.
 
 전달 완료: web free-0541-cfbbdac90df2 / release4706b99 / Pages284aa495-0ee7-44ab-8301-1e383f38d60c,15개 정적 HTTP/decoded hash 확인. iPhone0.5.57(67) sequence4512 설치. 앱/브라우저 시각·플레이 확인은 사용자 범위.
+
+
+## 2026-11-11 · 지형을 따르는 분리 배경
+
+여섯 문화권의 플레이 배경을 공통 레이어로 통합했다. 대표 문화 건축물은 중앙, 부속 기물은 맵별 고정 랜덤 배치다. 쓰레기는 실제 지형 윗면을 따라 쌓이며70%에는 약30%만 남고100%에는 사라진다. 구름/햇살은 청소율과 독립적으로 입장 때 무작위 선택하고 화면 상단 절반에 표시한다. 물리·맵·스킬·보상·저장 경로는 유지한다. iOS0.5.60(70) 설치와 로컬/웹 빌드가 확인됐으며 공개 HTTP 상태는 [전달 기록](qa/2026-11-11-layered-backdrop/README.md)을 따른다. 실제 화면과 플레이 확인은 사용자 담당이다.

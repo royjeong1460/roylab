@@ -1,0 +1,10 @@
+{
+  "bundle": "com.roy.planetpatchup.godotcompare",
+  "version": "0.5.60",
+  "build": "70",
+  "signatureVerified": true,
+  "pckSha256": "f27d4be4dce06ab6f820fe9341502b71b347b16db58c2e2a5ad9c478bd2f2395",
+  "executableSha256": "2ec1d5d261a592da78ed6b36b51a649657de9afcc6dca8ab5df9f1b0f46db1ac",
+  "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-layered-backdrop-2026-11-11-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "appLaunched": false
+}

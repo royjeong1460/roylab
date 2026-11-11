@@ -40,6 +40,8 @@ func _draw() -> void:
 		_draw_span(map_right,_view_bounds.end.x,_world.ground_surface[_world.width-1]*4.0,bottom,tile_width)
 
 func _draw_span(left: float, right: float, top: float, bottom: float, tile_width: float) -> void:
+	if right <= left or bottom <= top:
+		return
 	var ground := Rect2(left,top,right-left,bottom-top)
 	draw_rect(ground,_style.ground)
 	draw_rect(Rect2(left,top,right-left,2),_style.edge)

@@ -4,7 +4,6 @@ const World = preload("res://world.gd")
 const GameSkin = preload("res://app/skin.gd")
 const Camera = preload("res://app/play_camera.gd")
 const PlayInput = preload("res://app/play_input.gd")
-const ArchBackdrop = preload("res://background.gd")
 const CultureBackdrop = preload("res://presentation/culture_backdrop.gd")
 const SkillVfx = preload("res://presentation/skill_vfx.gd")
 const ChainFeedback = preload("res://app/chain_feedback.gd")
@@ -56,29 +55,15 @@ func _ready() -> void:
 	journey.attach_world(world)
 	run = journey.current_run
 	var region := int(site.get("region", 0))
-	if region <= 0:
-		var backdrop := ArchBackdrop.new()
-		backdrop.width = world.width * 4.0
-		backdrop.height = world.height * 4.0
-		backdrop.floor_y = world.floor_y * 4.0
-		backdrop.z_index = -100
-		var previous: Dictionary = profile.stageRecords.get(site.id, {})
-		backdrop.restoration = float(previous.get("recovered", 0)) / maxf(1, float(previous.get("total", 1)))
-		add_child(backdrop)
-		_backdrop = backdrop
-		var style: Dictionary = backdrop.environment_style()
-		sky_color = style.sky
-		ground_color = style.ground
-	else:
-		var backdrop := CultureBackdrop.new()
-		add_child(backdrop)
-		var previous: Dictionary = profile.stageRecords.get(site.id, {})
-		var restoration := float(previous.get("recovered", 0))/maxf(1,float(previous.get("total", 1)))
-		backdrop.setup(world, region, restoration)
-		_backdrop = backdrop
-		var style := backdrop.environment_style()
-		sky_color = style.sky
-		ground_color = style.ground
+	var backdrop := CultureBackdrop.new()
+	add_child(backdrop)
+	var previous: Dictionary = profile.stageRecords.get(site.id, {})
+	var restoration := float(previous.get("recovered", 0))/maxf(1,float(previous.get("total", 1)))
+	backdrop.setup(world, region, restoration)
+	_backdrop = backdrop
+	var style := backdrop.environment_style()
+	sky_color = style.sky
+	ground_color = style.ground
 	camera = Camera.new()
 	add_child(camera)
 	camera.make_current()
@@ -186,6 +171,8 @@ func _physics_process(dt: float) -> void:
 	world.perf.end()
 
 func _process(dt: float) -> void:
+	if camera != null and _backdrop != null:
+		_backdrop.weather_view(Rect2(camera.to_map(play_area.position)*4.0,play_area.size/camera.zoom))
 	if is_instance_valid(world):
 		if run != null and not run.paused and not _result_fade_started:
 			world.perf.frame(world)

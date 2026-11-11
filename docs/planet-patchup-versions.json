@@ -11,14 +11,14 @@
     "skills": 10
   },
   "ios": {
-    "version": "0.5.58",
-    "build": 68,
+    "version": "0.5.60",
+    "build": 70,
     "installed": true,
-    "installSequence": 4640,
+    "installSequence": 4668,
     "sourceRegistry": "variants/godot-paid-port/CURRENT.json",
-    "sourceCandidate": "qa/ios-remnant-outline-2026-11-11/project",
+    "sourceCandidate": "qa/ios-layered-backdrop-2026-11-11/project",
     "distribution": "development device",
-    "rollback": "qa/ios-diagnostics-hidden-2026-11-11/delivery.json",
+    "rollback": "qa/ios-remnant-outline-2026-11-11/delivery.json",
     "comparisonOnly": false,
     "mapAuthoringRevision": "campaign-lite-2026-11-07",
     "mapDesignApproved": true,
@@ -26,7 +26,8 @@
     "behaviorRevision": "tiny-remnants-small-outlines-2026-11-11",
     "diagnosticsVisibilityRevision": 1,
     "attackTraceDefault": false,
-    "performanceOverlayDefault": false
+    "performanceOverlayDefault": false,
+    "presentationRevision": "terrain-aware-layered-backdrop-2026-11-11"
   },
   "web": {
     "version": "0.5.41",

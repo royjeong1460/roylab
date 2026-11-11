@@ -36,9 +36,7 @@ func _ready() -> void:
 		images[name] = load("res://assets/salvage/" + name + ".png")
 	_clouds = CloudLayer.new()
 	add_child(_clouds)
-	var cloud_alpha := 0.85 if GameSkin.bright() else 0.72 if restoration_tier()>0 else 0.42
-	# The new sprite layer is above the dust draw; preserve the old effective alpha.
-	_clouds.setup(Vector2(width,height),floor_y,cloud_alpha*(1.0-float(environment_style().dust)))
+	_clouds.setup(Vector2(width,height),floor_y,0.62)
 	queue_redraw()
 
 func cover_view(bounds: Rect2) -> void:
@@ -48,7 +46,7 @@ func cover_view(bounds: Rect2) -> void:
 	floor_y = _map_floor_y - bounds.position.y
 	_tile_depth = height - floor_y
 	size = bounds.size
-	_clouds.position = -bounds.position
+	_clouds.cover_view(Rect2(Vector2.ZERO,bounds.size))
 	queue_redraw()
 
 func sprite(name: String, x: float, base: float, target_width: float, alpha := 1.0, max_height := INF) -> void:
