@@ -1,0 +1,93 @@
+--- a/project/diagnostics/blast_trace.gd
++++ b/project/diagnostics/blast_trace.gd
+@@ -119 +119 @@
+-	return {"schemaVersion": 1, "build": "local-remnants-outline-v1", "units": "logical-cells/pixels",
++	return {"schemaVersion": 1, "build": "local-remnants-outline-size-v2", "units": "logical-cells/pixels",
+--- a/project/presentation/piece_outline.gd
++++ b/project/presentation/piece_outline.gd
+@@ -3,4 +3,6 @@
+-const CACHE_KEY := "local_outline_segments_v1"
+-const OUTER := Color("fae8b3")
+-const INNER := Color("17363c")
+-var _segments := PackedVector2Array()
++const CACHE_KEY := "local_outline_segments_v2"
++const OUTER := [Color("ffe3a1"), Color("fae8b3"), Color("fae8b3")]
++const INNER := [Color("082b32"), Color("10343b"), Color("17363c")]
++const OUTER_WIDTH := [5.6, 4.6, 3.6]
++const INNER_WIDTH := [3.0, 2.4, 1.8]
++var _segments := [PackedVector2Array(), PackedVector2Array(), PackedVector2Array()]
+@@ -8 +10 @@
+-func configure(source: Mesh, rectangles: Array, center: Vector2, pixel_scale: float) -> void:
++func configure(source: Mesh, groups: Array, center: Vector2, pixel_scale: float) -> void:
+@@ -12,11 +14,13 @@
+-		var horizontal := {}
+-		var vertical := {}
+-		for value in rectangles:
+-			var rect: Rect2 = value
+-			var end := rect.end
+-			_edge(horizontal, rect.position.y, rect.position.x, end.x)
+-			_edge(horizontal, end.y, rect.position.x, end.x)
+-			_edge(vertical, rect.position.x, rect.position.y, end.y)
+-			_edge(vertical, end.x, rect.position.y, end.y)
+-		_append_edges(horizontal, false, center, pixel_scale)
+-		_append_edges(vertical, true, center, pixel_scale)
++		for group in groups:
++			var tier := 0 if group.count <= 36 else (1 if group.count <= 144 else 2)
++			var horizontal := {}
++			var vertical := {}
++			for value in group.rectangles:
++				var rect: Rect2 = value
++				var end := rect.end
++				_edge(horizontal, rect.position.y, rect.position.x, end.x)
++				_edge(horizontal, end.y, rect.position.x, end.x)
++				_edge(vertical, rect.position.x, rect.position.y, end.y)
++				_edge(vertical, end.x, rect.position.y, end.y)
++			_append_edges(horizontal, false, center, pixel_scale, tier)
++			_append_edges(vertical, true, center, pixel_scale, tier)
+@@ -33 +37,2 @@
+-func _append_edges(lines: Dictionary, vertical: bool, center: Vector2, pixel_scale: float) -> void:
++func _append_edges(lines: Dictionary, vertical: bool, center: Vector2, pixel_scale: float, tier: int) -> void:
++	var segments: PackedVector2Array = _segments[tier]
+@@ -46,2 +51,2 @@
+-				_segments.append((start - center) * pixel_scale)
+-				_segments.append((end - center) * pixel_scale)
++				segments.append((start - center) * pixel_scale)
++				segments.append((end - center) * pixel_scale)
+@@ -49,0 +55 @@
++	_segments[tier] = segments
+@@ -52,4 +58,4 @@
+-	if _segments.is_empty():
+-		return
+-	draw_multiline(_segments, OUTER, 3.6)
+-	draw_multiline(_segments, INNER, 1.8)
++	for tier in range(_segments.size()):
++		if not _segments[tier].is_empty():
++			draw_multiline(_segments[tier], OUTER[tier], OUTER_WIDTH[tier])
++			draw_multiline(_segments[tier], INNER[tier], INNER_WIDTH[tier])
+--- a/project/project.godot
++++ b/project/project.godot
+@@ -18 +18 @@
+-config/version="0.5.57-local-remnants-v1"
++config/version="0.5.57-local-remnants-v2"
+--- a/project/world.gd
++++ b/project/world.gd
+@@ -83,0 +84 @@
++var _static_outline_groups: Array = []
+@@ -308,0 +310 @@
++	_static_outline_groups.clear()
+@@ -408 +410 @@
+-func pixel_sprite(ids: Array, center: Vector2, pixel_rects: Array, shared_mesh: Mesh = null) -> MeshInstance2D:
++func pixel_sprite(ids: Array, center: Vector2, pixel_rects: Array, shared_mesh: Mesh = null, outline_groups: Array = []) -> MeshInstance2D:
+@@ -418 +420,3 @@
+-		outline.configure(surface.mesh, pixel_rects, center, S)
++		if outline_groups.is_empty():
++			outline_groups = [{"rectangles": pixel_rects, "count": ids.size()}]
++		outline.configure(surface.mesh, outline_groups, center, S)
+@@ -448,0 +453,4 @@
++		# The static mesh batches many separate remnants; size each visual island once.
++		_static_outline_groups = []
++		for group in native_pixels.groups(ids, width, cells.size(), {}):
++			_static_outline_groups.append({"rectangles": rectangles(group), "count": group.size()})
+@@ -489 +497 @@
+-	static_sprite = pixel_sprite([], Vector2.ZERO, _static_surface_rects)
++	static_sprite = pixel_sprite([], Vector2.ZERO, _static_surface_rects, null, _static_outline_groups)

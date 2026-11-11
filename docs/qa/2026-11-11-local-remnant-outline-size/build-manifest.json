@@ -1,0 +1,16 @@
+{
+  "baseline": "local-remnants-outline-size-v2",
+  "files": {
+    "game.js": "f3ec2db2acf90e2413035417a6d2ded643248791c1de7987ff68492a4610de27",
+    "index.html": "ac342284e30d6f4fef28a880bda252ac4b68caf712fa6b1905aee436c824a291",
+    "game.png": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e",
+    "game.side.wasm": "6cf851a8cab85aba0770b76a838cea5e2f63fbe02b1b95963e0d6582d42d17e1",
+    "game.audio.position.worklet.js": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8",
+    "game.audio.worklet.js": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3",
+    "game.wasm": "9c50d494628b80586f585292048331268076b74c403bcb066519f8ce2102cc35",
+    "game.html": "ff4ca4c8262c7cbaf0ce6b005bfd7e90d34766ffed54d86f1ea1af49e8a22b21",
+    "libpp_core.web.template_release.wasm32.wasm": "667d8633d21ce1508878961ba504519990ede02b697874b42251324a7e0df18b",
+    "game.pck": "0421319a5160eaac2bdbb91cb57b7eedcc2b0fc5eb28105e63743bf0b031ebc0"
+  },
+  "gameplayTested": false
+}
