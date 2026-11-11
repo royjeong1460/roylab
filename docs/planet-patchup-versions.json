@@ -35,25 +35,26 @@
     "project": "demos/planet-patchup/godot-free",
     "route": "/planet-patchup/play/",
     "url": "https://roylab.pages.dev/planet-patchup/play/",
-    "manifestStem": "free-0541-de43994c2e71",
+    "manifestStem": "free-0541-86669d993e76",
     "engineStem": "godot-web-ec83eba66e3c",
-    "delivery": "docs/qa/2026-11-11-layered-backdrop/README.md",
+    "delivery": "docs/qa/2026-11-11-boundary-guard-release/README.md",
     "published": true,
     "httpVerified": true,
     "presentationPreviewUrl": "https://roylab.pages.dev/planet-patchup/play/?preview=story",
     "campaignAutoTrigger": false,
     "rollbackRequiresRetainedEconomy": true,
-    "releaseCommit": "c796d0a74000f23686239114e5f6d280411e1a4c",
-    "deploymentId": "c0d6a74c-e195-430c-9e6a-f592278b42a0",
+    "releaseCommit": "49c26866117a2835ffb13ce680cf4ab7e1e3b97c",
+    "deploymentId": "b2da6b6b-0c1b-4cac-af59-2f72f71a740c",
     "behaviorRevision": "tiny-remnants-small-outlines-2026-11-11",
     "status": "published and static HTTP verified",
-    "rollbackManifestStem": "free-0541-1e77c4c0731c",
+    "rollbackManifestStem": "free-0541-de43994c2e71",
     "versionLabelNote": "Web shell remains0.5.41; immutable package and native behavior revision identify the current .56 fixes.",
     "sourceWorktree": "variants/web-blast-cost-release-20261106/demos/planet-patchup/godot-free",
     "diagnosticsVisibilityRevision": 1,
     "attackTraceDefault": false,
     "performanceOverlayDefault": false,
-    "presentationRevision": "terrain-aware-layered-backdrop-2026-11-11"
+    "presentationRevision": "terrain-aware-layered-backdrop-2026-11-11",
+    "boundaryRevision": "whole-fragment-boundary-guard-2026-11-11"
   },
   "previous": {
     "commonVersion": "0.5.40",
@@ -88,5 +89,6 @@
   "mapAuthoringRevision": "campaign-lite-2026-11-07",
   "mapEncoding": "occupied-runs-v1",
   "behaviorRevision": "static-fracture-coordinates-2026-11-08",
-  "coreFixVersion": "0.5.56"
+  "coreFixVersion": "0.5.56",
+  "boundaryRevision": "whole-fragment-boundary-guard-2026-11-11"
 }

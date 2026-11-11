@@ -14,3 +14,7 @@
 - 롤백: native0.5.60(70), `qa/ios-layered-backdrop-2026-11-11/delivery.json`; Web free-0541-de43994c2e71. 이전 source/app/assets/manifest는 보존한다.
 
 [소스범위](source-verification.json), [네이티브패키지](native-package.json), [웹패키지](release-manifest.json), [전달](delivery.json). 개인 프로필 fixture와 원본 기기 로그는 공개 저장소에 올리지 않는다.
+
+## Final delivery
+
+Web `free-0541-86669d993e76` / release `49c26866117a2835ffb13ce680cf4ab7e1e3b97c` / Pages `b2da6b6b-0c1b-4cac-af59-2f72f71a740c` succeeded. All15production HTTP responses plus encoded/decoded hashes match. iPhone0.5.61(71) update-installed sequence4676. User gameplay and original invisible28pixel diagnosis remain pending.
