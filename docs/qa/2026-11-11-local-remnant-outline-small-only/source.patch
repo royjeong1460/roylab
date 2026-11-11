@@ -1,0 +1,30 @@
+--- a/project/diagnostics/blast_trace.gd
++++ b/project/diagnostics/blast_trace.gd
+@@ -119 +119 @@
+-	return {"schemaVersion": 1, "build": "local-remnants-outline-size-v2", "units": "logical-cells/pixels",
++	return {"schemaVersion": 1, "build": "local-remnants-outline-small-v3", "units": "logical-cells/pixels",
+--- a/project/presentation/piece_outline.gd
++++ b/project/presentation/piece_outline.gd
+@@ -3,6 +3,6 @@
+-const CACHE_KEY := "local_outline_segments_v2"
+-const OUTER := [Color("ffe3a1"), Color("fae8b3"), Color("fae8b3")]
+-const INNER := [Color("082b32"), Color("10343b"), Color("17363c")]
+-const OUTER_WIDTH := [5.6, 4.6, 3.6]
+-const INNER_WIDTH := [3.0, 2.4, 1.8]
+-var _segments := [PackedVector2Array(), PackedVector2Array(), PackedVector2Array()]
++const CACHE_KEY := "local_outline_segments_v3"
++const OUTER := [Color("ffe3a1"), Color("fae8b3")]
++const INNER := [Color("082b32"), Color("10343b")]
++const OUTER_WIDTH := [5.6, 4.6]
++const INNER_WIDTH := [3.0, 2.4]
++var _segments := [PackedVector2Array(), PackedVector2Array()]
+@@ -15 +15,3 @@
+-			var tier := 0 if group.count <= 36 else (1 if group.count <= 144 else 2)
++			if group.count > 144:
++				continue
++			var tier := 0 if group.count <= 36 else 1
+--- a/project/project.godot
++++ b/project/project.godot
+@@ -18 +18 @@
+-config/version="0.5.57-local-remnants-v2"
++config/version="0.5.57-local-remnants-v3"

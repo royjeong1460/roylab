@@ -1,0 +1,22 @@
+{
+  "sourceChanged": [
+    "diagnostics/blast_trace.gd",
+    "presentation/piece_outline.gd",
+    "project.godot"
+  ],
+  "unchangedInputs": 1375,
+  "largeAbovePixels": 144,
+  "largeOutline": false,
+  "mediumPixels": [
+    37,
+    144
+  ],
+  "smallMaxPixels": 36,
+  "physicsSkillsRewardsMapsCleanupUnchanged": true,
+  "releasePointerUnchanged": true,
+  "origin": "http://127.0.0.1:8805",
+  "namespace": "PlanetPatchupLocalBlastLab20261108",
+  "runtimeExecuted": false,
+  "publicWebUpdated": false,
+  "iphoneUpdated": false
+}
