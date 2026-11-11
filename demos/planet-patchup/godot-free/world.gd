@@ -9,6 +9,7 @@ var native_effects = ClassDB.instantiate("PPEffectKernel")
 
 const GameSkin = preload("res://app/skin.gd")
 const PixelSurface = preload("res://presentation/pixel_surface.gd")
+const PieceOutline = preload("res://presentation/piece_outline.gd")
 
 const FractureGraph = preload("res://fracture_graph.gd")
 const FractureConnectivity = preload("res://fracture_connectivity.gd")
@@ -80,6 +81,7 @@ var _static_geometry_valid := false
 var _static_geometry_ids: Array = []
 var _static_geometry_rects: Array = []
 var _static_geometry_shapes: Array = []
+var _static_outline_groups: Array = []
 var width := 115
 var height := 157
 var floor_y := 145
@@ -305,6 +307,7 @@ func reset() -> void:
 	_blast_depth = 0
 	_static_surface_rects.clear()
 	_static_geometry_valid = false
+	_static_outline_groups.clear()
 	_static_dirty = true
 	_raster_valid = false
 	_raster_bodies.clear()
@@ -404,7 +407,7 @@ func _prepare_pixel_atlas() -> void:
 		image.set_pixel(int(id)%width,floori(float(id)/width),pixel_color(id))
 	_pixel_atlas = ImageTexture.create_from_image(image)
 
-func pixel_sprite(ids: Array, center: Vector2, pixel_rects: Array, shared_mesh: Mesh = null) -> MeshInstance2D:
+func pixel_sprite(ids: Array, center: Vector2, pixel_rects: Array, shared_mesh: Mesh = null, outline_groups: Array = []) -> MeshInstance2D:
 	var surface := PixelSurface.new()
 	if shared_mesh != null:
 		surface.texture = _pixel_atlas
@@ -412,6 +415,12 @@ func pixel_sprite(ids: Array, center: Vector2, pixel_rects: Array, shared_mesh: 
 		surface.mesh = shared_mesh
 	else:
 		surface.configure(_pixel_atlas,pixel_rects,center,S)
+	if surface.mesh != null:
+		var outline := PieceOutline.new()
+		if outline_groups.is_empty():
+			outline_groups = [{"rectangles": pixel_rects, "count": ids.size()}]
+		outline.configure(surface.mesh, outline_groups, center, S)
+		surface.add_child(outline)
 	return surface
 
 func _add_collider(body: StaticBody2D, rect: Rect2, shared_shape: RectangleShape2D = null) -> void:
@@ -441,6 +450,10 @@ func sync_static_unprofiled() -> void:
 	if not same_geometry:
 		_static_geometry_ids = ids.duplicate()
 		_static_geometry_rects = rectangles(ids)
+		# The static mesh batches many separate remnants; size each visual island once.
+		_static_outline_groups = []
+		for group in native_pixels.groups(ids, width, cells.size(), {}):
+			_static_outline_groups.append({"rectangles": rectangles(group), "count": group.size()})
 		_static_geometry_shapes = []
 		for rect in _static_geometry_rects:
 			var shape := RectangleShape2D.new()
@@ -481,7 +494,7 @@ func _static_has_contacts() -> bool:
 func _flush_static_surface() -> void:
 	if _static_surface_rects.is_empty():
 		return
-	static_sprite = pixel_sprite([], Vector2.ZERO, _static_surface_rects)
+	static_sprite = pixel_sprite([], Vector2.ZERO, _static_surface_rects, null, _static_outline_groups)
 	add_child(static_sprite)
 	_static_surface_rects = []
 

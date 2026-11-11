@@ -1,0 +1,10 @@
+{
+  "stem": "free-0541-1e77c4c0731c",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "transportAndDecodedHashesMatch": true,
+  "entryPagesMatch": true,
+  "allowedMaps": 43,
+  "allowedSkills": 10,
+  "untrackedHistoricalPayloadsExcludedFromHeaderGeneration": true,
+  "runtimeExecuted": false
+}

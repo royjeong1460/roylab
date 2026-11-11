@@ -1,0 +1,30 @@
+{
+  "version": "0.5.58",
+  "nativeBuild": 68,
+  "nativeApp": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-remnant-outline-2026-11-11-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "package": {
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "version": "0.5.58",
+    "build": "68",
+    "pckSha256": "5e8e266ef22072b6f3259f35f994b21b9f0b36b15c12fee2f3314615bbac5d56",
+    "executableSha256": "72a9a990edfb90e1a18799981568f22e0eb538e644a64f77ea1f1c40b528b65f",
+    "signatureVerified": true,
+    "oldAppRetainedUnchanged": true,
+    "runtimeExecuted": false
+  },
+  "nativeInstalled": false,
+  "installOutcome": "waiting for device connection",
+  "rollbackDelivery": "qa/ios-diagnostics-hidden-2026-11-11/delivery.json",
+  "nativeSourceUnchanged": "qa/ios-static-fracture-2026-11-08/extension/src",
+  "webStem": "free-0541-1e77c4c0731c",
+  "webPublished": false,
+  "httpVerified": false,
+  "publicUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "rollbackWebStem": "free-0541-cfbbdac90df2",
+  "runtimeExecutedByAgent": false,
+  "deviceAppLaunchedByAssistant": false,
+  "scope": "approved local v3 tiny-remnant cleanup and size-only structure outlines; no ground-contact gate",
+  "diagnosticsDefaultsUnchanged": true,
+  "mapsEconomyProgressionNativeLibrariesUnchanged": true
+}

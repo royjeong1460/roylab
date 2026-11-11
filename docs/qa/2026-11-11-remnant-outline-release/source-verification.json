@@ -1,0 +1,30 @@
+{
+  "native": {
+    "changed": [
+      "export_presets.cfg",
+      "project.godot",
+      "structure_physics.gd",
+      "world.gd"
+    ],
+    "added": [
+      "presentation/piece_outline.gd",
+      "presentation/piece_outline.gd.uid"
+    ],
+    "unchangedInputs": 1372,
+    "dataMapsEconomySkillsNativeLibrariesUnchanged": true,
+    "matchesApprovedLocalFiles": true
+  },
+  "web": {
+    "changed": [
+      "structure_physics.gd",
+      "world.gd"
+    ],
+    "added": [
+      "presentation/piece_outline.gd",
+      "presentation/piece_outline.gd.uid"
+    ],
+    "unchangedInputs": 832,
+    "dataMapsEconomySkillsNativeLibrariesUnchanged": true,
+    "matchesApprovedLocalFiles": true
+  }
+}

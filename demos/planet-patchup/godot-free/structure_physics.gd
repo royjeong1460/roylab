@@ -3,6 +3,7 @@ extends RefCounted
 const SectionGraph = preload("res://section_graph.gd")
 const YieldJoint = preload("res://yield_joint.gd")
 const S := 4.0
+const TINY_REMNANT_MAX := 4
 var _native = ClassDB.instantiate("PPStructureKernel")
 var _section_cache := {}
 var _section_bonds := {}
@@ -197,9 +198,19 @@ func support_cut_limit(piece, supported: Dictionary) -> float:
 
 func release_unsupported() -> Array:
 	var groups: Array = world.groups(world.static_ids())
+	var live_supports := {}
+	for piece in world.pieces:
+		if is_instance_valid(piece.hinge):
+			live_supports[piece.support_id] = true
 	var changed := false
 	for group in groups:
-		if not group.any(func(id): return world.grounded_id(id)):
+		var tiny: bool = group.size() <= TINY_REMNANT_MAX and not group.any(func(id): return live_supports.has(id))
+		if tiny:
+			world.blast_trace.push("tiny-ground-remnant")
+			world.release(group)
+			world.blast_trace.pop()
+			changed = true
+		elif not group.any(func(id): return world.grounded_id(id)):
 			world.release(group)
 			changed = true
 	return [] if changed else groups

@@ -1,0 +1,10 @@
+{
+  "bundle": "com.roy.planetpatchup.godotcompare",
+  "version": "0.5.58",
+  "build": "68",
+  "pckSha256": "5e8e266ef22072b6f3259f35f994b21b9f0b36b15c12fee2f3314615bbac5d56",
+  "executableSha256": "72a9a990edfb90e1a18799981568f22e0eb538e644a64f77ea1f1c40b528b65f",
+  "signatureVerified": true,
+  "oldAppRetainedUnchanged": true,
+  "runtimeExecuted": false
+}
