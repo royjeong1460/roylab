@@ -14,17 +14,20 @@
     "runtimeExecuted": false
   },
   "nativeInstalled": false,
-  "installOutcome": "waiting for device connection",
+  "installOutcome": "waiting for device connection; all paired iPhones reported disconnected",
   "rollbackDelivery": "qa/ios-diagnostics-hidden-2026-11-11/delivery.json",
   "nativeSourceUnchanged": "qa/ios-static-fracture-2026-11-08/extension/src",
   "webStem": "free-0541-1e77c4c0731c",
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "publicUrl": "https://roylab.pages.dev/planet-patchup/play/",
   "rollbackWebStem": "free-0541-cfbbdac90df2",
   "runtimeExecutedByAgent": false,
   "deviceAppLaunchedByAssistant": false,
   "scope": "approved local v3 tiny-remnant cleanup and size-only structure outlines; no ground-contact gate",
   "diagnosticsDefaultsUnchanged": true,
-  "mapsEconomyProgressionNativeLibrariesUnchanged": true
+  "mapsEconomyProgressionNativeLibrariesUnchanged": true,
+  "releaseCommit": "bda3c9a699b554629043b7d562047eec728b6aa2",
+  "deploymentId": "27263c65-dfe9-4c6d-a8c5-398eec5d945c",
+  "httpResponses": 15
 }

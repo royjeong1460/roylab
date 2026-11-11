@@ -9,3 +9,11 @@ Plan: ../../superpowers/plans/2026-11-11-remnant-outline-release.md in repositor
 ## Build preparation
 
 Godot native import/compile/pack and Web import/compile/export passed. Xcode Release0.5.58(68) and strict deep signature verification passed; old app package retained. Static source inventories match the approved local4files and preserve all other map/skill/economy/native inputs. Web static site build passed and transport/decoded hashes match. The engine cache stem remains godot-web-ec83eba66e3c. iPhone connection was reported disconnected; user was asked to reconnect/unlock. No successful install or public publication claimed yet.
+
+## Public Web delivery
+
+Webfree-0541-1e77c4c0731c published by releasebda3c9a699b554629043b7d562047eec728b6aa2; Cloudflare Pages27263c65-dfe9-4c6d-a8c5-398eec5d945c succeeded. All15static HTTP responses match, including transport and decoded WASM/PCK hashes. No browser/gameplay verification. Old public payload retained for rollback.
+
+## Native installation boundary
+
+Native0.5.58(68) Release/signature/package checks passed. Device lists initially and on recheck reported all paired iPhones disconnected. User reconnect/unlock request remains pending; no install success is claimed. CURRENT retains installed0.5.57(67) and records this candidate under pendingNativeUpdate. Existing app/data were not removed or reset.

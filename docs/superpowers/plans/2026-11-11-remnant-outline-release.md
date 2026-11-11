@@ -17,6 +17,7 @@ No tests/scenes/simulation/browser/device app launches. Import/compile/export/st
 - [x] Read CURRENT/delivery/AGENTS; compare local pre-change base with Web/native; preserve source hash inventories and rollback entry files.
 - [x] Apply exact approved4files to Web and a new native candidate; preserve production profile/diagnostics config. Increment native version/build.
 - [x] Import/compile-only/export Web and pack native; verify only intended sources changed, all maps/skills/economy/native modules and IDs unchanged.
-- [ ] Build/sign native app from cloned current Xcode project; preserve old app and identity. Update-install without uninstall/reset/launch.
-- [ ] Build static site, verify package/entry hashes and commit only intended release inputs/outputs; push approved update to main. Confirm Pages result and public transport/decoded hashes.
-- [ ] Update delivery/version/CURRENT and BUG-017 records with actual build/install/publication evidence; retain rollback. Report user-only runtime boundary.
+- [x] Build/sign native app from cloned current Xcode project; preserve old app and identity.
+- [ ] Update-install without uninstall/reset/launch: waiting for user device connection.
+- [x] Build static site, verify package/entry hashes and commit only intended release inputs/outputs; push approved update to main. Confirm Pages result and public transport/decoded hashes.
+- [x] Update delivery/version/CURRENT and BUG-017 records with actual build/publication evidence and pending install; retain rollback. User-only runtime boundary retained.
