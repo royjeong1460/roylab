@@ -13,9 +13,8 @@
     "oldAppRetainedUnchanged": true,
     "runtimeExecuted": false
   },
-  "nativeInstalled": false,
-  "installOutcome": "blocked",
-  "installBlocker": "CoreDevice4000 / developer connection reset by peer; USB/unlocked device requested.",
+  "nativeInstalled": true,
+  "installOutcome": "success",
   "rollbackDelivery": "qa/ios-static-fracture-2026-11-08/delivery.json",
   "nativeSourceUnchanged": "qa/ios-static-fracture-2026-11-08/extension/src",
   "visibilityRevision": 1,
@@ -25,8 +24,20 @@
   "fiveTapToggleRetained": true,
   "gameplayAndProgressSourceUnchanged": true,
   "webStem": "free-0541-cfbbdac90df2",
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "runtimeExecutedByAgent": false,
-  "deviceAppLaunchedByAssistant": false
+  "deviceAppLaunchedByAssistant": false,
+  "installedSequence": 4512,
+  "installReceipt": "device-install-retry2.json",
+  "initialInstallBlockerResolved": true,
+  "previousBlockers": [
+    "CoreDevice4000 connection reset before user reconnect",
+    "CoreDevice3002/IXRemote6 installation connection interruption; next retry succeeded"
+  ],
+  "releaseCommit": "4706b9921042b556ab39c3263c42d8e200fa7fec",
+  "deploymentId": "284aa495-0ee7-44ab-8301-1e383f38d60c",
+  "httpResponses": 15,
+  "publicUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "rollbackWebStem": "free-0541-6ee74427fb5e"
 }

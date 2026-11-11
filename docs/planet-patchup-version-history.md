@@ -57,3 +57,5 @@ Web `free-0541-ae30a3e88329` published;13 static HTTP responses plus transport/d
 ## 2026-11-11 · 상단 진단 정보 기본 숨김
 
 무료 웹과 iPhone의 진단 UI를 기본 숨김으로 요청받았다. 강제 attack_trace를 끄고 성능 표시 기본false를 유지하며, 기존 diagnostics.cfg의 visible=true는 새 visibility_revision1이 없으면 읽지 않는다. 배터리5회 터치의 이후 선택은 revision1과 함께 저장된다. 진행·강화·물리·스킬·수집 코드는 유지하며 숨김 설정만 바꾼다. iPhone0.5.57(67) 빌드/서명 준비와 실제 설치 상태는 [전달 기록](qa/2026-11-11-diagnostics-hidden/README.md)에 구분한다.
+
+전달 완료: web free-0541-cfbbdac90df2 / release4706b99 / Pages284aa495-0ee7-44ab-8301-1e383f38d60c,15개 정적 HTTP/decoded hash 확인. iPhone0.5.57(67) sequence4512 설치. 앱/브라우저 시각·플레이 확인은 사용자 범위.
