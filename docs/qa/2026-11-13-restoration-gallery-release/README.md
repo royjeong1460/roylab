@@ -20,3 +20,7 @@
 - 그림 해금 기록을 유지하려면 롤백 시 프로필을 초기화하지 않는다. 이전 v4 스키마는 추가 필드를 보존한다.
 
 [source checks](source-verification.json), [native package](native-package.json), [web package](release-manifest.json), [delivery](delivery.json).
+
+## Final delivery
+
+Web free-0541-b59b561881d2 / commit 1eb848471e42ea3823a90479a770dfdc7602f5ad / Pages 202a02db-5967-4b94-b6b0-55767f1314c3 succeeded.15production HTTP responses and encoded/decoded hashes match. iPhone0.5.62(72) update-installed sequence4948 without launch. Runtime/save/UI/feel verification remains user-owned.

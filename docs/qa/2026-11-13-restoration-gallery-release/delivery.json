@@ -8,11 +8,17 @@
   "nativeAppLaunched": false,
   "webStem": "free-0541-b59b561881d2",
   "engineStem": "godot-web-ec83eba66e3c",
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "rollbackWebStem": "free-0541-86669d993e76",
   "rollbackNativeDelivery": "qa/ios-boundary-guard-2026-11-11/delivery.json",
   "gameRuntimeExecuted": false,
   "userValidation": "pending: actual UI, progress saves, reward timing and device/browser interaction",
-  "scope": "six restoration pictures: all six normal sites and regional boss at exact100%, 70% fragment preview, gallery and one-time settlement reward"
+  "scope": "six restoration pictures: all six normal sites and regional boss at exact100%, 70% fragment preview, gallery and one-time settlement reward",
+  "releaseCommit": "1eb848471e42ea3823a90479a770dfdc7602f5ad",
+  "deploymentId": "202a02db-5967-4b94-b6b0-55767f1314c3",
+  "httpResponses": 15,
+  "publicUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "nativePackage": "native-package.json",
+  "sourceVerification": "source-verification.json"
 }
