@@ -28,7 +28,7 @@ Web의 저장 이전·오류 안내·피드백·텔레메트리와 native의 광
 
 ## 확인 범위
 
-Godot import·compile-only·export, Web 압축 전후 해시와 PCK 메뉴 모듈, Next 정적 사이트 webpack 빌드, Xcode Release와 deep/strict 서명을 확인했다. iOS **0.5.64(74)**는 기존 앱 ID와 저장을 유지하며 삭제·초기화·실행 없이 업데이트 설치했다(설치 순번 4964). Web 공개 전달 상태는 [delivery.json](delivery.json)에 별도로 기록한다.
+Godot import·compile-only·export, Web 압축 전후 해시와 PCK 메뉴 모듈, Next 정적 사이트 webpack 빌드, Xcode Release와 deep/strict 서명을 확인했다. iOS **0.5.64(74)**는 기존 앱 ID와 저장을 유지하며 삭제·초기화·실행 없이 업데이트 설치했다(설치 순번 4964). Web `free-0541-468c4227e5a1`의 공개 진입점과 15개 정적 응답·압축 전후 해시가 일치한다. [배포 기록](delivery.json)과 [HTTP 검증](http-verification.json)을 함께 보관한다.
 
 게임·씬·시뮬레이션·자동 리플레이·브라우저 게임·기기 앱은 실행하지 않았다. 실제 가독성·터치·결과·재시작·상점·저장·광고·음악·발열은 사용자 확인 대기다.
 

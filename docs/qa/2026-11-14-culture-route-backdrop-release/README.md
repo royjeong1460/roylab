@@ -18,3 +18,7 @@
 독립 정적 코드 검토에서 좌표·레이어·지형 가림·fallback·42개맵 연결·원본 해시를 확인했다. 원본 데이터로1-1의0/70/100% 정적 합성 이미지를 만들었으며 실제 게임 캡처는 아니다. 게임·씬·시뮬레이션·브라우저 조작·기기 앱 실행은 하지 않았다. 실제 화면과 상호작용은 사용자 확인 대기다.
 
 [source checks](source-verification.json), [native package](native-package.json), [web package](release-manifest.json), [delivery](delivery.json), [bug report](../../bugs/BUG-022-adopted-route-backdrop-missing.md).
+
+## 2026-11-14 후속 공개 반영
+
+앞선 배포 시도 기록은 보존한다. 배경 수정은 전체 메뉴 업데이트 `free-0541-468c4227e5a1`에 함께 포함되어 공개됐다. 새 진입점과 모든 패키지의 압축 전후 HTTP 해시를 확인했다. [후속 배포 기록](../2026-11-14-menu-ux-release/delivery.json)을 기준으로 확인한다. 실제 1-1 배경 표시는 사용자 확인 대기다.

@@ -26,5 +26,10 @@
   "cloudflareLoginConfirmed": true,
   "cloudflareManagementHttpStatus": 503,
   "webObservedStem": "free-0541-b59b561881d2",
-  "webNewManifestHttpStatus": 404
+  "webNewManifestHttpStatus": 404,
+  "webResolution": "Approved backdrop correction included in the whole-menu release; earlier package remains historical, not separately published.",
+  "webResolvedByCommit": "53d6166cf3354a2aee4484132fc152814c800ece",
+  "webResolvedByStem": "free-0541-468c4227e5a1",
+  "webResolutionHttpVerified": true,
+  "webResolutionDelivery": "../2026-11-14-menu-ux-release/delivery.json"
 }

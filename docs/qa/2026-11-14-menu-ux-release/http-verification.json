@@ -1,0 +1,146 @@
+{
+  "version": "0.5.41",
+  "stem": "free-0541-468c4227e5a1",
+  "base": "https://roylab.pages.dev",
+  "records": [
+    {
+      "path": "/planet-patchup/play/",
+      "status": 200,
+      "sha256": "629e01429742c1368fb885918c6c6b5557d5ee8e8e19630f883dfea082c14308",
+      "bytes": 7905,
+      "contentType": "text/html; charset=utf-8",
+      "contentEncoding": null
+    },
+    {
+      "path": "/games/planet-patchup-free/",
+      "status": 200,
+      "sha256": "4b5779f54b9c763bdcc6f30baf4e0eee6058f7259a30c64d554d1c282863bb9f",
+      "bytes": 7864,
+      "contentType": "text/html; charset=utf-8",
+      "contentEncoding": null
+    },
+    {
+      "path": "/games/planet-patchup-free/godot-web-ec83eba66e3c.audio.position.worklet.js",
+      "status": 200,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8",
+      "bytes": 2973,
+      "contentType": "application/javascript",
+      "contentEncoding": null,
+      "decodedBytes": 2973,
+      "decodedSha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "path": "/games/planet-patchup-free/godot-web-ec83eba66e3c.audio.worklet.js",
+      "status": 200,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3",
+      "bytes": 7298,
+      "contentType": "application/javascript",
+      "contentEncoding": null,
+      "decodedBytes": 7298,
+      "decodedSha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "path": "/games/planet-patchup-free/godot-web-ec83eba66e3c.js",
+      "status": 200,
+      "sha256": "f3ec2db2acf90e2413035417a6d2ded643248791c1de7987ff68492a4610de27",
+      "bytes": 5552570,
+      "contentType": "application/javascript",
+      "contentEncoding": null,
+      "decodedBytes": 5552570,
+      "decodedSha256": "f3ec2db2acf90e2413035417a6d2ded643248791c1de7987ff68492a4610de27"
+    },
+    {
+      "path": "/games/planet-patchup-free/free-0541-468c4227e5a1.pck",
+      "status": 200,
+      "sha256": "ef9198834d8fd4ddb09d4f55dfd84a545b459a0d744649fe4b46280583536dd0",
+      "bytes": 16510341,
+      "contentType": "application/gzip",
+      "contentEncoding": null,
+      "decodedBytes": 20957956,
+      "decodedSha256": "b832984dc8b3c00f2ee79e27d6e24c1c56572daf7a83cfea02da28404ab8824d"
+    },
+    {
+      "path": "/games/planet-patchup-free/free-0541-468c4227e5a1.png",
+      "status": 200,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e",
+      "bytes": 21443,
+      "contentType": "image/png",
+      "contentEncoding": null,
+      "decodedBytes": 21443,
+      "decodedSha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "path": "/games/planet-patchup-free/godot-web-ec83eba66e3c.side.wasm",
+      "status": 200,
+      "sha256": "1bd41b05eddbd1f86f95b703d8f5d99159d02a95a63321e0c0165900431bbc8d",
+      "bytes": 10041388,
+      "contentType": "application/gzip",
+      "contentEncoding": null,
+      "decodedBytes": 41124149,
+      "decodedSha256": "6cf851a8cab85aba0770b76a838cea5e2f63fbe02b1b95963e0d6582d42d17e1"
+    },
+    {
+      "path": "/games/planet-patchup-free/godot-web-ec83eba66e3c.wasm",
+      "status": 200,
+      "sha256": "183fabbbe7ff9f5dc237d3273b6c198daca484bde8b9e5e081a0ba6d2113058b",
+      "bytes": 584666,
+      "contentType": "application/gzip",
+      "contentEncoding": null,
+      "decodedBytes": 1509558,
+      "decodedSha256": "9c50d494628b80586f585292048331268076b74c403bcb066519f8ce2102cc35"
+    },
+    {
+      "path": "/games/planet-patchup-free/libpp_core-g40-667d8633d21ce150.wasm",
+      "status": 200,
+      "sha256": "8830b20870627c44ec54674c2dc6274372ada3854832abe04ec424ddeb0048cb",
+      "bytes": 318871,
+      "contentType": "application/gzip",
+      "contentEncoding": null,
+      "decodedBytes": 1687548,
+      "decodedSha256": "667d8633d21ce1508878961ba504519990ede02b697874b42251324a7e0df18b"
+    },
+    {
+      "path": "/games/planet-patchup-free/godot-shell-assets/shell-BnxlxNYt.js",
+      "status": 200,
+      "sha256": "42622669e142835392281ffca27fbe031c05b809baadbe5c05efbabb46b1035c",
+      "bytes": 13728,
+      "contentType": "application/javascript",
+      "contentEncoding": null
+    },
+    {
+      "path": "/games/planet-patchup-free/godot-shell-assets/shell-CehdKP2w.css",
+      "status": 200,
+      "sha256": "c7934456a4bafd98c1c5db2c19c3f447b386aa946224ab93ce73adfb5925907c",
+      "bytes": 2037,
+      "contentType": "text/css; charset=utf-8",
+      "contentEncoding": null
+    },
+    {
+      "path": "/games/planet-patchup-free/free-0541-468c4227e5a1-manifest.json",
+      "status": 200,
+      "sha256": "de7ce84daa0463876dc5c2d3f13870cc9cbb159364dc7a588b5006c2bc2f0edb",
+      "bytes": 6592,
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "path": "/planet-patchup/archive/free-phaser/",
+      "status": 200,
+      "sha256": "916bbe4e88d75a3c3abfeb45f5f46cc4821375fa224cc82f0d7abbca97e007c2",
+      "bytes": 13100,
+      "contentType": "text/html; charset=utf-8",
+      "contentEncoding": null
+    },
+    {
+      "path": "/planet-patchup/tools/map-editor/",
+      "status": 200,
+      "sha256": "72bac501ff0a0bcd42cb90849d76b64bec21671d5ba624e05a7e12c441fa1ddc",
+      "bytes": 6232,
+      "contentType": "text/html; charset=utf-8",
+      "contentEncoding": null
+    }
+  ],
+  "canonicalAndAllPublishedPayloadHashesMatch": true,
+  "decodedHashesMatch": true,
+  "gameOrBrowserStarted": false
+}
