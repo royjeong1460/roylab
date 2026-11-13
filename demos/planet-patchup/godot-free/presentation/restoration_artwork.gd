@@ -17,10 +17,10 @@ func _ready() -> void:
 	resized.connect(queue_redraw)
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO,size),Color("c6c7aa") if state == "preview" else Color("d4cbb1"))
+	draw_rect(Rect2(Vector2.ZERO,size),Color("21343b") if state == "preview" else Color("192b32"))
 	if texture == null or state == "locked":
 		var font := get_theme_default_font()
-		draw_string(font,Vector2(0,size.y/2.0+9),"?",HORIZONTAL_ALIGNMENT_CENTER,size.x,24,Color("979e7c"))
+		draw_string(font,Vector2(0,size.y/2.0+9),"?",HORIZONTAL_ALIGNMENT_CENTER,size.x,24,Color("8b9c9e"))
 		return
 	var dimensions := Vector2(texture.get_size())
 	var factor := maxf(size.x/dimensions.x,size.y/dimensions.y) if cover else minf(size.x/dimensions.x,size.y/dimensions.y)

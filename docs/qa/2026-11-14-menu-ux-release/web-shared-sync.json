@@ -1,0 +1,24 @@
+{
+  "web": "variants/web-blast-cost-release-20261106/demos/planet-patchup/godot-free",
+  "sharedIdentical": {
+    "app/screens.gd": true,
+    "app/workshop_menu.gd": true,
+    "app/menu_pages.gd": true,
+    "app/ui_theme.gd": true,
+    "app/restoration_gallery.gd": true,
+    "app/offer_popup.gd": true,
+    "presentation/restoration_artwork.gd": true
+  },
+  "webPlatformAdaptersKept": [
+    "FreeWebBridge",
+    "bootstrap",
+    "legacy settings",
+    "storage warnings",
+    "feedback",
+    "run_frame",
+    "screen event"
+  ],
+  "nativeInterstitialNotEnabledOnWeb": true,
+  "shellVersionKept": true,
+  "saveDirectoryKept": true
+}

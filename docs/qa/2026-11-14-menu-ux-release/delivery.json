@@ -1,0 +1,21 @@
+{
+  "version": "0.5.64",
+  "nativeBuild": 74,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": true,
+  "nativeInstalledSequence": 4964,
+  "nativeAppLaunched": false,
+  "nativeInstallReceiptSha256": "a59ad5ad70f135d79b400d22127586e696580fd4c1350e2fef3bbc5640271970",
+  "webStem": "free-0541-468c4227e5a1",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "webBuilt": true,
+  "webPublished": false,
+  "httpVerified": false,
+  "scope": "All adopted menus, compact receipt+workshop and phase-aware pause/restart/departure flow; previous culture backdrop retained",
+  "runtimeExecutedByAssistant": false,
+  "userValidation": "pending: all menu rendering/touch, run/collection/result, purchase/equip, restart/cancel, saved progress and device/browser performance",
+  "rollbackNativeDelivery": "qa/ios-culture-route-backdrop-2026-11-14/delivery.json",
+  "rollbackWebStem": "free-0541-b59b561881d2"
+}

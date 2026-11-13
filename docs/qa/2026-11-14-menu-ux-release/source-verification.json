@@ -1,0 +1,30 @@
+{
+  "source": "CURRENT0.5.63(73)",
+  "candidate": "0.5.64(74)",
+  "changedFiles": [
+    "project.godot",
+    "export_presets.cfg",
+    "app/restoration_gallery.gd",
+    "app/app.gd",
+    "app/ui_theme.gd",
+    "app/screens.gd",
+    "app/offer_popup.gd",
+    "data/locale-ko.json",
+    "presentation/restoration_artwork.gd"
+  ],
+  "originalAssetsUnchanged": 681,
+  "mapsUnchanged": 43,
+  "protectedGameLogic": [
+    "campaign/journey.gd",
+    "campaign/economy.gd",
+    "campaign/money.gd",
+    "campaign/progression.gd",
+    "campaign/profile_schema.gd",
+    "campaign/profile_store.gd",
+    "campaign/run_session.gd",
+    "app/play_view.gd",
+    "world.gd"
+  ],
+  "originalCandidateUnchanged": true,
+  "runtimeExecuted": false
+}

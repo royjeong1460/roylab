@@ -1,6 +1,7 @@
 extends Node
 
 const FreeWebBridge = preload("res://platform/free_web_bridge.gd")
+
 const Catalog = preload("res://campaign/catalog.gd")
 const Journey = preload("res://campaign/journey.gd")
 const Screens = preload("res://app/screens.gd")
@@ -43,7 +44,6 @@ var _pending_import := ""
 var _hud_clock := 0.0
 var _finishing := false
 var _reset_revision := -1
-var _settings_from := "home"
 var presentation_preview_enabled := false
 
 func _ready() -> void:
@@ -147,16 +147,26 @@ func _update_edge_colors() -> void:
 		unsafe_masks[index].color = color
 
 func navigate(screen: String, data: Dictionary = {}) -> void:
-	if is_instance_valid(play_view) and journey.current_run != null and screen not in ["play", "pause", "settings", "build_info"]:
-		# Leaving a run is always a committed settlement through finish_run().
+	if journey.current_run != null and screen not in ["play", "pause", "settings", "build_info", "tutorial_intro"]:
 		pause_run()
 		return
+	var next_payload := data.duplicate(true)
+	if screen == "workshop" and current_screen == "workshop":
+		next_payload = payload.duplicate(true)
+		next_payload.merge(data, true)
+	elif screen in ["build_info", "reset", "reset_confirm", "import_confirm"] and current_screen in ["settings", "build_info", "reset", "reset_confirm", "import_confirm"]:
+		next_payload = payload.duplicate(true)
+		next_payload.merge(data, true)
+	elif screen == "settings" and current_screen in ["build_info", "reset", "reset_confirm", "import_confirm"] and data.is_empty():
+		next_payload = payload.duplicate(true)
+	elif current_screen == "settings" and screen == str(payload.get("return_screen", "home")) and data.is_empty():
+		next_payload = payload.get("return_payload", {}).duplicate(true)
 	if screen != current_screen:
 		web_bridge.emit_event("screen", {"screen": "expedition" if screen == "play" else screen})
 	current_screen = screen
 	while screens.close_popup():
 		pass
-	payload = data.duplicate()
+	payload = next_payload
 	if is_instance_valid(view):
 		# A pressed button can still be part of the current input dispatch.
 		view.hide()
@@ -181,6 +191,116 @@ func select_region(index: int) -> void:
 			show_notice(_failure_text(selected))
 	feedback.play_effect("ui-tap")
 	navigate("home")
+
+func advance_after_result(action: Callable) -> void:
+	action.call()
+
+func result_destination(receipt: Dictionary) -> Dictionary:
+	var destination := {"label": L10n.text("Choose a site"), "mode": "", "siteId": "", "region": selected_region, "screen": "maps"}
+	var site_id := str(receipt.get("siteId", ""))
+	var region: int = journey.progression.site_region(site_id)
+	if site_id == catalog.tutorial_id:
+		region = 0
+		if str(journey.profile.tutorial) == "upgrade":
+			destination.merge({"label": L10n.text("Complete your first upgrade"), "region": 0, "screen": "workshop"}, true)
+			return destination
+		if str(journey.profile.tutorial) == "intro":
+			return _result_retry_destination(receipt)
+	elif region < 0 or not bool(receipt.get("qualified", false)):
+		return _result_retry_destination(receipt)
+	if not journey.region_open(region):
+		return destination
+	var normal_sites: Array = []
+	var boss_id := ""
+	for id in catalog.region(region).get("sites", []):
+		if catalog.metadata(str(id)).get("boss", false):
+			boss_id = str(id)
+		else:
+			normal_sites.append(str(id))
+	var next_id := ""
+	var label_key := "Next site: %s"
+	if site_id == catalog.tutorial_id:
+		next_id = str(normal_sites[0]) if not normal_sites.is_empty() else ""
+		label_key = "Start first site: %s"
+	elif site_id == boss_id:
+		if region == catalog.regions.size() - 1:
+			destination.merge({"label": L10n.text("Back to planet"), "region": region, "screen": "home"}, true)
+			return destination
+		var next_region = receipt.get("nextRegion")
+		if next_region == null or int(next_region) != region + 1 or not journey.region_open(int(next_region)):
+			return destination
+		region = int(next_region)
+		for id in catalog.region(region).get("sites", []):
+			if not catalog.metadata(str(id)).get("boss", false):
+				next_id = str(id)
+				break
+		label_key = "Next region: %s"
+	else:
+		var index := normal_sites.find(site_id)
+		if index < 0:
+			return destination
+		if index + 1 < normal_sites.size():
+			next_id = str(normal_sites[index + 1])
+		else:
+			next_id = boss_id
+			label_key = "Challenge boss: %s"
+	if next_id.is_empty() or not journey.stage_open(next_id):
+		return destination
+	destination.merge({"label": L10n.format(label_key, [L10n.text(str(catalog.metadata(next_id).get("name", next_id)))]), "mode": "stage", "siteId": next_id, "region": region, "screen": "play"}, true)
+	return destination
+
+func _result_retry_destination(receipt: Dictionary) -> Dictionary:
+	var destination := {"label": L10n.text("Choose a site"), "mode": "", "siteId": "", "region": selected_region, "screen": "maps"}
+	var site_id := str(receipt.get("siteId", ""))
+	var tutorial := site_id == catalog.tutorial_id
+	var region: int = 0 if tutorial else journey.progression.site_region(site_id)
+	if region < 0 or not journey.region_open(region) or (not tutorial and not journey.stage_open(site_id)):
+		return destination
+	destination.merge({"label": L10n.text("Retry tutorial" if tutorial else "Retry this map"), "mode": "training" if tutorial and str(journey.profile.tutorial) == "done" else "tutorial" if tutorial else "retry", "siteId": site_id, "region": region, "screen": "play"}, true)
+	return destination
+
+func depart_after_result(receipt: Dictionary) -> void:
+	if journey.current_run != null:
+		pause_run()
+		return
+	var destination := result_destination(receipt)
+	if str(destination.screen) == "workshop":
+		navigate("workshop", {"from_result": true, "receipt": receipt, "tab": "weapons"})
+		return
+	advance_after_result(_start_result_destination.bind(receipt.duplicate(true), false))
+
+func retry_after_result(receipt: Dictionary) -> void:
+	if journey.current_run != null:
+		pause_run()
+		return
+	advance_after_result(_start_result_destination.bind(receipt.duplicate(true), true))
+
+func _start_result_destination(receipt: Dictionary, retry: bool) -> void:
+	if journey.current_run != null:
+		pause_run()
+		return
+	var destination := _result_retry_destination(receipt) if retry else result_destination(receipt)
+	if str(destination.mode).is_empty():
+		navigate(str(destination.screen), {"from_result": true, "receipt": receipt, "tab": "weapons"} if destination.screen == "workshop" else {})
+		return
+	var region := int(destination.region)
+	if not journey.region_open(region):
+		navigate("maps")
+		return
+	var selected: Dictionary = journey.select_region(region)
+	if not selected.ok:
+		show_notice(_failure_text(selected))
+		return
+	selected_region = journey.selected_region()
+	var site_id := str(destination.siteId)
+	if site_id != catalog.tutorial_id and not journey.stage_open(site_id):
+		navigate("maps")
+		return
+	# Retry normally uses lastSite; an older receipt still names the exact requested site.
+	var mode := str(destination.mode)
+	if mode == "retry" and str(journey.last_run_site) != site_id:
+		mode = "stage"
+	start_run(mode, site_id)
 
 func start_run(mode: String, site_id := "") -> void:
 	if journey.current_run != null:
@@ -242,6 +362,35 @@ func resume_run() -> void:
 	get_tree().paused = false
 	navigate("play")
 
+func request_restart() -> void:
+	var run = journey.current_run
+	if run == null or run.phase != "working" or run.state != "active" or run.settling or run.finish_ready or _finishing or not is_instance_valid(play_view):
+		return
+	pause_run()
+	screens.show_restart_confirmation()
+
+func restart_run() -> void:
+	var run = journey.current_run
+	if run == null or run.phase != "working" or run.state != "active" or run.settling or run.finish_ready or _finishing or not is_instance_valid(play_view):
+		return
+	var site_id := str(run.site.id)
+	var mode := str(run.mode)
+	var abandoned: Dictionary = journey.abandon("restarted")
+	if not abandoned.ok:
+		show_notice(_failure_text(abandoned))
+		return
+	play_view.controls.cancel()
+	play_view.vfx.active = false
+	remove_child(play_view)
+	play_view.queue_free()
+	play_view = null
+	feedback.set_game_paused(false)
+	feedback.leave_campaign()
+	get_tree().paused = false
+	start_run(mode, site_id)
+	if journey.current_run == null:
+		navigate("maps")
+
 func finish_run() -> void:
 	if _finishing or journey.current_run == null:
 		return
@@ -266,7 +415,7 @@ func finish_run() -> void:
 	play_view = null
 	selected_region = journey.selected_region()
 	notice = ""
-	navigate("chapter" if result.mode == "boss" and result.qualified else "receipt", result)
+	navigate("workshop", {"from_result": true, "receipt": result, "tab": "weapons"})
 	if int(result.get("newArtwork",-1)) >= 0:
 		screens.show_artwork_reward(int(result.newArtwork))
 
@@ -321,14 +470,29 @@ func skip_tutorial() -> void:
 		show_notice(_failure_text(result))
 
 func show_settings(from := "home") -> void:
-	_settings_from = from
+	var return_screen := from
+	var return_payload: Dictionary = payload.duplicate(true) if from == current_screen else {}
 	if journey.current_run != null:
+		return_screen = "pause"
+		return_payload = {}
 		journey.current_run.pause(true)
-		play_view.controls.cancel()
-		play_view.vfx.active = false
+		if is_instance_valid(play_view):
+			play_view.controls.cancel()
+			play_view.vfx.active = false
 		feedback.set_game_paused(true)
 		get_tree().paused = true
-	navigate("settings", {"from": "play" if journey.current_run != null else from})
+	elif payload.has("return_screen") and current_screen in ["settings", "build_info", "reset", "reset_confirm", "import_confirm"]:
+		return_screen = str(payload.return_screen)
+		return_payload = payload.get("return_payload", {}).duplicate(true)
+	navigate("settings", {"from": return_screen, "return_screen": return_screen, "return_payload": return_payload})
+
+func return_from_settings() -> void:
+	if journey.current_run != null:
+		navigate("pause")
+		return
+	var return_screen := str(payload.get("return_screen", payload.get("from", "home")))
+	var return_payload: Dictionary = payload.get("return_payload", {}).duplicate(true)
+	navigate(return_screen, return_payload)
 
 func set_audio(key: String, value: Variant) -> void:
 	feedback.set_setting(key, value)
@@ -458,12 +622,18 @@ func _back_requested() -> void:
 	if journey.current_run != null:
 		if current_screen == "play":
 			pause_run()
+		elif current_screen == "pause":
+			resume_run()
 		elif current_screen == "settings" or current_screen == "build_info":
 			navigate("pause")
 		return
-	if current_screen in ["receipt", "chapter"] or (current_screen == "workshop" and payload.get("from_result", false)):
+	if current_screen == "settings":
+		return_from_settings()
+	elif current_screen in ["build_info", "reset", "reset_confirm", "import_confirm"]:
+		navigate("settings")
+	elif current_screen in ["receipt", "chapter"] or (current_screen == "workshop" and payload.get("from_result", false)):
 		navigate("maps")
-	elif current_screen in ["settings", "reset", "reset_confirm", "import_confirm", "build_info", "maps", "regions", "workshop"]:
+	elif current_screen in ["maps", "regions", "workshop"]:
 		navigate("home")
 	else:
 		show_settings("home")

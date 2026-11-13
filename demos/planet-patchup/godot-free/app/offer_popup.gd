@@ -88,7 +88,7 @@ func _layout() -> void:
 	if _panel == null:
 		return
 	var available := (size-Vector2(24,24)).max(Vector2.ZERO)
-	_panel.size = Vector2(minf(420,available.x),minf(available.y,minf(560,maxf(180,size.y*0.72))))
+	_panel.size = Vector2(minf(358,available.x),minf(available.y,minf(560,maxf(180,size.y*0.72))))
 	_panel.position = (size-_panel.size)/2.0
 
 func _input(event: InputEvent) -> void:

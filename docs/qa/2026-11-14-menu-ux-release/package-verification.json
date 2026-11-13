@@ -1,0 +1,28 @@
+{
+  "native": {
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "version": "0.5.64",
+    "build": "74",
+    "appPath": "variants/godot-paid-port/native/build/ios-menu-ux-2026-11-14-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "pckSha256": "6f1dd66df5760a5a4ff8ecc2b3732870c4bea360bd30ab935ea6a3eb578cd74f",
+    "pckBytes": 41441404,
+    "pckEntries": 1215,
+    "executableSha256": "2300b3c26ce2a6f445395b5fc3af9948381c0c176e2fb2bcf3a6d0c785384481",
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-468c4227e5a1",
+  "webArtifactsVerified": 8,
+  "webPckEntries": 883,
+  "sharedSourceFiles": [
+    "app/screens.gd",
+    "app/workshop_menu.gd",
+    "app/menu_pages.gd",
+    "app/ui_theme.gd",
+    "app/offer_popup.gd",
+    "app/restoration_gallery.gd",
+    "presentation/restoration_artwork.gd"
+  ],
+  "bothPcksContainNewMenuModules": true,
+  "gameRuntimeExecuted": false
+}

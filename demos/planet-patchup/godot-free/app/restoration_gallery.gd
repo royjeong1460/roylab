@@ -5,9 +5,9 @@ signal closed
 const UITheme = preload("res://app/ui_theme.gd")
 const L10n = preload("res://app/localization.gd")
 const Artwork = preload("res://presentation/restoration_artwork.gd")
-const INK := Color("3e4c32")
-const CREAM := Color("f7efd7")
-const OLIVE := Color("73805c")
+const INK := UITheme.TEXT
+const CREAM := UITheme.MENU_BG
+const OLIVE := UITheme.MENU_BORDER
 var catalog
 var journey
 var mode := "gallery"
@@ -38,7 +38,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_previous_focus = get_viewport().gui_get_focus_owner()
 	var background := ColorRect.new()
-	background.color = Color("1e2823") if mode == "gallery" else Color(0.12,0.17,0.14,0.65)
+	background.color = UITheme.MENU_BG if mode == "gallery" else Color(0.12,0.17,0.14,0.65)
 	background.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(background)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -70,13 +70,13 @@ func _button(value: String, action: Callable, primary := false) -> Button:
 	button.add_theme_font_size_override("font_size",12)
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	for variant in ["normal","hover","pressed","disabled","focus"]:
-		var fill := Color("6c8050") if primary else Color("eee5ca")
+		var fill := UITheme.GOLD if primary else UITheme.MENU_PANEL
 		if variant == "hover": fill = fill.lightened(0.06)
 		elif variant == "pressed": fill = fill.darkened(0.08)
 		elif variant == "focus": fill = Color.TRANSPARENT
 		button.add_theme_stylebox_override(variant,UITheme.box(fill,OLIVE,2,8))
 	for variant in ["font_color","font_hover_color","font_pressed_color","font_focus_color","font_disabled_color"]:
-		button.add_theme_color_override(variant,Color("fff6da") if primary else INK)
+		button.add_theme_color_override(variant,UITheme.BG if primary else INK)
 	button.pressed.connect(action)
 	return button
 
@@ -94,7 +94,7 @@ func _art(index: int, status: String, thumbnail := true, crop := false) -> Contr
 	return art
 
 func _build_gallery() -> void:
-	_column.add_child(_label("Achievements",11,Color("858a67")))
+	_column.add_child(_label("Achievements",11,UITheme.MUTED))
 	var heading := HBoxContainer.new()
 	_column.add_child(heading)
 	var title := _label("Restoration records",21)
@@ -119,7 +119,7 @@ func _build_gallery() -> void:
 	scroll.add_child(grid)
 	for index in range(catalog.regions.size()):
 		grid.add_child(_card(index))
-	var condition := _label("All 6 sites + boss at 100%",10,Color("7a8161"))
+	var condition := _label("All 6 sites + boss at 100%",10,UITheme.MUTED)
 	condition.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_column.add_child(condition)
 
@@ -149,17 +149,17 @@ func _card(index: int) -> Button:
 	var row := HBoxContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(row)
-	var status := _label("Fully restored" if state.unlocked else "Partly revealed" if state.status == "preview" else "Unrestored",9,Color("7b8161"))
+	var status := _label("Fully restored" if state.unlocked else "Partly revealed" if state.status == "preview" else "Unrestored",9,UITheme.MUTED)
 	status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(status)
-	row.add_child(_label(str(state.perfect)+"/7",9,Color("7b8161")))
+	row.add_child(_label(str(state.perfect)+"/7",9,UITheme.MUTED))
 	return button
 
 func _build_reward() -> void:
-	var badge := _label("100%",22,Color("b89448"))
+	var badge := _label("100%",22,UITheme.GOLD)
 	badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_column.add_child(badge)
-	var kicker := _label("Fully restored",12,Color("81845c"))
+	var kicker := _label("Fully restored",12,UITheme.MUTED)
 	kicker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_column.add_child(kicker)
 	var title := _label(_name(region),21)
@@ -227,11 +227,11 @@ func _open_viewer(index: int) -> void:
 		update_art.call()
 		if expanded: scroll.set_deferred("scroll_horizontal",roundi(scroll.size.x*0.625)))
 	scroll.resized.connect(update_art)
-	var caption := _label("Fully restored" if state.unlocked else "All 6 sites + boss at 100%",10,Color("7a8161"))
+	var caption := _label("Fully restored" if state.unlocked else "All 6 sites + boss at 100%",10,UITheme.MUTED)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(caption)
 	var fit := func():
-		panel.size = Vector2(minf(900,maxf(0,size.x-24)),minf(500,maxf(0,size.y-32)))
+		panel.size = Vector2(minf(390,maxf(0,size.x-24)),minf(500,maxf(0,size.y-32)))
 		panel.position = (size-panel.size)/2.0
 	_viewer.resized.connect(fit)
 	fit.call()
@@ -259,7 +259,7 @@ func close_popup() -> bool:
 func _layout() -> void:
 	if _panel == null: return
 	if mode == "gallery":
-		_panel.size = Vector2(minf(390,size.x),size.y)
+		_panel.size = Vector2(minf(390,size.x),minf(844,size.y))
 	else:
 		_panel.size = Vector2(minf(358,maxf(0,size.x-32)),minf(390,maxf(0,size.y-24)))
 	_panel.position = (size-_panel.size)/2.0
