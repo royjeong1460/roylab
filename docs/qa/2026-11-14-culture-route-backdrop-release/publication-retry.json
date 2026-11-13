@@ -1,0 +1,11 @@
+{
+  "reason": "Cloudflare project and deployment views return HTTP503 after login; first Git-backed deployment failed before logs could be read. Documentation-only push produced no deployment check.",
+  "markerOnly": true,
+  "gamePackageStem": "free-0541-1ec2c61d8f79",
+  "entryBodiesUnchangedAfterRemovingReleaseComment": [
+    "public/games/planet-patchup-free/index.html",
+    "public/planet-patchup/play/index.html"
+  ],
+  "gameCodeOrAssetsChanged": false,
+  "gameOrBrowserRuntimeExecuted": false
+}
