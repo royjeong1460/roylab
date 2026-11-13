@@ -11,7 +11,7 @@
 - 연결된 캠페인 맵에서는 이전 기물과 복원 레이어의 중복을 생략한다. 튜토리얼·미등록 비교맵에는 기존 배경을 유지한다.
 - 여섯 architecture-only RGBA 원본은 채택 자산과SHA-256이 같다. 합쳐진 sky/cloud 스크린샷을 게임 배경으로 넣지 않았다.
 
-네이티브0.5.63(73)의 import/compile-only/pack/Xcode Release/deep strict서명을 확인했다. 첫 설치는 연결 시간초과였고, 사용자가 USB를 다시 연결하고 잠금을 해제한 뒤 업데이트 설치에 성공했다(sequence4956). 앱을 실행하지 않았으며 기존 앱ID와 저장을 유지했다. 첫 Cloudflare 배포는 실패하여 상세 로그 확인과 동일 자산 재배포를 진행한다. 실제 공개 전달 상태는 delivery.json을 따른다.
+네이티브0.5.63(73)의 import/compile-only/pack/Xcode Release/deep strict서명을 확인했다. 첫 설치는 연결 시간초과였고, 사용자가 USB를 다시 연결하고 잠금을 해제한 뒤 업데이트 설치에 성공했다(sequence4956). 앱을 실행하지 않았으며 기존 앱ID와 저장을 유지했다. 첫 Cloudflare 배포는 실패했다. 사용자의 Cloudflare 로그인은 확인했지만 프로젝트/배포 조회가503을 반환하여 상세 로그를 열 수 없다. 게임 엔진·PCK·코드·아트를 유지한 채 진입HTML의 배포 주석만 갱신한82659fc로 재배포를 요청했다. 현재 공개 사이트는 이전 패키지를 제공하며 새 manifest는404다. 공개 전달은 미완료이고 delivery.json을 따른다.
 
 웹 import/compile/export와 webpack site build를 확인했다. 공개 배포·HTTP 압축/원본 해시는 delivery.json과 http-verification.json에서 별도로 확인한다. 롤백은 native0.5.62(72), Web free-0541-b59b561881d2다.
 

@@ -19,6 +19,12 @@
   "nativeInstalledSequence": 4956,
   "nativeInstallReceiptSha256": "678c6951aa1f59b0c565a4c55623fea2127935f614aa47467f5dea565d356de5",
   "webReleaseCommit": "1632d00bbce0f18b634b39100f76499814d8ec73",
-  "webPublishStatus": "First Cloudflare deployment failed; detailed logs require Cloudflare login; retry with installation-record commit",
-  "webFailedDeploymentId": "ef5c6294-506a-4134-9943-b738d2515ad4"
+  "webPublishStatus": "Cloudflare login confirmed; project and deployment views return503. Same-package retry82659fc pushed; no check posted yet. Public play still serves previous stem; new manifest404. Publication not complete.",
+  "webFailedDeploymentId": "ef5c6294-506a-4134-9943-b738d2515ad4",
+  "webRetryCommit": "82659fcefabd884662082341ad2a46f750202402",
+  "webRetryChanges": "Only release comment in generated game entry and canonical alias; engine/PCK/code/art unchanged",
+  "cloudflareLoginConfirmed": true,
+  "cloudflareManagementHttpStatus": 503,
+  "webObservedStem": "free-0541-b59b561881d2",
+  "webNewManifestHttpStatus": 404
 }

@@ -1,0 +1,13 @@
+{
+  "dateKorea": "2026-11-14",
+  "loginConfirmed": true,
+  "cloudflareDashboardProjectAndDeployment503": true,
+  "firstDeploymentFailureId": "ef5c6294-506a-4134-9943-b738d2515ad4",
+  "retryCommit": "82659fcefabd884662082341ad2a46f750202402",
+  "retryCheckPostedAtObservation": false,
+  "publicCanonicalStatus": 200,
+  "cacheBustedCanonicalStem": "free-0541-b59b561881d2",
+  "newManifestStatus": 404,
+  "publicGameExecuted": false,
+  "accountSettingsOrCredentialsChanged": false
+}
