@@ -31,7 +31,7 @@ func fresh() -> Dictionary:
 		"collectionMigration": "fresh-v4", "legacyCollection": {}, "purchaseTotals": {}, "lastSettlement": null,
 		"owned": ["bomb"], "patterns": ["dot"], "upgrades": upgrades, "skills": skills,
 		"equipped": {"passive": [], "active": []}, "stageRecords": {}, "bossCleared": false,
-		"bossRewards": {}, "selectedRegion": 0, "lastSite": null, "runCount": 0, "bossAttempts": 0,
+		"bossRewards": {}, "artworkAwards": {}, "selectedRegion": 0, "lastSite": null, "runCount": 0, "bossAttempts": 0,
 		"workMs": 0, "firstClearMs": null, "history": [], "purchases": []}
 	p.purchaseTotals = economy.initial_purchase_totals(p)
 	return p
@@ -93,6 +93,8 @@ func normalize(data: Variant) -> Dictionary:
 		p.selectedRegion = 0
 	if not p.has("bossRewards"):
 		p.bossRewards = {}
+	if not p.has("artworkAwards"):
+		p.artworkAwards = {}
 	return {"ok": true, "reason": "", "profile": p}
 
 func _expand_web_profile(p: Dictionary) -> bool:
@@ -191,6 +193,15 @@ func validate(p: Dictionary) -> String:
 			return "settlement-reward"
 		if receipt.get("ok") != true or receipt.get("balanceVersion") != BALANCE_VERSION or catalog.metadata(str(receipt.get("siteId", ""))).is_empty():
 			return "settlement-receipt"
+	if p.has("artworkAwards"):
+		if not p.artworkAwards is Dictionary:
+			return "artwork-awards"
+		var region_ids := {}
+		for region in catalog.regions:
+			region_ids[region.id] = true
+		for id in p.artworkAwards:
+			if not id is String or not region_ids.has(id) or typeof(p.artworkAwards[id]) != TYPE_BOOL or p.artworkAwards[id] != true:
+				return "artwork-award-region"
 	return ""
 
 func _validate_archive(p: Dictionary) -> String:

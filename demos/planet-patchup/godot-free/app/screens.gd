@@ -10,6 +10,7 @@ const GameSkin = preload("res://app/skin.gd")
 const PlayLayout = preload("res://app/play_layout.gd")
 const Diagnostics = preload("res://platform/diagnostics.gd")
 const OfferPopup = preload("res://app/offer_popup.gd")
+const RestorationGallery = preload("res://app/restoration_gallery.gd")
 const PLAY_TIPS := [
 	"Tap and release without moving to attack. Two fingers move and zoom.",
 	"Mint-colored scrap is recovered when the battery runs out.",
@@ -38,6 +39,8 @@ var _hud: Dictionary = {}
 var _tab := "weapons"
 var _workshop_scroll: Dictionary = {}
 var _offer_popup: Control
+var _art_popup: Control
+var _art_gallery: Control
 var _menu_theme: Theme
 var _settings_from := "home"
 var _performance_updated := 0
@@ -52,6 +55,13 @@ func setup(application, source_catalog, source_journey, source_feedback) -> void
 	_menu_theme = UITheme.make(catalog,true)
 
 func close_popup() -> bool:
+	if is_instance_valid(_art_popup):
+		if _art_popup.close_popup(): return true
+		_art_popup.close()
+		_art_popup = null
+		return true
+	if is_instance_valid(_art_gallery) and _art_gallery.close_popup():
+		return true
 	if not is_instance_valid(_offer_popup):
 		return false
 	_offer_popup.close()
@@ -212,6 +222,7 @@ func build(screen: String, payload: Dictionary = {}) -> Control:
 	_hud.clear()
 	match screen:
 		"home": return _home()
+		"restoration": return _restoration(payload)
 		"tutorial_intro": return _tutorial_intro()
 		"presentation_preview": return _presentation_preview()
 		"presentation_sequence": return _presentation_sequence(payload)
@@ -347,7 +358,7 @@ func _home() -> Control:
 	footer.add_child(enter)
 	var upgrades := _flat(_button("Upgrades",func(): app.navigate("workshop")),Color("bdcdc0"))
 	var regions := _flat(_button("Regions",func(): app.navigate("regions")),Color("bdcdc0"))
-	var achievements := _flat(_button("Feedback" if app.web_bridge.available() else "Achievements\nComing soon",func(): app.open_feedback(),not app.web_bridge.available()),Color("bdcdc0"))
+	var achievements := _flat(_button("Achievements",func(): app.navigate("restoration")),Color("bdcdc0"))
 	var menu := HBoxContainer.new()
 	menu.add_theme_constant_override("separation",8)
 	menu.custom_minimum_size.y = 44
@@ -834,6 +845,31 @@ func _workshop(payload: Dictionary) -> Control:
 		actions.add_child(button)
 	return page.root
 
+
+func _restoration(payload: Dictionary) -> Control:
+	var previous := str(payload.get("from","home"))
+	if previous not in ["home","receipt","chapter"]: previous = "home"
+	var receipt: Dictionary = payload.get("receipt",{})
+	_art_gallery = RestorationGallery.new()
+	_art_gallery.setup(catalog,journey,"gallery",0,func(): app.navigate(previous,receipt))
+	return _art_gallery
+
+func close_restoration() -> void:
+	if is_instance_valid(_art_gallery): _art_gallery.close()
+	else: app.navigate("home")
+
+func show_artwork_reward(index: int) -> void:
+	if index < 0 or index >= catalog.regions.size() or not journey.artwork_state(index).unlocked:
+		return
+	close_popup()
+	var previous: String = app.current_screen
+	var receipt: Dictionary = app.payload.duplicate(true)
+	_art_popup = RestorationGallery.new()
+	_art_popup.setup(catalog,journey,"reward",index,Callable(),func():
+		app.navigate("restoration",{"from":previous,"receipt":receipt}))
+	_art_popup.z_index = 20
+	app.safe_root.add_child(_art_popup)
+
 func _receipt(payload: Dictionary) -> Control:
 	var page := _page(str(payload.get("siteName","")),"","maps",0.0,true)
 	if payload.get("qualified",false):
@@ -881,6 +917,7 @@ func _result_unlocks(content: VBoxContainer, payload: Dictionary) -> void:
 
 func _result_actions(content: VBoxContainer, upgrade_primary := true) -> void:
 	content.add_child(_button("Upgrade equipment →",func(): app.navigate("workshop",{"from_result":true}),false,upgrade_primary))
+	content.add_child(_button("Restoration records",func(): app.navigate("restoration",{"from":app.current_screen,"receipt":app.payload.duplicate(true)})))
 	content.add_child(_button("Retry this map",func(): app.start_run("retry")))
 	content.add_child(_button("Back to site list",func(): app.navigate("maps")))
 	if app.web_bridge.available(): content.add_child(_button("Feedback",func(): app.open_feedback()))
@@ -1017,7 +1054,7 @@ func _error(payload: Dictionary) -> Control:
 
 func _build_info() -> Control:
 	var page := _page("Build information","PLANET PATCHUP · GODOT","settings")
-	page.content.add_child(_label(L10n.format("Planet Patchup · 0.5.41\nGodot 4.6.2 · Compatibility\n6 regions · 42 maps + tutorial\n%d upgrade tracks · %d skills",[catalog.tracks.size(),catalog.skills.size()]),14))
+	page.content.add_child(_label(L10n.format("Planet Patchup · %s\nGodot 4.6.2 · Compatibility\n6 regions · 42 maps + tutorial\n%d upgrade tracks · %d skills",[str(ProjectSettings.get_setting("application/config/version","")),catalog.tracks.size(),catalog.skills.size()]),14))
 	page.content.add_child(_label("Content source hashes are included with this build. Gameplay and device confirmation are recorded separately.",12,UITheme.MUTED))
 	page.content.add_child(_button("Export records",func(): app.export_profile()))
 	return page.root

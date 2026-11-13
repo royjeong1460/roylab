@@ -11,6 +11,7 @@ const RunSession = preload("res://campaign/run_session.gd")
 const Journal = preload("res://campaign/run_journal.gd")
 const Legacy = preload("res://platform/legacy_profile.gd")
 const Money = preload("res://campaign/money.gd")
+const RestorationRewards = preload("res://campaign/restoration_rewards.gd")
 var catalog
 var profile: Dictionary = {}
 var current_run
@@ -92,6 +93,9 @@ func region_open(index: int) -> bool:
 
 func region_progress(index: int) -> Dictionary:
 	return progression.region_progress(profile, index)
+
+func artwork_state(index: int) -> Dictionary:
+	return RestorationRewards.state(profile, catalog, index)
 
 func planet_progress() -> float:
 	return progression.planet_progress(profile)
@@ -333,7 +337,10 @@ func finish() -> Dictionary:
 		"finishReason": snapshot.get("finishReason", ""), "balanceVersion": schema.BALANCE_VERSION,
 		"batteryUsed": snapshot.energyUsed, "tools": run.used_tools.duplicate()})
 	next.history = next.history.slice(maxi(0, next.history.size() - 100))
-	var receipt := _result(true, "", {"recovered": recovered, "total": total, "reward": reward, "bonus": bonus, "refinementBonus": refinement,
+	var new_artwork := -1
+	if run.mode != "tutorial" and RestorationRewards.award(next, catalog, region):
+		new_artwork = region
+	var receipt := _result(true, "", {"newArtwork": new_artwork, "recovered": recovered, "total": total, "reward": reward, "bonus": bonus, "refinementBonus": refinement,
 		"collectionTier": snapshot.get("collectionTier", 0), "cleanupDurationMs": snapshot.get("cleanupDurationMs", 0),
 		"finishReason": snapshot.get("finishReason", ""), "balanceVersion": schema.BALANCE_VERSION,
 		"qualified": qualified, "firstClear": first_clear, "bossCleared": next.bossCleared,

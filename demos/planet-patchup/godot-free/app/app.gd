@@ -154,7 +154,8 @@ func navigate(screen: String, data: Dictionary = {}) -> void:
 	if screen != current_screen:
 		web_bridge.emit_event("screen", {"screen": "expedition" if screen == "play" else screen})
 	current_screen = screen
-	screens.close_popup()
+	while screens.close_popup():
+		pass
 	payload = data.duplicate()
 	if is_instance_valid(view):
 		# A pressed button can still be part of the current input dispatch.
@@ -266,6 +267,8 @@ func finish_run() -> void:
 	selected_region = journey.selected_region()
 	notice = ""
 	navigate("chapter" if result.mode == "boss" and result.qualified else "receipt", result)
+	if int(result.get("newArtwork",-1)) >= 0:
+		screens.show_artwork_reward(int(result.newArtwork))
 
 func buy_offer(id: String, expected: Dictionary) -> void:
 	var result: Dictionary = journey.buy(id, expected)
@@ -443,6 +446,9 @@ func _active_changed(active: bool) -> void:
 func _back_requested() -> void:
 	if current_screen in ["presentation_preview", "presentation_sequence"]:
 		navigate("presentation_preview" if current_screen == "presentation_sequence" else "home")
+		return
+	if current_screen == "restoration":
+		if not screens.close_popup(): screens.close_restoration()
 		return
 	if current_screen == "tutorial_intro":
 		view.finish()

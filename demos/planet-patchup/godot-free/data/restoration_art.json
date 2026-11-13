@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "cultures": [
+    {
+      "region": 0,
+      "id": "arch-quarter",
+      "name": "Arch Quarter",
+      "full": "res://assets/restoration/arch.png",
+      "thumbnail": "res://assets/restoration/arch-thumb.png",
+      "sourceSha256": "bb3cf30882675b525c39d5e85b5125c93bb5805371dc0143cb8e75715d07cd7d"
+    },
+    {
+      "region": 1,
+      "id": "eave-alley",
+      "name": "Eave Alley",
+      "full": "res://assets/restoration/eaves.png",
+      "thumbnail": "res://assets/restoration/eaves-thumb.png",
+      "sourceSha256": "53b2029bae5ca7d8cf6afc57fcc3a9b0224feb66f1482cdc49493d49db86a071"
+    },
+    {
+      "region": 2,
+      "id": "amber-bazaar",
+      "name": "Amber Bazaar",
+      "full": "res://assets/restoration/amber.png",
+      "thumbnail": "res://assets/restoration/amber-thumb.png",
+      "sourceSha256": "6e40094ebdc3038c60e91711c9824898f55a5f2808df2782ce2733055dec9bcc"
+    },
+    {
+      "region": 3,
+      "id": "canal-works",
+      "name": "Canal Works",
+      "full": "res://assets/restoration/clock.png",
+      "thumbnail": "res://assets/restoration/clock-thumb.png",
+      "sourceSha256": "7fef94d38ff2452d909543b4bc50989d066abbdb7b59184120c96d87ab5a45de"
+    },
+    {
+      "region": 4,
+      "id": "terrace-heights",
+      "name": "Terrace Heights",
+      "full": "res://assets/restoration/terrace.png",
+      "thumbnail": "res://assets/restoration/terrace-thumb.png",
+      "sourceSha256": "89971c701fcecfd02bcbf4f22f38c648ffa297ba6b8350340c46bceb1e12cffe"
+    },
+    {
+      "region": 5,
+      "id": "mosaic-basin",
+      "name": "Rock Sanctuary",
+      "full": "res://assets/restoration/rock-ruins.png",
+      "thumbnail": "res://assets/restoration/rock-ruins-thumb.png",
+      "sourceSha256": "a3368da86ffd5023fb8cee912750828e83893899abd03c1380a4afe0cf1f0f33"
+    }
+  ]
+}
