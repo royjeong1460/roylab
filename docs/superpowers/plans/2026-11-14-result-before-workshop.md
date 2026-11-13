@@ -13,4 +13,6 @@
 - [x] Workshop: title+wallet only, icon adjacent to number. Footer Detailed results opens full result page; preserve tabs/equipment/results destination and tutorial. No separate result banner or gain subline in header.
 - [x] Review source paths: failure/normal6/boss/finalboss/tutorial, gallery return, settings and receipt context, native interstitial boundaries and Web bridge. Campaign/economy/save/physics/assets/maps stay byte-identical to0.5.64.
 - [x] Import/compile-only/export Web and native. PCK modules and encoded/decoded hashes; Xcode Release and strict signature. No scene/tests/replay/app/browser execution.
-- [ ] Publish Web with static HTTP verification; update-install iPhone with same bundle and no uninstall/reset/launch. Record CURRENT/delivery/rollback and user validation separately.
+- [x] Publish Web with static HTTP verification; update-install iPhone with same bundle and no uninstall/reset/launch. Record CURRENT/delivery/rollback and user validation separately.
+
+Delivery completed: iOS0.5.65(75) update-installed sequence4972 without launch. Webb2ae246 immutable package free-0541-f024d0ffad9f published and15static production responses verified including encoded/decoded hashes. Runtime/render/touch/save/device/thermal validation remains user-only.
