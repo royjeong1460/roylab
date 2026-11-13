@@ -4,9 +4,9 @@
   "nativeBundle": "com.roy.planetpatchup.godotcompare",
   "nativeBuilt": true,
   "signatureVerified": true,
-  "nativeInstalled": false,
+  "nativeInstalled": true,
   "nativeAppLaunched": false,
-  "nativeInstallStatus": "CoreDevice connection timeout; waiting for USB reconnect/unlock",
+  "nativeInstallStatus": "Update-install succeeded; app not launched",
   "webStem": "free-0541-1ec2c61d8f79",
   "engineStem": "godot-web-ec83eba66e3c",
   "webPublished": false,
@@ -15,5 +15,10 @@
   "rollbackNativeDelivery": "qa/ios-restoration-gallery-2026-11-13/delivery.json",
   "scope": "BUG-022: connect adopted six-section architecture to all42play stages using their saved best record on entry",
   "runtimeExecutedByAssistant": false,
-  "userValidation": "pending: Arch1-1 at70%, other crops, terrain occlusion and actual device/browser presentation"
+  "userValidation": "pending: Arch1-1 at70%, other crops, terrain occlusion and actual device/browser presentation",
+  "nativeInstalledSequence": 4956,
+  "nativeInstallReceiptSha256": "678c6951aa1f59b0c565a4c55623fea2127935f614aa47467f5dea565d356de5",
+  "webReleaseCommit": "1632d00bbce0f18b634b39100f76499814d8ec73",
+  "webPublishStatus": "First Cloudflare deployment failed; detailed logs require Cloudflare login; retry with installation-record commit",
+  "webFailedDeploymentId": "ef5c6294-506a-4134-9943-b738d2515ad4"
 }

@@ -9,4 +9,4 @@
 - Implemented correction: copy the six adopted transparent architecture layers, map all42site IDs to exact source sections, retain terrain-aware decorative trash/ground and weather, select the section on entry using the existing per-site best-record snapshot.
 - Preserve: gallery unlock/ledger, maps, physics, camera behavior, app/save IDs, economy, skills and records.
 - Validation: source inspection performed. Runtime/scenes/browser/device play are user-only. Import/compile/export/package/source/HTTP/install evidence will be recorded separately.
-- Status: source correction and build complete; Web delivery in progress, iPhone install pending USB reconnect. User confirmation pending.
+- Status: native0.5.63(73) update-installed without launch (sequence4956). First Web deployment failed; detailed Cloudflare logs require login, same-artifact retry pending. User confirmation pending.
