@@ -415,7 +415,7 @@ func finish_run() -> void:
 	play_view = null
 	selected_region = journey.selected_region()
 	notice = ""
-	navigate("workshop", {"from_result": true, "receipt": result, "tab": "weapons"})
+	navigate("chapter" if result.get("mode", "") == "boss" and result.get("qualified", false) else "receipt", result)
 	if int(result.get("newArtwork",-1)) >= 0:
 		screens.show_artwork_reward(int(result.newArtwork))
 
@@ -631,6 +631,8 @@ func _back_requested() -> void:
 		return_from_settings()
 	elif current_screen in ["build_info", "reset", "reset_confirm", "import_confirm"]:
 		navigate("settings")
+	elif current_screen in ["receipt", "chapter"] and payload.has("workshop_context"):
+		navigate("workshop", payload.workshop_context)
 	elif current_screen in ["receipt", "chapter"] or (current_screen == "workshop" and payload.get("from_result", false)):
 		navigate("maps")
 	elif current_screen in ["maps", "regions", "workshop"]:

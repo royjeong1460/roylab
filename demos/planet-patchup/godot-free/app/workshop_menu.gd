@@ -42,7 +42,7 @@ func build(payload: Dictionary) -> Control:
 	var receipt: Dictionary = payload.get("receipt",{}) if from_result else {}
 	var footer_height := 128.0 if from_result else 72.0
 	var page: Dictionary = host._page("Upgrades","","maps" if from_result else "home",footer_height,true)
-	host._workshop_header(page,receipt)
+	host._workshop_header(page)
 	var pinned := _column(12)
 	page.fixed.add_child(pinned)
 	var tab_row := HBoxContainer.new()
@@ -447,15 +447,12 @@ func _footer(from_result: bool, receipt: Dictionary) -> PanelContainer:
 	pair.add_theme_constant_override("separation",8)
 	column.add_child(pair)
 	var choose: Button = host._button("Choose a site",func(): host.app.navigate("maps"),false,not from_result)
-	var repeats_site := from_result and (str(destination.get("screen","")) == "workshop" or (str(destination.get("screen","")) == "play" and str(destination.get("siteId","")) == str(receipt.get("siteId",""))))
 	var secondary: Button
-	if repeats_site:
-		secondary = host._button("Back to planet",func(): host.app.navigate("home"))
+	if from_result:
+		secondary = host._button("Detailed results",func(): host._show_receipt_details(receipt))
 	else:
-		secondary = host._button("Retry this map",func():
-			if from_result: host.app.retry_after_result(receipt)
-			else: host.app.start_run("retry"),not from_result and host.journey.last_run_site == null)
-	var buttons: Array = [choose,secondary] if repeats_site or not from_result else [secondary,choose]
+		secondary = host._button("Retry this map",func(): host.app.start_run("retry"),host.journey.last_run_site == null)
+	var buttons: Array = [secondary,choose] if from_result else [choose,secondary]
 	for button: Button in buttons:
 		button.custom_minimum_size.y = 44 if from_result else 48
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL

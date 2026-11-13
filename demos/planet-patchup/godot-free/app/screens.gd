@@ -200,7 +200,7 @@ func _page(title: String, _kicker := "", back := "home", footer_height := 0.0, t
 	return page
 
 func _percent(ratio: float) -> String:
-	return String.num(floorf(ratio * 1000.0 + 0.00000001) / 10.0,1)+"%"
+	return String.num(floorf(ratio * 1000.0 + 0.00000001) / 10.0,1).trim_suffix(".0")+"%"
 
 func _number(value: Variant) -> String:
 	return journey.economy.money_text(value)
@@ -551,8 +551,14 @@ func _show_offer_details(offer: Dictionary, intro := false) -> void:
 		elif _offer_owned(offer) or id in journey.profile.equipped.get(offer.kind,[]):
 			column.add_child(_button("Try on this site →",func(): app.start_run("retry"),false,true))
 		var tab := "weapons" if id=="blackhole" else "skills"
+		var workshop: Dictionary = app.payload.duplicate(true) if app.current_screen=="workshop" else {}
+		if app.current_screen in ["receipt","chapter"]:
+			var receipt: Dictionary = app.payload.duplicate(true)
+			receipt.erase("workshop_context")
+			workshop = app.payload.get("workshop_context",{"from_result":true,"receipt":receipt}).duplicate(true)
+		workshop.tab = tab
 		column.add_child(_button("Open weapons tab →" if id=="blackhole" else "Open skills tab →",
-			func(): app.navigate("workshop",{"from_result":true,"tab":tab})))
+			func(): app.navigate("workshop",workshop)))
 	var popup := OfferPopup.new()
 	popup.configure(_offer_name(offer),column)
 	_offer_popup = popup
@@ -617,7 +623,55 @@ func show_artwork_reward(index: int) -> void:
 	app.safe_root.add_child(_art_popup)
 
 func _receipt(payload: Dictionary) -> Control:
-	return _workshop({"from_result":true,"receipt":payload,"tab":"weapons"})
+	return _result_page(payload,false)
+
+func _result_page(payload: Dictionary, chapter: bool) -> Control:
+	var receipt := payload.duplicate(true)
+	receipt.erase("workshop_context")
+	var destination: Dictionary = app.result_destination(receipt)
+	var has_departure := str(destination.screen) not in ["workshop","maps"]
+	var footer_height := 184.0 if has_departure else 128.0
+	var page := _page("Cleanup result","","maps",footer_height,true)
+	if payload.has("workshop_context"):
+		for connection in page.back_button.pressed.get_connections():
+			page.back_button.pressed.disconnect(connection.callable)
+		page.back_button.pressed.connect(func(): app.navigate("workshop",payload.workshop_context))
+	var content: VBoxContainer = page.content
+	content.add_child(_label(str(receipt.get("siteName","")),14,UITheme.MUTED))
+	content.add_child(_label("100% · All Clear" if receipt.get("allClear",false) else "CLEARED" if receipt.get("qualified",false) else "Recovery below 70%",20,UITheme.GOLD if receipt.get("qualified",false) else UITheme.TEXT))
+	_result_reward(content,receipt)
+	_result_unlocks(content,receipt)
+	if chapter:
+		var index := int(receipt.get("regionIndex",app.selected_region))
+		content.add_child(_label(L10n.format("%s · Planet %s",[_region_status(index),_percent(journey.planet_progress())]),13,UITheme.MINT))
+	elif int(receipt.get("regionIndex",0)) <= 0:
+		var illustration := EnvironmentReceipt.new()
+		illustration.setup(float(receipt.get("ratio",0.0)))
+		content.add_child(illustration)
+	content.add_child(_button("Restoration records",func(): app.navigate("restoration",{"from":app.current_screen,"receipt":payload.duplicate(true)})))
+	if app.has_method("open_feedback"):
+		content.add_child(_button("Feedback",func(): app.open_feedback()))
+	var footer := PanelContainer.new()
+	var style := UITheme.box(UITheme.MENU_BG,UITheme.MENU_BORDER,1,0)
+	style.border_width_left = 0
+	style.border_width_right = 0
+	style.border_width_bottom = 0
+	style.content_margin_left = 22
+	style.content_margin_right = 22
+	style.content_margin_top = 10
+	style.content_margin_bottom = 14
+	footer.add_theme_stylebox_override("panel",style)
+	page.fixed.add_child(footer)
+	var actions := VBoxContainer.new()
+	actions.add_theme_constant_override("separation",8)
+	footer.add_child(actions)
+	_result_actions(actions,payload)
+	var layout := func():
+		footer.position = Vector2(0,page.fixed.size.y-footer_height)
+		footer.size = Vector2(page.fixed.size.x,footer_height)
+	page.fixed.resized.connect(layout)
+	page.root.ready.connect(layout)
+	return page.root
 
 func _result_reward(content: VBoxContainer, payload: Dictionary) -> void:
 	var panel := PanelContainer.new()
@@ -651,14 +705,34 @@ func _result_unlocks(content: VBoxContainer, payload: Dictionary) -> void:
 			content.add_child(_button(L10n.format("%s unlocked →",[_offer_name(offer)]),
 				func(): open_unlock_intro(offer.id),false,true))
 
-func _result_actions(content: VBoxContainer, upgrade_primary := true) -> void:
-	content.add_child(_button("Upgrade equipment →",func(): app.navigate("workshop",{"from_result":true}),false,upgrade_primary))
-	content.add_child(_button("Restoration records",func(): app.navigate("restoration",{"from":app.current_screen,"receipt":app.payload.duplicate(true)})))
-	content.add_child(_button("Retry this map",func(): app.start_run("retry")))
-	content.add_child(_button("Back to site list",func(): app.navigate("maps")))
+func _result_actions(content: VBoxContainer, payload: Dictionary) -> void:
+	var receipt := payload.duplicate(true)
+	receipt.erase("workshop_context")
+	var workshop: Dictionary = payload.get("workshop_context",{"from_result":true,"receipt":receipt,"tab":"weapons"})
+	var upgrade := _button("Upgrade equipment →",func(): app.navigate("workshop",workshop),false,true)
+	upgrade.custom_minimum_size.y = 48
+	content.add_child(upgrade)
+	var destination: Dictionary = app.result_destination(receipt)
+	if str(destination.screen) not in ["workshop","maps"]:
+		var departure := _button(str(destination.label)+" →",func(): app.depart_after_result(receipt))
+		departure.clip_text = true
+		departure.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		departure.tooltip_text = str(destination.label)
+		content.add_child(departure)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation",8)
+	content.add_child(row)
+	var repeats_site := str(destination.screen)=="play" and str(destination.siteId)==str(receipt.get("siteId",""))
+	if not repeats_site:
+		var retry := _button("Retry this map",func(): app.retry_after_result(receipt))
+		retry.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(retry)
+	var maps := _button("Choose a site",func(): app.navigate("maps"))
+	maps.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(maps)
 
 func _chapter(payload: Dictionary) -> Control:
-	return _workshop({"from_result":true,"receipt":payload,"tab":"weapons"})
+	return _result_page(payload,true)
 
 func _audio_options(content: VBoxContainer) -> void:
 	content.add_child(_label("Audio & Vibration",16,UITheme.GOLD))
@@ -1111,15 +1185,17 @@ func _update_hud_unprofiled(play_view) -> void:
 	_hud.layout.call()
 
 
-func _workshop_header(page: Dictionary, receipt: Dictionary = {}) -> void:
+func _workshop_header(page: Dictionary) -> void:
 	var fixed: Control = page.fixed
 	var heading: Label = page.heading
 	heading.text = L10n.text("Upgrades")
 	heading.size.x = 150
 	var balance := HBoxContainer.new()
 	balance.alignment = BoxContainer.ALIGNMENT_END
+	balance.add_theme_constant_override("separation",6)
 	var mark := _hud_icon("hud-recovery",UITheme.GOLD)
 	mark.custom_minimum_size = Vector2(16,16)
+	mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	balance.add_child(mark)
 	var amount := _label(_number(journey.profile.parts),14,UITheme.GOLD)
 	amount.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -1128,48 +1204,14 @@ func _workshop_header(page: Dictionary, receipt: Dictionary = {}) -> void:
 	amount.clip_text = true
 	amount.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	amount.tooltip_text = _number(journey.profile.parts)
-	amount.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	amount.custom_minimum_size.x = minf(112,ceilf(_menu_theme.default_font.get_string_size(amount.text,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x))
 	balance.add_child(amount)
-	_place(fixed,balance,Rect2(234,16 if receipt.is_empty() else 10,134,44 if receipt.is_empty() else 26))
-	if receipt.is_empty(): return
-	heading.position.y = 10
-	heading.size.y = 30
-	var index := int(receipt.get("regionIndex",app.selected_region))
-	var region: Dictionary = catalog.region(index)
-	var site_id := str(receipt.get("siteId",""))
-	var site_index: int = region.get("sites",[]).find(site_id)
-	var code := "%d-%s" % [index+1,"B" if site_index==6 else str(site_index+1)] if site_index>=0 else ""
-	var summary := _flat(_button(L10n.format("%s · Recovery %s ›",[code,_percent(float(receipt.get("ratio",0)))]),func(): _show_receipt_details(receipt)),UITheme.MUTED)
-	summary.add_theme_font_size_override("font_size",12)
-	summary.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	summary.clip_text = true
-	summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	summary.tooltip_text = L10n.text("Cleanup result")
-	_place(fixed,summary,Rect2(66,30,166,44))
-	var gained := _label("+"+_number(receipt.get("reward",0)),12,UITheme.MINT)
-	gained.autowrap_mode = TextServer.AUTOWRAP_OFF
-	gained.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	gained.clip_text = true
-	gained.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	gained.tooltip_text = L10n.text("Scrap earned")
-	_place(fixed,gained,Rect2(238,38,130,22))
+	_place(fixed,balance,Rect2(234,16,134,44))
 
 func _show_receipt_details(receipt: Dictionary) -> void:
-	close_popup()
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation",12)
-	column.add_child(_label(str(receipt.get("siteName","")),16,UITheme.GOLD))
-	column.add_child(_label("100% · All Clear" if receipt.get("allClear",false) else "CLEARED" if receipt.get("qualified",false) else "Recovery below 70%",13,UITheme.MINT))
-	_result_reward(column,receipt)
-	_result_unlocks(column,receipt)
-	column.add_child(_button("Restoration records",func(): app.navigate("restoration",{"from":"workshop","receipt":app.payload.duplicate(true)})))
-	if app.has_method("open_feedback"): column.add_child(_button("Feedback",func(): app.open_feedback()))
-	var popup := OfferPopup.new()
-	popup.configure(L10n.text("Cleanup result"),column)
-	_offer_popup = popup
-	popup.closed.connect(func():
-		if _offer_popup == popup: _offer_popup = null)
-	app.view.add_child(popup)
+	var data := receipt.duplicate(true)
+	data["workshop_context"] = app.payload.duplicate(true)
+	app.navigate("chapter" if receipt.get("mode","")=="boss" and receipt.get("qualified",false) else "receipt",data)
 
 func show_restart_confirmation() -> void:
 	close_popup()

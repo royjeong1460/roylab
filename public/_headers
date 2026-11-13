@@ -114,6 +114,9 @@
 /games/planet-patchup-free/free-0541-468c4227e5a1.pck
   Content-Type: application/gzip
   Cache-Control: public, max-age=31536000, immutable, no-transform
+/games/planet-patchup-free/free-0541-f024d0ffad9f.pck
+  Content-Type: application/gzip
+  Cache-Control: public, max-age=31536000, immutable, no-transform
 # END GODOT FREE
 /games/planet-patchup-free/free-0541-e656615bb27e.pck
   Content-Type: application/gzip

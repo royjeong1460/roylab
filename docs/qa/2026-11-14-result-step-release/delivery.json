@@ -1,0 +1,21 @@
+{
+  "version": "0.5.65",
+  "nativeBuild": 75,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": true,
+  "nativeAppLaunched": false,
+  "webStem": "free-0541-f024d0ffad9f",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "webBuilt": true,
+  "webPublished": false,
+  "httpVerified": false,
+  "scope": "Standalone result before optional workshop; existing result metrics/unlocks/scenery reused; title+wallet header; named result action and context-preserving return. Other adopted menus retained.",
+  "runtimeExecutedByAssistant": false,
+  "userValidation": "pending: actual result presentation, touch, result/workshop/unlock/gallery round-trip and unchanged saves/economy",
+  "rollbackNativeDelivery": "qa/ios-menu-ux-2026-11-14/delivery.json",
+  "rollbackWebStem": "free-0541-468c4227e5a1",
+  "nativeInstalledSequence": 4972,
+  "nativeInstallReceiptSha256": "910bbe810fc49ab2501f9eb59c722656027f95425a950345719ad7ff5d18f69a"
+}

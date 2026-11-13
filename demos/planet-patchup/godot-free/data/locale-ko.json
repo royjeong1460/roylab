@@ -563,5 +563,6 @@
   "Recovery below 70%": "목표 70% 미달",
   "This attempt's scrap will not be settled. Saved records, equipment and held scrap are kept.": "이번 판 고철은 정산하지 않아요.\n이미 저장된 기록·장비·고철은 유지돼요.",
   "Restart this site?": "처음부터 다시 할까요?",
-  "Upgrade · %s": "강화 · %s"
+  "Upgrade · %s": "강화 · %s",
+  "Detailed results": "상세 결과"
 }

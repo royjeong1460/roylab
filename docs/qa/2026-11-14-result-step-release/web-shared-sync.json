@@ -1,0 +1,18 @@
+{
+  "sharedIdentical": {
+    "app/screens.gd": true,
+    "app/workshop_menu.gd": true,
+    "app/menu_pages.gd": true,
+    "app/ui_theme.gd": true,
+    "app/offer_popup.gd": true,
+    "app/restoration_gallery.gd": true,
+    "presentation/restoration_artwork.gd": true
+  },
+  "webOnlyAppFunctionsChanged": [
+    "finish_run",
+    "_back_requested"
+  ],
+  "webBootstrapMigrationFeedbackTelemetryPreserved": true,
+  "nativeInterstitialNotEnabledOnWeb": true,
+  "gameRuntimeExecuted": false
+}
