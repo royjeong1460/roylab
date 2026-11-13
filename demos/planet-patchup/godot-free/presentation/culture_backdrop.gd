@@ -5,6 +5,7 @@ const CloudLayer = preload("res://presentation/cloud_layer.gd")
 const GroundLayer = preload("res://presentation/culture_ground.gd")
 const ScrapBank = preload("res://presentation/culture_scrap_bank.gd")
 const Layout = preload("res://presentation/scenery_layout.gd")
+const RoutePanorama = preload("res://presentation/culture_route_panorama.gd")
 static var _environments: Dictionary = {}
 var _config: Dictionary = {}
 var _state: Dictionary = {}
@@ -17,8 +18,9 @@ var _clip := Control.new()
 var _scenery := Node2D.new()
 var _ground: GroundLayer
 var _weather: CloudLayer
+var _panorama: RoutePanorama
 
-func setup(world: Node2D, region: int, restoration := 0.0) -> void:
+func setup(world: Node2D, region: int, restoration := 0.0, site_id := "") -> void:
 	var extent := Vector2(world.width,world.height)*4.0
 	_view_bounds = Rect2(Vector2.ZERO,extent)
 	z_index = -100
@@ -38,6 +40,12 @@ func setup(world: Node2D, region: int, restoration := 0.0) -> void:
 	_clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_clip)
 	_clip.add_child(_scenery)
+	var adopted := RoutePanorama.new()
+	if adopted.setup(world,region,site_id,_tier):
+		_panorama = adopted
+		_scenery.add_child(_panorama)
+	else:
+		adopted.free()
 	var layout := Node2D.new()
 	var factor := extent.x/float(_config.reference_width)
 	_scenery_floor = world.floor_y*4.0
@@ -50,12 +58,13 @@ func setup(world: Node2D, region: int, restoration := 0.0) -> void:
 	var terrain_factor := factor if region != 0 else extent.x/_terrain.get_width()
 	var terrain_floor := float(_config.reference_floor) if region != 0 else float(_terrain.get_height())
 	_terrain_rect = Rect2(Vector2(0,_scenery_floor-terrain_floor*terrain_factor),_terrain.get_size()*terrain_factor)
-	for node in Layout.objects(world,_config):
-		var building: bool = node.role == "building"
-		var alpha := (0.56 if building else 0.66) if _tier == "0" else (0.78 if building else 0.84)
-		_sprite(layout,node,2 if building else 3,alpha)
-	if _state.revival is String:
-		_image(layout,_state.revival,Vector2(0,_scenery_floor/factor-float(_config.reference_floor)),Vector2.ONE,4)
+	if _panorama == null:
+		for node in Layout.objects(world,_config):
+			var building: bool = node.role == "building"
+			var alpha := (0.56 if building else 0.66) if _tier == "0" else (0.78 if building else 0.84)
+			_sprite(layout,node,2 if building else 3,alpha)
+		if _state.revival is String:
+			_image(layout,_state.revival,Vector2(0,_scenery_floor/factor-float(_config.reference_floor)),Vector2.ONE,4)
 	var bank := ScrapBank.new()
 	bank.z_index = 5
 	_scenery.add_child(bank)
@@ -76,6 +85,8 @@ func cover_view(bounds: Rect2) -> void:
 		_clip.size = bounds.size
 		_scenery.position = -bounds.position
 		_ground.cover_view(bounds)
+		if _panorama != null:
+			_panorama.cover_view(bounds)
 	queue_redraw()
 
 func weather_view(bounds: Rect2) -> void:

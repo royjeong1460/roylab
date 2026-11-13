@@ -1,0 +1,556 @@
+{
+  "schema": 1,
+  "canvas": [
+    2340,
+    900
+  ],
+  "base": 820,
+  "stages": {
+    "arch-1-arch-quarter-v2": {
+      "region": 0,
+      "boss": false,
+      "texture": "res://assets/culture_routes/arch.png",
+      "left": 0,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 280,
+        "width": 720,
+        "height": 540
+      }
+    },
+    "arch-2-arch-quarter-v2": {
+      "region": 0,
+      "boss": false,
+      "texture": "res://assets/culture_routes/arch.png",
+      "left": 1950,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 280,
+        "width": 720,
+        "height": 540
+      }
+    },
+    "arch-3-arch-quarter-v2": {
+      "region": 0,
+      "boss": false,
+      "texture": "res://assets/culture_routes/arch.png",
+      "left": 390,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 280,
+        "width": 720,
+        "height": 540
+      }
+    },
+    "arch-4-arch-quarter-v2": {
+      "region": 0,
+      "boss": false,
+      "texture": "res://assets/culture_routes/arch.png",
+      "left": 1560,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 280,
+        "width": 720,
+        "height": 540
+      }
+    },
+    "arch-5-arch-quarter-v2": {
+      "region": 0,
+      "boss": false,
+      "texture": "res://assets/culture_routes/arch.png",
+      "left": 780,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 280,
+        "width": 720,
+        "height": 540
+      }
+    },
+    "arch-6-arch-quarter-v2": {
+      "region": 0,
+      "boss": false,
+      "texture": "res://assets/culture_routes/arch.png",
+      "left": 1170,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 280,
+        "width": 720,
+        "height": 540
+      }
+    },
+    "arch-7-arch-quarter-v2": {
+      "region": 0,
+      "boss": true,
+      "texture": "res://assets/culture_routes/arch.png",
+      "left": 770,
+      "width": 800,
+      "mainBounds": {
+        "x": 810,
+        "y": 280,
+        "width": 720,
+        "height": 540
+      }
+    },
+    "culture-yard-01-v1": {
+      "region": 1,
+      "boss": false,
+      "texture": "res://assets/culture_routes/eaves.png",
+      "left": 0,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 311.875,
+        "width": 720,
+        "height": 508.125
+      }
+    },
+    "culture-yard-02-v1": {
+      "region": 1,
+      "boss": false,
+      "texture": "res://assets/culture_routes/eaves.png",
+      "left": 1950,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 311.875,
+        "width": 720,
+        "height": 508.125
+      }
+    },
+    "culture-yard-03-v1": {
+      "region": 1,
+      "boss": false,
+      "texture": "res://assets/culture_routes/eaves.png",
+      "left": 390,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 311.875,
+        "width": 720,
+        "height": 508.125
+      }
+    },
+    "culture-yard-04-v1": {
+      "region": 1,
+      "boss": false,
+      "texture": "res://assets/culture_routes/eaves.png",
+      "left": 1560,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 311.875,
+        "width": 720,
+        "height": 508.125
+      }
+    },
+    "culture-yard-05-v1": {
+      "region": 1,
+      "boss": false,
+      "texture": "res://assets/culture_routes/eaves.png",
+      "left": 780,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 311.875,
+        "width": 720,
+        "height": 508.125
+      }
+    },
+    "culture-yard-06-v1": {
+      "region": 1,
+      "boss": false,
+      "texture": "res://assets/culture_routes/eaves.png",
+      "left": 1170,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 311.875,
+        "width": 720,
+        "height": 508.125
+      }
+    },
+    "culture-yard-boss-v1": {
+      "region": 1,
+      "boss": true,
+      "texture": "res://assets/culture_routes/eaves.png",
+      "left": 770,
+      "width": 800,
+      "mainBounds": {
+        "x": 810,
+        "y": 311.875,
+        "width": 720,
+        "height": 508.125
+      }
+    },
+    "amber-01-amber-terrain-frame-v1": {
+      "region": 2,
+      "boss": false,
+      "texture": "res://assets/culture_routes/amber.png",
+      "left": 0,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 282.4,
+        "width": 720,
+        "height": 537.6
+      }
+    },
+    "amber-02-amber-terrain-frame-v1": {
+      "region": 2,
+      "boss": false,
+      "texture": "res://assets/culture_routes/amber.png",
+      "left": 1950,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 282.4,
+        "width": 720,
+        "height": 537.6
+      }
+    },
+    "amber-03-amber-terrain-frame-v1": {
+      "region": 2,
+      "boss": false,
+      "texture": "res://assets/culture_routes/amber.png",
+      "left": 390,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 282.4,
+        "width": 720,
+        "height": 537.6
+      }
+    },
+    "amber-04-amber-terrain-frame-v1": {
+      "region": 2,
+      "boss": false,
+      "texture": "res://assets/culture_routes/amber.png",
+      "left": 1560,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 282.4,
+        "width": 720,
+        "height": 537.6
+      }
+    },
+    "amber-05-amber-terrain-frame-v1": {
+      "region": 2,
+      "boss": false,
+      "texture": "res://assets/culture_routes/amber.png",
+      "left": 780,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 282.4,
+        "width": 720,
+        "height": 537.6
+      }
+    },
+    "amber-06-amber-terrain-frame-v1": {
+      "region": 2,
+      "boss": false,
+      "texture": "res://assets/culture_routes/amber.png",
+      "left": 1170,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 282.4,
+        "width": 720,
+        "height": 537.6
+      }
+    },
+    "amber-boss-amber-terrain-frame-v1": {
+      "region": 2,
+      "boss": true,
+      "texture": "res://assets/culture_routes/amber.png",
+      "left": 770,
+      "width": 800,
+      "mainBounds": {
+        "x": 810,
+        "y": 282.4,
+        "width": 720,
+        "height": 537.6
+      }
+    },
+    "canal-01-canal-terrain-frame-v1": {
+      "region": 3,
+      "boss": false,
+      "texture": "res://assets/culture_routes/clock.png",
+      "left": 0,
+      "width": 390,
+      "mainBounds": {
+        "x": 850,
+        "y": 217.6470588235294,
+        "width": 640,
+        "height": 602.3529411764706
+      }
+    },
+    "canal-02-canal-terrain-frame-v1": {
+      "region": 3,
+      "boss": false,
+      "texture": "res://assets/culture_routes/clock.png",
+      "left": 1950,
+      "width": 390,
+      "mainBounds": {
+        "x": 850,
+        "y": 217.6470588235294,
+        "width": 640,
+        "height": 602.3529411764706
+      }
+    },
+    "canal-03-canal-terrain-frame-v1": {
+      "region": 3,
+      "boss": false,
+      "texture": "res://assets/culture_routes/clock.png",
+      "left": 390,
+      "width": 390,
+      "mainBounds": {
+        "x": 850,
+        "y": 217.6470588235294,
+        "width": 640,
+        "height": 602.3529411764706
+      }
+    },
+    "canal-04-canal-terrain-frame-v1": {
+      "region": 3,
+      "boss": false,
+      "texture": "res://assets/culture_routes/clock.png",
+      "left": 1560,
+      "width": 390,
+      "mainBounds": {
+        "x": 850,
+        "y": 217.6470588235294,
+        "width": 640,
+        "height": 602.3529411764706
+      }
+    },
+    "canal-05-canal-terrain-frame-v1": {
+      "region": 3,
+      "boss": false,
+      "texture": "res://assets/culture_routes/clock.png",
+      "left": 780,
+      "width": 390,
+      "mainBounds": {
+        "x": 850,
+        "y": 217.6470588235294,
+        "width": 640,
+        "height": 602.3529411764706
+      }
+    },
+    "canal-06-canal-terrain-frame-v1": {
+      "region": 3,
+      "boss": false,
+      "texture": "res://assets/culture_routes/clock.png",
+      "left": 1170,
+      "width": 390,
+      "mainBounds": {
+        "x": 850,
+        "y": 217.6470588235294,
+        "width": 640,
+        "height": 602.3529411764706
+      }
+    },
+    "canal-boss-canal-terrain-frame-v1": {
+      "region": 3,
+      "boss": true,
+      "texture": "res://assets/culture_routes/clock.png",
+      "left": 770,
+      "width": 800,
+      "mainBounds": {
+        "x": 850,
+        "y": 217.6470588235294,
+        "width": 640,
+        "height": 602.3529411764706
+      }
+    },
+    "terrace-01-terrace-terrain-frame-v1": {
+      "region": 4,
+      "boss": false,
+      "texture": "res://assets/culture_routes/terrace.png",
+      "left": 0,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 337.125748502994,
+        "width": 720,
+        "height": 482.874251497006
+      }
+    },
+    "terrace-02-terrace-terrain-frame-v1": {
+      "region": 4,
+      "boss": false,
+      "texture": "res://assets/culture_routes/terrace.png",
+      "left": 1950,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 337.125748502994,
+        "width": 720,
+        "height": 482.874251497006
+      }
+    },
+    "terrace-03-terrace-terrain-frame-v1": {
+      "region": 4,
+      "boss": false,
+      "texture": "res://assets/culture_routes/terrace.png",
+      "left": 390,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 337.125748502994,
+        "width": 720,
+        "height": 482.874251497006
+      }
+    },
+    "terrace-04-terrace-terrain-frame-v1": {
+      "region": 4,
+      "boss": false,
+      "texture": "res://assets/culture_routes/terrace.png",
+      "left": 1560,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 337.125748502994,
+        "width": 720,
+        "height": 482.874251497006
+      }
+    },
+    "terrace-05-terrace-terrain-frame-v1": {
+      "region": 4,
+      "boss": false,
+      "texture": "res://assets/culture_routes/terrace.png",
+      "left": 780,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 337.125748502994,
+        "width": 720,
+        "height": 482.874251497006
+      }
+    },
+    "terrace-06-terrace-terrain-frame-v1": {
+      "region": 4,
+      "boss": false,
+      "texture": "res://assets/culture_routes/terrace.png",
+      "left": 1170,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 337.125748502994,
+        "width": 720,
+        "height": 482.874251497006
+      }
+    },
+    "terrace-boss-terrace-terrain-frame-v1": {
+      "region": 4,
+      "boss": true,
+      "texture": "res://assets/culture_routes/terrace.png",
+      "left": 770,
+      "width": 800,
+      "mainBounds": {
+        "x": 810,
+        "y": 337.125748502994,
+        "width": 720,
+        "height": 482.874251497006
+      }
+    },
+    "mosaic-01-mosaic-terrain-frame-v1": {
+      "region": 5,
+      "boss": false,
+      "texture": "res://assets/culture_routes/rock-ruins.png",
+      "left": 0,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 94.87179487179489,
+        "width": 720,
+        "height": 725.1282051282051
+      }
+    },
+    "mosaic-02-mosaic-terrain-frame-v1": {
+      "region": 5,
+      "boss": false,
+      "texture": "res://assets/culture_routes/rock-ruins.png",
+      "left": 1950,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 94.87179487179489,
+        "width": 720,
+        "height": 725.1282051282051
+      }
+    },
+    "mosaic-03-mosaic-terrain-frame-v1": {
+      "region": 5,
+      "boss": false,
+      "texture": "res://assets/culture_routes/rock-ruins.png",
+      "left": 390,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 94.87179487179489,
+        "width": 720,
+        "height": 725.1282051282051
+      }
+    },
+    "mosaic-04-mosaic-terrain-frame-v1": {
+      "region": 5,
+      "boss": false,
+      "texture": "res://assets/culture_routes/rock-ruins.png",
+      "left": 1560,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 94.87179487179489,
+        "width": 720,
+        "height": 725.1282051282051
+      }
+    },
+    "mosaic-05-mosaic-terrain-frame-v1": {
+      "region": 5,
+      "boss": false,
+      "texture": "res://assets/culture_routes/rock-ruins.png",
+      "left": 780,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 94.87179487179489,
+        "width": 720,
+        "height": 725.1282051282051
+      }
+    },
+    "mosaic-06-mosaic-terrain-frame-v1": {
+      "region": 5,
+      "boss": false,
+      "texture": "res://assets/culture_routes/rock-ruins.png",
+      "left": 1170,
+      "width": 390,
+      "mainBounds": {
+        "x": 810,
+        "y": 94.87179487179489,
+        "width": 720,
+        "height": 725.1282051282051
+      }
+    },
+    "mosaic-boss-mosaic-terrain-frame-v1": {
+      "region": 5,
+      "boss": true,
+      "texture": "res://assets/culture_routes/rock-ruins.png",
+      "left": 770,
+      "width": 800,
+      "mainBounds": {
+        "x": 810,
+        "y": 94.87179487179489,
+        "width": 720,
+        "height": 725.1282051282051
+      }
+    }
+  }
+}

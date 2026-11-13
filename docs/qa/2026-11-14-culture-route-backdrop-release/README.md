@@ -1,0 +1,20 @@
+# BUG-022 · Adopted culture route play scenery · 2026-11-14
+
+사용자가 아치 지구1-1의70% 완료 기록으로 입장했지만 채택한 여섯 구간 경관이 구조물 뒤에 보이지 않는다고 제보했다. 사용자가 대상이 업적 갤러리가 아닌 플레이 배경임을 확인했다.
+
+0.5.62는 전체 경관을 갤러리에만 연결했다. 플레이 화면은 이전 문화 기물 랜덤 배치를 그대로 사용했고 새 구간을 선택할 맵ID도 배경에 전달하지 않았다. 이번 변경은 채택한 경관6개를 실제 플레이 레이어에 연결한다.
+
+- 42개 기존 맵ID마다 정확한 source window를 지정한다. 일반1·2는좌우외곽,3·4는안쪽,5·6은중앙양쪽. 원본 공간 순서는1·3·5·6·4·2다.
+- 일반은폭390구간, 보스는x770부터폭800으로 중앙 주 유적 전체를 보여준다.
+- 입장할 때 해당 맵의 저장 최고기록을 사용한다.70%전에는 쓰레기,70%이상에는해당구간경관+잔여쓰레기,100%에는해당구간경관+쓰레기없음. 플레이 도중에는 상태가 바뀌지 않는다.
+- 전경 구조물·실제 지형·물리·카메라·스킬·강화·진행·저장·업적 갤러리는 변경하지 않았다. 날씨/구름과 로컬 지형에 붙는 쓰레기·바닥 마스킹도 유지한다.
+- 연결된 캠페인 맵에서는 이전 기물과 복원 레이어의 중복을 생략한다. 튜토리얼·미등록 비교맵에는 기존 배경을 유지한다.
+- 여섯 architecture-only RGBA 원본은 채택 자산과SHA-256이 같다. 합쳐진 sky/cloud 스크린샷을 게임 배경으로 넣지 않았다.
+
+네이티브0.5.63(73)의 import/compile-only/pack/Xcode Release/deep strict서명을 확인했다. iPhone 설치 연결은 CoreDevice시간초과로 실패하여 USB재연결·잠금해제를 요청했다. 실제 설치 상태는 delivery.json을 따른다. 기존0.5.62앱과 저장을 삭제하지 않았다.
+
+웹 import/compile/export와 webpack site build를 확인했다. 공개 배포·HTTP 압축/원본 해시는 delivery.json과 http-verification.json에서 별도로 확인한다. 롤백은 native0.5.62(72), Web free-0541-b59b561881d2다.
+
+독립 정적 코드 검토에서 좌표·레이어·지형 가림·fallback·42개맵 연결·원본 해시를 확인했다. 원본 데이터로1-1의0/70/100% 정적 합성 이미지를 만들었으며 실제 게임 캡처는 아니다. 게임·씬·시뮬레이션·브라우저 조작·기기 앱 실행은 하지 않았다. 실제 화면과 상호작용은 사용자 확인 대기다.
+
+[source checks](source-verification.json), [native package](native-package.json), [web package](release-manifest.json), [delivery](delivery.json), [bug report](../../bugs/BUG-022-adopted-route-backdrop-missing.md).

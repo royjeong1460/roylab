@@ -59,7 +59,7 @@ func _ready() -> void:
 	add_child(backdrop)
 	var previous: Dictionary = profile.stageRecords.get(site.id, {})
 	var restoration := float(previous.get("recovered", 0))/maxf(1,float(previous.get("total", 1)))
-	backdrop.setup(world, region, restoration)
+	backdrop.setup(world, region, restoration, str(site.id))
 	_backdrop = backdrop
 	var style := backdrop.environment_style()
 	sky_color = style.sky

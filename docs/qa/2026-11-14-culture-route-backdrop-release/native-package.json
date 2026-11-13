@@ -1,0 +1,11 @@
+{
+  "bundle": "com.roy.planetpatchup.godotcompare",
+  "version": "0.5.63",
+  "build": "73",
+  "pckSha256": "0eb22359ad4eb690510b215c4b9a02930719762870b0324cc24c4c0b648e21f6",
+  "pckBytes": 41406860,
+  "executableSha256": "0ba916e1685bbfc592d56d2fe1f64bccc5aa668687b8df6df61bf6751f52788e",
+  "signatureVerified": true,
+  "routeResourceNamesPresent": 8,
+  "appLaunched": false
+}

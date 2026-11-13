@@ -1,0 +1,19 @@
+{
+  "version": "0.5.63",
+  "nativeBuild": 73,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": false,
+  "nativeAppLaunched": false,
+  "nativeInstallStatus": "CoreDevice connection timeout; waiting for USB reconnect/unlock",
+  "webStem": "free-0541-1ec2c61d8f79",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "webPublished": false,
+  "httpVerified": false,
+  "rollbackWebStem": "free-0541-b59b561881d2",
+  "rollbackNativeDelivery": "qa/ios-restoration-gallery-2026-11-13/delivery.json",
+  "scope": "BUG-022: connect adopted six-section architecture to all42play stages using their saved best record on entry",
+  "runtimeExecutedByAssistant": false,
+  "userValidation": "pending: Arch1-1 at70%, other crops, terrain occlusion and actual device/browser presentation"
+}
