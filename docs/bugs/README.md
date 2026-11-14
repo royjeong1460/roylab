@@ -28,4 +28,4 @@
 
 | [BUG-022](BUG-022-adopted-route-backdrop-missing.md) | 2026-11-14 | 70% 완료 후 입장해도 채택한 여섯 구간 배경이 보이지 않음 | 웹·앱 전달 완료 · 사용자 확인 대기 |
 
-| [BUG-023](BUG-023-missing-skill-explanation-demo.md) | 2026-11-14 | 스킬 설명창의 기존 시연 애니메이션 미연결 | 수정·전달 진행 · 사용자 확인 대기 |
+| [BUG-023](BUG-023-missing-skill-explanation-demo.md) | 2026-11-14 | 스킬 설명창의 기존 시연 애니메이션 미연결 | 웹·앱·로컬 연결 · 사용자 확인 대기 |

@@ -1,0 +1,78 @@
+{
+  "scope": "Pure timeline/source data audit only; no DOM, renderer, browser, physics or animation execution",
+  "skillCount": 10,
+  "eventCount": 78,
+  "checks": [
+    {
+      "id": "aftershock",
+      "events": 6,
+      "duration": 3.07,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "relay",
+      "events": 2,
+      "duration": 3.44,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "slam",
+      "events": 4,
+      "duration": 3.7,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "expand",
+      "events": 1,
+      "duration": 3.3,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "wave",
+      "events": 9,
+      "duration": 3,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "orbital",
+      "events": 15,
+      "duration": 4.989999999999999,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "seismic",
+      "events": 12,
+      "duration": 4,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "gravity",
+      "events": 25,
+      "duration": 5.7,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "sonic",
+      "events": 3,
+      "duration": 4,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    },
+    {
+      "id": "recharge",
+      "events": 1,
+      "duration": 2.5,
+      "allTimesFinite": true,
+      "allSheetsPresent": true
+    }
+  ],
+  "sourceSha256": "ee4fc38f5c99286c6fdd680915f39486ca6863a740fc88638e48ad28ca88caba"
+}

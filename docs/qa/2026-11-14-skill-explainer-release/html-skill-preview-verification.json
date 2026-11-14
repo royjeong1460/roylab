@@ -1,0 +1,243 @@
+{
+  "changedFunctions": [
+    "closeSheet",
+    "sheet",
+    "skillDetail"
+  ],
+  "unrelatedFilesUnchanged": {
+    "style.css": "3047ff18e6474c11db88e092fede742c47e51ca44d4fb67dd794df3cbdd266ff",
+    "index.html": "25198c0c0649680b6cbe9ae51c157b684b6bd8cb6e16e2243244a21c9407462a",
+    "skills.js": "2ac10c2e1130ac74c26b7565c5d07818d13932fd3295891be39c7ed2635ca109",
+    "catalog.json": "0332d1f38ffb2eceac360c6baa9060617a947589a61772a065f45dc64a8cfd0c"
+  },
+  "skillIds": [
+    "aftershock",
+    "expand",
+    "gravity",
+    "orbital",
+    "recharge",
+    "relay",
+    "seismic",
+    "slam",
+    "sonic",
+    "wave"
+  ],
+  "sheetCount": 16,
+  "originalPNGBytesPreserved": true,
+  "originalTimelineBytesPreserved": true,
+  "nodeSyntaxChecks": 4,
+  "httpResponses": [
+    {
+      "path": "app.js",
+      "status": 200,
+      "sha256": "2be3f1e47ea041514b838e418b11b78b046d9c6a344a8776ef42775635a2271c"
+    },
+    {
+      "path": "skill-preview.js",
+      "status": 200,
+      "sha256": "ee4fc38f5c99286c6fdd680915f39486ca6863a740fc88638e48ad28ca88caba"
+    },
+    {
+      "path": "skill-preview.css",
+      "status": 200,
+      "sha256": "c4fdbb0737b6fb0cda6357df6f2f6eaeda58cffcccdf3c99155c8a9897cdc7b0"
+    },
+    {
+      "path": "assets/vfx/manifest.json",
+      "status": 200,
+      "sha256": "f0f8c2fa1fec7f9a7d1d1ae31416cac94296bd38ed5b2aad23eeb2fdb5a6c806"
+    },
+    {
+      "path": "assets/vfx/legacy-sequence.js",
+      "status": 200,
+      "sha256": "aa3bcfd9c37520d99f06183a2b00c8760b9d1f5d0126e038c89f8f2751de6930"
+    },
+    {
+      "path": "assets/vfx/expansion-sequence.js",
+      "status": 200,
+      "sha256": "f9de2064dc6897247d7b440248cfce1010918f28cb0c4b7ecd02497425ad0c95"
+    },
+    {
+      "path": "assets/vfx/blast.png",
+      "status": 200,
+      "sha256": "c4f2d5bb4ca4e657b5db9572856820014b5bcf7fb784df84dd64dab235790301"
+    },
+    {
+      "path": "assets/vfx/impact.png",
+      "status": 200,
+      "sha256": "7e34b13cb28733d6140c03c96b5b97fd8e33c1da30bf74ae16b6649a75a7f2ec"
+    },
+    {
+      "path": "assets/vfx/relay-mark.png",
+      "status": 200,
+      "sha256": "577d0c829dc1ca4848a864affd2a2a0c151338b50ab51f59355bbe6894ef02c0"
+    },
+    {
+      "path": "assets/vfx/shockwave.png",
+      "status": 200,
+      "sha256": "fc263f0fb06dc5fbe8361961b22697577d22ba5cc9dfa256483a9a7793518eb1"
+    },
+    {
+      "path": "assets/vfx/satellite-normal.png",
+      "status": 200,
+      "sha256": "74e9481411d7beb0115caf4c04d183b03848725ba1508b21e2900d5a892b288b"
+    },
+    {
+      "path": "assets/vfx/satellite-heavy.png",
+      "status": 200,
+      "sha256": "59ae4d95863859b9dca469e5d575d5bd6b43e9baf5ce90346eff72edac3ab453"
+    },
+    {
+      "path": "assets/vfx/satellite-trail.png",
+      "status": 200,
+      "sha256": "1ea1d98cf482145732c9b8b19ddb90039fa5e326d8a90e773ac633696f3d4685"
+    },
+    {
+      "path": "assets/vfx/lift-stream.png",
+      "status": 200,
+      "sha256": "afd876f82bf8e17faed62e3ed494c0a50904ad1b1252f152f7471357cfc5ef6f"
+    },
+    {
+      "path": "assets/vfx/slam-impact.png",
+      "status": 200,
+      "sha256": "5df6cee60a43555f79b4c8de1091ed7f3996ed7a9e8ac3bb6b146b3c6dd062a0"
+    },
+    {
+      "path": "assets/vfx/pressure-bloom.png",
+      "status": 200,
+      "sha256": "145c0820208a099b72a5822acb58eb0c8b01d4a3b353fb86218d42e3c16fbfae"
+    },
+    {
+      "path": "assets/vfx/ground-pulse.png",
+      "status": 200,
+      "sha256": "0d858b035f91b87ecbcbc0de31c5da2be84637c03dfd770d17c95e0b4307b9d4"
+    },
+    {
+      "path": "assets/vfx/seismic-strike.png",
+      "status": 200,
+      "sha256": "c77b34e1692cd09d110d309082cb5195bd3167781a8b671de3ebc7b1c8c1a37c"
+    },
+    {
+      "path": "assets/vfx/gravity-field.png",
+      "status": 200,
+      "sha256": "13667013341456814f579773dbb3f702fac605dd26a40d5b75fbf31593e3810c"
+    },
+    {
+      "path": "assets/vfx/gravity-impact.png",
+      "status": 200,
+      "sha256": "146cce46f83114fad298d2b4ceda593f8dc92459753f3c8f8d45f8b7861ff860"
+    },
+    {
+      "path": "assets/vfx/sonic-front.png",
+      "status": 200,
+      "sha256": "9da216f48356f02b587cc4055974de2b099273b1693324df61ecbe210bd3336a"
+    },
+    {
+      "path": "assets/vfx/recharge.png",
+      "status": 200,
+      "sha256": "7127f97cfb53dbb3332bb36a16b019a8ef29c03a79848a421809fa7e986471e5"
+    }
+  ],
+  "sourceAssets": [
+    {
+      "file": "assets/vfx/blast.png",
+      "sha256": "c4f2d5bb4ca4e657b5db9572856820014b5bcf7fb784df84dd64dab235790301",
+      "width": 640,
+      "height": 64
+    },
+    {
+      "file": "assets/vfx/impact.png",
+      "sha256": "7e34b13cb28733d6140c03c96b5b97fd8e33c1da30bf74ae16b6649a75a7f2ec",
+      "width": 192,
+      "height": 32
+    },
+    {
+      "file": "assets/vfx/relay-mark.png",
+      "sha256": "577d0c829dc1ca4848a864affd2a2a0c151338b50ab51f59355bbe6894ef02c0",
+      "width": 128,
+      "height": 32
+    },
+    {
+      "file": "assets/vfx/shockwave.png",
+      "sha256": "fc263f0fb06dc5fbe8361961b22697577d22ba5cc9dfa256483a9a7793518eb1",
+      "width": 768,
+      "height": 48
+    },
+    {
+      "file": "assets/vfx/satellite-normal.png",
+      "sha256": "74e9481411d7beb0115caf4c04d183b03848725ba1508b21e2900d5a892b288b",
+      "width": 48,
+      "height": 48
+    },
+    {
+      "file": "assets/vfx/satellite-heavy.png",
+      "sha256": "59ae4d95863859b9dca469e5d575d5bd6b43e9baf5ce90346eff72edac3ab453",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "file": "assets/vfx/satellite-trail.png",
+      "sha256": "1ea1d98cf482145732c9b8b19ddb90039fa5e326d8a90e773ac633696f3d4685",
+      "width": 144,
+      "height": 64
+    },
+    {
+      "file": "assets/vfx/lift-stream.png",
+      "sha256": "afd876f82bf8e17faed62e3ed494c0a50904ad1b1252f152f7471357cfc5ef6f",
+      "width": 480,
+      "height": 96
+    },
+    {
+      "file": "assets/vfx/slam-impact.png",
+      "sha256": "5df6cee60a43555f79b4c8de1091ed7f3996ed7a9e8ac3bb6b146b3c6dd062a0",
+      "width": 960,
+      "height": 64
+    },
+    {
+      "file": "assets/vfx/pressure-bloom.png",
+      "sha256": "145c0820208a099b72a5822acb58eb0c8b01d4a3b353fb86218d42e3c16fbfae",
+      "width": 1152,
+      "height": 96
+    },
+    {
+      "file": "assets/vfx/ground-pulse.png",
+      "sha256": "0d858b035f91b87ecbcbc0de31c5da2be84637c03dfd770d17c95e0b4307b9d4",
+      "width": 960,
+      "height": 48
+    },
+    {
+      "file": "assets/vfx/seismic-strike.png",
+      "sha256": "c77b34e1692cd09d110d309082cb5195bd3167781a8b671de3ebc7b1c8c1a37c",
+      "width": 640,
+      "height": 96
+    },
+    {
+      "file": "assets/vfx/gravity-field.png",
+      "sha256": "13667013341456814f579773dbb3f702fac605dd26a40d5b75fbf31593e3810c",
+      "width": 1536,
+      "height": 64
+    },
+    {
+      "file": "assets/vfx/gravity-impact.png",
+      "sha256": "146cce46f83114fad298d2b4ceda593f8dc92459753f3c8f8d45f8b7861ff860",
+      "width": 512,
+      "height": 48
+    },
+    {
+      "file": "assets/vfx/sonic-front.png",
+      "sha256": "9da216f48356f02b587cc4055974de2b099273b1693324df61ecbe210bd3336a",
+      "width": 576,
+      "height": 128
+    },
+    {
+      "file": "assets/vfx/recharge.png",
+      "sha256": "7127f97cfb53dbb3332bb36a16b019a8ef29c03a79848a421809fa7e986471e5",
+      "width": 768,
+      "height": 64
+    }
+  ],
+  "gameBrowserAnimationExecuted": false,
+  "httpAllBytesMatch": true,
+  "eventAudit": "html-preview-event-audit.json",
+  "visibilityReturn": "normal motion restarts only when loaded, connected and not disposed; reduced motion remains Replay-only"
+}
