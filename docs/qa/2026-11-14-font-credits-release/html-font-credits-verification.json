@@ -1,0 +1,44 @@
+{
+  "root": "/Users/roy/Developer/sand/deployment/roylab/demos/planet-patchup/design-preview/menu-flow-v3-2026-11-14",
+  "originalBackups": {
+    "app.js": "2be3f1e47ea041514b838e418b11b78b046d9c6a344a8776ef42775635a2271c",
+    "base.css": "0c12e40a355f8ecc8c2c0f2dec6d7d9cb89be96d23cefdb61674ef7a73454510",
+    "style.css": "3047ff18e6474c11db88e092fede742c47e51ca44d4fb67dd794df3cbdd266ff"
+  },
+  "changedOriginalFunctions": [
+    "options",
+    "handleButton"
+  ],
+  "addedFunctions": [
+    "creditsMain",
+    "creditsLicenseList",
+    "creditsNotice"
+  ],
+  "globalFocusTrapSelectorExpandedOnce": true,
+  "fontSha256": "b6b28ef07a91a889587b3f2485ad77d3cd116456f8bfbc50a271cbe90b39535d",
+  "fontOriginalBytesPreserved": true,
+  "fontStudyAllFilesUnchanged": true,
+  "skillPreviewAndDataUntouched": true,
+  "sharedCreditsBytesMatch": true,
+  "creditsSha256": "368ffd7facca73b9ca30e188ae50b7059ff203b8c0235f75d446a26278dd2b22",
+  "webVisibleMainEntries": 7,
+  "webVisibleNoticeIds": [
+    "neo",
+    "galmuri",
+    "godot",
+    "godot-third-party",
+    "godot-cpp"
+  ],
+  "noticeOriginalTextLengths": {
+    "neo": 4419,
+    "galmuri": 4264,
+    "godot": 1149,
+    "godot-third-party": 99780,
+    "godot-cpp": 1093
+  },
+  "keyboardFocusableLegalScroller": true,
+  "noAutomaticExternalNavigation": true,
+  "nodeSyntaxChecks": 2,
+  "browserOrGameExecuted": false,
+  "httpCheckedThisTask": false
+}

@@ -11,3 +11,5 @@
 Godot import/compile-only/export, 양쪽 PCK의 글꼴과 원문 JSON 바이트, Xcode Release·deep/strict서명, 사이트 빌드 확인. iOS0.5.67(77)은 앱 ID와 사용자 저장을 유지해 업데이트 설치했다(설치 순번5012). 앱은 실행하지 않았다. 웹 공개 전달은 [delivery.json](delivery.json)과 정적 HTTP 증거에 별도 기록한다. Godot 게임·씬·테스트·브라우저 게임·기기 앱 실행과 플레이 검증은 하지 않았다.
 
 확인 대기: 실제 폰트 가독성/줄바꿈, 옵션 → 제작 및 도움 → 라이선스 목록 → 원문 → 목록/닫기, 긴 원문 터치·키보드 스크롤, 기존 메뉴·시연·진행 기록.
+
+웹 `free-0541-66ae4962a822` 공개 배포와 Cloudflare completed/success, 정적 응답15개 및 압축 전후 해시 일치를 확인했다. [HTTP 기록](http-verification.json). 로컬390×844 HTML 메뉴에서 원문 스크롤·목록/도움 복귀·닫기 후 포커스 복귀를 확인했다. 이 확인은 Godot 렌더링 검증이 아니다.

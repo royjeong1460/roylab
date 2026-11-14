@@ -1,0 +1,26 @@
+{
+  "scope": "local HTML prototype only, not Godot",
+  "url": "http://127.0.0.1:8817/index.html?screen=options",
+  "frame": "390x844",
+  "computedFont": "NeoPro, sans-serif",
+  "visibleCredits": [
+    "Roy",
+    "NeoDunggeunmo Pro · Dalgona.",
+    "Godot Engine 4.6.2",
+    "godot-cpp",
+    "PostHog",
+    "OpenAI Codex",
+    "Aseprite"
+  ],
+  "visibleNotices": 5,
+  "neoOriginalTextVisible": true,
+  "licenseScroller": {
+    "height": 338,
+    "scrollHeight": 3084,
+    "afterPageDownScrollTop": 298
+  },
+  "backToListAndCredits": true,
+  "closeReturnedFocusToOptionsCredits": true,
+  "screenshot": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-font-credits-2026-11-14/reports/credits-preview.png",
+  "gameEngineStarted": false
+}
