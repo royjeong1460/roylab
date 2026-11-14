@@ -1,0 +1,38 @@
+{
+  "source": "CURRENT0.5.66(76)",
+  "candidate": "0.5.67(77)",
+  "changedFiles": [
+    "app/menu_pages.gd",
+    "app/offer_popup.gd",
+    "data/assets.json",
+    "data/locale-ko.json",
+    "export_presets.cfg",
+    "project.godot"
+  ],
+  "originalAssetsUnchanged": 681,
+  "mapsUnchanged": 43,
+  "protectedGameLogic": [
+    "campaign/journey.gd",
+    "campaign/economy.gd",
+    "campaign/money.gd",
+    "campaign/progression.gd",
+    "campaign/profile_schema.gd",
+    "campaign/profile_store.gd",
+    "campaign/run_session.gd",
+    "app/play_view.gd",
+    "app/app.gd",
+    "app/workshop_menu.gd",
+    "app/skill_demo.gd",
+    "data/skill_demo_scenes.json",
+    "world.gd",
+    "piece.gd",
+    "skill_physics.gd",
+    "presentation/skill_vfx.gd"
+  ],
+  "originalCandidateUnchanged": true,
+  "newFontSha256": "e4b974b1a378ef1962e3c72dfbcb7b7bba09f54dd53bf57889af300b2531b155",
+  "fontSampleCovered": "제작 및 도움강화폰트스킬장착중궤도낙하청소결과라이선스123ABCabc%×",
+  "unmappedArrowUsesExistingSystemFallback": true,
+  "noticesExact": 10,
+  "runtimeExecuted": false
+}

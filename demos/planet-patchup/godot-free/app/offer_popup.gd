@@ -66,6 +66,10 @@ func _ready() -> void:
 				child.mouse_filter = Control.MOUSE_FILTER_PASS
 				if not child.disabled and child.focus_mode != Control.FOCUS_NONE:
 					_focus_controls.append(child)
+			elif child is RichTextLabel:
+				child.mouse_filter = Control.MOUSE_FILTER_PASS
+				if child.focus_mode != Control.FOCUS_NONE:
+					_focus_controls.append(child)
 			elif child is PanelContainer:
 				child.mouse_filter = Control.MOUSE_FILTER_PASS
 			elif child is Label or child is TextureRect:

@@ -7,9 +7,13 @@ const OfferPopup = preload("res://app/offer_popup.gd")
 
 var h
 var _art: Array = []
+var _credit_data: Dictionary = {}
 
 func setup(host) -> void:
 	h = host
+	var credits = JSON.parse_string(FileAccess.get_file_as_string("res://data/credits.json"))
+	if credits is Dictionary:
+		_credit_data = credits
 	var data = JSON.parse_string(FileAccess.get_file_as_string("res://data/restoration_art.json"))
 	if data is Dictionary and data.get("cultures") is Array:
 		_art = data.cultures
@@ -365,13 +369,55 @@ func _help() -> void:
 	content.add_child(h._label(L10n.format("Resource Refining · +%s%% scrap", [String.num(float(stats.salvageYield) * 100.0, 2)]), 12))
 	_popup("Controls", content)
 
+func _credit_visible(entry: Dictionary) -> bool:
+	var platform := str(entry.get("platform", "all"))
+	return platform == "all" or platform == ("web" if OS.has_feature("web") else "native")
+
 func _credits() -> void:
 	var content := VBoxContainer.new()
-	content.add_child(h._label("Planet Patchup", 18, UITheme.GOLD))
-	content.add_child(h._label("행성을 지켜줘!", 13))
-	content.add_child(h._label("Created by Roy", 13))
-	content.add_child(h._label("Pixel font · Galmuri11", 13, UITheme.MUTED))
+	content.add_child(h._label(str(_credit_data.get("title", "Planet Patchup")), 18, UITheme.GOLD))
+	content.add_child(h._label(str(_credit_data.get("subtitle", "행성을 지켜줘!")), 13))
+	for section in _credit_data.get("sections", []):
+		var entries: Array = []
+		for entry in section.get("entries", []):
+			if _credit_visible(entry):
+				entries.append(entry)
+		if entries.is_empty():
+			continue
+		content.add_child(h._label(str(section.get("title", "")), 14, UITheme.GOLD))
+		for entry in entries:
+			content.add_child(h._label(str(entry.get("role", "")), 12, UITheme.MUTED))
+			content.add_child(h._label(str(entry.get("name", "")), 13))
+	content.add_child(h._button("Licenses", _licenses))
 	_popup("Credits", content)
+
+func _licenses() -> void:
+	var content := VBoxContainer.new()
+	for notice in _credit_data.get("notices", []):
+		if not _credit_visible(notice):
+			continue
+		var item: Dictionary = notice
+		content.add_child(h._button(str(item.get("title", "")), func(): _license_text(item)))
+		content.add_child(h._label(str(item.get("license", "")), 12, UITheme.MUTED))
+	content.add_child(h._button("Back to credits", _credits))
+	_popup("Licenses", content)
+
+func _license_text(notice: Dictionary) -> void:
+	var content := VBoxContainer.new()
+	content.add_child(h._label(str(notice.get("license", "")), 12, UITheme.MUTED))
+	var text := RichTextLabel.new()
+	text.bbcode_enabled = false
+	text.text = str(notice.get("text", ""))
+	text.selection_enabled = true
+	text.focus_mode = Control.FOCUS_ALL
+	text.custom_minimum_size.y = 280
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text.add_theme_font_size_override("normal_font_size", 12)
+	content.add_child(text)
+	content.add_child(h._label(str(notice.get("source", "")), 12, UITheme.MUTED))
+	content.add_child(h._button("Back to licenses", _licenses))
+	_popup(str(notice.get("title", "Licenses")), content)
 
 func _working() -> bool:
 	var run = h.journey.current_run

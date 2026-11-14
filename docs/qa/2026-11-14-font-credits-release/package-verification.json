@@ -1,0 +1,30 @@
+{
+  "native": {
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "version": "0.5.67",
+    "build": "77",
+    "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-font-credits-2026-11-14-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "pckSha256": "ab0b01f16b8b103b0b90c7771ab3a95a1d546b74b17474d900526a472c7441d1",
+    "pckBytes": 41746400,
+    "pckEntries": 1221,
+    "executableSha256": "90de377d49f094b40608576873b645074b63675a446f2a7be6a0494c1401089a",
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-66ae4962a822",
+  "webArtifactsVerified": 8,
+  "webPckEntries": 889,
+  "sharedSourceFiles": [
+    "app/menu_pages.gd",
+    "app/offer_popup.gd",
+    "data/credits.json",
+    "assets/fonts/NeoDunggeunmoPro-Regular.ttf",
+    "app/skill_demo.gd",
+    "data/skill_demo_scenes.json"
+  ],
+  "originalNoticesInBothPcks": true,
+  "selectedFontInBothPcks": true,
+  "webAdapterUnchanged": true,
+  "webMusicPreserved": true,
+  "gameRuntimeExecuted": false
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "neo",
+    "file": "licenses/NeoDunggeunmoPro-OFL.txt",
+    "source": "https://github.com/neodgm/neodgm-pro",
+    "sha256": "e3e0fdfb8349c52d3e7075c008d5c1456922ab1b0d80180b4b1b77377da34b4a",
+    "prefix": ""
+  },
+  {
+    "id": "galmuri",
+    "file": "licenses/Galmuri-OFL.md",
+    "source": "https://github.com/quiple/galmuri",
+    "sha256": "9a9e5a342c430c3fcf01a408b680f4405d5bf4ac659c931be35f8a1b27ea69c9",
+    "prefix": ""
+  },
+  {
+    "id": "godot",
+    "file": "licenses/Godot-MIT.txt",
+    "source": "https://godotengine.org/license/",
+    "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+    "prefix": ""
+  },
+  {
+    "id": "godot-third-party",
+    "file": "licenses/Godot-COPYRIGHT.txt",
+    "source": "https://github.com/godotengine/godot/blob/4.6.2-stable/COPYRIGHT.txt",
+    "sha256": "dc043a7dbf69632560219e72fbc61ef9fa7338c7a773660acd81b51590b69104",
+    "prefix": ""
+  },
+  {
+    "id": "godot-cpp",
+    "file": "licenses/godot-cpp-MIT.txt",
+    "source": "https://github.com/godotengine/godot-cpp",
+    "sha256": "26a5b210d90760156ce886267ce9df235787dcc6cebfd7ecd95ef5b6fdcc95bf",
+    "prefix": ""
+  },
+  {
+    "id": "poing",
+    "file": "licenses/Poing-AdMob-MIT.txt",
+    "source": "https://github.com/poingstudios/godot-admob-plugin",
+    "sha256": "9154d410d6795817a45e1a5f2caa9236111e313152c0b51ea39f48aaf7034834",
+    "prefix": ""
+  },
+  {
+    "id": "noto",
+    "file": "licenses/NotoSansCJK-OFL.txt",
+    "source": "https://github.com/notofonts/noto-cjk",
+    "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+    "prefix": "© 2014-2021 Adobe (http://www.adobe.com/).\nNoto is a trademark of Google Inc.\n\n"
+  },
+  {
+    "id": "google-ads-wrapper",
+    "file": "licenses/google-ads-wrapper-Apache-2.0.txt",
+    "source": "https://github.com/googleads/swift-package-manager-google-mobile-ads",
+    "sha256": "fd112c80352fc42a60f051012c6b9adef055123e395dece30fa8f44880f39e96",
+    "prefix": ""
+  },
+  {
+    "id": "google-ump-wrapper",
+    "file": "licenses/google-ump-wrapper-Apache-2.0.txt",
+    "source": "https://github.com/googleads/swift-package-manager-google-user-messaging-platform",
+    "sha256": "fd112c80352fc42a60f051012c6b9adef055123e395dece30fa8f44880f39e96",
+    "prefix": ""
+  }
+]
