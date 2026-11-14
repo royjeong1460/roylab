@@ -1,0 +1,21 @@
+{
+  "version": "0.5.66",
+  "nativeBuild": 76,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": true,
+  "nativeAppLaunched": false,
+  "webStem": "free-0541-6807fcf55da1",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "webBuilt": true,
+  "webPublished": false,
+  "httpVerified": false,
+  "scope": "Reconnect existing10 base-level skill demonstrations inside details and unlock introductions; font research only; current font/gameplay/economy/save unchanged.",
+  "rollbackNativeDelivery": "qa/ios-result-step-2026-11-14/delivery.json",
+  "rollbackWebStem": "free-0541-f024d0ffad9f",
+  "runtimeExecutedByAssistant": false,
+  "userValidation": "pending: actual demo playback, support behavior, scrolling, close/replay/focus return, visual/touch/device performance",
+  "nativeInstalledSequence": 4980,
+  "nativeInstallReceiptSha256": "922050e2113007fc5899779177f94208986c09da377ab20b76a35e1c23534bd2"
+}

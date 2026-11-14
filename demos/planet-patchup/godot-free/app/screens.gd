@@ -10,6 +10,7 @@ const GameSkin = preload("res://app/skin.gd")
 const PlayLayout = preload("res://app/play_layout.gd")
 const Diagnostics = preload("res://platform/diagnostics.gd")
 const OfferPopup = preload("res://app/offer_popup.gd")
+const SkillDemo = preload("res://app/skill_demo.gd")
 const RestorationGallery = preload("res://app/restoration_gallery.gd")
 const WorkshopMenu = preload("res://app/workshop_menu.gd")
 const MenuPages = preload("res://app/menu_pages.gd")
@@ -523,6 +524,13 @@ func _show_offer_details(offer: Dictionary, intro := false) -> void:
 	if not intro:
 		column.add_child(_label(_offer_level(offer),12,UITheme.MUTED))
 	column.add_child(_label(_offer_summary(id),13))
+	if catalog.skills.has(id):
+		var base_upgrades := {}
+		for track in catalog.tracks:
+			base_upgrades[track] = 0
+		var demo := SkillDemo.new()
+		demo.configure(catalog,journey.economy.stats({"upgrades":base_upgrades}),id)
+		column.add_child(demo)
 	column.add_child(_label(_offer_description(offer,not intro),13,UITheme.GOLD))
 	if not intro and not _offer_owned(offer) and str(offer.get("numeric_error","")).is_empty():
 		column.add_child(_label(L10n.format("%s scrap",[str(offer.price_text)]),12,UITheme.MINT if offer.can_afford else Color("eea291")))

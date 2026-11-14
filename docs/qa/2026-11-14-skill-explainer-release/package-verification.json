@@ -1,0 +1,30 @@
+{
+  "native": {
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "version": "0.5.66",
+    "build": "76",
+    "appPath": "variants/godot-paid-port/native/build/ios-skill-explainer-2026-11-14-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "pckSha256": "098fe33a0d95d5833833d36b91df6458cdb58a0b35d9c278a53ca1fca9a310d8",
+    "pckBytes": 41461260,
+    "pckEntries": 1218,
+    "executableSha256": "3184aa3ae8b02684009f9e0cc71e88816c9b26e02e0dbac62cf16c7c6424b916",
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-6807fcf55da1",
+  "webArtifactsVerified": 8,
+  "webPckEntries": 886,
+  "sharedSourceFiles": [
+    "app/screens.gd",
+    "app/workshop_menu.gd",
+    "app/menu_pages.gd",
+    "app/ui_theme.gd",
+    "app/offer_popup.gd",
+    "app/restoration_gallery.gd",
+    "presentation/restoration_artwork.gd",
+    "app/skill_demo.gd",
+    "data/skill_demo_scenes.json"
+  ],
+  "bothPcksContainNewMenuModules": true,
+  "gameRuntimeExecuted": false
+}
