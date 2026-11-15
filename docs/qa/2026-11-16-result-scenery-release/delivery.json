@@ -7,8 +7,8 @@
   "nativeInstalled": true,
   "nativeAppLaunched": false,
   "webBuilt": true,
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "webStem": "free-0541-df584b999541",
   "engineStem": "godot-web-ec83eba66e3c",
   "scope": "Current receipt.siteId metadata and receipt.ratio drive the existing CultureBackdrop in a static150px result preview for all42campaign stages and tutorial fallback. Old Arch-only result scenery removed.",
@@ -22,5 +22,14 @@
   "worldPhysicsEconomySaveUnchanged": true,
   "fontCreditsSkillDemosAndGalleryAwardsUnchanged": true,
   "nativeInstalledSequence": 5084,
-  "nativeInstallReceiptSha256": "9d171793d4a4785d7459d542bea9a389ad08b6fee375c063562d4a31d86e82a6"
+  "nativeInstallReceiptSha256": "9d171793d4a4785d7459d542bea9a389ad08b6fee375c063562d4a31d86e82a6",
+  "webReleaseCommit": "1c083866db07414012ec2c714257baf580458ceb",
+  "cloudflareDeploymentId": "b69f74c4-40cf-4bca-9bcd-d6f7d199dcb3",
+  "webDeploymentStatus": "Cloudflare completed/success; canonical and all payloads statically HTTP verified",
+  "webUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "httpResponsesVerified": 15,
+  "encodedAndDecodedHashesMatch": true,
+  "deliveryVerifiedAt": "2026-11-15T16:07:09.509031+00:00",
+  "githubCheckLastObservedStatus": "completed",
+  "githubCheckConclusion": "success"
 }

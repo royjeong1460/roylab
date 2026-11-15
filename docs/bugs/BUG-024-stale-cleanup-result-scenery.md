@@ -14,4 +14,6 @@
 
 사용자가 결과 화면도 현재 맵의 복원 경관으로 교체하고 Web·iOS에 적용하도록 승인했다. 현재 맵ID의 catalog.metadata와 이번 결과 ratio를 기존 CultureBackdrop에 전달한다. 기존 Arch-only 분기를 없애고42캠페인 일반·보스 결과에 적용했다.150px크기·캡션을 유지하고 결과용 geometry만 구성하며 World/물리는 만들지 않는다. 플레이 배경·경관 원본·맵·폰트·크레딧·스킬 시연·경제·저장·업적 해금은 유지했다.
 
-iOS0.5.68(78)은 import/compile/export/Xcode/서명 검증 후 업데이트 설치했고 실행하지 않았다. Web은 빌드 완료·공개 전달 확인 중이다. [전달 기록](../qa/2026-11-16-result-scenery-release/delivery.json)을 따른다. 실제 렌더링·배경 구간·쓰레기·지형·스크롤·저장 연속성은 사용자 확인 대기다.
+iOS0.5.68(78)은 import/compile/export/Xcode/서명 검증 후 업데이트 설치했고 실행하지 않았다. Web `free-0541-df584b999541`은 공개 배포와15개 정적 HTTP응답·압축 전후 해시 확인을 마쳤다. [전달 기록](../qa/2026-11-16-result-scenery-release/delivery.json)을 따른다. 실제 렌더링·배경 구간·쓰레기·지형·스크롤·저장 연속성은 사용자 확인 대기다.
+
+- 현재 상태: Web·iOS 전달 완료 · 사용자 확인 대기.

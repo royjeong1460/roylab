@@ -30,4 +30,4 @@
 
 | [BUG-023](BUG-023-missing-skill-explanation-demo.md) | 2026-11-14 | 스킬 설명창의 기존 시연 애니메이션 미연결 | 웹·앱·로컬 연결 · 사용자 확인 대기 |
 
-| [BUG-024](BUG-024-stale-cleanup-result-scenery.md) | 2026-11-16 | 청소 결과에 과거 아치 배경 연출 연결 잔존 | 수정·iOS 설치 완료 · 웹 전달 확인 중 |
+| [BUG-024](BUG-024-stale-cleanup-result-scenery.md) | 2026-11-16 | 청소 결과에 과거 아치 배경 연출 연결 잔존 | 웹·iOS 전달 완료 · 사용자 확인 대기 |

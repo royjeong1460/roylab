@@ -11,3 +11,5 @@
 Godot import/compile-only/export, geometry43건·0/70/100상태, 양쪽 PCK10개 공유 payload·문화권 텍스처6개, Xcode Release·deep/strict서명을 확인했다. 독립 소스 검토에서 blocking issue는 없었다. 사이트 빌드·iPhone 업데이트 설치·공개 Web 전달은 [delivery.json](delivery.json)에 실제 결과만 기록한다. [정적 검증](package-verification.json), [지형·맵 연결](geometry-verification.json), [검토](review.md).
 
 게임·씬·테스트·시뮬레이션·브라우저 게임·기기 앱 실행 없음. 실제 결과 화면, 일반/보스 배경 구간, 계단 지형,70/100%쓰레기, 스크롤·진행 기록 연속성은 사용자 확인 대기다.
+
+공개Web `free-0541-df584b999541`의 Cloudflare completed/success와 정적 HTTP응답15개·압축 전후 해시를 확인했다. iPhone0.5.68(78) 업데이트 설치 완료(sequence5084, 실행 안 함). [HTTP 증거](http-verification.json). 실제 결과 렌더링·조작은 사용자 확인 대기다.
