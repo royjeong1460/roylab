@@ -1,0 +1,33 @@
+{
+  "native": {
+    "version": "0.5.68",
+    "build": 78,
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-result-scenery-2026-11-16-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "pckBytes": 41747600,
+    "pckSha256": "36682cdcfae807c13ab32e0871a57fbbcf80f81dd7345b2cf72c9558aa73496b",
+    "pckEntries": 1221,
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-df584b999541",
+  "webArtifactsVerified": 8,
+  "webPckEntries": 889,
+  "sharedPayloads": [
+    "app/screens.gd",
+    "presentation/environment_receipt.gd",
+    "presentation/culture_backdrop.gd",
+    "presentation/culture_route_panorama.gd",
+    "presentation/culture_scrap_bank.gd",
+    "presentation/culture_ground.gd",
+    "data/culture_routes.json",
+    "data/culture_environments.json",
+    "data/restoration_art.json",
+    "data/credits.json"
+  ],
+  "campaignBackdropTextures": 6,
+  "maps": 43,
+  "previousPackGameplayAndBackdropUnchanged": true,
+  "webAppAdapterAndMusicUnchanged": true,
+  "runtimeExecuted": false
+}

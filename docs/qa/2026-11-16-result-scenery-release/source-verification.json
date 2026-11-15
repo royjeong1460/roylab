@@ -1,0 +1,28 @@
+{
+  "candidate": "0.5.68(78)",
+  "baseline": "0.5.67(77)",
+  "changedFiles": [
+    "project.godot",
+    "export_presets.cfg",
+    "app/screens.gd",
+    "presentation/environment_receipt.gd"
+  ],
+  "webChangedFiles": [
+    "app/screens.gd",
+    "presentation/environment_receipt.gd"
+  ],
+  "originalCandidateUnchanged": true,
+  "originalAssetsUnchanged": 683,
+  "mapsUnchanged": 43,
+  "allOtherBaselineFilesUnchanged": true,
+  "campaignStages": 42,
+  "tutorialSceneryFallback": true,
+  "ratioTiers": [
+    0,
+    0.7,
+    1
+  ],
+  "galleryAwardRulesAndSaveUnchanged": true,
+  "noMapPixelsExpandedInResults": true,
+  "runtimeExecuted": false
+}

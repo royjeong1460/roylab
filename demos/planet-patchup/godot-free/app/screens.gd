@@ -652,9 +652,10 @@ func _result_page(payload: Dictionary, chapter: bool) -> Control:
 	if chapter:
 		var index := int(receipt.get("regionIndex",app.selected_region))
 		content.add_child(_label(L10n.format("%s · Planet %s",[_region_status(index),_percent(journey.planet_progress())]),13,UITheme.MINT))
-	elif int(receipt.get("regionIndex",0)) <= 0:
+	var site: Dictionary = catalog.metadata(str(receipt.get("siteId","")))
+	if not site.is_empty():
 		var illustration := EnvironmentReceipt.new()
-		illustration.setup(float(receipt.get("ratio",0.0)))
+		illustration.setup(site,float(receipt.get("ratio",0.0)))
 		content.add_child(illustration)
 	content.add_child(_button("Restoration records",func(): app.navigate("restoration",{"from":app.current_screen,"receipt":payload.duplicate(true)})))
 	if app.has_method("open_feedback"):

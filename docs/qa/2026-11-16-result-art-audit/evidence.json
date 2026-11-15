@@ -1,0 +1,203 @@
+{
+  "date": "2026-11-16",
+  "nativeVersion": "0.5.67",
+  "nativeBuild": 77,
+  "nativeCandidate": "ios-font-credits-2026-11-14",
+  "publicWebStem": "free-0541-66ae4962a822",
+  "matchesCurrentRelease": true,
+  "sourceAndPackagedFiles": {
+    "app/screens.gd": {
+      "sourceSha256": "ef9a7da031d94370a8f5db74b4c6a58aa4e19a326f04daa19423a03636d9d94d",
+      "packaged": {
+        "native": {
+          "member": "app/screens.gdc",
+          "sha256": "7269df0ade76f9687986b94e27eafd8370a0e59fa0314837fdb139b2b435fe08",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        },
+        "publicWeb": {
+          "member": "app/screens.gdc",
+          "sha256": "7269df0ade76f9687986b94e27eafd8370a0e59fa0314837fdb139b2b435fe08",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        }
+      },
+      "nativeAndWebPackedPayloadsMatch": true
+    },
+    "presentation/environment_receipt.gd": {
+      "sourceSha256": "82dd5a920932dabc870039f291a700b796b307201cdc86d7eff22dafbf60a871",
+      "packaged": {
+        "native": {
+          "member": "presentation/environment_receipt.gdc",
+          "sha256": "411c9298c1a3e2a845635b4dcef9bf9e49bebe20c35e264bc781b38f325a9635",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        },
+        "publicWeb": {
+          "member": "presentation/environment_receipt.gdc",
+          "sha256": "411c9298c1a3e2a845635b4dcef9bf9e49bebe20c35e264bc781b38f325a9635",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        }
+      },
+      "nativeAndWebPackedPayloadsMatch": true
+    },
+    "background.gd": {
+      "sourceSha256": "fa16846fb8afedf3020e6cad0f38ca3964bd0cb23c0570a63dc81509576d8769",
+      "packaged": {
+        "native": {
+          "member": "background.gdc",
+          "sha256": "2b65512a3dde80cb8ac25acb78142f0ea6618fea6a6e6eb9673efdb28b18715c",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        },
+        "publicWeb": {
+          "member": "background.gdc",
+          "sha256": "2b65512a3dde80cb8ac25acb78142f0ea6618fea6a6e6eb9673efdb28b18715c",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        }
+      },
+      "nativeAndWebPackedPayloadsMatch": true
+    },
+    "presentation/culture_backdrop.gd": {
+      "sourceSha256": "d514ea4e10be416c5ba317d18634f5121d001ab9fa10f9f1e69bd90aa98b59c5",
+      "packaged": {
+        "native": {
+          "member": "presentation/culture_backdrop.gdc",
+          "sha256": "64b35aa3afd95239a888a66e8c460127db71530ceb5bc2c41f8fcbb7f0346aae",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        },
+        "publicWeb": {
+          "member": "presentation/culture_backdrop.gdc",
+          "sha256": "64b35aa3afd95239a888a66e8c460127db71530ceb5bc2c41f8fcbb7f0346aae",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        }
+      },
+      "nativeAndWebPackedPayloadsMatch": true
+    },
+    "presentation/culture_route_panorama.gd": {
+      "sourceSha256": "b59b0d30d15418b75ef5fc5cf36aa89f5c3e6a1f78a12579a93b0f2e6b90b1d1",
+      "packaged": {
+        "native": {
+          "member": "presentation/culture_route_panorama.gdc",
+          "sha256": "b644a4e7cbf5d2f4810b2a4694cf4a6f3ccc6f558d01fb25f151f5522b63bbed",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        },
+        "publicWeb": {
+          "member": "presentation/culture_route_panorama.gdc",
+          "sha256": "b644a4e7cbf5d2f4810b2a4694cf4a6f3ccc6f558d01fb25f151f5522b63bbed",
+          "compiledGDScript": true,
+          "plainSourceMatches": false
+        }
+      },
+      "nativeAndWebPackedPayloadsMatch": true
+    },
+    "data/culture_routes.json": {
+      "sourceSha256": "a8611287c4d644e278af621491411bd9acf8125be049e2b3a1ab27faa4d4e5ba",
+      "packaged": {
+        "native": {
+          "member": "data/culture_routes.json",
+          "sha256": "a8611287c4d644e278af621491411bd9acf8125be049e2b3a1ab27faa4d4e5ba",
+          "compiledGDScript": false,
+          "plainSourceMatches": true
+        },
+        "publicWeb": {
+          "member": "data/culture_routes.json",
+          "sha256": "a8611287c4d644e278af621491411bd9acf8125be049e2b3a1ab27faa4d4e5ba",
+          "compiledGDScript": false,
+          "plainSourceMatches": true
+        }
+      },
+      "nativeAndWebPackedPayloadsMatch": true
+    },
+    "data/restoration_art.json": {
+      "sourceSha256": "e585be2b656693141a45a90bdf9f2106f97523d1d847016ad94cf907547bf866",
+      "packaged": {
+        "native": {
+          "member": "data/restoration_art.json",
+          "sha256": "e585be2b656693141a45a90bdf9f2106f97523d1d847016ad94cf907547bf866",
+          "compiledGDScript": false,
+          "plainSourceMatches": true
+        },
+        "publicWeb": {
+          "member": "data/restoration_art.json",
+          "sha256": "e585be2b656693141a45a90bdf9f2106f97523d1d847016ad94cf907547bf866",
+          "compiledGDScript": false,
+          "plainSourceMatches": true
+        }
+      },
+      "nativeAndWebPackedPayloadsMatch": true
+    }
+  },
+  "adoptedGalleryImages": [
+    {
+      "region": 0,
+      "file": "assets/restoration/arch.png",
+      "sha256": "bb3cf30882675b525c39d5e85b5125c93bb5805371dc0143cb8e75715d07cd7d",
+      "matchesAdoptedSource": true
+    },
+    {
+      "region": 1,
+      "file": "assets/restoration/eaves.png",
+      "sha256": "53b2029bae5ca7d8cf6afc57fcc3a9b0224feb66f1482cdc49493d49db86a071",
+      "matchesAdoptedSource": true
+    },
+    {
+      "region": 2,
+      "file": "assets/restoration/amber.png",
+      "sha256": "6e40094ebdc3038c60e91711c9824898f55a5f2808df2782ce2733055dec9bcc",
+      "matchesAdoptedSource": true
+    },
+    {
+      "region": 3,
+      "file": "assets/restoration/clock.png",
+      "sha256": "7fef94d38ff2452d909543b4bc50989d066abbdb7b59184120c96d87ab5a45de",
+      "matchesAdoptedSource": true
+    },
+    {
+      "region": 4,
+      "file": "assets/restoration/terrace.png",
+      "sha256": "89971c701fcecfd02bcbf4f22f38c648ffa297ba6b8350340c46bceb1e12cffe",
+      "matchesAdoptedSource": true
+    },
+    {
+      "region": 5,
+      "file": "assets/restoration/rock-ruins.png",
+      "sha256": "a3368da86ffd5023fb8cee912750828e83893899abd03c1380a4afe0cf1f0f33",
+      "matchesAdoptedSource": true
+    }
+  ],
+  "rootCause": "Non-chapter Arch Quarter result instantiates EnvironmentReceipt, which loads old background.gd and combines individual salvage/arch-building assets. It does not use culture_routes or restoration_art panorama. The normal-map branch is not gated on allClear; it also applies below100%. Other culture normal results have no image in this branch. Boss chapter branch uses text. Achievement reward/gallery uses the six adopted restoration images.",
+  "http": [
+    {
+      "path": "/planet-patchup/play/",
+      "status": 200,
+      "bytes": 7905,
+      "sha256": "8c97229634e459e2dfe4507be98b6568111ba3d9a77ab31adbec4d67cb4523b7",
+      "contentType": "text/html; charset=utf-8",
+      "contentEncoding": null
+    },
+    {
+      "path": "/games/planet-patchup-free/free-0541-66ae4962a822-manifest.json",
+      "status": 200,
+      "bytes": 6592,
+      "sha256": "3ba943b34eae6f9f06ab7c116100c37fff721f94d645249f98ef8e6ed27eef4f",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "path": "/games/planet-patchup-free/free-0541-66ae4962a822.pck",
+      "status": 200,
+      "bytes": 16666216,
+      "sha256": "69501e913fb76732b90e7b7824876b15dad10df0966758302c8fca8b64912daa",
+      "contentType": "application/gzip",
+      "contentEncoding": null
+    }
+  ],
+  "productModified": false,
+  "gameSceneTestBrowserDeviceExecuted": false
+}
