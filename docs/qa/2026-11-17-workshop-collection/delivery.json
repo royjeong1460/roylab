@@ -8,8 +8,8 @@
   "nativeInstalledSequence": 5172,
   "nativeAppLaunched": false,
   "webBuilt": true,
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "webStem": "free-0541-1e2bee9d9fad",
   "engineStem": "godot-web-ec83eba66e3c",
   "rollbackNativeDelivery": "qa/ios-blackhole-strain-2026-11-16/delivery.json",
@@ -22,5 +22,11 @@
   },
   "fadeSeconds": 0.5,
   "iconReplaced": false,
-  "runtimeExecutedByAssistant": false
+  "runtimeExecutedByAssistant": false,
+  "webReleaseCommit": "a666d6ea96b5d4e563d78af085ba6219f18b06a4",
+  "webUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "cloudflareDeploymentId": "2e363291-1417-4672-9c4d-0f2365cc1f80",
+  "httpResponsesVerified": 15,
+  "encodedAndDecodedHashesMatch": true,
+  "deliveryVerifiedAt": "2026-11-16T15:22:56.133615+00:00"
 }
