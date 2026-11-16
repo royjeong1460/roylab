@@ -1,0 +1,47 @@
+{
+  "native": {
+    "version": "0.5.76",
+    "build": 86,
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "pckBytes": 44877984,
+    "pckSha256": "a98621e04d551f1ce83a0936883f18cc64ed4677931218d04d49cf161092b01e",
+    "pckEntries": 1223,
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-607e9cf6c479",
+  "webArtifactsVerified": 8,
+  "webPckEntries": 889,
+  "sharedCompiledChangedPayloads": [
+    "app/menu_pages.gd",
+    "app/offer_popup.gd",
+    "app/workshop_menu.gd",
+    "app/screens.gd",
+    "app/restoration_gallery.gd"
+  ],
+  "sharedPayloadsUnchanged": [
+    "presentation/collection_overlay.gd",
+    "data/balance.json",
+    "data/collection_upgrades.json",
+    "data/skill_expansion.json",
+    "campaign/profile_schema.gd",
+    "campaign/run_session.gd",
+    "world.gd",
+    "impact_physics.gd",
+    "piece.gd",
+    "blackhole_physics.gd",
+    "app/play_view.gd",
+    "app/skill_demo.gd",
+    "presentation/environment_receipt.gd",
+    "data/restoration_art.json",
+    "data/credits.json",
+    "campaign/catalog.gd",
+    "campaign/economy.gd",
+    "campaign/money.gd",
+    "skill_physics.gd",
+    "presentation/skill_vfx.gd"
+  ],
+  "nativeSaveJourneyUnchanged": true,
+  "nativeCoreAndEngineUnchanged": true,
+  "runtimeExecuted": false
+}

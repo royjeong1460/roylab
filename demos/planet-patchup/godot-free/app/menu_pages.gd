@@ -434,11 +434,16 @@ func pause() -> Control:
 	root.add_child(dim)
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", UITheme.box(UITheme.MENU_PANEL, UITheme.GOLD, 1, 18))
+	panel.add_theme_stylebox_override("panel", UITheme.box(UITheme.MENU_PANEL, UITheme.GOLD, 1, 14))
 	root.add_child(panel)
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	panel.add_child(scroll)
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 10)
-	panel.add_child(column)
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_theme_constant_override("separation", 8)
+	scroll.add_child(column)
 	var title: Label = h._label("Paused", 24)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
@@ -454,19 +459,24 @@ func pause() -> Control:
 	if working:
 		column.add_child(h._button("Restart", func(): h.app.request_restart()))
 		column.add_child(h._button("Finish cleanup", _confirm_finish))
+	var utilities := HBoxContainer.new()
+	utilities.alignment = BoxContainer.ALIGNMENT_CENTER
+	column.add_child(utilities)
 	var options: Button = h._button("Options", func(): h.app.show_settings("pause"))
 	options.add_theme_font_size_override("font_size", 13)
 	h._flat(options, UITheme.MUTED)
-	column.add_child(options)
+	options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	utilities.add_child(options)
 	if h.app.has_method("open_feedback"):
 		var feedback: Button = h._button("Feedback", func(): h.app.open_feedback())
 		feedback.add_theme_font_size_override("font_size", 13)
 		h._flat(feedback, UITheme.MUTED)
-		column.add_child(feedback)
+		feedback.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		utilities.add_child(feedback)
 	var layout := func():
-		panel.size.x = minf(342, maxf(1, root.size.x - 44))
-		panel.size.y = panel.get_combined_minimum_size().y
-		panel.position = (root.size - panel.size) / 2.0
+		OfferPopup.fit_centered(panel, column, root.size, 342, root.size.y)
+	column.minimum_size_changed.connect(layout, CONNECT_DEFERRED)
+	panel.minimum_size_changed.connect(layout, CONNECT_DEFERRED)
 	root.resized.connect(layout)
 	root.ready.connect(layout)
 	return root

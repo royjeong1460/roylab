@@ -61,6 +61,7 @@ func _ready() -> void:
 	if _body != null:
 		_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		scroll.add_child(_body)
+		_body.minimum_size_changed.connect(_layout, CONNECT_DEFERRED)
 		for child in _body.find_children("*","Control",true,false):
 			if child is BaseButton:
 				child.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -84,6 +85,7 @@ func _ready() -> void:
 		control.focus_neighbor_top = previous
 		control.focus_neighbor_right = next
 		control.focus_neighbor_bottom = next
+	_panel.minimum_size_changed.connect(_layout, CONNECT_DEFERRED)
 	resized.connect(_layout)
 	_layout()
 	dismiss.grab_focus()
@@ -91,9 +93,16 @@ func _ready() -> void:
 func _layout() -> void:
 	if _panel == null:
 		return
-	var available := (size-Vector2(24,24)).max(Vector2.ZERO)
-	_panel.size = Vector2(minf(358,available.x),minf(available.y,minf(560,maxf(180,size.y*0.72))))
-	_panel.position = (size-_panel.size)/2.0
+	fit_centered(_panel, _body, size, 358, 560)
+
+# The scroll viewport contributes only its chrome to the panel minimum.
+# Its content reports the wrapped height once the final width has settled.
+static func fit_centered(panel: PanelContainer, scroll_body: Control, bounds: Vector2, max_width: float, max_height: float) -> void:
+	var available := (bounds - Vector2(24,24)).max(Vector2.ZERO)
+	panel.size.x = minf(max_width, available.x)
+	var content_height := scroll_body.get_combined_minimum_size().y if scroll_body != null else 0.0
+	panel.size.y = minf(panel.get_combined_minimum_size().y + content_height, minf(max_height, available.y))
+	panel.position = ((bounds - panel.size) * 0.5).round()
 
 func _input(event: InputEvent) -> void:
 	if _closing or not is_visible_in_tree() or not event is InputEventKey:

@@ -156,18 +156,6 @@ func _icon(key: String, color: Color, extent := 28.0) -> TextureRect:
 	icon.custom_minimum_size = Vector2(extent,extent)
 	return icon
 
-func _check(color: Color, fill := Color.TRANSPARENT) -> Control:
-	var mark := Control.new()
-	mark.custom_minimum_size = Vector2(12,12)
-	mark.size = Vector2(12,12)
-	mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mark.draw.connect(func():
-		if fill.a > 0: mark.draw_rect(Rect2(0,0,12,12),fill)
-		mark.draw_line(Vector2(2,6),Vector2(5,9),color,2)
-		mark.draw_line(Vector2(5,9),Vector2(10,3),color,2))
-	return mark
-
 func _build_tools(pinned: VBoxContainer, content: VBoxContainer) -> void:
 	var choices := HBoxContainer.new()
 	choices.add_theme_constant_override("separation",8)
@@ -325,9 +313,6 @@ func _slot(kind: String, id: String, locked: bool) -> Button:
 	if filled:
 		for state in ["normal","hover","pressed"]:
 			button.add_theme_stylebox_override(state,UITheme.box(Color("344b43"),UITheme.MINT,1,0))
-		var check := _check(UITheme.MENU_BG,UITheme.MINT)
-		button.add_child(check)
-		button.resized.connect(func(): check.position = Vector2(button.size.x-15,3))
 	return button
 
 func _skill_card(offer: Dictionary) -> PanelContainer:
@@ -353,23 +338,15 @@ func _skill_card(offer: Dictionary) -> PanelContainer:
 	var equip_action := func():
 		if owned and not selected: show_equip(id)
 		else: host._show_offer_details(offer)
-	var equip: Button
-	if selected:
-		var equipped_body := HBoxContainer.new()
-		equipped_body.add_theme_constant_override("separation",4)
-		equipped_body.add_child(_check(Color("172028")))
-		var equipped_label := _label("Equipped",12,Color("172028"))
-		equipped_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		equipped_body.add_child(equipped_label)
-		equip = _body_button(equipped_body,equip_action)
-	else:
-		equip = host._button("Equip" if owned else "Locked" if locked else "Learn",equip_action)
+	var equip_text := "Equipped" if selected else "Equip" if owned else "Locked" if locked else "Learn"
+	var equip: Button = host._button(equip_text,equip_action)
+	equip.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	equip.custom_minimum_size.x = 86
 	equip.size_flags_horizontal = Control.SIZE_SHRINK_END
 	equip.add_theme_font_size_override("font_size",12)
 	if selected:
 		for state in ["normal","hover","pressed"]: equip.add_theme_stylebox_override(state,UITheme.box(UITheme.MINT,UITheme.MINT,1,6))
-		for state in ["font_color","font_hover_color","font_pressed_color"]: equip.add_theme_color_override(state,Color("172028"))
+		for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]: equip.add_theme_color_override(state,Color("172028"))
 	top.add_child(equip)
 	var bottom := HBoxContainer.new()
 	bottom.add_theme_constant_override("separation",10)

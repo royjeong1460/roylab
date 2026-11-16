@@ -48,7 +48,9 @@ func _ready() -> void:
 	_column = VBoxContainer.new()
 	_column.add_theme_constant_override("separation",14)
 	_panel.add_child(_column)
-	if mode == "reward": _build_reward()
+	if mode == "reward":
+		_build_reward()
+		_panel.minimum_size_changed.connect(_layout, CONNECT_DEFERRED)
 	else: _build_gallery()
 	resized.connect(_layout)
 	_layout()
@@ -231,8 +233,14 @@ func _open_viewer(index: int) -> void:
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(caption)
 	var fit := func():
-		panel.size = Vector2(minf(390,maxf(0,size.x-24)),minf(500,maxf(0,size.y-32)))
-		panel.position = (size-panel.size)/2.0
+		panel.size.x = minf(390,maxf(0,size.x-24))
+		var usable_width := panel.size.x - panel.get_theme_stylebox("panel").get_minimum_size().x
+		var picture_height := ceilf(maxf(1,usable_width-2)*900.0/2340.0)
+		var needed := 500.0 if zoom.button_pressed else panel.get_combined_minimum_size().y + picture_height
+		panel.size.y = minf(needed,maxf(0,size.y-32))
+		panel.position = ((size-panel.size)/2.0).round()
+	panel.minimum_size_changed.connect(fit, CONNECT_DEFERRED)
+	zoom.toggled.connect(func(_expanded: bool): fit.call())
 	_viewer.resized.connect(fit)
 	fit.call()
 	update_art.call_deferred()
@@ -261,7 +269,8 @@ func _layout() -> void:
 	if mode == "gallery":
 		_panel.size = Vector2(minf(390,size.x),minf(844,size.y))
 	else:
-		_panel.size = Vector2(minf(358,maxf(0,size.x-32)),minf(390,maxf(0,size.y-24)))
+		_panel.size.x = minf(358,maxf(0,size.x-32))
+		_panel.size.y = _panel.get_combined_minimum_size().y
 	_panel.position = (size-_panel.size)/2.0
 
 func _can_focus(control: Control) -> bool:

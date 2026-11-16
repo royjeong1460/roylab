@@ -461,7 +461,9 @@ func _skill_equip_controls(column: VBoxContainer, id: String) -> void:
 	var kind := str(catalog.skills[id].kind)
 	var equipped: Array = journey.profile.equipped.get(kind,[])
 	if id in equipped:
-		column.add_child(_label("Equipped",12,UITheme.MINT))
+		var status := _label("Equipped",12,UITheme.MINT)
+		status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		column.add_child(status)
 		column.add_child(_button("Unequip",func(): app.unequip_skill(id)))
 	else:
 		column.add_child(_button("Equip",func(): _workshop_menu.show_equip(id)))
