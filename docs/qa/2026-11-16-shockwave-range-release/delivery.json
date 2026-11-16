@@ -7,8 +7,8 @@
   "nativeInstalled": true,
   "nativeAppLaunched": false,
   "webBuilt": true,
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "webStem": "free-0541-0af606b40e32",
   "engineStem": "godot-web-ec83eba66e3c",
   "scope": "Shockwave radius/reach grow after20 at half their original steps. Strength/pressure belongs only to Force; old equal-level force/fracture curve retained and displayed force matches actual impulse.",
@@ -28,5 +28,14 @@
   "mapsAssetsPhysicsKernelUnchanged": true,
   "resultSceneryFontCreditsAndSkillDemosUnchanged": true,
   "nativeInstalledSequence": 5140,
-  "nativeInstallReceiptSha256": "4cecc8a719e74623edf9d3914d9d6d9ebef688f23435f634bc7ff39972a73a3a"
+  "nativeInstallReceiptSha256": "4cecc8a719e74623edf9d3914d9d6d9ebef688f23435f634bc7ff39972a73a3a",
+  "webReleaseCommit": "7e8ab46eb9b821446df3f57fb1bd200507394b24",
+  "cloudflareDeploymentId": "fe40cd2f-4f21-4da3-a45d-c84410be5a71",
+  "webDeploymentStatus": "Canonical and all payloads statically HTTP verified",
+  "webUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "httpResponsesVerified": 15,
+  "encodedAndDecodedHashesMatch": true,
+  "deliveryVerifiedAt": "2026-11-16T11:51:51.652065+00:00",
+  "githubCheckLastObservedStatus": "completed",
+  "githubCheckConclusion": "success"
 }

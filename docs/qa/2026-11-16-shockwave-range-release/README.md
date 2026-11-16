@@ -13,3 +13,5 @@
 static source 계약의 수정 전 실패와 수정 후 충족,105레벨 표본·독립 항목 조합 수식, 모든 다른 트랙의 값과 가격·거래원장 함수 불변, 기존 후보·맵43·자산683개 해시를 확인했다. 공유 수정은campaign/economy.gd와app/workshop_menu.gd뿐이다. import/compile/export, Xcode Release·deep/strict서명과 양쪽 PCK payload/hash도 확인했다. 사이트 빌드·기기 설치·공개 HTTP 전달은[delivery.json](delivery.json)에 실제 결과를 기록한다.
 
 게임·테스트·씬·시뮬레이션·브라우저 게임·기기 앱 실행 없음. 실제 조준 경계·반경·파괴·이펙트·성능·6-6밸런스·저장 연속성은 사용자 확인 대기다. [수식 표](growth-table.json), [소스 검증](source-verification.json), [패키지](package-verification.json), [검토](review.md).
+
+Web `free-0541-0af606b40e32`의 공개 진입점과 정적 HTTP15개·압축 전후 해시를 확인했다. iPhone0.5.69(79) 업데이트 설치 완료(sequence5140, 실행 안 함). [HTTP 증거](http-verification.json). 실제 반경/조준/파괴/밸런스는 사용자 확인 대기다.

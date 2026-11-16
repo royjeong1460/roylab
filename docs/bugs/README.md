@@ -32,4 +32,4 @@
 
 | [BUG-024](BUG-024-stale-cleanup-result-scenery.md) | 2026-11-16 | 청소 결과에 과거 아치 배경 연출 연결 잔존 | 웹·iOS 전달 완료 · 사용자 확인 대기 |
 
-| [BUG-025](BUG-025-shockwave-range-growth.md) | 2026-11-16 | 충격파 범위 강화가20렙 이후 압력으로 전환되는 역할 불일치 | 수정·iOS 설치 완료 · 웹 전달 확인 중 |
+| [BUG-025](BUG-025-shockwave-range-growth.md) | 2026-11-16 | 충격파 범위 강화가20렙 이후 압력으로 전환되는 역할 불일치 | 웹·iOS 전달 완료 · 사용자 확인 대기 |
