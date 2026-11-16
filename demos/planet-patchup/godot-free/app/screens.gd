@@ -585,8 +585,8 @@ func _offer_purchase(offer: Dictionary, show_action := false) -> Button:
 	button.add_theme_font_size_override("font_size",11)
 	button.clip_text = true
 	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	button.custom_minimum_size.x = 170
-	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var ink := UITheme.MUTED if inactive else UITheme.BG if can_buy else Color("eea291")
 	var fill := UITheme.MENU_BG if inactive else UITheme.GOLD if can_buy else Color("30252a")
 	for state in ["normal","hover","pressed","disabled"]:

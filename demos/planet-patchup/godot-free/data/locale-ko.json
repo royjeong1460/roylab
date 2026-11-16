@@ -620,5 +620,17 @@
   "Once per sortie · %d foundation strikes at %s%% strength · %d%% coverage · %d%% follow-up · hit radius %s cells": "출격당 1회 · 기반부 %d곳 타격, 위력 %s%% · 범위 %d%% · 후속타 %d%% · 타격 반경 %s칸",
   "Once per sortie · %.2f s downward load at %s%% strength · contact radius %s cells": "출격당 1회 · %.2f초 동안 아래로 누르기, 위력 %s%% · 접촉 반경 %s칸",
   "Once per sortie · %.2f s inward sweep at %s%% strength · radius %s cells": "출격당 1회 · %.2f초 동안 안쪽으로 휩쓸기, 위력 %s%% · 반경 %s칸",
-  "Every %d effective Blasts · lift then slam at %s%% base strength · capture reach %s×": "유효한 폭파 %d회마다 · 들어 올려 내리찍기, 기본 위력의 %s%% · 포착 범위 %s배"
+  "Every %d effective Blasts · lift then slam at %s%% base strength · capture reach %s×": "유효한 폭파 %d회마다 · 들어 올려 내리찍기, 기본 위력의 %s%% · 포착 범위 %s배",
+  "Echoes %s": "추가 폭발 %s회",
+  "Hits to trigger %s": "발동 타수 %s타",
+  "Power %s": "위력 %s",
+  "Radius %s cells": "반경 %s칸",
+  "Contact radius %s cells": "접촉 반경 %s칸",
+  "Capture reach %s×": "포착 거리 %s배",
+  "Duration %s s": "지속 %s초",
+  "Coverage %s": "타격 폭 %s",
+  "Follow-up power %s": "후속타 위력 %s",
+  "Payloads %s": "충격탄 %s개",
+  "Battery restored %s": "배터리 회복 %s",
+  "On learn: %s": "습득 시: %s"
 }

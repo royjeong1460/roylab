@@ -6,6 +6,22 @@ const OfferPopup = preload("res://app/offer_popup.gd")
 const TOOL_TRACKS := {"blast":["blastForce","blastRadius","blastReach"],"blackhole":["wellPull","wellReach","wellDuration","mix","wear"]}
 const SKILLS := {"passive":["aftershock","relay","slam","expand","wave"],"active":["orbital","seismic","gravity","sonic","recharge"]}
 
+# Card order: milestone first, then the two most useful changing values. Full stats stay in Details.
+const SKILL_METRICS := {
+	"aftershock":["echoes","power","radius"], "relay":["threshold","gain","radius"],
+	"slam":["threshold","gain","range_scale"], "expand":["threshold","gain","radius"],
+	"wave":["threshold","gain","radius"], "orbital":["payloads","gain","radius"],
+	"seismic":["followup_power","coverage","gain"], "gravity":["duration","gain","contact_radius"],
+	"sonic":["duration","gain","radius"], "recharge":["recharge_fraction"]
+}
+const METRIC_FORMAT := {
+	"echoes":"Echoes %s", "threshold":"Hits to trigger %s", "power":"Power %s", "gain":"Power %s",
+	"radius":"Radius %s cells", "contact_radius":"Contact radius %s cells", "range_scale":"Capture reach %s×",
+	"duration":"Duration %s s", "coverage":"Coverage %s", "followup_power":"Follow-up power %s",
+	"payloads":"Payloads %s", "recharge_fraction":"Battery restored %s"
+}
+const PERCENT_METRICS := ["power","gain","coverage","followup_power","recharge_fraction"]
+
 var host
 var _tab := "weapons"
 var _tool := "blast"
@@ -191,19 +207,25 @@ func _build_tools(pinned: VBoxContainer, content: VBoxContainer) -> void:
 	for id: String in TOOL_TRACKS[_tool]:
 		if _offers.has(id): content.add_child(_metric_card(_offers[id]))
 
+func _heading(offer: Dictionary, locked := false) -> String:
+	var level: String = L10n.text("Locked") if locked else str(host._offer_level(offer))
+	return str(host._offer_name(offer))+" › "+level
+
 func _metric_card(offer: Dictionary) -> PanelContainer:
 	var column := _column(8)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation",10)
 	var copy := _column(6)
-	copy.add_child(_label(str(host._offer_name(offer)),14))
-	copy.add_child(_label(str(host._offer_level(offer)),12,UITheme.MUTED))
+	copy.add_child(_label(_heading(offer),14))
 	copy.add_child(_label(_track_comparison(offer),16,UITheme.MINT))
 	var inspect := _body_button(copy,func(): host._show_offer_details(offer))
 	for state in ["normal","hover","pressed"]: inspect.add_theme_stylebox_override(state,StyleBoxEmpty.new())
 	inspect.tooltip_text = str(host._offer_name(offer))+" · "+L10n.text("Details")
-	column.add_child(inspect)
+	row.add_child(inspect)
+	row.add_child(_purchase(offer))
+	column.add_child(row)
 	var hint: String = host._offer_hint(offer)
 	if not hint.is_empty(): column.add_child(_label(hint,12,UITheme.MUTED))
-	column.add_child(_purchase(offer))
 	return _card(column)
 
 func _track_comparison(offer: Dictionary) -> String:
@@ -245,8 +267,8 @@ func _purchase(offer: Dictionary, details := false) -> Button:
 	var button := _body_button(body,func():
 		if details: host._show_offer_details(offer)
 		else: host.app.buy_offer(str(offer.id),expected),can_buy,46)
-	button.custom_minimum_size.x = 126
-	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.custom_minimum_size.x = 86
+	button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	button.disabled = not can_buy
 	button.tooltip_text = L10n.text(action)+(" · "+str(offer.price_text) if not price.is_empty() else "")
 	return button
@@ -322,8 +344,8 @@ func _skill_card(offer: Dictionary) -> PanelContainer:
 	title.add_theme_constant_override("separation",10)
 	title.add_child(_icon(str(host._skill_icon(id)),UITheme.MUTED if locked else UITheme.GOLD,28))
 	var copy := _column(3)
-	copy.add_child(_label(str(host._offer_name(offer)),14,UITheme.MUTED if locked else UITheme.TEXT))
-	copy.add_child(_label(L10n.format("Lv %s",[str(host._number(offer.level))]) if owned else L10n.text("Locked" if locked else "Not owned"),12,UITheme.MUTED))
+	copy.add_child(_label(_heading(offer,locked),14,UITheme.MUTED if locked else UITheme.TEXT))
+	if owned: copy.add_child(_label(_skill_use(offer),12,UITheme.MUTED))
 	title.add_child(copy)
 	var inspect := _body_button(title,func(): host._show_offer_details(offer))
 	for state in ["normal","hover","pressed"]: inspect.add_theme_stylebox_override(state,StyleBoxEmpty.new())
@@ -349,10 +371,36 @@ func _skill_card(offer: Dictionary) -> PanelContainer:
 		for state in ["normal","hover","pressed"]: equip.add_theme_stylebox_override(state,UITheme.box(UITheme.MINT,UITheme.MINT,1,6))
 		for state in ["font_color","font_hover_color","font_pressed_color"]: equip.add_theme_color_override(state,Color("172028"))
 	top.add_child(equip)
-	var helper: String = str(host._offer_hint(offer)) if locked else _skill_use(offer) if owned else L10n.text("Learn before equipping")
-	copy.add_child(_label(helper,12,UITheme.MUTED))
-	if not locked: column.add_child(_purchase(offer,true))
+	var bottom := HBoxContainer.new()
+	bottom.add_theme_constant_override("separation",10)
+	column.add_child(bottom)
+	var summary: String = str(host._offer_hint(offer)) if locked or not str(offer.get("numeric_error","")).is_empty() else _skill_growth(id,int(offer.level))
+	var comparison := _label(summary,12,UITheme.MUTED if locked else UITheme.MINT)
+	comparison.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	bottom.add_child(comparison)
+	if not locked: bottom.add_child(_purchase(offer,true))
 	return _card(column,selected)
+
+func _skill_growth(id: String, level: int) -> String:
+	var current: Dictionary = host.catalog.effect_stats(id,maxi(1,level))
+	var future: Dictionary = host.catalog.effect_stats(id,level+1)
+	var lines := PackedStringArray()
+	for field: String in SKILL_METRICS[id]:
+		var factor := 100.0 if field in PERCENT_METRICS else 1.0
+		var before := float(current[field])*factor
+		var after := float(future[field])*factor
+		if (level > 0 and before == after) or (level == 0 and after == 0.0): continue
+		var values := String.num(after,2)
+		if level > 0:
+			var precision := 2
+			while precision < 12 and String.num(before,precision) == String.num(after,precision):
+				precision += 1
+			values = String.num(before,precision)+" → "+String.num(after,precision)
+		if field in PERCENT_METRICS: values += "%"
+		lines.append(L10n.format(METRIC_FORMAT[field],[values]))
+		if lines.size() == 2: break
+	var summary := "\n".join(lines)
+	return L10n.format("On learn: %s",[summary]) if level == 0 else summary
 
 func _skill_use(offer: Dictionary) -> String:
 	if str(offer.kind) == "active": return L10n.text("Once per sortie")
