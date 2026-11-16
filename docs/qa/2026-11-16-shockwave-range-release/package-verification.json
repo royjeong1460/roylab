@@ -1,0 +1,29 @@
+{
+  "native": {
+    "version": "0.5.69",
+    "build": 79,
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-shockwave-range-2026-11-16-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "pckBytes": 41748032,
+    "pckSha256": "773219f9e010b018247c4ce13da4f268013fd676f6bd03574b735b9cb028c853",
+    "pckEntries": 1221,
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-0af606b40e32",
+  "webPckEntries": 889,
+  "webArtifactsVerified": 8,
+  "sharedPayloads": [
+    "campaign/economy.gd",
+    "app/workshop_menu.gd",
+    "data/balance.json",
+    "data/collection_upgrades.json",
+    "world.gd",
+    "impact_physics.gd",
+    "app/play_view.gd",
+    "presentation/skill_vfx.gd"
+  ],
+  "previousPackLogicUnchangedExceptEconomyAndWorkshop": true,
+  "webAdapterMusicEngineCoreUnchanged": true,
+  "runtimeExecuted": false
+}

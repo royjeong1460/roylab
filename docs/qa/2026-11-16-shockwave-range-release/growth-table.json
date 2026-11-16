@@ -1,0 +1,112 @@
+[
+  {
+    "level": 0,
+    "oldRadius": 3.0,
+    "radius": 3.0,
+    "oldReach": 18.0,
+    "reach": 18.0,
+    "oldEqualLevelPower": 1.0,
+    "power": 1.0,
+    "oldEqualLevelFractureEfficiency": 1.0,
+    "fractureEfficiency": 1.0
+  },
+  {
+    "level": 19,
+    "oldRadius": 4.9,
+    "radius": 4.9,
+    "oldReach": 27.5,
+    "reach": 27.5,
+    "oldEqualLevelPower": 1.9500000000000002,
+    "power": 1.9500000000000002,
+    "oldEqualLevelFractureEfficiency": 1.0,
+    "fractureEfficiency": 1.0
+  },
+  {
+    "level": 20,
+    "oldRadius": 5.0,
+    "radius": 5.0,
+    "oldReach": 28.0,
+    "reach": 28.0,
+    "oldEqualLevelPower": 2.0,
+    "power": 2.0,
+    "oldEqualLevelFractureEfficiency": 1.0,
+    "fractureEfficiency": 1.0
+  },
+  {
+    "level": 21,
+    "oldRadius": 5.0,
+    "radius": 5.05,
+    "oldReach": 28.0,
+    "reach": 28.25,
+    "oldEqualLevelPower": 2.39112,
+    "power": 2.39112,
+    "oldEqualLevelFractureEfficiency": 1.1664,
+    "fractureEfficiency": 1.1664
+  },
+  {
+    "level": 30,
+    "oldRadius": 5.0,
+    "radius": 5.5,
+    "oldReach": 28.0,
+    "reach": 30.5,
+    "oldEqualLevelPower": 3.924911064067352,
+    "power": 3.924911064067352,
+    "oldEqualLevelFractureEfficiency": 1.569964425626941,
+    "fractureEfficiency": 1.569964425626941
+  },
+  {
+    "level": 40,
+    "oldRadius": 5.0,
+    "radius": 6.0,
+    "oldReach": 28.0,
+    "reach": 33.0,
+    "oldEqualLevelPower": 5.774812562093208,
+    "power": 5.774812562093208,
+    "oldEqualLevelFractureEfficiency": 2.309925024837283,
+    "fractureEfficiency": 2.309925024837283
+  },
+  {
+    "level": 60,
+    "oldRadius": 5.0,
+    "radius": 7.0,
+    "oldReach": 28.0,
+    "reach": 38.0,
+    "oldEqualLevelPower": 8.154213709431763,
+    "power": 8.154213709431763,
+    "oldEqualLevelFractureEfficiency": 3.261685483772706,
+    "fractureEfficiency": 3.261685483772706
+  },
+  {
+    "level": 100,
+    "oldRadius": 5.0,
+    "radius": 9.0,
+    "oldReach": 28.0,
+    "reach": 48.0,
+    "oldEqualLevelPower": 12.28242941177403,
+    "power": 12.28242941177403,
+    "oldEqualLevelFractureEfficiency": 4.912971764709612,
+    "fractureEfficiency": 4.912971764709612
+  },
+  {
+    "level": 250,
+    "oldRadius": 5.0,
+    "radius": 16.5,
+    "oldReach": 28.0,
+    "reach": 85.5,
+    "oldEqualLevelPower": 26.777659421970707,
+    "power": 26.777659421970707,
+    "oldEqualLevelFractureEfficiency": 10.711063768788284,
+    "fractureEfficiency": 10.711063768788284
+  },
+  {
+    "level": 1000,
+    "oldRadius": 5.0,
+    "radius": 54.0,
+    "oldReach": 28.0,
+    "reach": 273.0,
+    "oldEqualLevelPower": 107.19860099306493,
+    "power": 107.19860099306493,
+    "oldEqualLevelFractureEfficiency": 42.87944039722597,
+    "fractureEfficiency": 42.87944039722597
+  }
+]
