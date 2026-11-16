@@ -1,0 +1,21 @@
+{
+  "version": "0.5.76",
+  "nativeBuild": 86,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": true,
+  "nativeInstalledSequence": 5200,
+  "nativeAppLaunched": false,
+  "scope": "Centered equipped labels without duplicate checks; compact, centered pause, confirmation and reward dialogs; long content remains scrollable.",
+  "webBuilt": true,
+  "webPublished": true,
+  "httpVerified": true,
+  "webReleaseCommit": "4ba98697bf5bb00ff3aa33c931213392bd1be863",
+  "cloudflareDeploymentId": "b1b65bef-9fc7-4235-92cb-c2e9dcf59c51",
+  "webStem": "free-0541-607e9cf6c479",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "rollbackNativeDelivery": "qa/ios-workshop-growth-2026-11-17/delivery.json",
+  "rollbackWebStem": "free-0541-4eb4bd1f28b2",
+  "httpResponsesVerified": 15
+}
