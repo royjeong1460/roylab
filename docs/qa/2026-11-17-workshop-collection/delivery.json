@@ -1,0 +1,26 @@
+{
+  "version": "0.5.73",
+  "nativeBuild": 83,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": true,
+  "nativeInstalledSequence": 5172,
+  "nativeAppLaunched": false,
+  "webBuilt": true,
+  "webPublished": false,
+  "httpVerified": false,
+  "webStem": "free-0541-1e2bee9d9fad",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "rollbackNativeDelivery": "qa/ios-blackhole-strain-2026-11-16/delivery.json",
+  "rollbackWebStem": "free-0541-247aa570697f",
+  "scope": "Center workshop purchase and cost, remove inline scrap-short captions, hold final collection grades before existing fade.",
+  "holdSeconds": {
+    "below70": 0,
+    "70to99": 0.5,
+    "100": 1.0
+  },
+  "fadeSeconds": 0.5,
+  "iconReplaced": false,
+  "runtimeExecutedByAssistant": false
+}

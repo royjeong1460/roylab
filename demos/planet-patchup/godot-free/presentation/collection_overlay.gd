@@ -32,6 +32,7 @@ var _font_size := 77
 var _title_size := 44
 var _unit := 1.0
 var _fading := false
+var _result_hold := 0.0
 var _fade_duration := 0.5
 var _fade_elapsed := 0.0
 
@@ -209,6 +210,8 @@ func _animate(now: float) -> void:
 func begin_fade(duration: float) -> void:
 	if _fading: return
 	_fading = true
+	var tier := int(view.run.collection_tier)
+	_result_hold = 1.0 if tier == 100 else 0.5 if tier >= 70 else 0.0
 	_fade_duration = maxf(0.001,duration)
 	_fade_elapsed = 0.0
 	_counter_value = _actual_percent()
@@ -219,7 +222,7 @@ func begin_fade(duration: float) -> void:
 	queue_redraw()
 
 func fade_complete() -> bool:
-	return _fading and _fade_elapsed>=_fade_duration
+	return _fading and _fade_elapsed>=_result_hold+_fade_duration
 
 func _process(dt: float) -> void:
 	if view==null or view.run==null: return
@@ -231,8 +234,8 @@ func _process(dt: float) -> void:
 	visible = _fading or (view.run.phase=="finishing" and view.run.collection_started())
 	if not visible: return
 	if _fading:
-		_fade_elapsed = minf(_fade_duration,_fade_elapsed+maxf(0.0,dt))
-		var progress := clampf((_fade_elapsed/_fade_duration-0.16)/0.84,0.0,1.0)
+		_fade_elapsed = minf(_result_hold+_fade_duration,_fade_elapsed+maxf(0.0,dt))
+		var progress := clampf(((_fade_elapsed-_result_hold)/_fade_duration-0.16)/0.84,0.0,1.0)
 		_fade.color.a = floorf(progress*16.0)/16.0
 		_fade.show()
 	var now := _clock()

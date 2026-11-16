@@ -2,7 +2,6 @@ extends RefCounted
 
 const UITheme = preload("res://app/ui_theme.gd")
 const L10n = preload("res://app/localization.gd")
-const Money = preload("res://campaign/money.gd")
 const OfferPopup = preload("res://app/offer_popup.gd")
 const TOOL_TRACKS := {"blast":["blastForce","blastRadius","blastReach"],"blackhole":["wellPull","wellReach","wellDuration","mix","wear"]}
 const SKILLS := {"passive":["aftershock","relay","slam","expand","wave"],"active":["orbital","seismic","gravity","sonic","recharge"]}
@@ -187,7 +186,6 @@ func _build_tools(pinned: VBoxContainer, content: VBoxContainer) -> void:
 		var hint: String = host._offer_hint(offer)
 		if not hint.is_empty(): unlock.add_child(_label(hint,12,UITheme.MUTED))
 		unlock.add_child(_purchase(offer,true))
-		_add_shortage(unlock,offer)
 		content.add_child(_card(unlock))
 		return
 	for id: String in TOOL_TRACKS[_tool]:
@@ -195,8 +193,6 @@ func _build_tools(pinned: VBoxContainer, content: VBoxContainer) -> void:
 
 func _metric_card(offer: Dictionary) -> PanelContainer:
 	var column := _column(8)
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation",10)
 	var copy := _column(6)
 	copy.add_child(_label(str(host._offer_name(offer)),14))
 	copy.add_child(_label(str(host._offer_level(offer)),12,UITheme.MUTED))
@@ -204,12 +200,10 @@ func _metric_card(offer: Dictionary) -> PanelContainer:
 	var inspect := _body_button(copy,func(): host._show_offer_details(offer))
 	for state in ["normal","hover","pressed"]: inspect.add_theme_stylebox_override(state,StyleBoxEmpty.new())
 	inspect.tooltip_text = str(host._offer_name(offer))+" · "+L10n.text("Details")
-	row.add_child(inspect)
-	row.add_child(_purchase(offer))
-	column.add_child(row)
+	column.add_child(inspect)
 	var hint: String = host._offer_hint(offer)
 	if not hint.is_empty(): column.add_child(_label(hint,12,UITheme.MUTED))
-	_add_shortage(column,offer)
+	column.add_child(_purchase(offer))
 	return _card(column)
 
 func _track_comparison(offer: Dictionary) -> String:
@@ -239,6 +233,7 @@ func _purchase(offer: Dictionary, details := false) -> Button:
 		action = "Locked" if locked else "Owned" if owned else "Unavailable"
 		price = ""
 	var body := _column(2)
+	body.alignment = BoxContainer.ALIGNMENT_CENTER
 	var action_label := _label(action,13,Color("172028") if can_buy else UITheme.MUTED)
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	body.add_child(action_label)
@@ -249,20 +244,12 @@ func _purchase(offer: Dictionary, details := false) -> Button:
 	var expected := {"revision":host.journey.profile.revision,"cost":offer.cost,"level":offer.level}
 	var button := _body_button(body,func():
 		if details: host._show_offer_details(offer)
-		else: host.app.buy_offer(str(offer.id),expected),can_buy,60)
-	button.custom_minimum_size.x = 86
-	button.size_flags_horizontal = Control.SIZE_SHRINK_END
+		else: host.app.buy_offer(str(offer.id),expected),can_buy,46)
+	button.custom_minimum_size.x = 126
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.disabled = not can_buy
 	button.tooltip_text = L10n.text(action)+(" · "+str(offer.price_text) if not price.is_empty() else "")
 	return button
-
-func _add_shortage(column: VBoxContainer, offer: Dictionary) -> void:
-	if bool(offer.can_afford) or bool(host._offer_locked(offer)) or bool(host._offer_owned(offer)) or not str(offer.get("numeric_error","")).is_empty(): return
-	var shortage: Variant = Money.subtract(offer.cost,host.journey.profile.parts)
-	var text := L10n.format("%s scrap short",[Money.text(shortage)]) if shortage != null else L10n.text("Not enough scrap.")
-	var label := _label(text,12,Color("e3aaa0"))
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	column.add_child(label)
 
 func _build_skills(pinned: VBoxContainer, content: VBoxContainer) -> void:
 	var loadout := HBoxContainer.new()
@@ -362,15 +349,9 @@ func _skill_card(offer: Dictionary) -> PanelContainer:
 		for state in ["normal","hover","pressed"]: equip.add_theme_stylebox_override(state,UITheme.box(UITheme.MINT,UITheme.MINT,1,6))
 		for state in ["font_color","font_hover_color","font_pressed_color"]: equip.add_theme_color_override(state,Color("172028"))
 	top.add_child(equip)
-	var bottom := HBoxContainer.new()
-	bottom.add_theme_constant_override("separation",10)
-	column.add_child(bottom)
 	var helper: String = str(host._offer_hint(offer)) if locked else _skill_use(offer) if owned else L10n.text("Learn before equipping")
-	var summary := _label(helper,12,UITheme.MUTED)
-	summary.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	bottom.add_child(summary)
-	if not locked: bottom.add_child(_purchase(offer,true))
-	_add_shortage(column,offer)
+	copy.add_child(_label(helper,12,UITheme.MUTED))
+	if not locked: column.add_child(_purchase(offer,true))
 	return _card(column,selected)
 
 func _skill_use(offer: Dictionary) -> String:

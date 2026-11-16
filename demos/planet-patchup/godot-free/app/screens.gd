@@ -532,8 +532,6 @@ func _show_offer_details(offer: Dictionary, intro := false) -> void:
 		demo.configure(catalog,journey.economy.stats({"upgrades":base_upgrades}),id)
 		column.add_child(demo)
 	column.add_child(_label(_offer_description(offer,not intro),13,UITheme.GOLD))
-	if not intro and not _offer_owned(offer) and str(offer.get("numeric_error","")).is_empty():
-		column.add_child(_label(L10n.format("%s scrap",[str(offer.price_text)]),12,UITheme.MINT if offer.can_afford else Color("eea291")))
 	var hint := _offer_hint(offer)
 	if not hint.is_empty(): column.add_child(_label(hint,12,UITheme.MUTED))
 	if not intro and not _offer_owned(offer):
@@ -554,8 +552,6 @@ func _show_offer_details(offer: Dictionary, intro := false) -> void:
 			column.add_child(_label("Select Black Hole in the field, then aim where you want to pull debris.",11,UITheme.MUTED))
 		if int(offer.level)==0:
 			column.add_child(_offer_purchase(offer,true))
-			if not offer.can_afford:
-				column.add_child(_label("Not enough scrap.",11,UITheme.MUTED))
 		elif _offer_owned(offer) or id in journey.profile.equipped.get(offer.kind,[]):
 			column.add_child(_button("Try on this site →",func(): app.start_run("retry"),false,true))
 		var tab := "weapons" if id=="blackhole" else "skills"
@@ -589,7 +585,8 @@ func _offer_purchase(offer: Dictionary, show_action := false) -> Button:
 	button.add_theme_font_size_override("font_size",11)
 	button.clip_text = true
 	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.custom_minimum_size.x = 170
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	var ink := UITheme.MUTED if inactive else UITheme.BG if can_buy else Color("eea291")
 	var fill := UITheme.MENU_BG if inactive else UITheme.GOLD if can_buy else Color("30252a")
 	for state in ["normal","hover","pressed","disabled"]:
