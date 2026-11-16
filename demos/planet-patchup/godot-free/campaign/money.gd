@@ -119,6 +119,13 @@ static func polynomial_cost(base: int, index: int, denominator: int) -> Variant:
 		units = add(units, 1)
 	return pack(multiply(units, 10))
 
+static func linear_growth_cost(anchor: Variant, extra_levels: int) -> Variant:
+	var numerator := multiply(anchor, str(100 + 3 * extra_levels))
+	var units: Variant = floor_root_ratio(numerator, "1000", 1, 0.0)
+	if compare(multiply(units, 1000), numerator) < 0:
+		units = add(units, 1)
+	return pack(multiply(units, 10))
+
 static func refinement_bonus(recovered: int, level: int) -> Variant:
 	var numerator := multiply(power(str(recovered * 3), 2), str(level))
 	return floor_root_ratio(numerator, "2500", 2, recovered * 0.06 * sqrt(float(level)))

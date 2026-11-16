@@ -191,20 +191,22 @@ func _trigger_passive(id: String, bomb: Dictionary) -> void:
 			marks.append({"kind": id, "ids": ids, "gain": gain, "tuning": tuning, "remaining": 12.0, "armed_at": clock + 0.18, "used": false})
 			marks = marks.slice(maxi(0, marks.size() - 8))
 	elif id == "slam":
-		var radius := maxf(16.0, float(world.stats.get("blastReach", 18.0)))
+		var base_radius := maxf(16.0, float(world.stats.get("blastReach", 18.0)))
+		var radius := base_radius * float(tuning.range_scale)
 		var ids := {}
 		for piece in _near_pieces(point, radius):
 			ids.merge(_native.owned(piece.ids), true)
 		ids.merge(_native.grain_ids(world.grains, point, radius), true)
 		_kick(point, radius, Vector2.UP, tuning.lift_power)
-		_schedule("slam", tuning.delay, point, radius + 12.0, tuning.slam_power, {"ids": ids})
+		_schedule("slam", tuning.delay, point, (base_radius + 12.0) * float(tuning.range_scale), tuning.slam_power, {"ids": ids})
 		_visual("slam-up", point, radius, tuning.delay)
 	elif id == "expand" and fields.size() < 4:
 		fields.append({"kind": "expand", "p": point, "age": 0.0, "duration": tuning.duration, "radius": tuning.start_radius, "max_radius": tuning.radius, "tick": 0.0, "gain": gain, "tuning": tuning})
 	world.events.append({"kind": "skill-trigger", "id": id, "p": point})
 
 func _paid_aftershock(bomb: Dictionary, point: Vector2, skill_level: int) -> void:
-	var radius := 2.5
+	var tuning := Catalog.effect_stats("aftershock", skill_level)
+	var radius := float(tuning.radius)
 	var primary_radius := float(bomb.get("radius", world.stats.get("bombRadius", 3.0)))
 	var inner := primary_radius + 1.0
 	var outer := primary_radius + 6.0
@@ -217,10 +219,9 @@ func _paid_aftershock(bomb: Dictionary, point: Vector2, skill_level: int) -> voi
 		if candidate.x >= 1.0 and candidate.x <= world.width - 1.0 and candidate.y >= 1.0 and candidate.y <= world.ground_y(candidate.x) - 1.0:
 			candidates.append(candidate)
 	var chosen: Array = []
-	var tuning := Catalog.effect_stats("aftershock", skill_level)
 	var count := int(tuning.echoes)
 	for i in range(count):
-		var available := _spaced(candidates, chosen, radius * 2.0)
+		var available := _spaced(candidates, chosen, 5.0)
 		if available.is_empty():
 			available = _spaced(candidates, chosen, 1.0)
 		if available.is_empty():
@@ -264,9 +265,9 @@ func on_contact(hit: Dictionary) -> void:
 			var point: Vector2 = hit.point
 			point.y = minf(world.ground_y(point.x) - 1.0, point.y)
 			if mark.kind == "relay":
-				_schedule("relay-hit", 0.0, point, 3.0, mark.tuning.power)
+				_schedule("relay-hit", 0.0, point, mark.tuning.radius, mark.tuning.power)
 			else:
-				_schedule("wave-start", 0.0, point, 8.0, mark.gain, {"tuning": mark.tuning})
+				_schedule("wave-start", 0.0, point, mark.tuning.radius, mark.gain, {"tuning": mark.tuning})
 
 func _structure_material() -> Array:
 	return _native.structure_material(world)
@@ -388,12 +389,23 @@ func _secondary_blast(action: Dictionary) -> void:
 func _orbital_columns() -> Dictionary:
 	return _native.columns(world)
 
+func _orbital_hit(columns: Dictionary, x: float, radius: float, previous: float, y: float, ground: float) -> float:
+	if radius <= maxf(16.0, float(columns.size())):
+		return _native.orbital_hit(columns, x, radius, previous, y, ground)
+	# Large imported levels must not scan millions of empty columns.
+	var hit := ground
+	for points: Array in columns.values():
+		for point: Vector2 in points:
+			if absf(point.x - x) <= radius and point.y >= previous - radius and point.y <= y + radius:
+				hit = minf(hit, point.y)
+	return hit
+
 func _orbital_step(dt: float) -> void:
 	if active.is_empty():
 		return
 	while active.next < active.targets.size() and active.age >= 0.45 + active.next * 0.42:
 		var heavy: bool = active.next == active.targets.size() - 1
-		active.projectiles.append({"x": active.targets[active.next], "y": -8.0, "vy": 15.0, "radius": 5.0 if heavy else 3.0, "power": (2.0 if heavy else 1.0) * active.force, "heavy": heavy})
+		active.projectiles.append({"x": active.targets[active.next], "y": -8.0, "vy": 15.0, "radius": active.tuning.heavy_radius if heavy else active.tuning.radius, "power": (2.0 if heavy else 1.0) * active.force, "heavy": heavy})
 		active.next += 1
 		world.events.append({"kind": "sound-orbital-fall", "heavy": heavy})
 	if active.projectiles.is_empty():
@@ -405,7 +417,7 @@ func _orbital_step(dt: float) -> void:
 		var previous: float = projectile.y
 		projectile.vy = minf(230.0, projectile.vy + 130.0 * dt)
 		projectile.y += projectile.vy * dt
-		var hit: float = _native.orbital_hit(columns, projectile.x, projectile.radius, previous, projectile.y, world.ground_y(projectile.x))
+		var hit: float = _orbital_hit(columns, projectile.x, projectile.radius, previous, projectile.y, world.ground_y(projectile.x))
 		if hit <= projectile.y + projectile.radius:
 			_secondary_blast({"kind": "orbital", "vfx": "orbital", "p": Vector2(projectile.x, minf(world.ground_y(projectile.x) - 1.0, hit)), "radius": projectile.radius, "power": projectile.power, "heavy": projectile.heavy})
 			# Later projectiles need the new geometry; the next tick rebuilds its own index.
@@ -427,8 +439,8 @@ func _seismic_step() -> void:
 		var span := maxf(5.0, (active.right - active.left) / active.targets.size()) * float(active.tuning.coverage)
 		var contacts: Dictionary = _native.seismic(_structure_material(), x, span, world)
 		for contact in contacts.values():
-			world.impact_physics.apply(contact.q, 4.0 * force, {"piece": contact.piece, "direction": Vector2.UP, "source": "seismic", "radius": 9.0})
-			for piece in _near_pieces(contact.q, 12.0):
+			world.impact_physics.apply(contact.q, 4.0 * force, {"piece": contact.piece, "direction": Vector2.UP, "source": "seismic", "radius": active.tuning.impact_radius})
+			for piece in _near_pieces(contact.q, active.tuning.kick_radius):
 				_impulse(piece, contact.q, Vector2.UP * piece.mass * 0.4 * force)
 		var point := Vector2(x, world.ground_y(x) - 1.0)
 		_record({"kind": "seismic", "p": point, "contacts": contacts.size(), "force": force})
@@ -441,7 +453,7 @@ func _sonic_step() -> void:
 	var center: float = (active.left + active.right) / 2.0
 	var half: float = (active.right - active.left) / 2.0
 	var steps := int(active.tuning.steps)
-	var span := maxf(3.0, half / steps)
+	var span := maxf(3.0, half / steps) * float(active.tuning.scan_scale)
 	while active.next < steps and active.age >= 0.4 + active.next * active.sweep_duration / (steps - 1):
 		var progress: float = float(active.next) / (steps - 1)
 		active.next += 1
@@ -452,7 +464,7 @@ func _sonic_step() -> void:
 				var contact: Dictionary = contacts[key]
 				active.hit_groups[key] = true
 				var direction := Vector2(-side, 0.0)
-				world.impact_physics.apply(contact.q, active.tuning.pressure, {"piece": contact.piece, "direction": direction, "source": "sonic", "radius": 5.0})
+				world.impact_physics.apply(contact.q, active.tuning.pressure, {"piece": contact.piece, "direction": direction, "source": "sonic", "radius": active.tuning.radius})
 				# Original assembly IDs bound each inward strike across later fragments.
 				for piece in world.pieces:
 					if side * (piece.position.x / world.S - center) >= 0.0 and _native.group_member(piece.ids, world._original_groups, contact.group):
@@ -479,13 +491,13 @@ func _gravity_step(dt: float) -> void:
 				continue
 			var contact: Dictionary = contacts[piece]
 			var strength: float = active.tuning.contact_fatigue * active.pressure * minf(2.0, sqrt(piece.ids.size() / 200.0))
-			world.impact_physics.apply(contact.p, strength, {"piece": piece, "direction": Vector2.UP, "source": "gravity", "radius": 2.5})
+			world.impact_physics.apply(contact.p, strength, {"piece": piece, "direction": Vector2.UP, "source": "gravity", "radius": active.tuning.contact_radius})
 			if contact.base != null and is_instance_valid(contact.base) and world.pieces.has(contact.base):
-				world.impact_physics.apply(contact.p, strength, {"piece": contact.base, "direction": Vector2.DOWN, "source": "gravity", "radius": 2.5})
+				world.impact_physics.apply(contact.p, strength, {"piece": contact.base, "direction": Vector2.DOWN, "source": "gravity", "radius": active.tuning.contact_radius})
 			elif contact.static:
-				world.impact_physics.apply(contact.p, strength, {"direction": Vector2.DOWN, "source": "gravity", "radius": 2.5})
+				world.impact_physics.apply(contact.p, strength, {"direction": Vector2.DOWN, "source": "gravity", "radius": active.tuning.contact_radius})
 			_record({"kind": "compression", "p": contact.p, "strength": strength})
-			_visual("compression", contact.p, 5.0)
+			_visual("compression", contact.p, float(active.tuning.contact_radius) * 2.0)
 	if active.age >= active.duration:
 		_record({"kind": "gravity"})
 		active.clear()
@@ -512,12 +524,12 @@ func _execute(action: Dictionary) -> void:
 			for i in range(1, int(action.tuning.pulses_per_side) + 1):
 				for side in [-1.0, 1.0]:
 					var x := clampf(action.p.x + side * i * action.tuning.spacing, 1.0, world.width - 1.0)
-					_schedule("wave-pulse", i * action.tuning.pulse_interval, Vector2(x, world.ground_y(x) - 1.0), 8.0, action.power, {"tuning": action.tuning})
-			_visual("wave", action.p, 7.0)
+					_schedule("wave-pulse", i * action.tuning.pulse_interval, Vector2(x, world.ground_y(x) - 1.0), action.tuning.radius, action.power, {"tuning": action.tuning})
+			_visual("wave", action.p, action.tuning.spacing)
 		"wave-pulse":
 			_pressure(action.p, action.radius, action.tuning.pressure)
 			_kick(action.p, action.radius, Vector2.UP, action.tuning.upward_power)
-			_visual("wave", action.p, 7.0, 0.5)
+			_visual("wave", action.p, action.tuning.spacing, 0.5)
 			_record({"kind": "wave", "p": action.p})
 
 func _fields_step(dt: float) -> void:

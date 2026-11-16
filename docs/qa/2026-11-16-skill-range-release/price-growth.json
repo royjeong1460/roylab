@@ -1,0 +1,1382 @@
+{
+  "evidence": "Source inspection and independent Python integer arithmetic only; no Godot, scenes, saves, gameplay, browser or devices executed",
+  "checks": {
+    "balance.json_unchanged": true,
+    "skill_expansion.json_unchanged": true,
+    "all_other_economy_functions_unchanged": true,
+    "all_existing_money_functions_unchanged": true,
+    "exact_helper_contract": true,
+    "preserved_cost_guard": true,
+    "learn_and_fixed_cost_paths_unchanged": true,
+    "recharge_legacy_branch": true,
+    "destructive_tail_anchor": true,
+    "legacy_tail_formula": true,
+    "only_validator_change_is_historical_last_bound": true,
+    "safe_int_factor_no_signed64_overflow": true,
+    "exact_helper_over_binary_float_precision": true,
+    "nine_discounted_skills": true,
+    "all_checks_pass": true
+  },
+  "dense_exact_price_points": 9009,
+  "historical_transition_totals_checked": 10303,
+  "levels_rejected_by_unchanged_source_guard": [
+    -1,
+    9007199254740991,
+    9007199254740992
+  ],
+  "skills": {
+    "aftershock": {
+      "M": 10,
+      "learn": 0,
+      "fixed_prices": [
+        600,
+        1800,
+        6000,
+        18000,
+        18000,
+        18000,
+        18000,
+        18000,
+        18000
+      ],
+      "A": 21580,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "0",
+          "old": "0"
+        },
+        {
+          "current_level": 9,
+          "new": "18000",
+          "old": "18000"
+        },
+        {
+          "current_level": 10,
+          "new": "21580",
+          "old": "21580"
+        },
+        {
+          "current_level": 11,
+          "new": "22230",
+          "old": "25400"
+        },
+        {
+          "current_level": 20,
+          "new": "28060",
+          "old": "69200"
+        },
+        {
+          "current_level": 40,
+          "new": "41010",
+          "old": "215570"
+        },
+        {
+          "current_level": 100,
+          "new": "79850",
+          "old": "949110"
+        },
+        {
+          "current_level": 1000,
+          "new": "662510",
+          "old": "38150410"
+        },
+        {
+          "current_level": 1000000,
+          "new": "647415110",
+          "old": "2409694772600"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "647400015110",
+          "old": "152041623487836860"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "5831260797519332040",
+          "old": "20384784803439694907363641030"
+        }
+      ]
+    },
+    "relay": {
+      "M": 5,
+      "learn": 1000,
+      "fixed_prices": [
+        600,
+        1800,
+        6000,
+        18000
+      ],
+      "A": 21580,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "1000",
+          "old": "1000"
+        },
+        {
+          "current_level": 4,
+          "new": "18000",
+          "old": "18000"
+        },
+        {
+          "current_level": 5,
+          "new": "21580",
+          "old": "21580"
+        },
+        {
+          "current_level": 6,
+          "new": "22230",
+          "old": "25400"
+        },
+        {
+          "current_level": 20,
+          "new": "31300",
+          "old": "99980"
+        },
+        {
+          "current_level": 40,
+          "new": "44240",
+          "old": "261060"
+        },
+        {
+          "current_level": 100,
+          "new": "83090",
+          "old": "1026700"
+        },
+        {
+          "current_level": 1000,
+          "new": "665750",
+          "old": "38456270"
+        },
+        {
+          "current_level": 1000000,
+          "new": "647418350",
+          "old": "2409714050200"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "647400018350",
+          "old": "152041624704169850"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "5831260797519335270",
+          "old": "20384784803439713012689593680"
+        }
+      ]
+    },
+    "orbital": {
+      "M": 5,
+      "learn": 2000,
+      "fixed_prices": [
+        1200,
+        4000,
+        12000,
+        36000
+      ],
+      "A": 43160,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "2000",
+          "old": "2000"
+        },
+        {
+          "current_level": 4,
+          "new": "36000",
+          "old": "36000"
+        },
+        {
+          "current_level": 5,
+          "new": "43160",
+          "old": "43160"
+        },
+        {
+          "current_level": 6,
+          "new": "44460",
+          "old": "50790"
+        },
+        {
+          "current_level": 20,
+          "new": "62590",
+          "old": "199950"
+        },
+        {
+          "current_level": 40,
+          "new": "88480",
+          "old": "522110"
+        },
+        {
+          "current_level": 100,
+          "new": "166170",
+          "old": "2053390"
+        },
+        {
+          "current_level": 1000,
+          "new": "1331490",
+          "old": "76912540"
+        },
+        {
+          "current_level": 1000000,
+          "new": "1294836690",
+          "old": "4819428100390"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "1294800036690",
+          "old": "304083249408339690"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "11662521595038670540",
+          "old": "40769569606879426025379187350"
+        }
+      ]
+    },
+    "slam": {
+      "M": 5,
+      "learn": 3500,
+      "fixed_prices": [
+        1200,
+        3000,
+        6000,
+        12000
+      ],
+      "A": 14390,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "3500",
+          "old": "3500"
+        },
+        {
+          "current_level": 4,
+          "new": "12000",
+          "old": "12000"
+        },
+        {
+          "current_level": 5,
+          "new": "14390",
+          "old": "14390"
+        },
+        {
+          "current_level": 6,
+          "new": "14830",
+          "old": "16930"
+        },
+        {
+          "current_level": 20,
+          "new": "20870",
+          "old": "66650"
+        },
+        {
+          "current_level": 40,
+          "new": "29500",
+          "old": "174040"
+        },
+        {
+          "current_level": 100,
+          "new": "55410",
+          "old": "684470"
+        },
+        {
+          "current_level": 1000,
+          "new": "443940",
+          "old": "25637520"
+        },
+        {
+          "current_level": 1000000,
+          "new": "431712240",
+          "old": "1606476033470"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "431700012240",
+          "old": "101361083136113230"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "3888407918271697620",
+          "old": "13589856535626475341793062450"
+        }
+      ]
+    },
+    "expand": {
+      "M": 5,
+      "learn": 6000,
+      "fixed_prices": [
+        1800,
+        4000,
+        8000,
+        16000
+      ],
+      "A": 19190,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "6000",
+          "old": "6000"
+        },
+        {
+          "current_level": 4,
+          "new": "16000",
+          "old": "16000"
+        },
+        {
+          "current_level": 5,
+          "new": "19190",
+          "old": "19190"
+        },
+        {
+          "current_level": 6,
+          "new": "19770",
+          "old": "22580"
+        },
+        {
+          "current_level": 20,
+          "new": "27830",
+          "old": "88870"
+        },
+        {
+          "current_level": 40,
+          "new": "39340",
+          "old": "232050"
+        },
+        {
+          "current_level": 100,
+          "new": "73890",
+          "old": "912620"
+        },
+        {
+          "current_level": 1000,
+          "new": "592020",
+          "old": "34183350"
+        },
+        {
+          "current_level": 1000000,
+          "new": "575716320",
+          "old": "2141968044620"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "575700016320",
+          "old": "135148110848150970"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "5185444610954404260",
+          "old": "18119808714168633789057416600"
+        }
+      ]
+    },
+    "wave": {
+      "M": 5,
+      "learn": 10000,
+      "fixed_prices": [
+        2400,
+        5000,
+        10000,
+        20000
+      ],
+      "A": 23980,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "10000",
+          "old": "10000"
+        },
+        {
+          "current_level": 4,
+          "new": "20000",
+          "old": "20000"
+        },
+        {
+          "current_level": 5,
+          "new": "23980",
+          "old": "23980"
+        },
+        {
+          "current_level": 6,
+          "new": "24700",
+          "old": "28220"
+        },
+        {
+          "current_level": 20,
+          "new": "34780",
+          "old": "111090"
+        },
+        {
+          "current_level": 40,
+          "new": "49160",
+          "old": "290070"
+        },
+        {
+          "current_level": 100,
+          "new": "92330",
+          "old": "1140770"
+        },
+        {
+          "current_level": 1000,
+          "new": "739790",
+          "old": "42729190"
+        },
+        {
+          "current_level": 1000000,
+          "new": "719420390",
+          "old": "2677460055780"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "719400020390",
+          "old": "168935138560188720"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "6479779143860688590",
+          "old": "22649760892710792236321770750"
+        }
+      ]
+    },
+    "seismic": {
+      "M": 5,
+      "learn": 4000,
+      "fixed_prices": [
+        2000,
+        5000,
+        10000,
+        18000
+      ],
+      "A": 21580,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "4000",
+          "old": "4000"
+        },
+        {
+          "current_level": 4,
+          "new": "18000",
+          "old": "18000"
+        },
+        {
+          "current_level": 5,
+          "new": "21580",
+          "old": "21580"
+        },
+        {
+          "current_level": 6,
+          "new": "22230",
+          "old": "25400"
+        },
+        {
+          "current_level": 20,
+          "new": "31300",
+          "old": "99980"
+        },
+        {
+          "current_level": 40,
+          "new": "44240",
+          "old": "261060"
+        },
+        {
+          "current_level": 100,
+          "new": "83090",
+          "old": "1026700"
+        },
+        {
+          "current_level": 1000,
+          "new": "665750",
+          "old": "38456270"
+        },
+        {
+          "current_level": 1000000,
+          "new": "647418350",
+          "old": "2409714050200"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "647400018350",
+          "old": "152041624704169850"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "5831260797519335270",
+          "old": "20384784803439713012689593680"
+        }
+      ]
+    },
+    "gravity": {
+      "M": 5,
+      "learn": 8000,
+      "fixed_prices": [
+        3000,
+        7000,
+        14000,
+        24000
+      ],
+      "A": 28780,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "8000",
+          "old": "8000"
+        },
+        {
+          "current_level": 4,
+          "new": "24000",
+          "old": "24000"
+        },
+        {
+          "current_level": 5,
+          "new": "28780",
+          "old": "28780"
+        },
+        {
+          "current_level": 6,
+          "new": "29650",
+          "old": "33860"
+        },
+        {
+          "current_level": 20,
+          "new": "41740",
+          "old": "133300"
+        },
+        {
+          "current_level": 40,
+          "new": "59000",
+          "old": "348080"
+        },
+        {
+          "current_level": 100,
+          "new": "110810",
+          "old": "1368930"
+        },
+        {
+          "current_level": 1000,
+          "new": "887870",
+          "old": "51275030"
+        },
+        {
+          "current_level": 1000000,
+          "new": "863424470",
+          "old": "3212952066930"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "863400024470",
+          "old": "202722166272226460"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "7776815836543395230",
+          "old": "27179713071252950683586124900"
+        }
+      ]
+    },
+    "sonic": {
+      "M": 5,
+      "learn": 12000,
+      "fixed_prices": [
+        4000,
+        9000,
+        18000,
+        30000
+      ],
+      "A": 35970,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "12000",
+          "old": "12000"
+        },
+        {
+          "current_level": 4,
+          "new": "30000",
+          "old": "30000"
+        },
+        {
+          "current_level": 5,
+          "new": "35970",
+          "old": "35970"
+        },
+        {
+          "current_level": 6,
+          "new": "37050",
+          "old": "42330"
+        },
+        {
+          "current_level": 20,
+          "new": "52160",
+          "old": "166630"
+        },
+        {
+          "current_level": 40,
+          "new": "73740",
+          "old": "435100"
+        },
+        {
+          "current_level": 100,
+          "new": "138490",
+          "old": "1711160"
+        },
+        {
+          "current_level": 1000,
+          "new": "1109680",
+          "old": "64093780"
+        },
+        {
+          "current_level": 1000000,
+          "new": "1079130580",
+          "old": "4016190083660"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "1079100030580",
+          "old": "253402707840283070"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "9719668715791032890",
+          "old": "33974641339066188354482656130"
+        }
+      ]
+    },
+    "recharge": {
+      "M": 1,
+      "learn": 12000,
+      "fixed_prices": [],
+      "A": 3600,
+      "samples": [
+        {
+          "current_level": 0,
+          "new": "12000",
+          "old": "12000"
+        },
+        {
+          "current_level": 1,
+          "new": "3600",
+          "old": "3600"
+        },
+        {
+          "current_level": 2,
+          "new": "4240",
+          "old": "4240"
+        },
+        {
+          "current_level": 20,
+          "new": "21260",
+          "old": "21260"
+        },
+        {
+          "current_level": 40,
+          "new": "49960",
+          "old": "49960"
+        },
+        {
+          "current_level": 100,
+          "new": "181740",
+          "old": "181740"
+        },
+        {
+          "current_level": 1000,
+          "new": "6450270",
+          "old": "6450270"
+        },
+        {
+          "current_level": 1000000,
+          "new": "401621578720",
+          "old": "401621578720"
+        },
+        {
+          "current_level": 1000000000,
+          "new": "25340270946206040",
+          "old": "25340270946206040"
+        },
+        {
+          "current_level": 9007199254740990,
+          "new": "3397464133906621249491725970",
+          "old": "3397464133906621249491725970"
+        }
+      ]
+    }
+  },
+  "ledger_bounds": {
+    "aftershock": [
+      {
+        "owned_level": 10,
+        "minimum": "116400",
+        "maximum": "116400",
+        "all_new": "116400",
+        "all_old": "116400",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "116399",
+          "116401"
+        ]
+      },
+      {
+        "owned_level": 11,
+        "minimum": "137980",
+        "maximum": "137980",
+        "all_new": "137980",
+        "all_old": "137980",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "137979",
+          "137981"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "332200",
+        "maximum": "752000",
+        "all_new": "361370",
+        "all_old": "529850",
+        "accepted_transitions": 11,
+        "rejected_outside_bounds": [
+          "332199",
+          "752001"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "763800",
+        "maximum": "6322500",
+        "all_new": "1045560",
+        "all_old": "3203650",
+        "accepted_transitions": 31,
+        "rejected_outside_bounds": [
+          "763799",
+          "6322501"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "2058600",
+        "maximum": "84164700",
+        "all_new": "4651870",
+        "all_old": "35837290",
+        "accepted_transitions": 91,
+        "rejected_outside_bounds": [
+          "2058599",
+          "84164701"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "21480600",
+        "maximum": "37708563000",
+        "all_new": "338423350",
+        "all_old": "14644432810",
+        "accepted_transitions": 991,
+        "rejected_outside_bounds": [
+          "21480599",
+          "37708563001"
+        ]
+      }
+    ],
+    "relay": [
+      {
+        "owned_level": 5,
+        "minimum": "27400",
+        "maximum": "27400",
+        "all_new": "27400",
+        "all_old": "27400",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "27399",
+          "27401"
+        ]
+      },
+      {
+        "owned_level": 6,
+        "minimum": "48980",
+        "maximum": "48980",
+        "all_new": "48980",
+        "all_old": "48980",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "48979",
+          "48981"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "351100",
+        "maximum": "1429750",
+        "all_new": "419140",
+        "all_old": "846710",
+        "accepted_transitions": 16,
+        "rejected_outside_bounds": [
+          "351099",
+          "1429751"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "782700",
+        "maximum": "8836900",
+        "all_new": "1168070",
+        "all_old": "4282170",
+        "accepted_transitions": 36,
+        "rejected_outside_bounds": [
+          "782699",
+          "8836901"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "2077500",
+        "maximum": "96072400",
+        "all_new": "4968600",
+        "all_old": "40648100",
+        "accepted_transitions": 96,
+        "rejected_outside_bounds": [
+          "2077499",
+          "96072401"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "21499500",
+        "maximum": "38203072300",
+        "all_new": "341653380",
+        "all_old": "14835707190",
+        "accepted_transitions": 996,
+        "rejected_outside_bounds": [
+          "21499499",
+          "38203072301"
+        ]
+      }
+    ],
+    "orbital": [
+      {
+        "owned_level": 5,
+        "minimum": "55200",
+        "maximum": "55200",
+        "all_new": "55200",
+        "all_old": "55200",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "55199",
+          "55201"
+        ]
+      },
+      {
+        "owned_level": 6,
+        "minimum": "98360",
+        "maximum": "98360",
+        "all_new": "98360",
+        "all_old": "98360",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "98359",
+          "98361"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "702600",
+        "maximum": "2859750",
+        "all_new": "838610",
+        "all_old": "1693720",
+        "accepted_transitions": 16,
+        "rejected_outside_bounds": [
+          "702599",
+          "2859751"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "1565800",
+        "maximum": "17674200",
+        "all_new": "2336360",
+        "all_old": "8564540",
+        "accepted_transitions": 36,
+        "rejected_outside_bounds": [
+          "1565799",
+          "17674201"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "4155400",
+        "maximum": "192144250",
+        "all_new": "9937130",
+        "all_old": "81296090",
+        "accepted_transitions": 96,
+        "rejected_outside_bounds": [
+          "4155399",
+          "192144251"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "42999400",
+        "maximum": "76406145000",
+        "all_new": "683302190",
+        "all_old": "29671410050",
+        "accepted_transitions": 996,
+        "rejected_outside_bounds": [
+          "42999399",
+          "76406145001"
+        ]
+      }
+    ],
+    "slam": [
+      {
+        "owned_level": 5,
+        "minimum": "25700",
+        "maximum": "25700",
+        "all_new": "25700",
+        "all_old": "25700",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "25699",
+          "25701"
+        ]
+      },
+      {
+        "owned_level": 6,
+        "minimum": "40090",
+        "maximum": "40090",
+        "all_new": "40090",
+        "all_old": "40090",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "40089",
+          "40091"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "241550",
+        "maximum": "960650",
+        "all_new": "286960",
+        "all_old": "571920",
+        "accepted_transitions": 16,
+        "rejected_outside_bounds": [
+          "241549",
+          "960651"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "529350",
+        "maximum": "5898700",
+        "all_new": "786390",
+        "all_old": "2862240",
+        "accepted_transitions": 36,
+        "rejected_outside_bounds": [
+          "529349",
+          "5898701"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "1392750",
+        "maximum": "64055700",
+        "all_new": "3320760",
+        "all_old": "27106290",
+        "accepted_transitions": 96,
+        "rejected_outside_bounds": [
+          "1392749",
+          "64055701"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "14343750",
+        "maximum": "25468722300",
+        "all_new": "227830800",
+        "all_old": "9890480580",
+        "accepted_transitions": 996,
+        "rejected_outside_bounds": [
+          "14343749",
+          "25468722301"
+        ]
+      }
+    ],
+    "expand": [
+      {
+        "owned_level": 5,
+        "minimum": "35800",
+        "maximum": "35800",
+        "all_new": "35800",
+        "all_old": "35800",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "35799",
+          "35801"
+        ]
+      },
+      {
+        "owned_level": 6,
+        "minimum": "54990",
+        "maximum": "54990",
+        "all_new": "54990",
+        "all_old": "54990",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "54989",
+          "54991"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "323650",
+        "maximum": "1282300",
+        "all_new": "384160",
+        "all_old": "764100",
+        "accepted_transitions": 16,
+        "rejected_outside_bounds": [
+          "323649",
+          "1282301"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "707450",
+        "maximum": "7866700",
+        "all_new": "1050150",
+        "all_old": "3817850",
+        "accepted_transitions": 36,
+        "rejected_outside_bounds": [
+          "707449",
+          "7866701"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "1858850",
+        "maximum": "85408500",
+        "all_new": "4429820",
+        "all_old": "36143160",
+        "accepted_transitions": 96,
+        "rejected_outside_bounds": [
+          "1858849",
+          "85408501"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "19129850",
+        "maximum": "33958301250",
+        "all_new": "303827060",
+        "all_old": "13187307360",
+        "accepted_transitions": 996,
+        "rejected_outside_bounds": [
+          "19129849",
+          "33958301251"
+        ]
+      }
+    ],
+    "wave": [
+      {
+        "owned_level": 5,
+        "minimum": "47400",
+        "maximum": "47400",
+        "all_new": "47400",
+        "all_old": "47400",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "47399",
+          "47401"
+        ]
+      },
+      {
+        "owned_level": 6,
+        "minimum": "71380",
+        "maximum": "71380",
+        "all_new": "71380",
+        "all_old": "71380",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "71379",
+          "71381"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "407100",
+        "maximum": "1605450",
+        "all_new": "482700",
+        "all_old": "957720",
+        "accepted_transitions": 16,
+        "rejected_outside_bounds": [
+          "407099",
+          "1605451"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "886700",
+        "maximum": "9835850",
+        "all_new": "1314910",
+        "all_old": "4774880",
+        "accepted_transitions": 36,
+        "rejected_outside_bounds": [
+          "886699",
+          "9835851"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "2325500",
+        "maximum": "106763750",
+        "all_new": "5538070",
+        "all_old": "45181470",
+        "accepted_transitions": 96,
+        "rejected_outside_bounds": [
+          "2325499",
+          "106763751"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "23907500",
+        "maximum": "42447881700",
+        "all_new": "379666450",
+        "all_old": "16484135700",
+        "accepted_transitions": 996,
+        "rejected_outside_bounds": [
+          "23907499",
+          "42447881701"
+        ]
+      }
+    ],
+    "seismic": [
+      {
+        "owned_level": 5,
+        "minimum": "39000",
+        "maximum": "39000",
+        "all_new": "39000",
+        "all_old": "39000",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "38999",
+          "39001"
+        ]
+      },
+      {
+        "owned_level": 6,
+        "minimum": "60580",
+        "maximum": "60580",
+        "all_new": "60580",
+        "all_old": "60580",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "60579",
+          "60581"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "362700",
+        "maximum": "1441350",
+        "all_new": "430740",
+        "all_old": "858310",
+        "accepted_transitions": 16,
+        "rejected_outside_bounds": [
+          "362699",
+          "1441351"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "794300",
+        "maximum": "8848500",
+        "all_new": "1179670",
+        "all_old": "4293770",
+        "accepted_transitions": 36,
+        "rejected_outside_bounds": [
+          "794299",
+          "8848501"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "2089100",
+        "maximum": "96084000",
+        "all_new": "4980200",
+        "all_old": "40659700",
+        "accepted_transitions": 96,
+        "rejected_outside_bounds": [
+          "2089099",
+          "96084001"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "21511100",
+        "maximum": "38203083900",
+        "all_new": "341664980",
+        "all_old": "14835718790",
+        "accepted_transitions": 996,
+        "rejected_outside_bounds": [
+          "21511099",
+          "38203083901"
+        ]
+      }
+    ],
+    "gravity": [
+      {
+        "owned_level": 5,
+        "minimum": "56000",
+        "maximum": "56000",
+        "all_new": "56000",
+        "all_old": "56000",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "55999",
+          "56001"
+        ]
+      },
+      {
+        "owned_level": 6,
+        "minimum": "84780",
+        "maximum": "84780",
+        "all_new": "84780",
+        "all_old": "84780",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "84779",
+          "84781"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "487700",
+        "maximum": "1925750",
+        "all_new": "578440",
+        "all_old": "1148380",
+        "accepted_transitions": 16,
+        "rejected_outside_bounds": [
+          "487699",
+          "1925751"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "1063300",
+        "maximum": "11802000",
+        "all_new": "1577210",
+        "all_old": "5728970",
+        "accepted_transitions": 36,
+        "rejected_outside_bounds": [
+          "1063299",
+          "11802001"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "2790100",
+        "maximum": "128115050",
+        "all_new": "6645650",
+        "all_old": "54216780",
+        "accepted_transitions": 96,
+        "rejected_outside_bounds": [
+          "2790099",
+          "128115051"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "28692100",
+        "maximum": "50937449200",
+        "all_new": "455661230",
+        "all_old": "19780960780",
+        "accepted_transitions": 996,
+        "rejected_outside_bounds": [
+          "28692099",
+          "50937449201"
+        ]
+      }
+    ],
+    "sonic": [
+      {
+        "owned_level": 5,
+        "minimum": "73000",
+        "maximum": "73000",
+        "all_new": "73000",
+        "all_old": "73000",
+        "accepted_transitions": 1,
+        "rejected_outside_bounds": [
+          "72999",
+          "73001"
+        ]
+      },
+      {
+        "owned_level": 6,
+        "minimum": "108970",
+        "maximum": "108970",
+        "all_new": "108970",
+        "all_old": "108970",
+        "accepted_transitions": 2,
+        "rejected_outside_bounds": [
+          "108969",
+          "108971"
+        ]
+      },
+      {
+        "owned_level": 20,
+        "minimum": "612550",
+        "maximum": "2410150",
+        "all_new": "725920",
+        "all_old": "1438470",
+        "accepted_transitions": 16,
+        "rejected_outside_bounds": [
+          "612549",
+          "2410151"
+        ]
+      },
+      {
+        "owned_level": 40,
+        "minimum": "1331950",
+        "maximum": "14755500",
+        "all_new": "1974190",
+        "all_old": "7164170",
+        "accepted_transitions": 36,
+        "rejected_outside_bounds": [
+          "1331949",
+          "14755501"
+        ]
+      },
+      {
+        "owned_level": 100,
+        "minimum": "3490150",
+        "maximum": "160147050",
+        "all_new": "8308790",
+        "all_old": "67773870",
+        "accepted_transitions": 96,
+        "rejected_outside_bounds": [
+          "3490149",
+          "160147051"
+        ]
+      },
+      {
+        "owned_level": 1000,
+        "minimum": "35863150",
+        "maximum": "63671814500",
+        "all_new": "569499200",
+        "all_old": "24726202880",
+        "accepted_transitions": 996,
+        "rejected_outside_bounds": [
+          "35863149",
+          "63671814501"
+        ]
+      }
+    ]
+  },
+  "compatibility_proof": "For each destructive skill old unrounded polynomial is convex; derivative with respect to tail k >= .192*base. Anchor A differs from its raw value by less than 10. Checked 192*base-30*A>10000, hence old_raw(k)>new_raw(k) for all k>=1. Monotone ceiling preserves old_price>=new_price. Both schedules are >= A, so every mixed history lies inside prefix+count*A and prefix+count*old_last. Bounds remain deliberately conservative, not a reconstruction of exact transactions.",
+  "limitations": [
+    "No engine parser/compiler or runtime execution",
+    "Actual save loading, price display, transactions and gameplay require user validation",
+    "Conservative historical bounds intentionally continue to accept some non-historical totals inside bounds"
+  ],
+  "sha256": {
+    "economy.gd": "350e9156caa983279c7285a68c239de13810c7904057f20ed8e1079e7bd2dc4f",
+    "money.gd": "e3badf1130cfc72573d27c7492a92b4dba1989952b663662e7611160889768f0"
+  }
+}

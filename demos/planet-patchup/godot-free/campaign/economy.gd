@@ -74,8 +74,15 @@ func skill_cost(id: String, level: int) -> Variant:
 	var key := id + ":" + str(level)
 	if _price_cache.has(key):
 		return _price_cache[key]
+	var maximum := int(skill.get("max", 5))
+	var cost: Variant = _legacy_skill_tail_cost(id, level) if id == "recharge" else Money.linear_growth_cost(_legacy_skill_tail_cost(id, maximum), level - maximum)
+	return _cache_cost(key, cost)
+
+func _legacy_skill_tail_cost(id: String, level: int) -> Variant:
+	var skill: Dictionary = catalog.skills[id]
+	var prices := skill_prices(skill)
 	var base := 3000 if prices.is_empty() else int(prices.back())
-	return _cache_cost(key, Money.polynomial_cost(base, level - int(skill.get("max", 5)) + 1, 25))
+	return Money.polynomial_cost(base, level - int(skill.get("max", 5)) + 1, 25)
 
 func legacy_track_spent(id: String, level: int) -> int:
 	var total := 0
@@ -140,7 +147,8 @@ func validate_purchase_totals(p: Dictionary) -> String:
 		else:
 			# New intervals use the persisted transaction totals, bounded without iterating levels.
 			var first: Variant = skill_cost(id, maximum) if is_skill else upgrade_cost(id, maximum)
-			var last: Variant = skill_cost(id, level - 1) if is_skill else upgrade_cost(id, level - 1)
+			# Historical and mixed-price ledgers keep their original conservative upper bound.
+			var last: Variant = _legacy_skill_tail_cost(id, level - 1) if is_skill else upgrade_cost(id, level - 1)
 			var count := str(level - maximum)
 			var minimum: Variant = Money.add(prefix, Money.multiply(first, count))
 			var maximum_cost: Variant = Money.add(prefix, Money.multiply(last, count))
@@ -283,23 +291,23 @@ func skill_effect_description(id: String, level: int) -> Dictionary:
 	var strength := _value_text(float(effect.get("gain", 1.0)) * 100.0)
 	match id:
 		"aftershock":
-			return {"key": "Every %d effective Blasts · %d echoes at %s%% primary force", "args": [effect.threshold, effect.echoes, _value_text(float(effect.power) * 100.0)]}
+			return {"key": "Every %d effective Blasts · %d echoes at %s%% primary force · radius %s cells", "args": [effect.threshold, effect.echoes, _value_text(float(effect.power) * 100.0), _value_text(float(effect.radius))]}
 		"relay":
-			return {"key": "Every %d effective Blasts · fragment relay at %s%% base strength", "args": [effect.threshold, strength]}
+			return {"key": "Every %d effective Blasts · fragment relay at %s%% base strength · radius %s cells", "args": [effect.threshold, strength, _value_text(float(effect.radius))]}
 		"slam":
-			return {"key": "Every %d effective Blasts · lift then slam at %s%% base strength", "args": [effect.threshold, strength]}
+			return {"key": "Every %d effective Blasts · lift then slam at %s%% base strength · capture reach %s×", "args": [effect.threshold, strength, _value_text(float(effect.range_scale))]}
 		"expand":
-			return {"key": "Every %d effective Blasts · expanding pressure at %s%% base strength", "args": [effect.threshold, strength]}
+			return {"key": "Every %d effective Blasts · expanding pressure at %s%% base strength · radius %s cells", "args": [effect.threshold, strength, _value_text(float(effect.radius))]}
 		"wave":
-			return {"key": "Every %d effective Blasts · landing sends %d pulses each way at %s%% strength", "args": [effect.threshold, effect.pulses_per_side, strength]}
+			return {"key": "Every %d effective Blasts · landing sends %d pulses each way at %s%% strength · radius %s cells · spacing %s cells", "args": [effect.threshold, effect.pulses_per_side, strength, _value_text(float(effect.radius)), _value_text(float(effect.spacing))]}
 		"orbital":
-			return {"key": "Once per sortie · %d payloads at %s%% impact strength", "args": [effect.payloads, strength]}
+			return {"key": "Once per sortie · %d payloads at %s%% impact strength · radii %s/%s cells", "args": [effect.payloads, strength, _value_text(float(effect.radius)), _value_text(float(effect.heavy_radius))]}
 		"seismic":
-			return {"key": "Once per sortie · %d foundation strikes at %s%% strength · %d%% coverage · %d%% follow-up", "args": [effect.targets, strength, roundi(float(effect.coverage) * 100.0), roundi(float(effect.followup_power) * 100.0)]}
+			return {"key": "Once per sortie · %d foundation strikes at %s%% strength · %d%% coverage · %d%% follow-up · hit radius %s cells", "args": [effect.targets, strength, roundi(float(effect.coverage) * 100.0), roundi(float(effect.followup_power) * 100.0), _value_text(float(effect.impact_radius))]}
 		"gravity":
-			return {"key": "Once per sortie · %.2f s downward load at %s%% strength", "args": [effect.duration, strength]}
+			return {"key": "Once per sortie · %.2f s downward load at %s%% strength · contact radius %s cells", "args": [effect.duration, strength, _value_text(float(effect.contact_radius))]}
 		"sonic":
-			return {"key": "Once per sortie · %.2f s inward sweep at %s%% strength", "args": [effect.duration, strength]}
+			return {"key": "Once per sortie · %.2f s inward sweep at %s%% strength · radius %s cells", "args": [effect.duration, strength, _value_text(float(effect.radius))]}
 		"recharge":
 			return {"key": "Once per sortie · restore %s%% maximum battery before it empties", "args": [_value_text(float(effect.recharge_fraction) * 100.0)]}
 	return {"key": "%s", "args": [id]}

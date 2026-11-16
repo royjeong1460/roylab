@@ -1,0 +1,18 @@
+{
+  "evidence": "Static source contract only; no engine execution",
+  "expected": "Nine destructive skill future prices use exact 3% anchor growth rounded upward to 10; validator retains historical polynomial upper bound",
+  "contracts": {
+    "exact_linear_helper": false,
+    "destructive_skill_linear_branch": false,
+    "historical_upper_bound_helper": false
+  },
+  "missing_expected_contracts": [
+    "exact_linear_helper",
+    "destructive_skill_linear_branch",
+    "historical_upper_bound_helper"
+  ],
+  "sha256": {
+    "economy.gd": "d17bbb96416445c96d819e57328c1585cd1224a0595a856178a33ed0df09d5e1",
+    "money.gd": "89c45b9fd76c7b8b07d5ff452af1b4c579ca9803ddcfc585acaa7fc09d9b7d33"
+  }
+}

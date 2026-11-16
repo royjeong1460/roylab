@@ -611,5 +611,14 @@
   "Web analytics & feedback": "웹 통계 · 피드백 연동",
   "Production help": "제작 도움",
   "Development assistance": "개발 지원",
-  "Pixel editing & frame export": "픽셀 편집 · 프레임 출력"
+  "Pixel editing & frame export": "픽셀 편집 · 프레임 출력",
+  "Every %d effective Blasts · %d echoes at %s%% primary force · radius %s cells": "유효한 폭파 %d회마다 · 추가 폭발 %d회, 각각 기본 힘의 %s%% · 반경 %s칸",
+  "Every %d effective Blasts · fragment relay at %s%% base strength · radius %s cells": "유효한 폭파 %d회마다 · 파편 충격 릴레이, 기본 위력의 %s%% · 반경 %s칸",
+  "Every %d effective Blasts · expanding pressure at %s%% base strength · radius %s cells": "유효한 폭파 %d회마다 · 압력 확산, 기본 위력의 %s%% · 반경 %s칸",
+  "Every %d effective Blasts · landing sends %d pulses each way at %s%% strength · radius %s cells · spacing %s cells": "유효한 폭파 %d회마다 · 착지 시 양쪽으로 파동 %d회, 위력 %s%% · 반경 %s칸 · 간격 %s칸",
+  "Once per sortie · %d payloads at %s%% impact strength · radii %s/%s cells": "출격당 1회 · 충격탄 %d개, 위력 %s%% · 반경 %s/%s칸",
+  "Once per sortie · %d foundation strikes at %s%% strength · %d%% coverage · %d%% follow-up · hit radius %s cells": "출격당 1회 · 기반부 %d곳 타격, 위력 %s%% · 범위 %d%% · 후속타 %d%% · 타격 반경 %s칸",
+  "Once per sortie · %.2f s downward load at %s%% strength · contact radius %s cells": "출격당 1회 · %.2f초 동안 아래로 누르기, 위력 %s%% · 접촉 반경 %s칸",
+  "Once per sortie · %.2f s inward sweep at %s%% strength · radius %s cells": "출격당 1회 · %.2f초 동안 안쪽으로 휩쓸기, 위력 %s%% · 반경 %s칸",
+  "Every %d effective Blasts · lift then slam at %s%% base strength · capture reach %s×": "유효한 폭파 %d회마다 · 들어 올려 내리찍기, 기본 위력의 %s%% · 포착 범위 %s배"
 }

@@ -152,28 +152,29 @@ static func effect_stats(id: String, owned_level: int) -> Dictionary:
 	var maximum := 10 if id == "aftershock" else 1 if id == "recharge" else 5
 	var level := clampi(owned_level, 1, maximum)
 	var tail := 1.0 + 0.08 * sqrt(float(maxi(0, owned_level - maximum)))
+	var spread := 1.0 + 0.04 * sqrt(float(maxi(0, owned_level - maximum)))
 	var gain := 1.0 + 0.1 * (mini(3, level - 1) if id in ["relay", "slam", "expand", "wave"] else level - 1)
 	gain *= tail
 	var result := {"level": maxi(1, owned_level), "gain": gain}
 	match id:
 		"aftershock":
-			result.merge({"threshold": 3, "echoes": 2 + floori(float(level - 1) / 3.0), "power": [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 1.0][level - 1] * tail})
+			result.merge({"threshold": 3, "echoes": 2 + floori(float(level - 1) / 3.0), "radius": 2.5 * spread, "power": [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 1.0][level - 1] * tail})
 		"relay":
-			result.merge({"threshold": 4 if level == 5 else 5, "power": 0.65 * gain})
+			result.merge({"threshold": 4 if level == 5 else 5, "radius": 3.0 * spread, "power": 0.65 * gain})
 		"slam":
-			result.merge({"threshold": 5 if level == 5 else 6, "lift_power": 1.5 * gain, "slam_power": 2.0 * gain, "delay": 0.8})
+			result.merge({"threshold": 5 if level == 5 else 6, "range_scale": spread, "lift_power": 1.5 * gain, "slam_power": 2.0 * gain, "delay": 0.8})
 		"expand":
-			result.merge({"threshold": 4 if level == 5 else 5, "start_radius": 2.0, "radius": 11.0, "duration": 1.6, "pulse_interval": 0.15, "pressure": 1.5 * gain, "outward_power": 0.16 * gain, "final_radius": 2.0, "final_power": 0.6 * gain})
+			result.merge({"threshold": 4 if level == 5 else 5, "start_radius": 2.0, "radius": 11.0 * spread, "duration": 1.6, "pulse_interval": 0.15, "pressure": 1.5 * gain, "outward_power": 0.16 * gain, "final_radius": 2.0 * spread, "final_power": 0.6 * gain})
 		"wave":
-			result.merge({"threshold": 5 if level == 5 else 6, "pulses_per_side": 4, "spacing": 7.0, "pulse_interval": 0.12, "pressure": 1.6 * gain, "upward_power": 0.6 * gain})
+			result.merge({"threshold": 5 if level == 5 else 6, "pulses_per_side": 4, "radius": 8.0 * spread, "spacing": 7.0 * spread, "pulse_interval": 0.12, "pressure": 1.6 * gain, "upward_power": 0.6 * gain})
 		"orbital":
-			result.payloads = 5 + int(level >= 3) + int(level >= 5)
+			result.merge({"payloads": 5 + int(level >= 3) + int(level >= 5), "radius": 3.0 * spread, "heavy_radius": 5.0 * spread})
 		"seismic":
-			result.merge({"targets": 12, "coverage": 1.2 if level >= 3 else 1.0, "followup_power": 0.5 if level >= 5 else 0.0})
+			result.merge({"targets": 12, "coverage": (1.2 if level >= 3 else 1.0) * spread, "impact_radius": 9.0 * spread, "kick_radius": 12.0 * spread, "followup_power": 0.5 if level >= 5 else 0.0})
 		"gravity":
-			result.merge({"duration": 4.2 + 0.25 * int(level >= 3) + 0.25 * int(level >= 5), "down_acceleration": 280.0 * gain, "contact_fatigue": 0.18 * gain})
+			result.merge({"duration": 4.2 + 0.25 * int(level >= 3) + 0.25 * int(level >= 5), "contact_radius": 2.5 * spread, "down_acceleration": 280.0 * gain, "contact_fatigue": 0.18 * gain})
 		"sonic":
-			result.merge({"duration": 1.65 + 0.25 * int(level >= 3) + 0.25 * int(level >= 5), "steps": 12, "pressure": 0.6 * gain, "inward_power": 1.2 * gain})
+			result.merge({"duration": 1.65 + 0.25 * int(level >= 3) + 0.25 * int(level >= 5), "steps": 12, "radius": 5.0 * spread, "scan_scale": spread, "pressure": 0.6 * gain, "inward_power": 1.2 * gain})
 		"recharge":
 			result.recharge_fraction = 1.0 - 0.75 / (1.0 + 0.05 * (maxi(1, owned_level) - 1))
 		_:

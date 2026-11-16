@@ -1,0 +1,34 @@
+{
+  "baseline": "0.5.70(80)",
+  "candidate": "0.5.71(81)",
+  "changedFiles": [
+    "campaign/catalog.gd",
+    "campaign/economy.gd",
+    "campaign/money.gd",
+    "data/locale-ko.json",
+    "export_presets.cfg",
+    "presentation/skill_vfx.gd",
+    "project.godot",
+    "skill_physics.gd"
+  ],
+  "webChangedFiles": [
+    "campaign/catalog.gd",
+    "campaign/economy.gd",
+    "campaign/money.gd",
+    "data/locale-ko.json",
+    "presentation/skill_vfx.gd",
+    "skill_physics.gd"
+  ],
+  "formulaLevelsPerSkill": 104,
+  "destructiveSkills": 9,
+  "allOriginalPowerCountsDurationsAndLowLevelEffectsPreserved": true,
+  "rechargeUnchanged": true,
+  "blackholeAndShockwaveUnchanged": true,
+  "slamFollowsCapturedIds": true,
+  "orbitalSparsePredicateMatchesNative": true,
+  "assetsUnchanged": 683,
+  "mapsUnchanged": 43,
+  "originalCandidateUnchanged": true,
+  "runtimeExecuted": false,
+  "scope": "source and arithmetic only, not engine or game tests"
+}

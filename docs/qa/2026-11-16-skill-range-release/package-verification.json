@@ -1,0 +1,44 @@
+{
+  "native": {
+    "version": "0.5.71",
+    "build": 81,
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-skill-range-2026-11-16-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "pckBytes": 41751008,
+    "pckSha256": "ea402ad0964dbd566b46e0617d736c0940ae57ccfa48cf2d6472ca5cf0e4ffc5",
+    "pckEntries": 1221,
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-28e81b12d8de",
+  "webArtifactsVerified": 8,
+  "webPckEntries": 889,
+  "sharedCompiledChangedPayloads": [
+    "campaign/catalog.gd",
+    "campaign/economy.gd",
+    "campaign/money.gd",
+    "skill_physics.gd",
+    "presentation/skill_vfx.gd"
+  ],
+  "sharedPayloadsUnchanged": [
+    "data/balance.json",
+    "data/collection_upgrades.json",
+    "data/skill_expansion.json",
+    "campaign/profile_schema.gd",
+    "campaign/run_session.gd",
+    "world.gd",
+    "blackhole_physics.gd",
+    "impact_physics.gd",
+    "piece.gd",
+    "app/workshop_menu.gd",
+    "app/screens.gd",
+    "app/play_view.gd",
+    "app/skill_demo.gd",
+    "presentation/environment_receipt.gd",
+    "data/restoration_art.json",
+    "data/credits.json"
+  ],
+  "nativeSaveJourneyUnchanged": true,
+  "nativeCoreAndEngineUnchanged": true,
+  "runtimeExecuted": false
+}

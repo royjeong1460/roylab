@@ -296,7 +296,7 @@ func _skill_fields() -> void:
 			var x: float=center+side*(right-left)*0.5*(1-progress)
 			var bottom: float=world.ground_y(x)-1
 			var height:=maxf(1,bottom-top)
-			var width:=clampf(height*0.2,6,16)
+			var width:=clampf(height*0.2,6,16)*float(current.tuning.get("scan_scale",1.0))
 			_sprite("sonic-front",Vector2(x,(top+bottom)/2),width,elapsed,alpha*(0.5 if progress>=1 else 0.85),0,height,true,side>0)
 
 func _draw() -> void:

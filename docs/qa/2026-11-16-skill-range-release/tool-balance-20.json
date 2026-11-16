@@ -1,0 +1,309 @@
+{
+  "schema": 1,
+  "date": "2026-11-16",
+  "audit": "Source-only all-tool-tracks level20 balance audit",
+  "baseline": {
+    "version": "0.5.70(80)",
+    "project": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project",
+    "native_source": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-static-fracture-2026-11-08/extension/src"
+  },
+  "runtime_executed": false,
+  "source_changed": false,
+  "validation": "Manual source inspection and independent arithmetic only; no engine simulation, tests, scene/runtime/browser/device launches, builds, commits, or pushes.",
+  "assumptions": [
+    "All tool tracks set to20, owned Black Hole, no active skill effects included. Battery20 shown separately.",
+    "Complete4seconds of unpaused simulated well lifetime; world.advance subdivides into steps <=1/60second, outerdt capped.1second. Counts are nominal scheduling counts, not observed hits.",
+    "Static support geometry can change every pass, multiple original groups/runs can be selected, and detached groups stop being static targets. Raw sums do not predict actual destroyed pixels or efficiency.",
+    "Fresh purchase totals use current prices from level0; historical purchase ledger can differ. No player save was opened."
+  ],
+  "tracks": [
+    {
+      "id": "blastForce",
+      "level": 20,
+      "value": 2.0,
+      "unit": "base multiplier",
+      "next_upgrade_cost_20_to_21": 1900,
+      "fresh_purchase_total_0_to_20": 15930
+    },
+    {
+      "id": "blastRadius",
+      "level": 20,
+      "value": 5.0,
+      "unit": "cells",
+      "next_upgrade_cost_20_to_21": 3670,
+      "fresh_purchase_total_0_to_20": 28130
+    },
+    {
+      "id": "blastReach",
+      "level": 20,
+      "value": 28.0,
+      "unit": "cells",
+      "next_upgrade_cost_20_to_21": 1670,
+      "fresh_purchase_total_0_to_20": 12880
+    },
+    {
+      "id": "wellPull",
+      "level": 20,
+      "value": 2.0,
+      "unit": "base multiplier",
+      "next_upgrade_cost_20_to_21": 11310,
+      "fresh_purchase_total_0_to_20": 48480
+    },
+    {
+      "id": "wellReach",
+      "level": 20,
+      "value": 40.0,
+      "unit": "cells",
+      "next_upgrade_cost_20_to_21": 9450,
+      "fresh_purchase_total_0_to_20": 42920
+    },
+    {
+      "id": "wellDuration",
+      "level": 20,
+      "value": 4.0,
+      "unit": "seconds",
+      "next_upgrade_cost_20_to_21": 10490,
+      "fresh_purchase_total_0_to_20": 47690
+    },
+    {
+      "id": "mix",
+      "level": 20,
+      "value": 6.0,
+      "unit": "multiplier",
+      "next_upgrade_cost_20_to_21": 6910,
+      "fresh_purchase_total_0_to_20": 33700
+    },
+    {
+      "id": "wear",
+      "level": 20,
+      "value": 6.0,
+      "unit": "multiplier",
+      "next_upgrade_cost_20_to_21": 6910,
+      "fresh_purchase_total_0_to_20": 33700
+    },
+    {
+      "id": "battery",
+      "level": 20,
+      "value": 160,
+      "unit": "energy",
+      "next_upgrade_cost_20_to_21": 5760,
+      "fresh_purchase_total_0_to_20": 28090
+    }
+  ],
+  "tool_summary": {
+    "shockwave": {
+      "energy_cost": 12,
+      "core_cut_radius_cells": 5,
+      "impulse_reach_cells": 28,
+      "power": 2,
+      "fracture_efficiency": 1,
+      "halo_force": 4,
+      "halo_reach_cells": 13.4,
+      "halo_strength": 1.77,
+      "direct_cuts_per_attack": 1,
+      "halo_passes_per_attack": 1,
+      "fresh_track_total": 56940
+    },
+    "blackhole": {
+      "energy_cost": 24,
+      "unlock_parts": 2000,
+      "pull_radius_cells": 40,
+      "duration_sim_seconds": 4,
+      "pull_power": 0.4,
+      "core_mix": 6,
+      "core_power_times_mix": 2.4,
+      "core_radius_cells": 16,
+      "max_grinding_multiplier": 6,
+      "support_local_radius_parameter": 6,
+      "support_local_along_extent_cells": 7.5,
+      "support_local_across_extent_cells": 4.8,
+      "initial_support_strength": 0.56,
+      "repeat_support_strength": 0.24,
+      "repeat_interval_sim_seconds": 0.2,
+      "nominal_repeat_passes": 20,
+      "nominal_total_passes": 21,
+      "sum_input_strength_at_persistent_selected_point": 5.36,
+      "fresh_track_total": 206490,
+      "fresh_tracks_plus_unlock": 208490
+    },
+    "battery20": {
+      "energy_capacity": 160,
+      "max_nominal_shockwave_uses_with_last_residual": 14,
+      "max_nominal_blackhole_uses_with_last_residual": 7
+    }
+  },
+  "recent_070_effect_at_equal20": {
+    "changed": false,
+    "reason": "New continuous tail starts above20 for reach/duration, above36 for mix. Pull-owned power tail is1 at20; previous reach/duration/mix pressure tails also1 at20. Direct source diff confirms prices and wear unchanged."
+  },
+  "proposal": {
+    "status": "Proposal only, not implemented or user-playtested",
+    "scope": "Black Hole static supported-structure strain coefficients only",
+    "initial_strength_coefficient": {
+      "before": 1.4,
+      "after": 1.0
+    },
+    "repeat_strength_coefficient": {
+      "before": 0.6,
+      "after": 0.3
+    },
+    "at20": {
+      "initial_input_strength_before": 0.56,
+      "initial_input_strength_after": 0.4,
+      "repeat_input_strength_before": 0.24,
+      "repeat_input_strength_after": 0.12,
+      "nominal_sum_before": 5.36,
+      "nominal_sum_after": 2.8,
+      "reduction_percent": 47.76119402985075
+    },
+    "retained": [
+      "Pull/global power",
+      "40cell level20 range and continuous reach growth",
+      "4second level20 duration and continuous duration growth",
+      "Core mixing6 and continuous mixing growth",
+      "Grinding6, contact gating, and wear ramp",
+      "24energy cost and all prices/progression/save data",
+      "Chain/collision/fall systems"
+    ]
+  },
+  "evidence": [
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/campaign/economy.gd",
+      "lines": [
+        [
+          24,
+          50
+        ],
+        [
+          170,
+          214
+        ]
+      ],
+      "sha256": "d17bbb96416445c96d819e57328c1585cd1224a0595a856178a33ed0df09d5e1"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/campaign/catalog.gd",
+      "lines": [
+        [
+          75,
+          99
+        ]
+      ],
+      "sha256": "e47c7ade1dd73e669ca4067996cdb090fb25b774ae5a4a1779ab241e999d66d9"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/data/balance.json",
+      "lines": [
+        [
+          1,
+          1
+        ]
+      ],
+      "sha256": "7a99764e7084212ef82460ec22826c0bef3a6a0328835529e3f05b6a3d4a46dd"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/campaign/money.gd",
+      "lines": [
+        [
+          112,
+          120
+        ]
+      ],
+      "sha256": "89c45b9fd76c7b8b07d5ff452af1b4c579ca9803ddcfc585acaa7fc09d9b7d33"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/world.gd",
+      "lines": [
+        [
+          617,
+          704
+        ],
+        [
+          1041,
+          1062
+        ]
+      ],
+      "sha256": "3aac290129e2ffbbd7313c0dd299e48bad1ede3d21d21bee0a51d4554fb68f4f"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/blackhole_physics.gd",
+      "lines": [
+        [
+          31,
+          97
+        ],
+        [
+          123,
+          186
+        ]
+      ],
+      "sha256": "3c3530b6564b9fb9aecaa8610c1231a93b4501c5e70a4dc21c4edc8afa14357b"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/impact_physics.gd",
+      "lines": [
+        [
+          18,
+          41
+        ],
+        [
+          52,
+          80
+        ]
+      ],
+      "sha256": "980e11f66d6d4979ab4b7dabf9b264bfb571e84b4149a6b706341d3de53c77fc"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/skill_physics.gd",
+      "lines": [
+        [
+          154,
+          167
+        ]
+      ],
+      "sha256": "853b87d2a4d2b6328f559b1f9671fa0f94f44030e5b22d5f6522cc1e31f96142"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-blackhole-growth-2026-11-16/project/chain_physics.gd",
+      "lines": [
+        [
+          23,
+          34
+        ]
+      ],
+      "sha256": "71bd5d6532e1a3efb47d43d93d84a7402966ff2a0bf0ba96855c222379e6e7b0"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-static-fracture-2026-11-08/extension/src/effect_kernel.cpp",
+      "lines": [
+        [
+          115,
+          134
+        ],
+        [
+          167,
+          177
+        ],
+        [
+          236,
+          359
+        ],
+        [
+          380,
+          476
+        ]
+      ],
+      "sha256": "36e1cc1349432d53fca59c659aaff3284fc2a373f0a445c39d05a01e1b228390"
+    },
+    {
+      "path": "/Users/roy/Developer/sand/variants/godot-paid-port/qa/ios-static-fracture-2026-11-08/extension/src/world_kernel.cpp",
+      "lines": [
+        [
+          203,
+          243
+        ]
+      ],
+      "sha256": "b62e358f0a31be4dfb92e9c1118e71059865ad8c66a63d2dcec02df28e913bbd"
+    }
+  ]
+}

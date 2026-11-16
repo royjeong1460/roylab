@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "catalogRangeGrowth": false,
+    "aftershockRadiusConsumed": false,
+    "orbitalRadiusConsumed": false,
+    "seismicRadiusConsumed": false,
+    "gravityRadiusConsumed": false,
+    "sonicRadiusConsumed": false
+  },
+  "scope": "static pre-change source contract; no engine or game execution"
+}
