@@ -1,0 +1,21 @@
+{
+  "version": "0.5.77",
+  "nativeBuild": 87,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": true,
+  "nativeInstalledSequence": 5208,
+  "nativeAppLaunched": false,
+  "scope": "Center the Follow-up Blast skill demonstration on its middle support.",
+  "webBuilt": true,
+  "webPublished": true,
+  "httpVerified": true,
+  "webReleaseCommit": "2e7a17681ff489b0693d2e904dcefdf3271f5854",
+  "cloudflareDeploymentId": "96039c97-0d21-473c-ac84-b42b07d409e9",
+  "webStem": "free-0541-cded8c3656d6",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "rollbackNativeDelivery": "qa/ios-compact-popups-2026-11-17/delivery.json",
+  "rollbackWebStem": "free-0541-607e9cf6c479",
+  "httpResponsesVerified": 15
+}
