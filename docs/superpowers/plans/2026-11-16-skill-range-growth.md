@@ -14,4 +14,4 @@
 - [x] Update skill descriptions and Korean keys so actual growing ranges are visible alongside existing effects. Basic-level demos and assets unchanged. Independently review economy compatibility and skill consumers; resolve findings.
 - [x] Compare level20 tools: actual damage cadence, range, costs, support strain, wear and mixing. Record evidence and a bounded nerf proposal separately unless user approves it.
 - [x] Static arithmetic and source checks across boundaries/high levels, old/new/mixed price histories and numeric limits. Compile/export/Xcode signing, source and PCK parity, unchanged maps/art/core/other tracks. No runtime claims.
-- [ ] Site build, explicit package-only Web publication,15 static HTTP raw/decoded hashes. iPhone update install without launch. CURRENT/delivery/rollback/bug records; actual feel/balance/save continuity user validation.
+- [x] Site build, explicit package-only Web publication,15 static HTTP raw/decoded hashes. iPhone update install without launch. CURRENT/delivery/rollback/bug records; actual feel/balance/save continuity user validation.

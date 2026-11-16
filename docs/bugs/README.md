@@ -36,6 +36,6 @@
 
 | [BUG-026](BUG-026-blackhole-continuous-growth.md) | 2026-11-16 | 블랙홀 범위·시간·혼합 초과 강화의 실제 효과 고정 및 압력 전환 | 웹·iOS 전달 완료 · 사용자 확인 대기 |
 
-| [BUG-027](BUG-027-skill-range-and-prices.md) | 2026-11-16 | 파괴 스킬 범위 성장·후반 가격 보완 | 수정·iOS 설치 완료 · 웹 전달 확인 중 |
+| [BUG-027](BUG-027-skill-range-and-prices.md) | 2026-11-16 | 파괴 스킬 범위 성장·후반 가격 보완 | 웹·iOS 전달 완료 · 사용자 확인 대기 |
 
 | [BUG-028](BUG-028-blackhole-level20-balance.md) | 2026-11-16 | 블랙홀20레벨 강함 | 소스 조사 완료 · 하향 확인 대기 |

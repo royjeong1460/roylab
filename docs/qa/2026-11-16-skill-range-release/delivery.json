@@ -9,8 +9,8 @@
   "nativeInstallReceiptSha256": "a88f5e455b6ef7b936b61eda72c0a3328708661092434694eef2eef0d6f510fd",
   "nativeAppLaunched": false,
   "webBuilt": true,
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "webStem": "free-0541-28e81b12d8de",
   "engineStem": "godot-web-ec83eba66e3c",
   "scope": "Approved nine-skill real range growth and gentler future skill prices; Black-hole level20 audited only.",
@@ -28,5 +28,14 @@
     "status": "audit and concrete proposal; approval pending, not implemented"
   },
   "runtimeExecutedByAssistant": false,
-  "userValidation": "pending actual skill range/VFX/balance/performance/save loading and purchase continuity"
+  "userValidation": "pending actual skill range/VFX/balance/performance/save loading and purchase continuity",
+  "webReleaseCommit": "be5dc18d07fad325b81a07b921269bd229bd8ec0",
+  "cloudflareDeploymentId": "efe1a563-7dd4-46f2-94fa-7c9b47d71510",
+  "webDeploymentStatus": "Canonical and all payloads statically HTTP verified",
+  "webUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "httpResponsesVerified": 15,
+  "encodedAndDecodedHashesMatch": true,
+  "deliveryVerifiedAt": "2026-11-16T14:22:39.985445+00:00",
+  "githubCheckLastObservedStatus": "completed",
+  "githubCheckConclusion": "success"
 }
