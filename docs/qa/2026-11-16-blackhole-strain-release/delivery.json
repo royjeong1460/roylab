@@ -9,8 +9,8 @@
   "nativeInstallReceiptSha256": "77fc55f079f99c45219a93b4fd949eb52cfbb306927fe2bc5af1f9f16c201504",
   "nativeAppLaunched": false,
   "webBuilt": true,
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "webStem": "free-0541-247aa570697f",
   "engineStem": "godot-web-ec83eba66e3c",
   "scope": "Approved supported/static Black-hole strain reduction only; includes prior skill range and future-price improvements unchanged.",
@@ -37,5 +37,14 @@
   "priorSkillRangePricesLedgerAndSavesRetained": true,
   "mapsAssetsCoreAndShockwaveUnchanged": true,
   "runtimeExecutedByAssistant": false,
-  "userValidation": "pending actual Black-hole balance, skill feel, device performance and save/purchase continuity"
+  "userValidation": "pending actual Black-hole balance, skill feel, device performance and save/purchase continuity",
+  "webReleaseCommit": "a9c8e6f80c5c0a98b3c116997c82a5d1ee4ac239",
+  "cloudflareDeploymentId": "4e2a1885-1efb-4474-8cbf-e2f40ff7383b",
+  "webDeploymentStatus": "Canonical and all payloads statically HTTP verified",
+  "webUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "httpResponsesVerified": 15,
+  "encodedAndDecodedHashesMatch": true,
+  "deliveryVerifiedAt": "2026-11-16T14:30:56.786846+00:00",
+  "githubCheckLastObservedStatus": "completed",
+  "githubCheckConclusion": "success"
 }
