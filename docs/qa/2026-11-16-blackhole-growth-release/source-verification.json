@@ -1,0 +1,26 @@
+{
+  "baseline": "0.5.69(79)",
+  "candidate": "0.5.70(80)",
+  "changedFiles": [
+    "project.godot",
+    "export_presets.cfg",
+    "app/workshop_menu.gd",
+    "campaign/economy.gd"
+  ],
+  "webChangedFiles": [
+    "app/workshop_menu.gd",
+    "campaign/economy.gd"
+  ],
+  "originalCandidateUnchanged": true,
+  "assetsUnchanged": 683,
+  "mapsUnchanged": 43,
+  "allOtherBaselineFilesUnchanged": true,
+  "pricesLedgerRefundSaveFunctionsUnchanged": true,
+  "shockwaveAndOtherTracksUnchanged": true,
+  "rangeDurationMixDoNotMultiplyGlobalPower": true,
+  "equalLevelGlobalPullCurveRetained": true,
+  "actualCoreMixContinuesAfter36": true,
+  "arithmeticLevels": 105,
+  "checksAreStaticNotEngineTests": true,
+  "runtimeExecuted": false
+}

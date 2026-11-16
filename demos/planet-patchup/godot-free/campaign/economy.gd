@@ -2,10 +2,11 @@ extends RefCounted
 
 const Money = preload("res://campaign/money.gd")
 const RETIRED_TRACKS := ["suction", "range", "collectBatch", "collectInterval"]
-const SHOCKWAVE_RANGE_TRACKS := ["blastRadius", "blastReach"]
-const PRESSURE_TRACKS := ["wellReach", "wellDuration"]
-const SHOCKWAVE_RANGE_TAIL_STEP := 0.5
+const CONTINUOUS_TRACKS := ["blastRadius", "blastReach", "wellReach", "wellDuration", "mix"]
+const CONTINUOUS_TAIL_STEP := 0.5
 const SHOCKWAVE_POWER_SOFT_LEVEL := 20
+const BLACKHOLE_POWER_SOFT_LEVEL := 20
+const BLACKHOLE_MIX_SOFT_LEVEL := 36
 const SHOCKWAVE_TRACKS := ["blastForce", "blastRadius", "blastReach"]
 const SHOCKWAVE_ORIGINAL_PRICES := 5
 const SHOCKWAVE_LATE_GROWTH := 1.10
@@ -174,39 +175,41 @@ func _shockwave_pressure(force_level: int) -> float:
 	var gain := _tail(force_level, SHOCKWAVE_POWER_SOFT_LEVEL)
 	return gain * gain
 
+func _blackhole_pressure(pull_level: int) -> float:
+	# Keep the old equal-level pull curve, now owned solely by Pull.
+	var gain := _tail(pull_level, BLACKHOLE_POWER_SOFT_LEVEL)
+	return gain * gain * _tail(pull_level, BLACKHOLE_MIX_SOFT_LEVEL)
+
 func track_value(id: String, level: int) -> float:
 	var track: Dictionary = catalog.tracks[id]
 	if track.has("sqrt_step"):
 		return float(track.start) + float(track.sqrt_step) * sqrt(float(level))
 	var maximum := int(track.cap)
 	var value := float(track.start) + float(track.step) * mini(level, maximum)
-	if id in SHOCKWAVE_RANGE_TRACKS:
-		return value + float(track.step) * SHOCKWAVE_RANGE_TAIL_STEP * maxi(0, level - maximum)
+	if id in CONTINUOUS_TRACKS:
+		return value + float(track.step) * CONTINUOUS_TAIL_STEP * maxi(0, level - maximum)
 	if id == "blastForce":
 		return value * _tail(level, maximum) * _shockwave_pressure(level)
-	if level <= maximum or id in PRESSURE_TRACKS:
+	if id == "wellPull":
+		return value * _tail(level, maximum) * _blackhole_pressure(level)
+	if level <= maximum:
 		return value
 	if id == "battery":
 		return value + 10.0 * (sqrt(1.0 + level - maximum) - 1.0)
 	return value * _tail(level, maximum)
-
-func track_pressure(id: String, level: int) -> float:
-	return _tail(level, int(catalog.tracks[id].cap)) if id in PRESSURE_TRACKS else 1.0
 
 func stats(p: Dictionary) -> Dictionary:
 	var values := {}
 	for id in catalog.tracks:
 		values[id] = track_value(id, int(p.upgrades.get(id, 0)))
 	var blast_pressure := _shockwave_pressure(int(p.upgrades.blastForce))
-	var well_pressure := track_pressure("wellReach", int(p.upgrades.wellReach)) * track_pressure("wellDuration", int(p.upgrades.wellDuration))
-	well_pressure *= _tail(int(p.upgrades.mix), int(catalog.legacy_tracks.mix.cap))
-	var core_mix := track_value("mix", mini(int(p.upgrades.mix), int(catalog.legacy_tracks.mix.cap)))
+	var well_pressure := _blackhole_pressure(int(p.upgrades.wellPull))
 	values.merge({"capacity": values.battery, "bombRadius": values.blastRadius,
 		"bombPower": values.blastForce, "bombPressureMultiplier": blast_pressure,
 		"blastFractureEfficiency": blast_pressure * _tail(int(p.upgrades.blastForce), int(catalog.legacy_tracks.blastForce.cap)),
-		"bombCost": 12.0, "gravityCost": 24.0, "gravityPower": 0.2 * values.wellPull * well_pressure,
+		"bombCost": 12.0, "gravityCost": 24.0, "gravityPower": 0.2 * values.wellPull,
 		"gravityPressureMultiplier": well_pressure, "gravityRadius": values.wellReach,
-		"gravityDuration": values.wellDuration, "coreMix": core_mix, "wearSpeed": values.wear,
+		"gravityDuration": values.wellDuration, "coreMix": values.mix, "wearSpeed": values.wear,
 		"autoCollect": false, "suctionRate": 0.0, "suctionRadius": 12.0, "autoCollectRate": 0.0,
 		"suction": 0.0, "range": 12.0, "collectBatch": 0.0, "collectInterval": 0.25})
 	return values
@@ -222,8 +225,6 @@ func _upgrade_description(id: String, level: int) -> Dictionary:
 		return {"key": "Fragment collision processing · %s× → %s×", "args": [_value_text(value), _value_text(future)]}
 	if id == "salvageYield":
 		return {"key": "Refinement bonus · %s%% → %s%%", "args": [_value_text(value * 100.0), _value_text(future * 100.0)]}
-	if id in PRESSURE_TRACKS and level >= int(track.cap):
-		return {"key": "Fixed %s %s · pressure %s× → %s×", "args": [_value_text(value), track.unit, _value_text(track_pressure(id, level)), _value_text(track_pressure(id, level + 1))]}
 	return {"key": "%s → %s %s", "args": [_value_text(value), _value_text(future), track.get("unit", "")]}
 
 func _numeric_error(id: String, level: int, cost: Variant) -> String:
@@ -236,8 +237,8 @@ func _numeric_error(id: String, level: int, cost: Variant) -> String:
 		if catalog.effect_stats(id, level + 1)[key] <= catalog.effect_stats(id, level)[key] and level >= int(catalog.skills[id].get("max", 5)):
 			return "numeric-limit"
 	else:
-		var current := track_pressure(id, level) if id in PRESSURE_TRACKS and level >= int(catalog.tracks[id].cap) else track_value(id, level)
-		var future := track_pressure(id, level + 1) if id in PRESSURE_TRACKS and level >= int(catalog.tracks[id].cap) else track_value(id, level + 1)
+		var current := track_value(id, level)
+		var future := track_value(id, level + 1)
 		if future <= current:
 			return "numeric-limit"
 	return ""

@@ -1,0 +1,32 @@
+{
+  "version": "0.5.70",
+  "nativeBuild": 80,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": true,
+  "nativeAppLaunched": false,
+  "webBuilt": true,
+  "webPublished": false,
+  "httpVerified": false,
+  "webStem": "free-0541-94f050796091",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "scope": "Black-hole reach/duration continue after20, actualmix after36 at half original steps. Global power belongs only to Pull; old equal-level power curve retained.",
+  "rollbackNativeDelivery": "qa/ios-shockwave-range-2026-11-16/delivery.json",
+  "rollbackWebStem": "free-0541-0af606b40e32",
+  "runtimeExecutedByAssistant": false,
+  "userValidation": "pending actual mixing/reach/duration/aim/VFX/balance and device performance/save continuity",
+  "upgradeRevision": "blackhole-continuous-growth-pull-separation-2026-11-16",
+  "all40": {
+    "radius": 45,
+    "duration": 5,
+    "mix": 10.5,
+    "power": 1.3397565144056243
+  },
+  "pricesLevelsLedgerSaveSchemaUnchanged": true,
+  "shockwaveAndWearUnchanged": true,
+  "mapsAssetsPhysicsKernelUnchanged": true,
+  "resultSceneryFontCreditsAndSkillDemosUnchanged": true,
+  "nativeInstalledSequence": 5148,
+  "nativeInstallReceiptSha256": "8ded67090e9703dd1b5bf810e5ce14f99377e633a5794869b77870389a84e5d2"
+}

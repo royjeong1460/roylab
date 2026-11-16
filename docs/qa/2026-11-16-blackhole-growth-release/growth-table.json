@@ -1,0 +1,206 @@
+[
+  {
+    "level": 0,
+    "old": {
+      "power": 0.2,
+      "radius": 30.0,
+      "duration": 2.0,
+      "mix": 1.0
+    },
+    "new": {
+      "power": 0.2,
+      "radius": 30.0,
+      "duration": 2.0,
+      "mix": 1.0
+    },
+    "displayedPull": 1.0,
+    "oldDisplayedMix": 1.0
+  },
+  {
+    "level": 19,
+    "old": {
+      "power": 0.39000000000000007,
+      "radius": 39.5,
+      "duration": 3.9000000000000004,
+      "mix": 5.75
+    },
+    "new": {
+      "power": 0.39000000000000007,
+      "radius": 39.5,
+      "duration": 3.9000000000000004,
+      "mix": 5.75
+    },
+    "displayedPull": 1.9500000000000002,
+    "oldDisplayedMix": 5.75
+  },
+  {
+    "level": 20,
+    "old": {
+      "power": 0.4,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 6.0
+    },
+    "new": {
+      "power": 0.4,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 6.0
+    },
+    "displayedPull": 2.0,
+    "oldDisplayedMix": 6.0
+  },
+  {
+    "level": 21,
+    "old": {
+      "power": 0.47822400000000004,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 6.25
+    },
+    "new": {
+      "power": 0.478224,
+      "radius": 40.25,
+      "duration": 4.05,
+      "mix": 6.25
+    },
+    "displayedPull": 2.39112,
+    "oldDisplayedMix": 6.25
+  },
+  {
+    "level": 30,
+    "old": {
+      "power": 0.7849822128134705,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 8.5
+    },
+    "new": {
+      "power": 0.7849822128134705,
+      "radius": 42.5,
+      "duration": 4.5,
+      "mix": 8.5
+    },
+    "displayedPull": 3.924911064067352,
+    "oldDisplayedMix": 8.5
+  },
+  {
+    "level": 36,
+    "old": {
+      "power": 1.0419196371130166,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 10.0
+    },
+    "new": {
+      "power": 1.0419196371130166,
+      "radius": 44.0,
+      "duration": 4.8,
+      "mix": 10.0
+    },
+    "displayedPull": 5.209598185565083,
+    "oldDisplayedMix": 10.0
+  },
+  {
+    "level": 37,
+    "old": {
+      "power": 1.157121255309932,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 10.0
+    },
+    "new": {
+      "power": 1.157121255309932,
+      "radius": 44.25,
+      "duration": 4.85,
+      "mix": 10.125
+    },
+    "displayedPull": 5.785606276549659,
+    "oldDisplayedMix": 10.8
+  },
+  {
+    "level": 40,
+    "old": {
+      "power": 1.3397565144056245,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 10.0
+    },
+    "new": {
+      "power": 1.3397565144056243,
+      "radius": 45.0,
+      "duration": 5.0,
+      "mix": 10.5
+    },
+    "displayedPull": 6.698782572028121,
+    "oldDisplayedMix": 11.6
+  },
+  {
+    "level": 60,
+    "old": {
+      "power": 2.269999952821235,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 10.0
+    },
+    "new": {
+      "power": 2.269999952821235,
+      "radius": 50.0,
+      "duration": 6.0,
+      "mix": 13.0
+    },
+    "displayedPull": 11.349999764106176,
+    "oldDisplayedMix": 13.919183588453086
+  },
+  {
+    "level": 100,
+    "old": {
+      "power": 4.028636847061882,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 10.0
+    },
+    "new": {
+      "power": 4.0286368470618825,
+      "radius": 60.0,
+      "duration": 8.0,
+      "mix": 18.0
+    },
+    "displayedPull": 20.143184235309413,
+    "oldDisplayedMix": 16.400000000000002
+  },
+  {
+    "level": 250,
+    "old": {
+      "power": 11.623106066565295,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 10.0
+    },
+    "new": {
+      "power": 11.623106066565295,
+      "radius": 97.5,
+      "duration": 15.5,
+      "mix": 36.75
+    },
+    "displayedPull": 58.115530332826474,
+    "oldDisplayedMix": 21.702991070662236
+  },
+  {
+    "level": 1000,
+    "old": {
+      "power": 74.69315408696541,
+      "radius": 40.0,
+      "duration": 4.0,
+      "mix": 10.0
+    },
+    "new": {
+      "power": 74.69315408696541,
+      "radius": 285.0,
+      "duration": 53.0,
+      "mix": 130.5
+    },
+    "displayedPull": 373.46577043482705,
+    "oldDisplayedMix": 34.838679514016036
+  }
+]

@@ -215,9 +215,6 @@ func _metric_card(offer: Dictionary) -> PanelContainer:
 func _track_comparison(offer: Dictionary) -> String:
 	var id := str(offer.id)
 	var level := int(offer.level)
-	var track: Dictionary = host.catalog.tracks[id]
-	if id in ["wellReach","wellDuration"] and level >= int(track.cap):
-		return str(host._offer_description(offer,false))
 	var current: float = host.journey.economy.track_value(id,level)
 	if not str(offer.get("numeric_error","")).is_empty(): return _track_value(id,current)
 	var future: float = host.journey.economy.track_value(id,level+1)

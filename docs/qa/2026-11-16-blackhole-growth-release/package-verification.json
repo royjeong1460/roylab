@@ -1,0 +1,29 @@
+{
+  "native": {
+    "version": "0.5.70",
+    "build": 80,
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-blackhole-growth-2026-11-16-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "pckBytes": 41747696,
+    "pckSha256": "14cfffc934a35b1fb57f3f1c1568ea4dd56e81aa1a7ab2cab1380379c6c683b9",
+    "pckEntries": 1221,
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-94f050796091",
+  "webPckEntries": 889,
+  "webArtifactsVerified": 8,
+  "sharedPayloads": [
+    "campaign/economy.gd",
+    "app/workshop_menu.gd",
+    "data/balance.json",
+    "data/collection_upgrades.json",
+    "world.gd",
+    "blackhole_physics.gd",
+    "app/play_view.gd",
+    "presentation/skill_vfx.gd"
+  ],
+  "previousPackLogicUnchangedExceptEconomyAndWorkshop": true,
+  "webAdapterMusicEngineCoreUnchanged": true,
+  "runtimeExecuted": false
+}
