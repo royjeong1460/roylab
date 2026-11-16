@@ -34,7 +34,7 @@ func on_well_activated(well: Dictionary) -> void:
 	well.strainDelay = 0.2
 	for piece in world.pieces:
 		piece.set_meta(RUBBING_META, 0.0)
-	strain_supported(well, 1.4)
+	strain_supported(well, 1.0)
 
 func step(dt: float) -> void:
 	if not is_finite(dt) or dt <= 0:
@@ -43,7 +43,7 @@ func step(dt: float) -> void:
 		_pull(well, minf(dt, float(well.remaining)))
 		well.strainDelay = float(well.get("strainDelay", 0.2)) - dt
 		if well.strainDelay <= 0.00000001:
-			strain_supported(well, 0.6)
+			strain_supported(well, 0.3)
 			well.strainDelay += 0.2
 		well.remaining = maxf(0.0, float(well.remaining) - dt)
 	world.wells = world.wells.filter(func(well): return well.remaining > 0.00000001)

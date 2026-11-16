@@ -1,0 +1,44 @@
+{
+  "native": {
+    "version": "0.5.72",
+    "build": 82,
+    "bundle": "com.roy.planetpatchup.godotcompare",
+    "appPath": "/Users/roy/Developer/sand/variants/godot-paid-port/native/build/ios-blackhole-strain-2026-11-16-derived/Build/Products/Release-iphoneos/PPGodotCompare.app",
+    "pckBytes": 41750992,
+    "pckSha256": "9f409148f794385839a59aa87ebe39b26245a386afa8c4ec551798fc6275f9d3",
+    "pckEntries": 1221,
+    "signatureVerified": true,
+    "appLaunched": false
+  },
+  "webStem": "free-0541-247aa570697f",
+  "webArtifactsVerified": 8,
+  "webPckEntries": 889,
+  "sharedCompiledChangedPayloads": [
+    "blackhole_physics.gd"
+  ],
+  "sharedPayloadsUnchanged": [
+    "data/balance.json",
+    "data/collection_upgrades.json",
+    "data/skill_expansion.json",
+    "campaign/profile_schema.gd",
+    "campaign/run_session.gd",
+    "world.gd",
+    "impact_physics.gd",
+    "piece.gd",
+    "app/workshop_menu.gd",
+    "app/screens.gd",
+    "app/play_view.gd",
+    "app/skill_demo.gd",
+    "presentation/environment_receipt.gd",
+    "data/restoration_art.json",
+    "data/credits.json",
+    "campaign/catalog.gd",
+    "campaign/economy.gd",
+    "campaign/money.gd",
+    "skill_physics.gd",
+    "presentation/skill_vfx.gd"
+  ],
+  "nativeSaveJourneyUnchanged": true,
+  "nativeCoreAndEngineUnchanged": true,
+  "runtimeExecuted": false
+}
