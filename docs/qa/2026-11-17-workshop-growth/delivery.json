@@ -1,0 +1,21 @@
+{
+  "version": "0.5.75",
+  "nativeBuild": 85,
+  "nativeBundle": "com.roy.planetpatchup.godotcompare",
+  "nativeBuilt": true,
+  "signatureVerified": true,
+  "nativeInstalled": true,
+  "nativeInstalledSequence": 5192,
+  "nativeAppLaunched": false,
+  "scope": "Keep purchase buttons on the right; center action and price inside. Show name, level and real next skill gains.",
+  "webBuilt": true,
+  "webPublished": true,
+  "httpVerified": true,
+  "webReleaseCommit": "8bfe5c8e90292b3decd1a622354468d179cc8a87",
+  "cloudflareDeploymentId": "015d9a37-c6a4-49fc-b3d5-7e508f5d7a7b",
+  "webStem": "free-0541-4eb4bd1f28b2",
+  "engineStem": "godot-web-ec83eba66e3c",
+  "rollbackNativeDelivery": "qa/ios-restored-planet-icon-2026-11-17/delivery.json",
+  "rollbackWebStem": "free-0541-1e2bee9d9fad",
+  "httpResponsesVerified": 15
+}
