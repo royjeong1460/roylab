@@ -13,3 +13,5 @@ coreMix는values.mix를 그대로 사용하고 min36클램프와 혼합초과분
 수정 전 정적 source계약 실패 기록,105개 레벨 표본·항목별 독립성·같은 레벨 globalpower 보존·실제mix 성장·가격/저장함수 불변, import/compile/export, Xcode Release·deep/strict서명, 양쪽 PCK 공유payload와 압축 해시를 확인했다. 독립검토PASS. 사이트 빌드·iPhone 설치·공개 Web 전달은[delivery.json](delivery.json)에 실제 결과를 기록한다.
 
 게임·테스트·씬·시뮬레이션·브라우저 게임·기기 앱 실행 없음. 실제 흡입/혼합/지속/범위/이펙트/균형/기기 성능·저장 연속성은 사용자 확인 대기다. [수치 표](growth-table.json), [소스](source-verification.json), [패키지](package-verification.json), [검토](review.md).
+
+Web `free-0541-94f050796091`의 공개 진입점과 정적 HTTP 15개·압축 전후 해시를 확인했다. Cloudflare 배포 성공. iPhone 0.5.70(80) 업데이트 설치 완료(sequence 5148, 실행 안 함). [HTTP 증거](http-verification.json). 실제 혼합·범위·지속시간·조준·균형·기기 성능·저장은 사용자 확인 대기다.

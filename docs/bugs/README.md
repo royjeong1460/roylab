@@ -34,4 +34,4 @@
 
 | [BUG-025](BUG-025-shockwave-range-growth.md) | 2026-11-16 | 충격파 범위 강화가20렙 이후 압력으로 전환되는 역할 불일치 | 웹·iOS 전달 완료 · 사용자 확인 대기 |
 
-| [BUG-026](BUG-026-blackhole-continuous-growth.md) | 2026-11-16 | 블랙홀 범위·시간·혼합 초과 강화의 실제 효과 고정 및 압력 전환 | 수정·iOS 설치 완료 · 웹 전달 확인 중 |
+| [BUG-026](BUG-026-blackhole-continuous-growth.md) | 2026-11-16 | 블랙홀 범위·시간·혼합 초과 강화의 실제 효과 고정 및 압력 전환 | 웹·iOS 전달 완료 · 사용자 확인 대기 |

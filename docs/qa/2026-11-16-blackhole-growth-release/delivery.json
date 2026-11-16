@@ -7,8 +7,8 @@
   "nativeInstalled": true,
   "nativeAppLaunched": false,
   "webBuilt": true,
-  "webPublished": false,
-  "httpVerified": false,
+  "webPublished": true,
+  "httpVerified": true,
   "webStem": "free-0541-94f050796091",
   "engineStem": "godot-web-ec83eba66e3c",
   "scope": "Black-hole reach/duration continue after20, actualmix after36 at half original steps. Global power belongs only to Pull; old equal-level power curve retained.",
@@ -28,5 +28,14 @@
   "mapsAssetsPhysicsKernelUnchanged": true,
   "resultSceneryFontCreditsAndSkillDemosUnchanged": true,
   "nativeInstalledSequence": 5148,
-  "nativeInstallReceiptSha256": "8ded67090e9703dd1b5bf810e5ce14f99377e633a5794869b77870389a84e5d2"
+  "nativeInstallReceiptSha256": "8ded67090e9703dd1b5bf810e5ce14f99377e633a5794869b77870389a84e5d2",
+  "webReleaseCommit": "f33f4ada66d4d027db388869d4bfd6f45bb3c080",
+  "cloudflareDeploymentId": "8ed1bfe3-aa11-48cd-8ff7-80728aef2431",
+  "webDeploymentStatus": "Canonical and all payloads statically HTTP verified",
+  "webUrl": "https://roylab.pages.dev/planet-patchup/play/",
+  "httpResponsesVerified": 15,
+  "encodedAndDecodedHashesMatch": true,
+  "deliveryVerifiedAt": "2026-11-16T12:11:42.048117+00:00",
+  "githubCheckLastObservedStatus": "completed",
+  "githubCheckConclusion": "success"
 }
