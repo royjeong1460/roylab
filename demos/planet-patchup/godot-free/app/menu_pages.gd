@@ -86,7 +86,11 @@ func _region_card(index: int) -> Button:
 	card.add_child(image)
 	var title := _single_line(L10n.format("%02d · %s", [index + 1, L10n.text(str(region.name)) if open else L10n.text("Undiscovered")]), 13, UITheme.TEXT if open else UITheme.MUTED)
 	card.add_child(title)
-	var summary: Label = h._label(L10n.format("%d/%d sites cleared", [int(progress.get("clears", 0)), region.sites.size()]) if open else "Clear the previous region", 12, UITheme.MUTED)
+	var summary: Control
+	if open and progress.get("complete", false):
+		summary = UITheme.all_clear_badge(L10n.text("100% · All Clear"), 12)
+	else:
+		summary = h._label(L10n.format("%d/%d sites cleared", [int(progress.get("clears", 0)), region.sites.size()]) if open else "Clear the previous region", 12, UITheme.MUTED)
 	card.add_child(summary)
 	var layout := func():
 		image.position = Vector2(1, 1)
@@ -94,7 +98,10 @@ func _region_card(index: int) -> Button:
 		title.position = Vector2(10, 115)
 		title.size = Vector2(maxf(1, card.size.x - 20), 22)
 		summary.position = Vector2(10, 140)
-		summary.size = Vector2(maxf(1, card.size.x - 20), 36)
+		if summary is PanelContainer:
+			summary.size = summary.get_combined_minimum_size()
+		else:
+			summary.size = Vector2(maxf(1, card.size.x - 20), 36)
 	card.resized.connect(layout)
 	card.ready.connect(layout)
 	return card
@@ -160,7 +167,7 @@ func _map_hero(index: int) -> Control:
 		perfect += int(best >= 1.0)
 		if not bool(h.catalog.metadata(str(id)).get("boss", false)):
 			normal_clears += int(best >= 0.7)
-	var summary := _single_line(L10n.format("Normal %d/6 · 100%% %d/7", [normal_clears, perfect]), 12, UITheme.MINT)
+	var summary := _single_line(L10n.format("Normal %d/6 · 100%% %d/7", [normal_clears, perfect]), 12, UITheme.CLEAR_GOLD if perfect == region.sites.size() else UITheme.MINT)
 	hero.add_child(summary)
 	var layout := func():
 		title.position = Vector2(14,maxf(6,hero.size.y-64))
@@ -179,8 +186,14 @@ func _map_row(site_id: String, index: int) -> Button:
 	var boss := bool(site.get("boss", false))
 	var row: Button = h._button("", func(): h.app.start_run("stage", site_id), not open)
 	row.custom_minimum_size.y = 58
-	if boss or best >= 0.7:
-		var accent := UITheme.GOLD if boss or best >= 1.0 else UITheme.MINT
+	var complete := open and best >= 1.0
+	if complete:
+		for state in ["normal","hover","pressed"]:
+			var style := UITheme.box(Color("433d31") if state == "normal" else Color("524736"), UITheme.GOLD, 1, 0)
+			style.border_width_left = 3
+			row.add_theme_stylebox_override(state, style)
+	elif boss or best >= 0.7:
+		var accent := UITheme.GOLD if boss else UITheme.MINT
 		var fill := UITheme.MENU_PANEL.lerp(accent, 0.1) if best >= 0.7 else UITheme.MENU_PANEL
 		row.add_theme_stylebox_override("normal", UITheme.box(fill, accent.darkened(0.2), 1, 0))
 	var number := _single_line("B" if boss else "%02d" % (index + 1), 15, UITheme.GOLD)
@@ -190,24 +203,28 @@ func _map_row(site_id: String, index: int) -> Button:
 	var state := "FULL CLEAR" if best >= 1.0 else "CLEARED" if best >= 0.7 else "Best record" if not record.is_empty() else "Unattempted"
 	if not open:
 		state = "Clear all 6 normal sites" if boss else "Clear the previous region"
-	var status := _single_line(state, 12, UITheme.MINT if best >= 0.7 else UITheme.MUTED)
+	var status := _single_line(state, 12, UITheme.CLEAR_GOLD if complete else UITheme.MINT if best >= 0.7 else UITheme.MUTED)
 	row.add_child(status)
-	var score := _single_line(h._percent(best) if not record.is_empty() else "→", 14, UITheme.GOLD if best >= 1.0 else UITheme.MINT)
-	if not open:
-		score.text = L10n.text("Locked")
-		score.add_theme_font_size_override("font_size", 12)
-		score.add_theme_color_override("font_color", UITheme.MUTED)
-	score.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var score: Control
+	if complete:
+		score = UITheme.all_clear_badge("100%", 14)
+	else:
+		var score_text: String = h._percent(best) if not record.is_empty() else "→"
+		var value := _single_line(score_text if open else "Locked", 14 if open else 12, UITheme.MINT if open else UITheme.MUTED)
+		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		score = value
 	row.add_child(score)
 	var layout := func():
+		var tail := score.get_combined_minimum_size() if complete else Vector2(68,row.size.y)
+		score.size = tail
+		score.position = Vector2(row.size.x-12-tail.x,roundf((row.size.y-tail.y)*0.5))
+		var text_width := maxf(1,score.position.x-62)
 		number.position = Vector2(12, 0)
 		number.size = Vector2(30,row.size.y)
 		name_label.position = Vector2(54, 7)
-		name_label.size = Vector2(maxf(1, row.size.x - 138), 22)
+		name_label.size = Vector2(text_width,22)
 		status.position = Vector2(54, 30)
-		status.size = Vector2(maxf(1, row.size.x - 138), 19)
-		score.position = Vector2(row.size.x - 80, 0)
-		score.size = Vector2(68,row.size.y)
+		status.size = Vector2(text_width,19)
 	row.resized.connect(layout)
 	row.ready.connect(layout)
 	return row

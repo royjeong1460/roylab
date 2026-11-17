@@ -323,16 +323,21 @@ func _home() -> Control:
 	selector.add_child(next_region)
 	var open: bool = journey.region_open(app.selected_region)
 	var region_status := _region_status(app.selected_region) if open else L10n.text("Clear the previous region to unlock")
-	var summary := _label(region_status,12,Color("bfcdc2"))
-	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	summary.custom_minimum_size.y = 22
-	summary.autowrap_mode = TextServer.AUTOWRAP_OFF
-	summary.clip_text = true
-	summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	summary.tooltip_text = summary.text
-	summary.mouse_filter = Control.MOUSE_FILTER_PASS
-	footer.add_child(summary)
+	if open and journey.region_progress(app.selected_region).get("complete", false):
+		var badge := UITheme.all_clear_badge(region_status, 14)
+		badge.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		footer.add_child(badge)
+	else:
+		var summary := _label(region_status,12,Color("bfcdc2"))
+		summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		summary.custom_minimum_size.y = 22
+		summary.autowrap_mode = TextServer.AUTOWRAP_OFF
+		summary.clip_text = true
+		summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		summary.tooltip_text = summary.text
+		summary.mouse_filter = Control.MOUSE_FILTER_PASS
+		footer.add_child(summary)
 	var markers := HBoxContainer.new()
 	markers.add_theme_constant_override("separation",0)
 	markers.custom_minimum_size.y = 44
@@ -399,7 +404,6 @@ func _home() -> Control:
 		footer.position = Vector2(margin,height-246)
 		footer.size = Vector2(maxf(1,width-margin*2),230)
 		name_label.add_theme_font_size_override("font_size",13 if width < 350 else 14)
-		summary.add_theme_font_size_override("font_size",12)
 		if home_notice != null:
 			home_notice.position.y = 180 if compact else 207
 			home_notice.size.x = width-48
@@ -645,7 +649,13 @@ func _result_page(payload: Dictionary, chapter: bool) -> Control:
 		page.back_button.pressed.connect(func(): app.navigate("workshop",payload.workshop_context))
 	var content: VBoxContainer = page.content
 	content.add_child(_label(str(receipt.get("siteName","")),14,UITheme.MUTED))
-	content.add_child(_label("100% · All Clear" if receipt.get("allClear",false) else "CLEARED" if receipt.get("qualified",false) else "Recovery below 70%",20,UITheme.GOLD if receipt.get("qualified",false) else UITheme.TEXT))
+	if receipt.get("allClear", false):
+		var badge := UITheme.all_clear_badge(L10n.text("100% · All Clear"), 20)
+		badge.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		content.add_child(badge)
+	else:
+		var qualified := bool(receipt.get("qualified", false))
+		content.add_child(_label("CLEARED" if qualified else "Recovery below 70%",20,UITheme.MINT if qualified else UITheme.TEXT))
 	_result_reward(content,receipt)
 	_result_unlocks(content,receipt)
 	if chapter:

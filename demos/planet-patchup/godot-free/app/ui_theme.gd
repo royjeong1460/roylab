@@ -10,6 +10,8 @@ const TEAL_SCREENS := ["regions","pause","restoration","maps","workshop","loadou
 const TEXT := Color("eee3c9")
 const MUTED := Color("a8b3b8")
 const GOLD := Color("cbb17a")
+const CLEAR_GOLD := Color("ffe09a")
+const CLEAR_INK := Color("382d20")
 const MINT := Color("a6c5ae")
 const HUD_INK := Color("394337")
 const HUD_CREAM := Color("d7d2b2")
@@ -44,6 +46,37 @@ static func box(fill: Color, border := BORDER, width := 1, padding := 12) -> Sty
 	style.content_margin_top = padding
 	style.content_margin_bottom = padding
 	return style
+
+static func draw_crown(canvas: CanvasItem, origin: Vector2, pixel: float, ink: Color) -> void:
+	canvas.draw_rect(Rect2(origin + Vector2(0, 2) * pixel, Vector2(9, 3) * pixel), ink)
+	for x in [0, 4, 8]:
+		canvas.draw_rect(Rect2(origin + Vector2(x, 0) * pixel, Vector2(1, 2) * pixel), ink)
+	canvas.draw_rect(Rect2(origin + Vector2(1, 6) * pixel, Vector2(7, 1) * pixel), ink)
+
+static func all_clear_badge(text: String, font_size: int) -> PanelContainer:
+	var badge := PanelContainer.new()
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var plate := box(CLEAR_GOLD, GOLD, 1, 2)
+	plate.content_margin_left = 7
+	plate.content_margin_right = 7
+	badge.add_theme_stylebox_override("panel", plate)
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 5)
+	badge.add_child(row)
+	var crown := Control.new()
+	crown.custom_minimum_size = Vector2(18,14)
+	crown.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	crown.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	crown.draw.connect(func(): draw_crown(crown, Vector2.ZERO, 2, CLEAR_INK))
+	row.add_child(crown)
+	var label := Label.new()
+	label.text = text
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", CLEAR_INK)
+	row.add_child(label)
+	return badge
 
 static func make(catalog, teal := false) -> Theme:
 	var theme := Theme.new()

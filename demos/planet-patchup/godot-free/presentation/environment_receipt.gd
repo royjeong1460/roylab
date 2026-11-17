@@ -1,6 +1,7 @@
-extends Control
+extends VBoxContainer
 
 const CultureBackdrop = preload("res://presentation/culture_backdrop.gd")
+const UITheme = preload("res://app/ui_theme.gd")
 const L10n = preload("res://app/localization.gd")
 
 # Scenery needs terrain metadata, never a second playable World or expanded pixel grid.
@@ -30,7 +31,7 @@ var ratio := 0.0
 var _site: Dictionary
 var _map: MapGeometry
 var scenery: Node2D
-var caption: Label
+var picture := Control.new()
 
 func setup(site: Dictionary, restoration_ratio: float) -> void:
 	_site = site
@@ -39,37 +40,38 @@ func setup(site: Dictionary, restoration_ratio: float) -> void:
 func _ready() -> void:
 	custom_minimum_size.y = 150
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	clip_contents = true
+	add_theme_constant_override("separation", 4)
+	picture.custom_minimum_size.y = 124
+	picture.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	picture.clip_contents = true
+	add_child(picture)
 	_map = MapGeometry.new(_site)
-	add_child(_map)
+	picture.add_child(_map)
 	scenery = CultureBackdrop.new()
 	scenery.setup(_map,maxi(0,int(_site.get("region",0))),ratio,str(_site.id))
-	# The play renderer uses -100 behind gameplay; this preview must sit above the menu.
 	scenery.z_index = 0
 	scenery.process_mode = Node.PROCESS_MODE_DISABLED
-	add_child(scenery)
-	caption = Label.new()
-	caption.add_theme_font_size_override("font_size",10)
-	caption.add_theme_color_override("font_color",Color("a6c5ae"))
+	picture.add_child(scenery)
+	var caption := Label.new()
+	var complete := is_finite(ratio) and ratio >= 1.0
+	caption.text = L10n.text("100% restored" if complete else "70% restored" if is_finite(ratio) and ratio >= 0.7 else "Before restoration")
+	caption.custom_minimum_size.y = 22
+	caption.add_theme_font_size_override("font_size",12)
+	caption.add_theme_color_override("font_color",UITheme.CLEAR_GOLD if complete else UITheme.MINT)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(caption)
-	resized.connect(_layout)
-	_update_caption()
+	picture.resized.connect(_layout)
 	_layout()
 
-func _update_caption() -> void:
-	if caption == null:
-		return
-	var tier := 1.0 if is_finite(ratio) and ratio >= 1.0 else 0.7 if is_finite(ratio) and ratio >= 0.7 else 0.0
-	caption.text = L10n.text("100% restored" if tier >= 1.0 else "70% restored" if tier >= 0.7 else "Before restoration")
-
 func _layout() -> void:
-	if scenery == null or caption == null or size.x <= 0 or size.y <= 24:
+	if picture.size.x <= 0 or picture.size.y <= 0:
 		return
 	var view_width := float(_map.width)*4.0
-	var factor := size.x/view_width
-	var view_height := (size.y-24.0)/factor
+	var factor := picture.size.x/view_width
+	var view_height := picture.size.y/factor
 	var floor := float(_map.floor_y)*4.0
 	for span in _map.terrain:
 		floor = maxf(floor,float(span.y)*4.0)
@@ -78,5 +80,3 @@ func _layout() -> void:
 	scenery.weather_view(bounds)
 	scenery.scale = Vector2.ONE * factor
 	scenery.position = -bounds.position*factor
-	caption.position = Vector2(0,size.y-20.0)
-	caption.size = Vector2(size.x,20)

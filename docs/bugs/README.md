@@ -42,3 +42,4 @@
 | [BUG-029](BUG-029-workshop-collection-readability.md) | 2026-11-17 | 강화 카드 가독성 및 회수율 전환 | 사용자 확인 대기 |
 | [BUG-030](BUG-030-compact-dialogs.md) | 2026-11-17 | 중복 장착 체크와 짧은 팝업의 하단 여백 | 사용자 확인 대기 |
 | [BUG-031](BUG-031-aftershock-demo-center.md) | 2026-11-17 | 후속 폭파 시연의 타격점이 화면 상단에 위치 | 사용자 확인 대기 |
+| [BUG-032](BUG-032-receipt-caption-all-clear.md) | 2026-11-17 | 복원 경관 자막 겹침 및 올 클리어 가독성 | 사용자 확인 대기 |

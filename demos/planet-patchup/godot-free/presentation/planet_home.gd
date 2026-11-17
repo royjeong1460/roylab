@@ -2,6 +2,8 @@ extends Control
 
 signal region_selected(index: int)
 
+const UITheme = preload("res://app/ui_theme.gd")
+
 const ART := [1, 0, 2, 3, 4, 5]
 const LOCATIONS := [Vector2(-38,155),Vector2(18,125),Vector2(8,-100),Vector2(32,-25),Vector2(-25,30),Vector2(46,55)]
 const SPHERE_SHADER = preload("res://presentation/planet_sphere.gdshader")
@@ -209,9 +211,12 @@ func _landmark(canvas: CanvasItem, index: int, rect: Rect2, alpha: float) -> voi
 	flag.a=alpha
 	canvas.draw_rect(Rect2(cx+6*s,y+2*s,5*s,3*s),flag)
 	if complete[index]:
-		canvas.draw_rect(Rect2(cx-4*s,y-2*s,8*s,2*s),flag)
-		for offset in [-4,-1,2]:
-			canvas.draw_rect(Rect2(cx+offset*s,y-4*s,2*s,3*s),flag)
+		var pixel := maxf(1, roundf(s * 0.75))
+		var crown_origin := Vector2(roundf(cx-4.5*pixel),y-8*pixel)
+		var backing := UITheme.CLEAR_INK
+		backing.a = alpha
+		canvas.draw_rect(Rect2(crown_origin-Vector2.ONE*pixel,Vector2(11,9)*pixel),backing)
+		UITheme.draw_crown(canvas,crown_origin,pixel,flag)
 		for point in [Vector2(-6,10),Vector2(w+4,18),Vector2(-2,w-10)]:
 			canvas.draw_rect(Rect2(Vector2(x,y)+point,Vector2(s,3*s)),flag)
 			canvas.draw_rect(Rect2(Vector2(x,y)+point+Vector2(-s,s),Vector2(3*s,s)),flag)
