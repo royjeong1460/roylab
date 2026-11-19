@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
-    "build:game": "node scripts/build-planet-demo.mjs"
+    "build:game": "node scripts/build-planet-demo.mjs",
+    "predev": "node scripts/sync-tabletop-routes.mjs",
+    "prebuild": "node scripts/sync-tabletop-routes.mjs"
   },
   "dependencies": {
     "next": "16.2.10",

@@ -1,0 +1,34 @@
+.lab-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(3px, .8vw, 12px);
+  padding-bottom: 3px;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+.lab-tabs a {
+  --tab-color: #d4e6f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: clamp(44px, 6vh, 60px);
+  padding: 4px 3px;
+  text-decoration: none;
+  color: #203331;
+  background: #fffcf4;
+  border: 1.5px solid #aeb3a7;
+  border-radius: 12px;
+  font-size: clamp(.84rem, 1.75vw, 1.25rem);
+  font-weight: 750;
+  letter-spacing: -.04em;
+  text-align: center;
+  word-break: keep-all;
+  touch-action: manipulation;
+}
+.lab-tabs [data-section=croc] { --tab-color: #a2dfb6; }
+.lab-tabs [data-section=bingo] { --tab-color: #ffd368; }
+.lab-tabs [data-section=quiz] { --tab-color: #c6c0ed; }
+.lab-tabs [data-section=charades] { --tab-color: #ffbb92; }
+.lab-tabs a:hover { background: #f3f2e8; }
+.lab-tabs [aria-current=page] { background: var(--tab-color); border: 2px solid #203331; box-shadow: 0 3px 0 #203331; }
+.lab-tabs a:focus-visible { outline: 3px solid #2059b9; outline-offset: 2px; }

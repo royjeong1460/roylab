@@ -1,0 +1,7 @@
+[
+  { "id": "lab", "label": "작은 실험실", "href": "/" },
+  { "id": "croc", "label": "악어게임", "href": "/crocodile/" },
+  { "id": "bingo", "label": "빙고", "href": "/bingo/" },
+  { "id": "quiz", "label": "상식퀴즈", "href": "/quiz/" },
+  { "id": "charades", "label": "몸으로 말하기", "href": "/charades/" }
+]
