@@ -130,10 +130,50 @@
 .croc-tooth:not(:disabled):active span { transform: scale(.97,.84); }
 .croc-tray {
   position: relative;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 22px);
   min-height: 55px;
   padding: 2px 12px 12px;
+}
+.croc-modes {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1.5px solid #749f82;
+  border-radius: 999px;
+  background: #eef5dd;
+}
+.croc-modes > span { padding-inline: .7em .4em; font-size: .88rem; font-weight: 700; }
+.croc-modes button {
+  min-width: 48px;
+  min-height: 44px;
+  padding: 0 .75em;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-weight: 800;
+  color: var(--croc-ink);
+  cursor: pointer;
+}
+.croc-modes [aria-pressed=true] { background: var(--croc-ink); color: #fff7d9; }
+.croc-modes button:focus-visible { outline: 3px solid #2867b1; outline-offset: 2px; }
+.croc-game[data-size="21"] .croc-toy {
+  width: min(96cqw, 140cqh, 840px);
+  height: min(83.2cqw, 98cqh, 728px);
+}
+.croc-game[data-size="21"] .croc-tooth {
+  width: 8.1%;
+  height: 10.1%;
+}
+@media (min-width: 600px) {
+  .croc-game[data-size="21"] .croc-tooth { min-width: 44px; min-height: 44px; }
+}
+@media (max-width: 390px) {
+  .croc-modes > span { display: none; }
 }
 .croc-count, .croc-replay {
   display: inline-flex;

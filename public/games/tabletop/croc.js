@@ -2,12 +2,29 @@
   'use strict';
 
   const ink = '#174436';
-  const teeth = [
-    [94, 271, -24], [111, 343, -22], [151, 402, -16],
-    [218, 431, -8], [300, 442, 0], [382, 431, 8],
-    [449, 402, 16], [489, 343, 22], [506, 271, 24],
-    [172, 264, -9], [428, 264, 9],
-  ];
+  const layouts = {
+    11: {
+      lower: [
+        [94, 271, -24], [111, 343, -22], [151, 402, -16],
+        [218, 431, -8], [300, 442, 0], [382, 431, 8],
+        [449, 402, 16], [489, 343, 22], [506, 271, 24],
+      ],
+      upper: [[172, 264, -9], [428, 264, 9]],
+    },
+    21: {
+      lower: [
+        [83, 316, -20], [103, 365, -23], [139, 405, -20],
+        [181, 433, -15], [227, 448, -10], [275, 455, -3],
+        [325, 455, 3], [373, 448, 10], [419, 433, 15],
+        [461, 405, 20], [497, 365, 23], [517, 316, 20],
+      ],
+      upper: [
+        [84, 254, -12], [138, 267, -9], [192, 265, -6],
+        [246, 266, -3], [300, 271, 0], [354, 266, 3],
+        [408, 265, 6], [462, 267, 9], [516, 254, 12],
+      ],
+    },
+  };
 
   function paint(canvas, draw) {
     canvas.width = 1200;
@@ -113,6 +130,11 @@
         </div>
       </div>
       <div class="croc-tray">
+        <div class="croc-modes" role="group" aria-label="이빨 수">
+          <span aria-hidden="true">이빨 수</span>
+          <button type="button" data-size="11" aria-pressed="true">11개</button>
+          <button type="button" data-size="21" aria-pressed="false">21개</button>
+        </div>
         <span class="croc-count"><i aria-hidden="true"></i>남은 이빨 <b></b></span>
         <button type="button" class="croc-replay" hidden><span aria-hidden="true">↻</span> 다시 하기</button>
       </div>
@@ -131,17 +153,21 @@
     let remaining;
     let finished;
 
-    const buttons = teeth.map(([x, y, angle], index) => {
+    const modeButtons = Array.from(stage.querySelectorAll('.croc-modes button'));
+    const gameLink = document.querySelector('a#tab-croc');
+    let size;
+    let buttons = [];
+
+    function createTooth([x, y, angle], index) {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'croc-tooth';
-      if (index >= 9) button.classList.add('croc-fang');
+      if (index >= layouts[size].lower.length) button.classList.add('croc-fang');
       button.setAttribute('aria-label', (index + 1) + '번 이빨');
       button.style.left = (x / 600 * 100) + '%';
       button.style.top = (y / 520 * 100) + '%';
       button.style.setProperty('--croc-angle', angle + 'deg');
       button.innerHTML = '<span aria-hidden="true"></span>';
-      teethGroup.append(button);
       button.addEventListener('click', event => {
         if (finished || button.disabled) return;
         button.classList.add('is-pressed');
@@ -162,7 +188,7 @@
         }
       });
       return button;
-    });
+    }
 
     function reset() {
       winningTooth = Math.floor(Math.random() * buttons.length);
@@ -178,11 +204,47 @@
       replay.hidden = true;
       reader.textContent = '';
     }
+    function selectSize(nextSize) {
+      if (size === nextSize) return;
+      size = nextSize;
+      stage.dataset.size = String(size);
+      for (const button of modeButtons) {
+        button.setAttribute('aria-pressed', String(Number(button.dataset.size) === size));
+      }
+      const layout = layouts[size];
+      buttons = layout.lower.concat(layout.upper).map(createTooth);
+      teethGroup.replaceChildren(...buttons);
+      if (gameLink) {
+        const url = new URL(gameLink.href);
+        if (size === 21) url.searchParams.set('teeth', '21');
+        else url.searchParams.delete('teeth');
+        gameLink.href = url.href;
+      }
+      reset();
+    }
+    function selectFromAddress() {
+      selectSize(new URLSearchParams(location.search).get('teeth') === '21' ? 21 : 11);
+    }
+    for (const button of modeButtons) {
+      button.addEventListener('click', () => {
+        const nextSize = Number(button.dataset.size);
+        if (nextSize === size) return;
+        const url = new URL(location.href);
+        if (nextSize === 21) url.searchParams.set('teeth', '21');
+        else url.searchParams.delete('teeth');
+        if (location.protocol !== 'file:') history.replaceState(history.state, '', url);
+        selectSize(nextSize);
+      });
+    }
+    if (gameLink) root.addEventListener('gameshow', selectFromAddress);
     replay.addEventListener('click', event => {
       reset();
       if (!event.detail) buttons[0].focus({preventScroll: true});
     });
-    reset();
-    return () => stage.remove();
+    selectFromAddress();
+    return () => {
+      root.removeEventListener('gameshow', selectFromAddress);
+      stage.remove();
+    };
   };
 })();
